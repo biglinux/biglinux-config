@@ -20,6 +20,8 @@ if [ "$1" = "1" ]; then
 	rm -r ~/.local/share/gwenview
 	rm ~/.config/gwenviewrc
 	cp -r /etc/skel/.local/share/kxmlgui5/gwenview ~/.local/share/kxmlgui5/gwenview
+	cp -r /etc/skel/.local/share/gwenview ~/.local/share/gwenview
+	cp -f /etc/skel/.config/gwenviewrc ~/.config/gwenviewrc
 else
 	rm -r ~/.local/share/kxmlgui5/gwenview
 	rm -r ~/.local/share/gwenview

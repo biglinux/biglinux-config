@@ -21,6 +21,8 @@ if [ "$1" = "1" ]; then
 	rm ~/.config/okularpartrc
 	rm ~/.config/okularrc
 	cp -r /etc/skel/.local/share/kxmlgui5/okular ~/.local/share/kxmlgui5/okular
+	cp -f /etc/skel/.config/okularpartrc ~/.config/okularpartrc
+	cp -f /etc/skel/.config/okularrc ~/.config/okularrc
 else
 	rm -r ~/.local/share/kxmlgui5/okular
 	rm -r ~/.local/share/okular
