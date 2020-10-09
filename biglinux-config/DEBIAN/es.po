@@ -1,0 +1,94 @@
+# Portuguese translations for biglinux-config package.
+# Copyright (C) 2020 THE biglinux-config'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the biglinux-config package.
+# Automatically generated, 2020.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: biglinux-config\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2020-10-08 01:30-0300\n"
+"PO-Revision-Date: 2020-10-08 01:33-0300\n"
+"Last-Translator: Automatically generated\n"
+"Language-Team: none\n"
+"Language: es\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+"X-Generator: Poedit 2.4.1\n"
+
+msgid "Internet"
+msgstr "Internet"
+
+msgid "Multimídia"
+msgstr "Multimedia"
+
+msgid "Gráficos"
+msgstr "Gráficos"
+
+msgid "Escritório"
+msgstr "Oficina"
+
+msgid "Sistema"
+msgstr "Sistema"
+
+msgid "Pesquisar..."
+msgstr "Buscar..."
+
+msgid "Restaurar Configurações"
+msgstr "Restaurar Configuracion"
+
+msgid "Fechar"
+msgstr "Cerca"
+
+msgid ""
+"Atenção! O programa está aberto!\\nEle será fechado para que a restauração "
+"tenha efeito."
+msgstr ""
+"¡Atención! ¡El programa está abierto!\\nSe cerrará para que surta efecto la "
+"restauración."
+
+msgid "As configurações foram restauradas com sucesso!"
+msgstr "¡La configuración se ha restaurado correctamente!"
+
+msgid ""
+"Você tem certeza que deseja restaurar todas as configurações do KDE/Plasma?"
+"\\nIsso apagará todas as configurações definidas por $USER!"
+msgstr ""
+"¿Está seguro de que desea restaurar todas las configuraciones de KDE/Plasma?"
+"\\n¡Esto borrará todos los ajustes definidos por $USER!"
+
+msgid ""
+"As configurações foram restauradas com sucesso!\\nÉ necessário fazer logoff/"
+"login para concluir a restauração!"
+msgstr ""
+"¡La configuración se ha restaurado correctamente!\\n¡Debe cerrar sesión/"
+"iniciar sesión para completar la restauración!"
+
+msgid ""
+"Músicas-(Clementine) clementine.sh Multimedia clementine.png clementine skel"
+msgstr ""
+"Música-(Clementine) clementine.sh Multimedia clementine.png clementine skel"
+
+msgid "Vídeos-(Smplayer) smplayer.sh Multimedia smplayer.png smplayer skel"
+msgstr "Videos-(Smplayer) smplayer.sh Multimedia smplayer.png smplayer skel"
+
+msgid "Restaurar no modo padrão da distribuição"
+msgstr "Restaurar al modo de distribución estándar"
+
+msgid "Essa opção restaura o programa com o padrão do BigLinux."
+msgstr "Esta opción restaura el programa al estándar BigLinux."
+
+msgid "Restaurar no modo padrão do programa"
+msgstr "Restaurar al modo de programa predeterminado"
+
+msgid "Essa opção restaura o programa com o padrão do desenvolvedor."
+msgstr ""
+"Esta opción restaura el programa a los valores predeterminados del "
+"desarrollador."
+
+msgid "Clique na opção abaixo para restaurar as configurações do programa:"
+msgstr ""
+"Haga clic en la siguiente opción para restaurar la configuración del "
+"programa:"

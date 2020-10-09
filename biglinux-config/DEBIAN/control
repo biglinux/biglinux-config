@@ -1,0 +1,11 @@
+Package: biglinux-config
+Version: 1.0.0-0big2
+Depends: coreutils, bigbashview (>= 3.3.2-0biglinux1), kdialog, sed, grep
+Architecture: all
+Maintainer: eltonff <eltonfabricio10@gmail.com>
+Section: admin
+Priority: optional
+Installed-Size:520
+Description: Restores program settings
+Conflicts: biglinux-config
+Replaces: biglinux-config

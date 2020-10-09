@@ -1,0 +1,9 @@
+[Desktop Entry]
+Exec=biglinux-config
+Icon=biglinux-config
+Name[pt_BR]=Restaurar Configurações
+Name=Restore Configuration
+Categories=System;
+StartupNotify=true
+Terminal=false
+Type=Application
