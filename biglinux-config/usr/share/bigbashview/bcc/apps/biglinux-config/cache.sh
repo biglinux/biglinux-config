@@ -22,7 +22,6 @@ $"Músicas-(Clementine) clementine.sh Multimedia clementine.png clementine skel"
 "LibreOffice libreoffice.sh Office libreoffice.png libreoffice skel"
 "Okular okular.sh Office okular.png okular skel"
 "qBittorrent qbittorrent.sh Internet qbittorrent.png qbittorrent skel"
-"Terminal-(Konsole) konsole.sh System konsole.png konsole skel"
 $"Vídeos-(Smplayer) smplayer.sh Multimedia smplayer.png smplayer skel"
 )
 
