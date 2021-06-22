@@ -1,5 +1,5 @@
 Package: biglinux-config
-Version: 1.0.0-0big5
+Version: 1.0.0-0big6
 Depends: coreutils, bigbashview (>= 3.3.2-0biglinux1), kdialog, sed, grep
 Architecture: all
 Maintainer: eltonff <eltonfabricio10@gmail.com>

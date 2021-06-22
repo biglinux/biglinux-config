@@ -9,8 +9,7 @@ export TEXTDOMAIN=biglinux-config
 
 PKG=(
 "Biglinux-KDE kde.sh System kde.png plasmashell"
-"Brave brave.sh Internet brave.png brave-browser"
-"Chromium chromium.sh Internet chromium.png chromium skel"
+"Brave brave.sh Internet brave.png brave"
 $"Músicas-(Clementine) clementine.sh Multimedia clementine.png clementine skel"
 "Dolphin dolphin.sh System dolphin.png dolphin skel"
 "Firefox firefox.sh Internet firefox.png firefox skel"

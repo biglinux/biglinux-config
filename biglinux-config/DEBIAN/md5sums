@@ -3,7 +3,7 @@ d41d8cd98f00b204e9800998ecf8427e  DEBIAN/md5sums
 39a90db24e0f39457bb218031b25362e  DEBIAN/biglinux-config.pot
 0c1e005a5b1f0cc93ab2c4977a885e38  DEBIAN/en.po
 9d5cf4f6aa3559fa41e1991ed1fc6d15  DEBIAN/es.po
-1b72c825e44c26b52d9530a616122522  DEBIAN/control
+b7fa71f17370f20b10a60a8c337dab57  DEBIAN/control
 0e48dadd9c9a9ee03fa23ed1bf0ca70c  usr/share/bigbashview/bcc/apps/biglinux-config/icons/biglinux.png
 70870eb6f60986d9c47b846dd4a62a4e  usr/share/bigbashview/bcc/apps/biglinux-config/icons/default.png
 d93dbd6244db2b335804bbcbac0519f5  usr/share/bigbashview/bcc/apps/biglinux-config/icons/brave.png
