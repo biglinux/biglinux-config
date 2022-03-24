@@ -1,0 +1,56 @@
+#!/usr/bin/env bash
+
+#Translation
+export TEXTDOMAINDIR="/usr/share/locale"
+export TEXTDOMAIN=biglinux-config
+
+# Don't group windows
+xprop -id "$(xprop -root '\t$0' _NET_ACTIVE_WINDOW | cut -f 2)" -f WM_CLASS 8s -set WM_CLASS "$$"
+
+CATEGORY_Internet=$"Internet"
+CATEGORY_Multimedia=$"Multimídia"
+CATEGORY_Graphic=$"Gráficos"
+CATEGORY_Office=$"Escritório"
+CATEGORY_System=$"Sistema"
+SEARCH=$"Pesquisar..."
+TITLE=$"Restaurar Configurações"
+CLOSE=$"Fechar"
+
+cat << EOF
+<head>
+    <title>$TITLE</title>
+    <link rel="stylesheet" type="text/css" href="/usr/share/bigbashview/bcc/materialize/css/materialize.css">
+    <link rel="stylesheet" type="text/css" href="style-OLD.css">
+    <script src="/usr/share/bigbashview/bcc/materialize/js/jquery.js"></script>
+    <script src="/usr/share/bigbashview/bcc/materialize/js/materialize.js"></script>
+    <script src="filter.js"></script>
+</head>
+
+<body>
+    <div id=total>
+        <div class="col-md-4">
+
+            <input type="text" class="validate" id="search" class="form-control" placeholder="$SEARCH" autofocus>
+
+            <div class="btn-group" role="group" aria-label="Basic example">
+                <button type="button" id="Internet" class="btn btn-success">$CATEGORY_Internet</button>
+                <button type="button" id="Multimedia" class="btn btn-success">$CATEGORY_Multimedia</button>
+                <button type="button" id="Graphic" class="btn btn-success">$CATEGORY_Graphic</button>
+                <button type="button" id="Office" class="btn btn-success">$CATEGORY_Office</button>
+                <button type="button" id="System" class="btn btn-success">$CATEGORY_System</button>
+
+            </div>
+            <a href="/execute close$">
+                <div id=close>$CLOSE</div>
+            </a>
+        </div>
+
+<div class="col-md-8">
+    <div class="row" id="parent">
+
+EOF
+
+cat ~/.bigconfig/modal.htm
+
+echo '</div></div></div></body>'
+

@@ -1,0 +1,198 @@
+#!/usr/bin/env bash
+
+#Translation
+export TEXTDOMAINDIR="/usr/share/locale"
+export TEXTDOMAIN=biglinux-config
+
+# Don't group windows
+xprop -id "$(xprop -root '\t$0' _NET_ACTIVE_WINDOW | cut -f 2)" -f WM_CLASS 8s -set WM_CLASS "$$"
+
+CATEGORY_Internet=$"Internet"
+CATEGORY_Multimedia=$"Multimídia"
+CATEGORY_Graphic=$"Gráficos"
+CATEGORY_Office=$"Escritório"
+CATEGORY_System=$"Sistema"
+SEARCH=$"Pesquisar Restaurar"
+TITLE=$"Restaurar Configurações"
+CLOSE=$"Fechar"
+
+cat << EOF
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>$TITLE</title>
+
+  <link rel="stylesheet" href="style-NEW.css">
+    <script src="/usr/share/bigbashview/bcc/materialize/js/jquery.js"></script>
+  <script src="./filter.js"></script>
+  
+</head>
+<body>
+<div class="dark-light">
+  <svg viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.5" fill="none" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M21 12.79A9 9 0 1111.21 3 7 7 0 0021 12.79z" />
+  </svg>
+</div>
+<div class="app">
+  <div class="header">
+    <div class="search-bar">
+      <input type="text" id="search" class="custom-search-input form-control" placeholder="$SEARCH" autofocus>
+      <!-- <button class="custom-search-botton" type="submit">← Enter </button> -->
+    </div>
+  </div>
+  <div class="wrapper">
+    <div class="left-side">
+      <div class="side-wrapper">
+
+        <div class="side-menu">
+          <a href="#" id="Internet" class="btn">
+            <svg viewBox="0 0 512 512">
+              <g fill="currentColor">
+                <path d="M0 0h128v128H0zm0 0M192 0h128v128H192zm0 0M384 0h128v128H384zm0 0M0 192h128v128H0zm0 0" data-original="#bfc9d1" />
+              </g>
+              <path d="M192 192h128v128H192zm0 0" fill="currentColor" data-original="#82b1ff" />
+              <path d="M384 192h128v128H384zm0 0M0 384h128v128H0zm0 0M192 384h128v128H192zm0 0M384 384h128v128H384zm0 0" fill="currentColor" data-original="#bfc9d1" />
+            </svg>
+            <span>$CATEGORY_Internet</span>
+          </a>
+
+        </div>
+      </div>
+      <div class="side-wrapper">
+        <!-- <div class="side-title">$CATEGORY</div> -->
+        <div class="side-menu">
+          <a href="#" id="Multimedia" class="btn">
+            <svg viewBox="0 0 640 512">
+              <path fill="currentColor" d="M640 264v-16c0-8.84-7.16-16-16-16H344v-40h72c17.67 0 32-14.33 32-32V32c0-17.67-14.33-32-32-32H224c-17.67 0-32 14.33-32 32v128c0 17.67 14.33 32 32 32h72v40H16c-8.84 0-16 7.16-16 16v16c0 8.84 7.16 16 16 16h104v40H64c-17.67 0-32 14.33-32 32v128c0 17.67 14.33 32 32 32h160c17.67 0 32-14.33 32-32V352c0-17.67-14.33-32-32-32h-56v-40h304v40h-56c-17.67 0-32 14.33-32 32v128c0 17.67 14.33 32 32 32h160c17.67 0 32-14.33 32-32V352c0-17.67-14.33-32-32-32h-56v-40h104c8.84 0 16-7.16 16-16zM256 128V64h128v64H256zm-64 320H96v-64h96v64zm352 0h-96v-64h96v64z" />
+            </svg>
+            <span>$CATEGORY_Multimedia</span>
+          </a>
+          <a href="#" id="Graphic" class="btn">
+            <svg viewBox="0 0 640 512">
+              <path fill="currentColor" d="M640 264v-16c0-8.84-7.16-16-16-16H344v-40h72c17.67 0 32-14.33 32-32V32c0-17.67-14.33-32-32-32H224c-17.67 0-32 14.33-32 32v128c0 17.67 14.33 32 32 32h72v40H16c-8.84 0-16 7.16-16 16v16c0 8.84 7.16 16 16 16h104v40H64c-17.67 0-32 14.33-32 32v128c0 17.67 14.33 32 32 32h160c17.67 0 32-14.33 32-32V352c0-17.67-14.33-32-32-32h-56v-40h304v40h-56c-17.67 0-32 14.33-32 32v128c0 17.67 14.33 32 32 32h160c17.67 0 32-14.33 32-32V352c0-17.67-14.33-32-32-32h-56v-40h104c8.84 0 16-7.16 16-16zM256 128V64h128v64H256zm-64 320H96v-64h96v64zm352 0h-96v-64h96v64z" />
+            </svg>
+            <span>$CATEGORY_Graphic</span>
+          </a>
+          <a href="#" id="Office" class="btn">
+            <svg viewBox="0 0 640 512">
+              <path fill="currentColor" d="M640 264v-16c0-8.84-7.16-16-16-16H344v-40h72c17.67 0 32-14.33 32-32V32c0-17.67-14.33-32-32-32H224c-17.67 0-32 14.33-32 32v128c0 17.67 14.33 32 32 32h72v40H16c-8.84 0-16 7.16-16 16v16c0 8.84 7.16 16 16 16h104v40H64c-17.67 0-32 14.33-32 32v128c0 17.67 14.33 32 32 32h160c17.67 0 32-14.33 32-32V352c0-17.67-14.33-32-32-32h-56v-40h304v40h-56c-17.67 0-32 14.33-32 32v128c0 17.67 14.33 32 32 32h160c17.67 0 32-14.33 32-32V352c0-17.67-14.33-32-32-32h-56v-40h104c8.84 0 16-7.16 16-16zM256 128V64h128v64H256zm-64 320H96v-64h96v64zm352 0h-96v-64h96v64z" />
+            </svg>
+            <span>$CATEGORY_Office</span>
+          </a>
+          <a href="#" id="System" class="btn">
+            <svg viewBox="0 0 640 512">
+              <path fill="currentColor" d="M640 264v-16c0-8.84-7.16-16-16-16H344v-40h72c17.67 0 32-14.33 32-32V32c0-17.67-14.33-32-32-32H224c-17.67 0-32 14.33-32 32v128c0 17.67 14.33 32 32 32h72v40H16c-8.84 0-16 7.16-16 16v16c0 8.84 7.16 16 16 16h104v40H64c-17.67 0-32 14.33-32 32v128c0 17.67 14.33 32 32 32h160c17.67 0 32-14.33 32-32V352c0-17.67-14.33-32-32-32h-56v-40h304v40h-56c-17.67 0-32 14.33-32 32v128c0 17.67 14.33 32 32 32h160c17.67 0 32-14.33 32-32V352c0-17.67-14.33-32-32-32h-56v-40h104c8.84 0 16-7.16 16-16zM256 128V64h128v64H256zm-64 320H96v-64h96v64zm352 0h-96v-64h96v64z" />
+            </svg>
+            <span>$CATEGORY_System</span>
+          </a>
+          
+        </div>
+      </div>
+    </div>
+
+
+    <!-- MAIN -->
+    <div class="main-container" style="overflow: auto;">
+
+      <!-- PRINCIPAIS -->
+
+        <div class="content-wrapper" style="overflow-x: hidden;">
+          <!--<div id="welcome" class="content-wrapper-header Internet Staritem">
+            <div class="content-wrapper-context">
+              <h3 class="img-content">
+                <img src="icon.png" style="width: 48px; margin: 0 10px 0 0;">
+                Bem vindo ao Central de Controle
+              </h3>
+              <div class="content-text Star">Usado para configurar todo o sistema do BigLinux o Central de Controle é simples e intuitivo com programas e scripts pré-instalados.</div>
+            </div>
+            <img class="content-wrapper-img" src="bigpc.png" alt="">
+            
+            <span class="welcome-close"><svg class="close" width="24" height="24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-x-circle">
+                <circle cx="12" cy="12" r="10" />
+                <path d="M15 9l-6 6M9 9l6 6" />
+              </svg></span>
+            
+          </div> -->   
+    
+    
+        <div class="main-header Internet">
+          <a class="menu-link-main">$CATEGORY_Internet</a>
+        </div>  
+        <div class="main-header Multimedia">
+          <a class="menu-link-main">$CATEGORY_Multimedia</a>
+        </div>  
+        <div class="main-header Graphic">
+          <a class="menu-link-main">$CATEGORY_Graphic</a>
+        </div>  
+        <div class="main-header Office">
+          <a class="menu-link-main">$CATEGORY_Office</a>
+        </div>  
+        <div class="main-header System">
+          <a class="menu-link-main">$CATEGORY_System</a>
+        </div>    
+
+EOF
+    echo "<script>\$(function() {\$(\"#Internet\").trigger(\"click\");});</script>"
+cat << EOF
+
+<!--<head>
+    <title>$TITLE</title>
+    <link rel="stylesheet" type="text/css" href="/usr/share/bigbashview/bcc/materialize/css/materialize.css">
+    <link rel="stylesheet" type="text/css" href="style.css">
+    <script src="/usr/share/bigbashview/bcc/materialize/js/jquery.js"></script>
+    <script src="/usr/share/bigbashview/bcc/materialize/js/materialize.js"></script>
+    <script src="filter.js"></script>
+</head>
+
+<body>
+    <div id=total>
+        <div class="col-md-4">
+
+            <input type="text" class="validate" id="search" class="form-control" placeholder="$SEARCH" autofocus>
+
+            <div class="btn-group" role="group" aria-label="Basic example">
+                <button type="button" id="Internet" class="btn btn-success">$CATEGORY_Internet</button>
+                <button type="button" id="Multimedia" class="btn btn-success">$CATEGORY_Multimedia</button>
+                <button type="button" id="Graphic" class="btn btn-success">$CATEGORY_Graphic</button>
+                <button type="button" id="Office" class="btn btn-success">$CATEGORY_Office</button>
+                <button type="button" id="System" class="btn btn-success">$CATEGORY_System</button>
+
+            </div>
+            <a href="/execute close$">
+                <div id=close>$CLOSE</div>
+            </a>
+        </div>
+
+<div class="col-md-8">
+    <div class="row" id="parent">-->
+
+EOF
+
+cat ~/.bigconfig/modal.htm
+
+
+cat << EOF
+</div>
+            </div>
+  </div>
+  
+        </div>
+      </div>
+  <div class="desenvolvidopor">
+    Desenvolvido por BigLinux 2022.
+  </div>
+  <div class="logo">
+    <a href="#"><img src="logo.png" class="logo-biglinux"></a>
+  </div>
+
+<!-- partial -->
+  <script src="./script-NEW.js"></script>
+</body>
+</html>
+EOF
+
+
+
+#echo '</div></div></div></body>'
+
