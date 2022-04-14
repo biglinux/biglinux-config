@@ -30,6 +30,7 @@ PKG=(
 "Brave brave.sh Internet brave.png brave-browser  $COMMENT_normal"
 "Chromium chromium.sh Internet chromium.png chromium skel $COMMENT_skel"
 $"Músicas-(Clementine) clementine.sh Multimedia clementine.png clementine skel $COMMENT_skel"
+$"Gravador-de-Tela-(vokoscreenNG) vokoscreen.sh Multimedia vokoscreen.png vokoscreenNG  $COMMENT_normal"
 "Dolphin dolphin.sh System dolphin.png dolphin skel $COMMENT_skel"
 "Firefox firefox.sh Internet firefox.png firefox skel $COMMENT_skel"
 "Gimp gimp.sh Graphic gimp.png gimp skel $COMMENT_skel"
