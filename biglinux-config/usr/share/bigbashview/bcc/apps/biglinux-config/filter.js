@@ -176,7 +176,7 @@ $(document).ready(function(){
         var empty_search = $(this).val();
         if (empty_search == '') {
             $('.main-header').show();
-            $('.content-section-star').show();   
+            $('.content-section-star').show();
             $('.search').hide();
             $('#Star').trigger('click');
         }
