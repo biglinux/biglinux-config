@@ -17,7 +17,7 @@ $(document).on("click", "#point-container", function () {
 $(function () {
   $(".menu-link").click(function () {
     $(".menu-link").removeClass("is-active");
-    $(this).addClass("is-active");
+    $(this).addClass("is-active");   
   });
 });
 

@@ -6,7 +6,7 @@
 #  Create Date:    2020/09/01 
 #  Modify Date:    2022/03/01 
 #  
-#  Description: Restore Default to help usage of BigLinux 
+#  Description: Restore Settings to help usage of BigLinux 
 #  
 # Licensed by GPL V2 or greater
 ##################################
@@ -140,6 +140,7 @@ echo "
 " >> ~/.bigconfig/modal.htm
 
 number_modal=$((number_modal+1))
+
 fi
 
 done &

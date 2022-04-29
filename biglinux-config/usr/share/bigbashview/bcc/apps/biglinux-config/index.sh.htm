@@ -5,7 +5,7 @@
 #  Create Date:    2020/09/01 
 #  Modify Date:    2022/03/01 
 #  
-#  Description: Restore Default to help usage of BigLinux 
+#  Description: Restore Settings to help usage of BigLinux 
 #  
 # Licensed by GPL V2 or greater
 ##################################
@@ -28,6 +28,7 @@ SEARCH=$"Pesquisar Restaurar"
 TITLE=$"Restaurar Configurações"
 CLOSE=$"Fechar"
 
+
 cat << EOF
 <!DOCTYPE html>
 <html lang="en">
@@ -36,7 +37,7 @@ cat << EOF
   <title>$TITLE</title>
 
   <link rel="stylesheet" href="style.css">
-    <script src="/usr/share/bigbashview/bcc/materialize/js/jquery.js"></script>
+  <script src="/usr/share/bigbashview/bcc/materialize/js/jquery.js"></script>
   <script src="./filter.js"></script>
   
 </head>
@@ -116,22 +117,16 @@ cat << EOF
       <!-- PRINCIPAIS -->
 
         <div class="content-wrapper" style="overflow-x: hidden;">
-          <div id="welcome" class="content-wrapper-header Star Staritem">
+        
+        
+        <div id="welcome" class="content-wrapper-header Star Staritem">
             <div class="content-wrapper-context">
-              <h3 class="img-content">
-                <img src="icon.png" style="width: 64px; margin: 0 10px 0 0;">
-                Bem-Vindo(a) ao Restaurar Configurações
-              </h3>
-              <div class="content-text Star">Usado para restaurar as configurações do sistema BigLinux é simples e intuitivo com programas e scripts pré-configurados.</div>
+                <h3 class="img-content">
+                    <img class="img-content img" src="icon.png">$TITLE
+                </h3>
             </div>
             <img class="content-wrapper-img" src="bigconf.png" alt="">
-            
-            <span class="welcome-close"><svg class="close" width="24" height="24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-x-circle">
-                <circle cx="12" cy="12" r="10" />
-                <path d="M15 9l-6 6M9 9l6 6" />
-              </svg></span>
-            
-          </div>
+        </div>        
 
     <div class="content-section-title Star"></div>
     <div class="apps-card">
@@ -169,14 +164,12 @@ cat << EOF
               </div>
             </div>
           </div>
-  
         </div>
       </div>
-  <div class="desenvolvidopor">
-    Desenvolvido por BigLinux 2022.
+  <div class="footer">
   </div>
   <div class="logo">
-    <a href="#"><img src="logo.png" class="logo-biglinux"></a>
+    <img src="logo.png" class="logo-biglinux">
   </div>
 
 <!-- partial -->
@@ -184,3 +177,4 @@ cat << EOF
 </body>
 </html>
 EOF
+IFS=$OIFS
