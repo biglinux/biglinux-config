@@ -164,7 +164,6 @@ $(document).ready(function(){
     
     var $search = $("#search").on('input',function(){
             $('#search').trigger('click');
-        $('.Star').hide();
         $('.content-section-star').hide();
         $('.main-header').hide();
         $('.search').show();
@@ -172,6 +171,7 @@ $(document).ready(function(){
         $('.box-items').show().not(function(){
             return matcher.test(removeDiacritics($(this).find('.box-titulo, #tit-status-bar').text()))
         }).hide();
+        $('.Star').hide();
         
         var empty_search = $(this).val();
         if (empty_search == '') {
