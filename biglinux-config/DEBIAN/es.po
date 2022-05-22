@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: biglinux-config\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2020-10-08 01:30-0300\n"
+"POT-Creation-Date: 2022-05-20 23:57-0300\n"
 "PO-Revision-Date: 2020-10-08 01:33-0300\n"
 "Last-Translator: Automatically generated\n"
 "Language-Team: none\n"
@@ -18,29 +18,55 @@ msgstr ""
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 "X-Generator: Poedit 2.4.1\n"
 
-msgid "Internet"
-msgstr "Internet"
+msgid ""
+"Restaurar&nbsp;o&nbsp;programa&nbsp;como&nbsp;modo&nbsp;padrão&nbsp;ou&nbsp;"
+"distribuição&nbsp;BigLinux."
+msgstr ""
 
-msgid "Multimídia"
-msgstr "Multimedia"
+msgid "Restaurar&nbsp;o&nbsp;programa&nbsp;como&nbsp;modo&nbsp;padrão."
+msgstr ""
 
-msgid "Gráficos"
-msgstr "Gráficos"
+#, fuzzy
+msgid ""
+"Músicas-(Clementine) clementine.sh Multimedia clementine.png clementine skel "
+"$COMMENT_skel"
+msgstr ""
+"Música-(Clementine) clementine.sh Multimedia clementine.png clementine skel"
 
-msgid "Escritório"
-msgstr "Oficina"
+msgid ""
+"Gravador-de-Tela-(vokoscreenNG) vokoscreen.sh Multimedia vokoscreen.png "
+"vokoscreenNG  $COMMENT_normal"
+msgstr ""
 
-msgid "Sistema"
-msgstr "Sistema"
-
-msgid "Pesquisar..."
-msgstr "Buscar..."
-
-msgid "Restaurar Configurações"
-msgstr "Restaurar Configuracion"
+#, fuzzy
+msgid ""
+"Vídeos-(Smplayer) smplayer.sh Multimedia smplayer.png smplayer skel "
+"$COMMENT_skel"
+msgstr "Videos-(Smplayer) smplayer.sh Multimedia smplayer.png smplayer skel"
 
 msgid "Fechar"
 msgstr "Cerca"
+
+msgid "Restaurar no modo padrão da distribuição"
+msgstr "Restaurar al modo de distribución estándar"
+
+msgid "Essa opção restaura o programa com o padrão do BigLinux."
+msgstr "Esta opción restaura el programa al estándar BigLinux."
+
+msgid "Restaurar no modo padrão do programa"
+msgstr "Restaurar al modo de programa predeterminado"
+
+msgid "Essa opção restaura o programa com o padrão do desenvolvedor."
+msgstr ""
+"Esta opción restaura el programa a los valores predeterminados del "
+"desarrollador."
+
+#, fuzzy
+msgid "Restaurar as configurações do programa:"
+msgstr "Restaurar Configuracion"
+
+msgid "Restaurar Configurações"
+msgstr "Restaurar Configuracion"
 
 msgid ""
 "Atenção! O programa está aberto!\\nEle será fechado para que a restauração "
@@ -66,29 +92,31 @@ msgstr ""
 "¡La configuración se ha restaurado correctamente!\\n¡Debe cerrar sesión/"
 "iniciar sesión para completar la restauración!"
 
-msgid ""
-"Músicas-(Clementine) clementine.sh Multimedia clementine.png clementine skel"
+msgid "Principal"
 msgstr ""
-"Música-(Clementine) clementine.sh Multimedia clementine.png clementine skel"
 
-msgid "Vídeos-(Smplayer) smplayer.sh Multimedia smplayer.png smplayer skel"
-msgstr "Videos-(Smplayer) smplayer.sh Multimedia smplayer.png smplayer skel"
+msgid "Internet"
+msgstr "Internet"
 
-msgid "Restaurar no modo padrão da distribuição"
-msgstr "Restaurar al modo de distribución estándar"
+msgid "Multimídia"
+msgstr "Multimedia"
 
-msgid "Essa opção restaura o programa com o padrão do BigLinux."
-msgstr "Esta opción restaura el programa al estándar BigLinux."
+msgid "Gráficos"
+msgstr "Gráficos"
 
-msgid "Restaurar no modo padrão do programa"
-msgstr "Restaurar al modo de programa predeterminado"
+msgid "Escritório"
+msgstr "Oficina"
 
-msgid "Essa opção restaura o programa com o padrão do desenvolvedor."
+msgid "Sistema"
+msgstr "Sistema"
+
+msgid "Pesquisar Restaurar"
 msgstr ""
-"Esta opción restaura el programa a los valores predeterminados del "
-"desarrollador."
 
-msgid "Clique na opção abaixo para restaurar as configurações do programa:"
-msgstr ""
-"Haga clic en la siguiente opción para restaurar la configuración del "
-"programa:"
+#~ msgid "Pesquisar..."
+#~ msgstr "Buscar..."
+
+#~ msgid "Clique na opção abaixo para restaurar as configurações do programa:"
+#~ msgstr ""
+#~ "Haga clic en la siguiente opción para restaurar la configuración del "
+#~ "programa:"

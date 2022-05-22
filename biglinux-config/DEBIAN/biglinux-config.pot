@@ -7,7 +7,7 @@
 msgid   ""
 msgstr  "Project-Id-Version: biglinux-config\n"
         "Report-Msgid-Bugs-To: \n"
-        "POT-Creation-Date: 2020-10-08 01:30-0300\n"
+        "POT-Creation-Date: 2022-05-20 23:57-0300\n"
         "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
         "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
         "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -16,28 +16,44 @@ msgstr  "Project-Id-Version: biglinux-config\n"
         "Content-Type: text/plain; charset=UTF-8\n"
         "Content-Transfer-Encoding: 8bit\n"
 
-msgid   "Internet"
+msgid   "Restaurar&nbsp;o&nbsp;programa&nbsp;como&nbsp;modo&nbsp;padrão&nbsp;"
+        "ou&nbsp;distribuição&nbsp;BigLinux."
 msgstr  ""
 
-msgid   "Multimídia"
+msgid   "Restaurar&nbsp;o&nbsp;programa&nbsp;como&nbsp;modo&nbsp;padrão."
 msgstr  ""
 
-msgid   "Gráficos"
+msgid   "Músicas-(Clementine) clementine.sh Multimedia clementine.png "
+        "clementine skel $COMMENT_skel"
 msgstr  ""
 
-msgid   "Escritório"
+msgid   "Gravador-de-Tela-(vokoscreenNG) vokoscreen.sh Multimedia vokoscreen."
+        "png vokoscreenNG  $COMMENT_normal"
 msgstr  ""
 
-msgid   "Sistema"
-msgstr  ""
-
-msgid   "Pesquisar..."
-msgstr  ""
-
-msgid   "Restaurar Configurações"
+msgid   "Vídeos-(Smplayer) smplayer.sh Multimedia smplayer.png smplayer skel "
+        "$COMMENT_skel"
 msgstr  ""
 
 msgid   "Fechar"
+msgstr  ""
+
+msgid   "Restaurar no modo padrão da distribuição"
+msgstr  ""
+
+msgid   "Essa opção restaura o programa com o padrão do BigLinux."
+msgstr  ""
+
+msgid   "Restaurar no modo padrão do programa"
+msgstr  ""
+
+msgid   "Essa opção restaura o programa com o padrão do desenvolvedor."
+msgstr  ""
+
+msgid   "Restaurar as configurações do programa:"
+msgstr  ""
+
+msgid   "Restaurar Configurações"
 msgstr  ""
 
 msgid   "Atenção! O programa está aberto!\\nEle será fechado para que a "
@@ -55,24 +71,23 @@ msgid   "As configurações foram restauradas com sucesso!\\nÉ necessário faze
         "logoff/login para concluir a restauração!"
 msgstr  ""
 
-msgid   "Músicas-(Clementine) clementine.sh Multimedia clementine.png "
-        "clementine skel"
+msgid   "Principal"
 msgstr  ""
 
-msgid   "Vídeos-(Smplayer) smplayer.sh Multimedia smplayer.png smplayer skel"
+msgid   "Internet"
 msgstr  ""
 
-msgid   "Restaurar no modo padrão da distribuição"
+msgid   "Multimídia"
 msgstr  ""
 
-msgid   "Essa opção restaura o programa com o padrão do BigLinux."
+msgid   "Gráficos"
 msgstr  ""
 
-msgid   "Restaurar no modo padrão do programa"
+msgid   "Escritório"
 msgstr  ""
 
-msgid   "Essa opção restaura o programa com o padrão do desenvolvedor."
+msgid   "Sistema"
 msgstr  ""
 
-msgid   "Clique na opção abaixo para restaurar as configurações do programa:"
+msgid   "Pesquisar Restaurar"
 msgstr  ""
