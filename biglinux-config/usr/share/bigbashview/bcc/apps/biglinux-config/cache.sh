@@ -133,7 +133,7 @@ echo "
 
 echo "
       <div class=\"content-button-wrapper\" style=\"text-align: right;\">
-        <button class=\"modalClose\">Fechar</button>
+        <button class=\"modalClose\">$CLOSE</button>
       </div>
   </div>
 </div>
