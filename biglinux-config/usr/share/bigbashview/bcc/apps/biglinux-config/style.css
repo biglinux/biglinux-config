@@ -517,7 +517,7 @@ body.light-mode .video-bg:before {
   overflow: auto;
   flex-shrink: 0;
 }
-@media screen and (max-width: 1170px) {
+@media screen and (max-width: 900px) {
   .left-side {
     /*display: none;*/
     flex-basis: 75px;
@@ -590,11 +590,11 @@ body.light-mode .video-bg:before {
   margin-top: 0px !important;
 }
 
-@media all and (max-width: 1300px) {
+/*@media all and (max-width: 1300px) {
   .side-menu a {
   padding: 7.5px;
   }
-}
+}*/
 
 .side-menu a:hover {
   background-color: var(--content-bg);

@@ -1,5 +1,4 @@
-#!/usr/bin/env bash
-
+#!/bin/bash
 ##################################
 #  Author Create: eltonff (www.biglinux.com.br) 
 #  Author Modify: Rafael Ruscher (rruscher@gmail.com)
@@ -50,7 +49,6 @@ CLOSE=$"Fechar"
 NAME_RESET_BIG=$"Restaurar no modo padrão da distribuição"
 COMMENT_RESET_BIG=$"Essa opção restaura o programa com o padrão do BigLinux."
 ICON_RESET_BIG="icons/biglinux.png"
-
 ICON_RESET_DEFAULT="icons/default.png"
 
 mkdir -p ~/.bigconfig
