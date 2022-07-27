@@ -39,14 +39,14 @@ echo '
       <input type="search" id="search" class="custom-search-input form-control validate"
              placeholder="'$"Pesquisar programa"'" />
     </div>
-  </div>
-EOF
-if [ "$(echo $LANG | grep ^he)" != "" ]; then
+  </div>'
+
+if [ "$(grep ^he <<< $LANG)" ]; then
     echo '<div class="wrapper" style="flex-direction: row-reverse;">'
 else
     echo '<div class="wrapper">'
 fi
-cat << EOF
+echo '
     <div class="left-side">
       <div class="side-wrapper">
 
