@@ -1,3 +1,6 @@
+$(function () {
+  $("#Star").trigger("click");
+});
 /* LEGENDA BOX STATUS BAR */
 $(".box-items").mouseover(function () {
   $(this).children("#box-status-bar").css("display", "block");
@@ -14,28 +17,28 @@ $(document).on("click", "#point-container", function () {
   $(show).removeClass("hide").siblings().addClass("hide");
 });
 
-$(function () {
-  $(".menu-link").click(function () {
-    $(".menu-link").removeClass("is-active");
-    $(this).addClass("is-active");   
-  });
-});
-
-$(function () {
-  $(".main-header-link").click(function () {
-    $(".main-header-link").removeClass("is-active");
-    $(this).addClass("is-active");
-  });
-});
-
-const dropdowns = document.querySelectorAll(".dropdown");
-dropdowns.forEach((dropdown) => {
-  dropdown.addEventListener("click", (e) => {
-    e.stopPropagation();
-    dropdowns.forEach((c) => c.classList.remove("is-active"));
-    dropdown.classList.add("is-active");
-  });
-});
+//$(function () {
+//  $(".menu-link").click(function () {
+//    $(".menu-link").removeClass("is-active");
+//    $(this).addClass("is-active");
+//  });
+//});
+//
+//$(function () {
+//  $(".main-header-link").click(function () {
+//    $(".main-header-link").removeClass("is-active");
+//    $(this).addClass("is-active");
+//  });
+//});
+//
+//const dropdowns = document.querySelectorAll(".dropdown");
+//dropdowns.forEach((dropdown) => {
+//  dropdown.addEventListener("click", (e) => {
+//    e.stopPropagation();
+//    dropdowns.forEach((c) => c.classList.remove("is-active"));
+//    dropdown.classList.add("is-active");
+//  });
+//});
 
 $(".search-bar input")
   .focus(function () {
@@ -51,8 +54,6 @@ toggleButton.addEventListener("click", () => {
   document.body.classList.toggle("light-mode");
 });
 
-
-
 var modals = document.getElementsByClassName("modal");
 var modalOpenBtn = document.getElementsByClassName("modalOpenBtn");
 var currentModal = null;
@@ -60,9 +61,9 @@ var currentModal = null;
 // Function to open modal by id
 function openModal(id) {
   for (i = 0; i < modals.length; i++) {
-    if (modals[i].getAttribute('id') == id) {
+    if (modals[i].getAttribute("id") == id) {
       currentModal = modals[i];
-      currentModal.style.display = "block";
+      $(currentModal).show();
       break;
     }
   }
@@ -70,33 +71,87 @@ function openModal(id) {
 
 // When the user clicks the button, open modal with the same id
 modalOpenBtn.onclick = function() {
-  let currentID = modalOpenBtn.getAttribute('id');
+  let currentID = modalOpenBtn.getAttribute("id");
   openModal(currentID);
 }
 
 // When the user clicks anywhere outside of the modal or the X, close
 window.onclick = function(event) {
-  if (event.target == currentModal || event.target.getAttribute('class') == 'modalClose') {
-    currentModal.style.display = "none";
+  if (event.target == currentModal || event.target.getAttribute("class") == "modalClose") {
+    $(currentModal).hide();
   }
 }
 
 
-//Fecha welcome
-$(function () {
-  $(".content-wrapper-header .close").click(function () {
-    $("#welcome").css("display", "none");
-  }); 
+$(document).on("keyup", function(e) {
+  if (e.key == "Escape") $(currentModal).hide();
 });
 
-var bigcount = 1;
-$('#btn-big').click(function(){
-    if (bigcount >= 3 && bigcount <= 3) {
-      $('#welcome').css('display','flex');
-    } else if (bigcount >= 6 && bigcount <= 6) {
-      $('body').css('background-image', 'url("/usr/share/bigbashview/bcc/apps/big-store/img/body-bg.jpg")');
-    } else if (bigcount >= 9) {
-      window.location = "/usr/share/bigbashview/bcc/apps/big-store/.javascript-racer-master/racer.sh.htm";
-    }
-    ++bigcount;
+
+$(".restore-skel").on("click",function(){
+  let script = $(this).attr("data-value");
+
+  $.get("run/"+script, "skel", function(resp){
+    if(resp==="#") setTimeout(function(){$("#modalInfo").show()}, 500);
+
+    if(resp!=="#") setTimeout(function(){$("#modalWarning").show()}, 500);
+
+    $(".modalOkWarning").click(function(){
+      _run(`kill -9 ${resp}`);
+      $("#modalWarning").hide();
+
+      $.get("run/"+script, "skel", function(data){
+        if(data==="#") setTimeout(function(){$("#modalInfo").show()}, 500);
+      });
+
+    });
+  });
+});
+
+
+$(".restore-default").on("click",function(){
+  let script = $(this).attr("data-value");
+
+  $.get("run/"+script, function(resp){
+    if(resp==="#") setTimeout(function(){$("#modalInfo").show()}, 500);
+
+    if(resp!=="#") setTimeout(function(){$("#modalWarning").show()}, 500);
+
+    $(".modalOkWarning").click(function(){
+      _run(`kill -9 ${resp}`);
+      $("#modalWarning").hide();
+
+      $.get("run/"+script, function(data){
+        if(data==="#") setTimeout(function(){$("#modalInfo").show()}, 500);
+      });
+
+    });
+  });
+});
+
+
+$(".restore-default-kde").on("click", function(){
+  $("#modalWarningKDE").show();
+
+  $(".modalOkWarningKDE").click(function(){
+    $("#modalWarningKDE").hide();
+
+    $.get("run/kde.sh", function(data){
+      if(data==="#") setTimeout(function(){$("#modalInfoKDE").show()}, 500);
+    });
+
+  });
+});
+
+
+$(".modalOkInfo").click(function(){
+  $("#modalInfo").hide();
+  $("#modalInfoKDE").hide();
+  $(currentModal).hide();
+});
+
+
+$(".modalCancel").click(function(){
+  $("#modalWarning").hide();
+  $("#modalWarningKDE").hide();
 });
