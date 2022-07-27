@@ -1,8 +1,5 @@
 #!/usr/bin/env bash
 
-echo -n "#"
-exit
-
 #Kill dolphin
 PROG=$(pidof dolphin)
 [ -n "$PROG" ] && kill -9 "$PROG"
