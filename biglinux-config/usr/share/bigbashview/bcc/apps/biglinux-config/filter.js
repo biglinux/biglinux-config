@@ -1,26 +1,26 @@
 /**
  * When filtering a table with accented characters (letters with diacritical marks)
- * it can be frustrating to have an input such as _Zurich_ not match _Zürich_ in 
- * the table (`u !== ü`). 
+ * it can be frustrating to have an input such as _Zurich_ not match _Zürich_ in
+ * the table (`u !== ü`).
  *
  * This type based search plug-in replaces the built-in string formatter in
- * DataTables with a function that will replace a comprehensive range of letters 
- * with diacritical marks to their "normalized" a..Z latin equivalents. 
+ * DataTables with a function that will replace a comprehensive range of letters
+ * with diacritical marks to their "normalized" a..Z latin equivalents.
  *
- * This plug-in targets a wider scope of languages than the accent-neutralise plugin. 
- * European languages such as slavic, nordic, baltic, finnish, celtic, albanian, 
- * hungarian (etc) is covered as well as turkish and asian languages written in european latin.  
+ * This plug-in targets a wider scope of languages than the accent-neutralise plugin.
+ * European languages such as slavic, nordic, baltic, finnish, celtic, albanian,
+ * hungarian (etc) is covered as well as turkish and asian languages written in european latin.
  *
  * For example is the letters ＥÈÉÊỀẾỄỂẼĒḔḖĔĖËẺĚȄȆẸỆȨḜĘḘḚƐƎ searchable by the input 'E'.
  *
- * As a additional feature you can customise the plugin by allowing certain diacratics: 
+ * As a additional feature you can customise the plugin by allowing certain diacratics:
  *
  * jQuery.fn.DataTable.ext.type.search.allowDiacritics( array );
  *
  * For example you would like to be able filter the nordic letters æ, ø, å :
  *
  * jQuery.fn.DataTable.ext.type.search.allowDiacritics( ['æ', 'ø', 'å' ] );
- * 
+ *
  *
  *  @name Diacritics-neutralise
  *  @summary Replace accented characters (diacritics) with latin equivalents
@@ -28,7 +28,7 @@
  *  @email davidkonrad at googles email
  *
  *
- * Demo 
+ * Demo
  *
  * http://plnkr.co/edit/Gf96d39S0b0CETt0hr4L?p=preview
  *
@@ -127,7 +127,7 @@ function removeDiacritics ( s ) {
   for (var i=0, l=diacriticsMap.length; i<l; i++) {
     s = s.replace(diacriticsMap[i].letters, diacriticsMap[i].base);
   }
-  return s; 
+  return s;
 }
 
 function charToUnicode( char ) {
@@ -139,8 +139,6 @@ function charToUnicode( char ) {
   return charUnicode;
 }
 
-
-
 $(document).ready(function(){
     var $btns = $('.btn').click(function() {
         document.getElementById("search").value=""
@@ -149,21 +147,21 @@ $(document).ready(function(){
           $('.apps-card > div').not($el).hide();
         $btns.removeClass('active');
         $(this).addClass('active');
-            $('.search').hide();        
+            $('.search').hide();
         } else {
           var $el = $('.' + this.id).fadeIn(450);
           $('.apps-card > div').not($el).hide();
-        $('.Staritem').hide();
+        $('.Star').hide();
 
         }
         $btns.removeClass('active');
         $(this).addClass('active');
       })
-    
+
     var bigSearchInput=$("#search").on('input');
-    
+
     var $search = $("#search").on('input',function(){
-            $('#search').trigger('click');
+        $('#search').trigger('click');
         $('.content-section-star').hide();
         $('.main-header').hide();
         $('.search').show();
@@ -172,15 +170,13 @@ $(document).ready(function(){
             return matcher.test(removeDiacritics($(this).find('.box-titulo, #tit-status-bar').text()))
         }).hide();
         $('.Star').hide();
-        
+
         var empty_search = $(this).val();
-        if (empty_search == '') {
+        if (!empty_search) {
             $('.main-header').show();
             $('.content-section-star').show();
             $('.search').hide();
             $('#Star').trigger('click');
         }
-    })
-    
-    
-})
+    });
+});

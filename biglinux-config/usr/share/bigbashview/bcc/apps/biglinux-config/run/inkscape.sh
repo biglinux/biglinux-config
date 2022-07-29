@@ -1,13 +1,13 @@
 #!/usr/bin/env bash
 
-PROG=$(pidof vokoscreenNG)
+PROG=$(pidof inkscape)
 
 if [ -n "$PROG" ];then
     echo -n "$PROG"
     exit
 fi
 
-rm -r ~/.config/vokoscreenNG
+rm -r ~/.config/inkscape
 echo -n "#"
 
 exit

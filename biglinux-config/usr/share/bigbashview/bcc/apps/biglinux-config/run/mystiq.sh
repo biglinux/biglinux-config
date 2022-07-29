@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 
-PROG=$(pidof smplayer)
+PROG=$(pidof mystiq)
 
 if [ -n "$PROG" ];then
     echo -n "$PROG"
@@ -8,11 +8,11 @@ if [ -n "$PROG" ];then
 fi
 
 if [ "$1" = "skel" ];then
-    rm -r ~/.config/smplayer
-    cp -r /etc/skel/.config/smplayer ~/.config/smplayer
+    rm -r ~/.config/mystiq
+    cp -r /etc/skel/.config/mystiq ~/.config/mystiq
     echo -n "#"
 else
-    rm -r ~/.config/smplayer
+    rm -r ~/.config/mystiq
     echo -n "#"
 fi
 
