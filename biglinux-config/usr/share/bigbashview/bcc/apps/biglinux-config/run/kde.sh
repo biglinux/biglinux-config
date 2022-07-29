@@ -22,7 +22,6 @@ rm -r ~/.config/psd
 rm -r ~/.config/pulse
 rm -r ~/.config/qtcurve
 rm -r ~/.kde
-rm -r ~/.kdebiglinux
 rm -r ~/.local/share/kactivitymanagerd
 rm -r ~/.local/share/kcookiejar
 rm -r ~/.local/share/kded5
@@ -59,6 +58,7 @@ rm ~/.config/breezerc
 rm ~/.config/drkonqirc
 rm ~/.config/gtkrc
 rm ~/.config/gtkrc-2.0
+rm ~/.config/latte
 rm ~/.config/kactivitymanagerd-statsrc
 rm ~/.config/kactivitymanagerd-switcher
 rm ~/.config/kactivitymanagerdrc
@@ -126,7 +126,6 @@ cp -r /etc/skel/.config/psd ~/.config/psd
 cp -r /etc/skel/.config/pulse ~/.config/pulse
 cp -r /etc/skel/.config/qtcurve ~/.config/qtcurve
 cp -r /etc/skel/.kde ~/.kde
-cp -r /etc/skel/.kdebiglinux ~/.kdebiglinux
 cp -r /etc/skel/.local/share/kactivitymanagerd ~/.local/share/kactivitymanagerd
 cp -r /etc/skel/.local/share/konsole ~/.local/share/konsole
 cp -r /etc/skel/.local/share/kxmlgui5 ~/.local/share/kxmlgui5
