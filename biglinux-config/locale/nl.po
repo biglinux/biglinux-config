@@ -1,0 +1,98 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the biglinux-config package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+# 
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: biglinux-config\n"
+"Report-Msgid-Bugs-To: \n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"Language: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=utf-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"X-Generator: attranslate\n"
+
+msgid "Restaurar Configurações"
+msgstr "Instellingen herstellen"
+
+msgid "Pesquisar programa"
+msgstr "Zoek programma"
+
+msgid "Principais"
+msgstr "Voornaamste"
+
+msgid "Internet"
+msgstr "Internet"
+
+msgid "Multimídia"
+msgstr "Multimedia"
+
+msgid "Gráficos"
+msgstr "Grafiek"
+
+msgid "Escritório"
+msgstr "Kantoor"
+
+msgid "Sistema"
+msgstr "Systeem"
+
+msgid "Restaurar o programa no modo da distribuição BigLinux."
+msgstr "Herstel het programma in de BigLinux-distributiemodus."
+
+msgid "Em qual modo você deseja restaurar?"
+msgstr "In welke modus wilt u herstellen?"
+
+msgid "Restaurar no modo padrão da distribuição"
+msgstr "Herstellen in standaard distributiemodus"
+
+msgid "Cancelar"
+msgstr "Annuleren"
+
+msgid "Restaurar o programa no modo padrão."
+msgstr "Herstel het programma naar de standaardmodus."
+
+msgid "Restaurar no modo padrão do programa"
+msgstr "Herstellen in de standaardprogrammamodus"
+
+msgid "Restaurar o programa no modo padrão ou distribuição BigLinux."
+msgstr "Herstel het programma in de standaardmodus of BigLinux-distributie."
+
+msgid "Músicas"
+msgstr "Liederen"
+
+msgid "Gravador de Tela"
+msgstr "Scherm recorder"
+
+msgid "Vídeos"
+msgstr "Video 's"
+
+msgid "Conversor de áudio e vídeo"
+msgstr "Audio- en video-omzetter"
+
+msgid "As configurações foram restauradas com sucesso!"
+msgstr "De instellingen zijn met succes hersteld!"
+
+msgid "OK"
+msgstr "OK"
+
+msgid "As configurações do BigLinux KDE foram restauradas com sucesso!"
+msgstr "BigLinux KDE instellingen zijn succesvol hersteld!"
+
+msgid "É necessário reinciar a sessão para concluir a restauração!"
+msgstr "U moet de sessie hervatten om het herstel te voltooien!"
+
+msgid "Atenção! O programa está em execução!"
+msgstr "Aandacht! Het programma loopt!"
+
+msgid "Será fechado para que a restauração seja concluída."
+msgstr "Het wordt gesloten om het herstel te voltooien."
+
+msgid "Você tem certeza que deseja restaurar todas as configurações do BigLinux KDE?"
+msgstr "Weet u zeker dat u alle BigLinux KDE-instellingen wilt herstellen?"
+
+msgid "Isso apagará todas as configurações definidas por "
+msgstr "Hiermee worden alle instellingen gewist die zijn ingesteld door "

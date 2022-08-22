@@ -1,0 +1,98 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the biglinux-config package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+# 
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: biglinux-config\n"
+"Report-Msgid-Bugs-To: \n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"Language: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=utf-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"X-Generator: attranslate\n"
+
+msgid "Restaurar Configurações"
+msgstr "設定の復元"
+
+msgid "Pesquisar programa"
+msgstr "検索プログラム"
+
+msgid "Principais"
+msgstr "メイン"
+
+msgid "Internet"
+msgstr "インターネット"
+
+msgid "Multimídia"
+msgstr "マルチメディア"
+
+msgid "Gráficos"
+msgstr "グラフィックス"
+
+msgid "Escritório"
+msgstr "オフィス"
+
+msgid "Sistema"
+msgstr "制"
+
+msgid "Restaurar o programa no modo da distribuição BigLinux."
+msgstr "BigLinux 配布モードでプログラムを復元します。"
+
+msgid "Em qual modo você deseja restaurar?"
+msgstr "どのモードで復元しますか?"
+
+msgid "Restaurar no modo padrão da distribuição"
+msgstr "標準配布モードでの復元"
+
+msgid "Cancelar"
+msgstr "キャンセル"
+
+msgid "Restaurar o programa no modo padrão."
+msgstr "プログラムを標準モードに復元します。"
+
+msgid "Restaurar no modo padrão do programa"
+msgstr "標準プログラム・モードでのリストア"
+
+msgid "Restaurar o programa no modo padrão ou distribuição BigLinux."
+msgstr "プログラムを標準モードまたは BigLinux ディストリビューションに復元します。"
+
+msgid "Músicas"
+msgstr "唱歌"
+
+msgid "Gravador de Tela"
+msgstr "スクリーンレコーダー"
+
+msgid "Vídeos"
+msgstr "ビデオ"
+
+msgid "Conversor de áudio e vídeo"
+msgstr "オーディオおよびビデオコンバータ"
+
+msgid "As configurações foram restauradas com sucesso!"
+msgstr "設定が正常に復元されました!"
+
+msgid "OK"
+msgstr "わかりました"
+
+msgid "As configurações do BigLinux KDE foram restauradas com sucesso!"
+msgstr "BigLinux KDEの設定が正常に復元されました!"
+
+msgid "É necessário reinciar a sessão para concluir a restauração!"
+msgstr "復元を完了するには、セッションを再開する必要があります。"
+
+msgid "Atenção! O programa está em execução!"
+msgstr "気を付け！プログラムは実行中です!"
+
+msgid "Será fechado para que a restauração seja concluída."
+msgstr "復元を完了するために閉じられます。"
+
+msgid "Você tem certeza que deseja restaurar todas as configurações do BigLinux KDE?"
+msgstr "すべての BigLinux KDE 設定を復元してもよろしいですか?"
+
+msgid "Isso apagará todas as configurações definidas por "
+msgstr "これにより、によって設定されたすべての設定が消去されます "

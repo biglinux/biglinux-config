@@ -1,0 +1,98 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the biglinux-config package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+# 
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: biglinux-config\n"
+"Report-Msgid-Bugs-To: \n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"Language: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=utf-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"X-Generator: attranslate\n"
+
+msgid "Restaurar Configurações"
+msgstr "Beállítások visszaállítása"
+
+msgid "Pesquisar programa"
+msgstr "Keresőprogram"
+
+msgid "Principais"
+msgstr "Fő"
+
+msgid "Internet"
+msgstr "Internet"
+
+msgid "Multimídia"
+msgstr "Multimédia"
+
+msgid "Gráficos"
+msgstr "Grafika"
+
+msgid "Escritório"
+msgstr "Iroda"
+
+msgid "Sistema"
+msgstr "Rendszer"
+
+msgid "Restaurar o programa no modo da distribuição BigLinux."
+msgstr "Állítsa vissza a programot BigLinux terjesztési módban."
+
+msgid "Em qual modo você deseja restaurar?"
+msgstr "Melyik módban szeretné visszaállítani?"
+
+msgid "Restaurar no modo padrão da distribuição"
+msgstr "Visszaállítás normál elosztási módban"
+
+msgid "Cancelar"
+msgstr "Érvénytelenít"
+
+msgid "Restaurar o programa no modo padrão."
+msgstr "Állítsa vissza a programot normál módba."
+
+msgid "Restaurar no modo padrão do programa"
+msgstr "Visszaállítás normál programmódban"
+
+msgid "Restaurar o programa no modo padrão ou distribuição BigLinux."
+msgstr "Állítsa vissza a programot normál módban vagy BigLinux terjesztésben."
+
+msgid "Músicas"
+msgstr "Dalok"
+
+msgid "Gravador de Tela"
+msgstr "Képernyő-felvevő"
+
+msgid "Vídeos"
+msgstr "Videók"
+
+msgid "Conversor de áudio e vídeo"
+msgstr "Audio- és videokonverter"
+
+msgid "As configurações foram restauradas com sucesso!"
+msgstr "A beállítások sikeresen vissza lettek állítva!"
+
+msgid "OK"
+msgstr "Oké"
+
+msgid "As configurações do BigLinux KDE foram restauradas com sucesso!"
+msgstr "A BigLinux KDE beállításai sikeresen helyreálltak!"
+
+msgid "É necessário reinciar a sessão para concluir a restauração!"
+msgstr "A visszaállítás befejezéséhez folytatnia kell a munkamenetet!"
+
+msgid "Atenção! O programa está em execução!"
+msgstr "Figyelem! A program fut!"
+
+msgid "Será fechado para que a restauração seja concluída."
+msgstr "A visszaállítás befejeződik."
+
+msgid "Você tem certeza que deseja restaurar todas as configurações do BigLinux KDE?"
+msgstr "Biztos benne, hogy vissza akarja állítani az összes BigLinux KDE beállítást?"
+
+msgid "Isso apagará todas as configurações definidas por "
+msgstr "Ez törli az összes beállítást, amelyet "

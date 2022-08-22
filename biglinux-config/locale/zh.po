@@ -1,0 +1,98 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the biglinux-config package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+# 
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: biglinux-config\n"
+"Report-Msgid-Bugs-To: \n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"Language: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=utf-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"X-Generator: attranslate\n"
+
+msgid "Restaurar Configurações"
+msgstr "恢复设置"
+
+msgid "Pesquisar programa"
+msgstr "搜索程序"
+
+msgid "Principais"
+msgstr "主要"
+
+msgid "Internet"
+msgstr "互联网"
+
+msgid "Multimídia"
+msgstr "多媒体"
+
+msgid "Gráficos"
+msgstr "图形"
+
+msgid "Escritório"
+msgstr "办公室"
+
+msgid "Sistema"
+msgstr "系统"
+
+msgid "Restaurar o programa no modo da distribuição BigLinux."
+msgstr "在 BigLinux 分发模式下恢复程序。"
+
+msgid "Em qual modo você deseja restaurar?"
+msgstr "要在哪种模式下还原？"
+
+msgid "Restaurar no modo padrão da distribuição"
+msgstr "在标准分发模式下还原"
+
+msgid "Cancelar"
+msgstr "取消"
+
+msgid "Restaurar o programa no modo padrão."
+msgstr "将程序还原到标准模式。"
+
+msgid "Restaurar no modo padrão do programa"
+msgstr "在标准程序模式下恢复"
+
+msgid "Restaurar o programa no modo padrão ou distribuição BigLinux."
+msgstr "以标准模式或 BigLinux 发行版恢复程序。"
+
+msgid "Músicas"
+msgstr "歌曲"
+
+msgid "Gravador de Tela"
+msgstr "屏幕录像机"
+
+msgid "Vídeos"
+msgstr "视频"
+
+msgid "Conversor de áudio e vídeo"
+msgstr "音频和视频转换器"
+
+msgid "As configurações foram restauradas com sucesso!"
+msgstr "设置已成功恢复！"
+
+msgid "OK"
+msgstr "还行"
+
+msgid "As configurações do BigLinux KDE foram restauradas com sucesso!"
+msgstr "BigLinux KDE 设置已成功恢复！"
+
+msgid "É necessário reinciar a sessão para concluir a restauração!"
+msgstr "您必须恢复会话才能完成还原！"
+
+msgid "Atenção! O programa está em execução!"
+msgstr "注意力！程序正在运行！"
+
+msgid "Será fechado para que a restauração seja concluída."
+msgstr "它将关闭以完成还原。"
+
+msgid "Você tem certeza que deseja restaurar todas as configurações do BigLinux KDE?"
+msgstr "你确定要恢复所有的 BigLinux KDE 设置吗？"
+
+msgid "Isso apagará todas as configurações definidas por "
+msgstr "这将清除由 设置的所有设置 "

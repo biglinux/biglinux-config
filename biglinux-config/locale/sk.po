@@ -1,0 +1,98 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the biglinux-config package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+# 
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: biglinux-config\n"
+"Report-Msgid-Bugs-To: \n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"Language: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=utf-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"X-Generator: attranslate\n"
+
+msgid "Restaurar Configurações"
+msgstr "Obnoviť nastavenia"
+
+msgid "Pesquisar programa"
+msgstr "Vyhľadávací program"
+
+msgid "Principais"
+msgstr "Hlavný"
+
+msgid "Internet"
+msgstr "Internet"
+
+msgid "Multimídia"
+msgstr "Multimédiá"
+
+msgid "Gráficos"
+msgstr "Grafika"
+
+msgid "Escritório"
+msgstr "Úrad"
+
+msgid "Sistema"
+msgstr "Sústava"
+
+msgid "Restaurar o programa no modo da distribuição BigLinux."
+msgstr "Obnovte program v distribučnom režime BigLinux."
+
+msgid "Em qual modo você deseja restaurar?"
+msgstr "V akom režime chcete obnoviť?"
+
+msgid "Restaurar no modo padrão da distribuição"
+msgstr "Obnovenie v štandardnom distribučnom režime"
+
+msgid "Cancelar"
+msgstr "Zrušiť"
+
+msgid "Restaurar o programa no modo padrão."
+msgstr "Obnovte program do štandardného režimu."
+
+msgid "Restaurar no modo padrão do programa"
+msgstr "Obnovenie v štandardnom programovom režime"
+
+msgid "Restaurar o programa no modo padrão ou distribuição BigLinux."
+msgstr "Obnovte program v štandardnom režime alebo v distribúcii BigLinux."
+
+msgid "Músicas"
+msgstr "Piesne"
+
+msgid "Gravador de Tela"
+msgstr "Záznamník obrazovky"
+
+msgid "Vídeos"
+msgstr "Videá"
+
+msgid "Conversor de áudio e vídeo"
+msgstr "Prevodník zvuku a videa"
+
+msgid "As configurações foram restauradas com sucesso!"
+msgstr "Nastavenia boli úspešne obnovené!"
+
+msgid "OK"
+msgstr "Ok"
+
+msgid "As configurações do BigLinux KDE foram restauradas com sucesso!"
+msgstr "Nastavenia BigLinux KDE boli úspešne obnovené!"
+
+msgid "É necessário reinciar a sessão para concluir a restauração!"
+msgstr "Na dokončenie obnovenia musíte pokračovať v relácii!"
+
+msgid "Atenção! O programa está em execução!"
+msgstr "Pozornosť! Program beží!"
+
+msgid "Será fechado para que a restauração seja concluída."
+msgstr "Bude uzavretý, aby sa obnovenie dokončilo."
+
+msgid "Você tem certeza que deseja restaurar todas as configurações do BigLinux KDE?"
+msgstr "Naozaj chcete obnoviť všetky nastavenia BigLinux KDE?"
+
+msgid "Isso apagará todas as configurações definidas por "
+msgstr "Tým sa vymažú všetky nastavenia nastavené "

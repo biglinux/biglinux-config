@@ -1,0 +1,98 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the biglinux-config package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+# 
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: biglinux-config\n"
+"Report-Msgid-Bugs-To: \n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"Language: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=utf-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"X-Generator: attranslate\n"
+
+msgid "Restaurar Configurações"
+msgstr "שחזור הגדרות"
+
+msgid "Pesquisar programa"
+msgstr "תוכנית חיפוש"
+
+msgid "Principais"
+msgstr "ראשי"
+
+msgid "Internet"
+msgstr "אינטרנט"
+
+msgid "Multimídia"
+msgstr "מולטימדיה"
+
+msgid "Gráficos"
+msgstr "גרפיקה"
+
+msgid "Escritório"
+msgstr "משרד"
+
+msgid "Sistema"
+msgstr "מערכת"
+
+msgid "Restaurar o programa no modo da distribuição BigLinux."
+msgstr "שחזר את התוכנית במצב הפצה של BigLinux."
+
+msgid "Em qual modo você deseja restaurar?"
+msgstr "באיזה מצב ברצונך לשחזר?"
+
+msgid "Restaurar no modo padrão da distribuição"
+msgstr "שחזור במצב הפצה רגיל"
+
+msgid "Cancelar"
+msgstr "ביטל"
+
+msgid "Restaurar o programa no modo padrão."
+msgstr "שחזר את התוכנית למצב רגיל."
+
+msgid "Restaurar no modo padrão do programa"
+msgstr "שחזור במצב תוכנית רגיל"
+
+msgid "Restaurar o programa no modo padrão ou distribuição BigLinux."
+msgstr "שחזר את התוכנית במצב רגיל או בהפצת BigLinux."
+
+msgid "Músicas"
+msgstr "שירים"
+
+msgid "Gravador de Tela"
+msgstr "מקליט מסך"
+
+msgid "Vídeos"
+msgstr "קטעי וידאו"
+
+msgid "Conversor de áudio e vídeo"
+msgstr "ממיר שמע ווידאו"
+
+msgid "As configurações foram restauradas com sucesso!"
+msgstr "ההגדרות שוחזרו בהצלחה!"
+
+msgid "OK"
+msgstr "אוקיי"
+
+msgid "As configurações do BigLinux KDE foram restauradas com sucesso!"
+msgstr "הגדרות BigLinux KDE שוחזרו בהצלחה!"
+
+msgid "É necessário reinciar a sessão para concluir a restauração!"
+msgstr "עליך לחדש את ההפעלה כדי להשלים את השחזור!"
+
+msgid "Atenção! O programa está em execução!"
+msgstr "תשומת לב! התוכנית פועלת!"
+
+msgid "Será fechado para que a restauração seja concluída."
+msgstr "הוא יהיה סגור כדי שהשחזור יושלם."
+
+msgid "Você tem certeza que deseja restaurar todas as configurações do BigLinux KDE?"
+msgstr "האם אתה בטוח שברצונך לשחזר את כל הגדרות BigLinux KDE?"
+
+msgid "Isso apagará todas as configurações definidas por "
+msgstr "פעולה זו תמחק את כל ההגדרות שהוגדרו על-ידי "
