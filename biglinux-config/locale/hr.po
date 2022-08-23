@@ -1,0 +1,98 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the biglinux-config package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+# 
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: biglinux-config\n"
+"Report-Msgid-Bugs-To: \n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"Language: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=utf-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"X-Generator: attranslate\n"
+
+msgid "Restaurar Configurações"
+msgstr "Postavke vraćanja"
+
+msgid "Pesquisar programa"
+msgstr "Program za pretraživanje"
+
+msgid "Principais"
+msgstr "Glavni"
+
+msgid "Internet"
+msgstr "Internet"
+
+msgid "Multimídia"
+msgstr "Multimedija"
+
+msgid "Gráficos"
+msgstr "Grafika"
+
+msgid "Escritório"
+msgstr "Kancelarija"
+
+msgid "Sistema"
+msgstr "Sustav"
+
+msgid "Restaurar o programa no modo da distribuição BigLinux."
+msgstr "Vratite program u BigLinux distribucijskom načinu rada."
+
+msgid "Em qual modo você deseja restaurar?"
+msgstr "U kojem načinu rada želite vratiti?"
+
+msgid "Restaurar no modo padrão da distribuição"
+msgstr "Vraćanje u standardnom načinu distribucije"
+
+msgid "Cancelar"
+msgstr "Otkazati"
+
+msgid "Restaurar o programa no modo padrão."
+msgstr "Vratite program u standardni način rada."
+
+msgid "Restaurar no modo padrão do programa"
+msgstr "Vraćanje u standardnom programskom načinu rada"
+
+msgid "Restaurar o programa no modo padrão ou distribuição BigLinux."
+msgstr "Vratite program u standardnom načinu rada ili BigLinux distribuciji."
+
+msgid "Músicas"
+msgstr "Pjesmama"
+
+msgid "Gravador de Tela"
+msgstr "Snimač zaslona"
+
+msgid "Vídeos"
+msgstr "Video"
+
+msgid "Conversor de áudio e vídeo"
+msgstr "Pretvarač zvuka i videozapisa"
+
+msgid "As configurações foram restauradas com sucesso!"
+msgstr "Postavke su uspješno vraćene!"
+
+msgid "OK"
+msgstr "Ok"
+
+msgid "As configurações do BigLinux KDE foram restauradas com sucesso!"
+msgstr "BigLinux KDE postavke uspješno su obnovljene!"
+
+msgid "É necessário reinciar a sessão para concluir a restauração!"
+msgstr "Da biste dovršili vraćanje, morate nastaviti sesiju!"
+
+msgid "Atenção! O programa está em execução!"
+msgstr "Pažnja! Program radi!"
+
+msgid "Será fechado para que a restauração seja concluída."
+msgstr "Bit će zatvoren da bi se vraćanje dovršilo."
+
+msgid "Você tem certeza que deseja restaurar todas as configurações do BigLinux KDE?"
+msgstr "Jeste li sigurni da želite vratiti sve BigLinux KDE postavke?"
+
+msgid "Isso apagará todas as configurações definidas por "
+msgstr "Time ćete izbrisati sve postavke koje je postavio "

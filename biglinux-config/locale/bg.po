@@ -1,0 +1,98 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the biglinux-config package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+# 
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: biglinux-config\n"
+"Report-Msgid-Bugs-To: \n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"Language: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=utf-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"X-Generator: attranslate\n"
+
+msgid "Restaurar Configurações"
+msgstr "Възстановяване на настройките"
+
+msgid "Pesquisar programa"
+msgstr "Програма за търсене"
+
+msgid "Principais"
+msgstr "Основните"
+
+msgid "Internet"
+msgstr "Интернет"
+
+msgid "Multimídia"
+msgstr "Мултимедия"
+
+msgid "Gráficos"
+msgstr "Графика"
+
+msgid "Escritório"
+msgstr "Офис"
+
+msgid "Sistema"
+msgstr "Система"
+
+msgid "Restaurar o programa no modo da distribuição BigLinux."
+msgstr "Възстановяване на програмата в режим на разпространение на BigLinux."
+
+msgid "Em qual modo você deseja restaurar?"
+msgstr "В кой режим искате да възстановите?"
+
+msgid "Restaurar no modo padrão da distribuição"
+msgstr "Възстановяване в стандартен режим на разпространение"
+
+msgid "Cancelar"
+msgstr "Задрасквам"
+
+msgid "Restaurar o programa no modo padrão."
+msgstr "Възстановяване на програмата в стандартен режим."
+
+msgid "Restaurar no modo padrão do programa"
+msgstr "Възстановяване в стандартен програмен режим"
+
+msgid "Restaurar o programa no modo padrão ou distribuição BigLinux."
+msgstr "Възстановяване на програмата в стандартен режим или BigLinux разпространение."
+
+msgid "Músicas"
+msgstr "Песни"
+
+msgid "Gravador de Tela"
+msgstr "Записващо устройство на екрана"
+
+msgid "Vídeos"
+msgstr "Видео"
+
+msgid "Conversor de áudio e vídeo"
+msgstr "Аудио и видео конвертор"
+
+msgid "As configurações foram restauradas com sucesso!"
+msgstr "Настройките са успешно възстановени!"
+
+msgid "OK"
+msgstr "OK"
+
+msgid "As configurações do BigLinux KDE foram restauradas com sucesso!"
+msgstr "Настройките на BigLinux KDE са успешно възстановени!"
+
+msgid "É necessário reinciar a sessão para concluir a restauração!"
+msgstr "Трябва да възобновите сесията, за да завършите възстановяването!"
+
+msgid "Atenção! O programa está em execução!"
+msgstr "Внимание! Програмата се изпълнява!"
+
+msgid "Será fechado para que a restauração seja concluída."
+msgstr "Тя ще бъде затворена, за да завърши възстановяването."
+
+msgid "Você tem certeza que deseja restaurar todas as configurações do BigLinux KDE?"
+msgstr "Наистина ли искате да възстановите всички настройки на BigLinux KDE?"
+
+msgid "Isso apagará todas as configurações definidas por "
+msgstr "Това ще изтрие всички настройки, зададени от "

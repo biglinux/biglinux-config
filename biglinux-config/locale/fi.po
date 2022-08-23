@@ -1,0 +1,98 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the biglinux-config package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+# 
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: biglinux-config\n"
+"Report-Msgid-Bugs-To: \n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"Language: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=utf-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"X-Generator: attranslate\n"
+
+msgid "Restaurar Configurações"
+msgstr "Palauta asetukset"
+
+msgid "Pesquisar programa"
+msgstr "Hakuohjelma"
+
+msgid "Principais"
+msgstr "Pää"
+
+msgid "Internet"
+msgstr "Internet"
+
+msgid "Multimídia"
+msgstr "Multimedia"
+
+msgid "Gráficos"
+msgstr "Grafiikka"
+
+msgid "Escritório"
+msgstr "Toimisto"
+
+msgid "Sistema"
+msgstr "Järjestelmä"
+
+msgid "Restaurar o programa no modo da distribuição BigLinux."
+msgstr "Palauta ohjelma BigLinux-jakelutilassa."
+
+msgid "Em qual modo você deseja restaurar?"
+msgstr "Missä tilassa haluat palauttaa?"
+
+msgid "Restaurar no modo padrão da distribuição"
+msgstr "Palauta tavallisessa jakelutilassa"
+
+msgid "Cancelar"
+msgstr "Perua"
+
+msgid "Restaurar o programa no modo padrão."
+msgstr "Palauta ohjelma normaalitilaan."
+
+msgid "Restaurar no modo padrão do programa"
+msgstr "Palauta vakio-ohjelmatilassa"
+
+msgid "Restaurar o programa no modo padrão ou distribuição BigLinux."
+msgstr "Palauta ohjelma normaalitilassa tai BigLinux-jakelussa."
+
+msgid "Músicas"
+msgstr "Kappaletta"
+
+msgid "Gravador de Tela"
+msgstr "Näytön tallennin"
+
+msgid "Vídeos"
+msgstr "Videot"
+
+msgid "Conversor de áudio e vídeo"
+msgstr "Ääni- ja videomuunnin"
+
+msgid "As configurações foram restauradas com sucesso!"
+msgstr "Asetukset on palautettu onnistuneesti!"
+
+msgid "OK"
+msgstr "Okei"
+
+msgid "As configurações do BigLinux KDE foram restauradas com sucesso!"
+msgstr "BigLinux KDE -asetukset on palautettu onnistuneesti!"
+
+msgid "É necessário reinciar a sessão para concluir a restauração!"
+msgstr "Sinun on jatkettava istuntoa palautuksen loppuun saattamiseksi!"
+
+msgid "Atenção! O programa está em execução!"
+msgstr "Tarkkaavaisuus! Ohjelma on käynnissä!"
+
+msgid "Será fechado para que a restauração seja concluída."
+msgstr "Se suljetaan, jotta palautus on valmis."
+
+msgid "Você tem certeza que deseja restaurar todas as configurações do BigLinux KDE?"
+msgstr "Oletko varma, että haluat palauttaa kaikki BigLinux KDE -asetukset?"
+
+msgid "Isso apagará todas as configurações definidas por "
+msgstr "Tämä poistaa kaikki asetukset, jotka on asettanut "

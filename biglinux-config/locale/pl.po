@@ -1,0 +1,98 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the biglinux-config package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+# 
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: biglinux-config\n"
+"Report-Msgid-Bugs-To: \n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"Language: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=utf-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"X-Generator: attranslate\n"
+
+msgid "Restaurar Configurações"
+msgstr "Przywróć ustawienia"
+
+msgid "Pesquisar programa"
+msgstr "Program wyszukiwania"
+
+msgid "Principais"
+msgstr "Główny"
+
+msgid "Internet"
+msgstr "Internet"
+
+msgid "Multimídia"
+msgstr "Multimedia"
+
+msgid "Gráficos"
+msgstr "Grafika"
+
+msgid "Escritório"
+msgstr "Biuro"
+
+msgid "Sistema"
+msgstr "System"
+
+msgid "Restaurar o programa no modo da distribuição BigLinux."
+msgstr "Przywróć program w trybie dystrybucji BigLinux."
+
+msgid "Em qual modo você deseja restaurar?"
+msgstr "W jakim trybie chcesz przywrócić?"
+
+msgid "Restaurar no modo padrão da distribuição"
+msgstr "Przywracanie w standardowym trybie dystrybucji"
+
+msgid "Cancelar"
+msgstr "Anuluj"
+
+msgid "Restaurar o programa no modo padrão."
+msgstr "Przywróć program do trybu standardowego."
+
+msgid "Restaurar no modo padrão do programa"
+msgstr "Przywracanie w standardowym trybie programu"
+
+msgid "Restaurar o programa no modo padrão ou distribuição BigLinux."
+msgstr "Przywróć program w trybie standardowym lub dystrybucji BigLinux."
+
+msgid "Músicas"
+msgstr "Piosenki"
+
+msgid "Gravador de Tela"
+msgstr "Rejestrator ekranu"
+
+msgid "Vídeos"
+msgstr "Filmy"
+
+msgid "Conversor de áudio e vídeo"
+msgstr "Konwerter audio i wideo"
+
+msgid "As configurações foram restauradas com sucesso!"
+msgstr "Ustawienia zostały pomyślnie przywrócone!"
+
+msgid "OK"
+msgstr "Ok"
+
+msgid "As configurações do BigLinux KDE foram restauradas com sucesso!"
+msgstr "Ustawienia BigLinux KDE zostały pomyślnie przywrócone!"
+
+msgid "É necessário reinciar a sessão para concluir a restauração!"
+msgstr "Musisz wznowić sesję, aby zakończyć przywracanie!"
+
+msgid "Atenção! O programa está em execução!"
+msgstr "Uwaga! Program jest uruchomiony!"
+
+msgid "Será fechado para que a restauração seja concluída."
+msgstr "Zostanie on zamknięty w celu zakończenia przywracania."
+
+msgid "Você tem certeza que deseja restaurar todas as configurações do BigLinux KDE?"
+msgstr "Czy na pewno chcesz przywrócić wszystkie ustawienia BigLinux KDE?"
+
+msgid "Isso apagará todas as configurações definidas por "
+msgstr "Spowoduje to usunięcie wszystkich ustawień ustawionych przez "

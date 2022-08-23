@@ -1,0 +1,99 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the biglinux-config package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: biglinux-config\n"
+"Report-Msgid-Bugs-To: \n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"Language: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+msgid "Restaurar Configurações"
+msgstr "Restaurar Configurações"
+
+msgid "Pesquisar programa"
+msgstr "Pesquisar programa"
+
+msgid "Principais"
+msgstr "Principais"
+
+msgid "Internet"
+msgstr "Internet"
+
+msgid "Multimídia"
+msgstr "Multimídia"
+
+msgid "Gráficos"
+msgstr "Gráficos"
+
+msgid "Escritório"
+msgstr "Escritório"
+
+msgid "Sistema"
+msgstr "Sistema"
+
+msgid "Restaurar o programa no modo da distribuição BigLinux."
+msgstr "Restaurar o programa no modo da distribuição BigLinux."
+
+msgid "Em qual modo você deseja restaurar?"
+msgstr "Em qual modo você deseja restaurar?"
+
+msgid "Restaurar no modo padrão da distribuição"
+msgstr "Restaurar no modo padrão da distribuição"
+
+msgid "Cancelar"
+msgstr "Cancelar"
+
+msgid "Restaurar o programa no modo padrão."
+msgstr "Restaurar o programa no modo padrão."
+
+msgid "Restaurar no modo padrão do programa"
+msgstr "Restaurar no modo padrão do programa"
+
+msgid "Restaurar o programa no modo padrão ou distribuição BigLinux."
+msgstr "Restaurar o programa no modo padrão ou distribuição BigLinux."
+
+msgid "Músicas"
+msgstr "Músicas"
+
+msgid "Gravador de Tela"
+msgstr "Gravador de Tela"
+
+msgid "Vídeos"
+msgstr "Vídeos"
+
+msgid "Conversor de áudio e vídeo"
+msgstr "Conversor de áudio e vídeo"
+
+msgid "As configurações foram restauradas com sucesso!"
+msgstr "As configurações foram restauradas com sucesso!"
+
+msgid "OK"
+msgstr "OK"
+
+msgid "As configurações do BigLinux KDE foram restauradas com sucesso!"
+msgstr "As configurações do BigLinux KDE foram restauradas com sucesso!"
+
+msgid "É necessário reinciar a sessão para concluir a restauração!"
+msgstr "É necessário reinciar a sessão para concluir a restauração!"
+
+msgid "Atenção! O programa está em execução!"
+msgstr "Atenção! O programa está em execução!"
+
+msgid "Será fechado para que a restauração seja concluída."
+msgstr "Será fechado para que a restauração seja concluída."
+
+msgid ""
+"Você tem certeza que deseja restaurar todas as configurações do BigLinux KDE?"
+msgstr ""
+"Você tem certeza que deseja restaurar todas as configurações do BigLinux KDE?"
+
+msgid "Isso apagará todas as configurações definidas por "
+msgstr "Isso apagará todas as configurações definidas por "
