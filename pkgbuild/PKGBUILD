@@ -1,7 +1,7 @@
 # Maintainer: Bruno Goncalves <bigbruno@gmail.com>
 
 pkgname=biglinux-config
-pkgver=$(date +%y.%m.%d)
+pkgver=$(date +%y-%m-%d)
 pkgrel=$(date +%H%M)
 arch=('any')
 license=('GPL')
