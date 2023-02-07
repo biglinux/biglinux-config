@@ -110,7 +110,7 @@ $(".restore-default").on("click",function(e){
 
 
 $("#modalOkWarningKDE").click(function(e){
-  e.preventDefault();  
+  e.preventDefault();
   $(".lds-ring").css("display", "inline-flex");
 
   $.get("run/kde.sh", function(data){
@@ -118,9 +118,9 @@ $("#modalOkWarningKDE").click(function(e){
       setTimeout(function(){
       	$(".lds-ring").css("display", "none");
       	$(".modalWarningKDE").hide();
-        $("#modalInfoKDE").show();        
+        $("#modalInfoKDE").show();
       }, 500);
-    }  
+    }
   });
 
 });
@@ -128,7 +128,7 @@ $("#modalOkWarningKDE").click(function(e){
 $("#modalOkInfoKDE").click(function(e){
   e.preventDefault();
   $("#modalInfoKDE").hide();
-  _run(`pkill -U $USER`);
+  _run(`qdbus org.kde.ksmserver /KSMServer logout 1 0 2`);
 });
 
 $(".modalOkInfo").click(function(e){
