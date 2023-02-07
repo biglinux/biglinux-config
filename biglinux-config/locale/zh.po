@@ -43,14 +43,17 @@ msgstr "系统"
 msgid "Restaurar o programa no modo da distribuição BigLinux."
 msgstr "在 BigLinux 分发模式下恢复程序。"
 
-msgid "Em qual modo você deseja restaurar?"
-msgstr "要在哪种模式下还原？"
+msgid "Você tem certeza que deseja restaurar todas as configurações?"
+msgstr "是否确实要还原所有设置？"
 
-msgid "Restaurar no modo padrão da distribuição"
-msgstr "在标准分发模式下还原"
+msgid "Isso apagará todas as costumizações feitas por "
+msgstr "这将消除所有由 "
 
-msgid "Cancelar"
-msgstr "取消"
+msgid "Não"
+msgstr "不"
+
+msgid "Sim"
+msgstr "是的"
 
 msgid "Restaurar o programa no modo padrão."
 msgstr "将程序还原到标准模式。"
@@ -58,8 +61,17 @@ msgstr "将程序还原到标准模式。"
 msgid "Restaurar no modo padrão do programa"
 msgstr "在标准程序模式下恢复"
 
+msgid "Cancelar"
+msgstr "取消"
+
 msgid "Restaurar o programa no modo padrão ou distribuição BigLinux."
 msgstr "以标准模式或 BigLinux 发行版恢复程序。"
+
+msgid "Em qual modo você deseja restaurar?"
+msgstr "要在哪种模式下还原？"
+
+msgid "Restaurar no modo padrão da distribuição"
+msgstr "在标准分发模式下还原"
 
 msgid "Músicas"
 msgstr "歌曲"
@@ -85,14 +97,11 @@ msgstr "BigLinux KDE 设置已成功恢复！"
 msgid "É necessário reinciar a sessão para concluir a restauração!"
 msgstr "您必须恢复会话才能完成还原！"
 
+msgid "Sair da sessão"
+msgstr "退出会话"
+
 msgid "Atenção! O programa está em execução!"
 msgstr "注意力！程序正在运行！"
 
 msgid "Será fechado para que a restauração seja concluída."
 msgstr "它将关闭以完成还原。"
-
-msgid "Você tem certeza que deseja restaurar todas as configurações do BigLinux KDE?"
-msgstr "你确定要恢复所有的 BigLinux KDE 设置吗？"
-
-msgid "Isso apagará todas as configurações definidas por "
-msgstr "这将清除由 设置的所有设置 "

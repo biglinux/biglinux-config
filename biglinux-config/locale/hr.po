@@ -43,14 +43,17 @@ msgstr "Sustav"
 msgid "Restaurar o programa no modo da distribuição BigLinux."
 msgstr "Vratite program u BigLinux distribucijskom načinu rada."
 
-msgid "Em qual modo você deseja restaurar?"
-msgstr "U kojem načinu rada želite vratiti?"
+msgid "Você tem certeza que deseja restaurar todas as configurações?"
+msgstr "Jeste li sigurni da želite vratiti sve postavke?"
 
-msgid "Restaurar no modo padrão da distribuição"
-msgstr "Vraćanje u standardnom načinu distribucije"
+msgid "Isso apagará todas as costumizações feitas por "
+msgstr "To će izbrisati sve kostarikumizacije koje je napravio "
 
-msgid "Cancelar"
-msgstr "Otkazati"
+msgid "Não"
+msgstr "Ne"
+
+msgid "Sim"
+msgstr "Da"
 
 msgid "Restaurar o programa no modo padrão."
 msgstr "Vratite program u standardni način rada."
@@ -58,8 +61,17 @@ msgstr "Vratite program u standardni način rada."
 msgid "Restaurar no modo padrão do programa"
 msgstr "Vraćanje u standardnom programskom načinu rada"
 
+msgid "Cancelar"
+msgstr "Otkazati"
+
 msgid "Restaurar o programa no modo padrão ou distribuição BigLinux."
 msgstr "Vratite program u standardnom načinu rada ili BigLinux distribuciji."
+
+msgid "Em qual modo você deseja restaurar?"
+msgstr "U kojem načinu rada želite vratiti?"
+
+msgid "Restaurar no modo padrão da distribuição"
+msgstr "Vraćanje u standardnom načinu distribucije"
 
 msgid "Músicas"
 msgstr "Pjesmama"
@@ -85,14 +97,11 @@ msgstr "BigLinux KDE postavke uspješno su obnovljene!"
 msgid "É necessário reinciar a sessão para concluir a restauração!"
 msgstr "Da biste dovršili vraćanje, morate nastaviti sesiju!"
 
+msgid "Sair da sessão"
+msgstr "Odjava iz sesije"
+
 msgid "Atenção! O programa está em execução!"
 msgstr "Pažnja! Program radi!"
 
 msgid "Será fechado para que a restauração seja concluída."
 msgstr "Bit će zatvoren da bi se vraćanje dovršilo."
-
-msgid "Você tem certeza que deseja restaurar todas as configurações do BigLinux KDE?"
-msgstr "Jeste li sigurni da želite vratiti sve BigLinux KDE postavke?"
-
-msgid "Isso apagará todas as configurações definidas por "
-msgstr "Time ćete izbrisati sve postavke koje je postavio "

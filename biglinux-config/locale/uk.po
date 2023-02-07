@@ -43,14 +43,17 @@ msgstr "Система"
 msgid "Restaurar o programa no modo da distribuição BigLinux."
 msgstr "Відновлення програми в режимі роздачі BigLinux."
 
-msgid "Em qual modo você deseja restaurar?"
-msgstr "В якому режимі потрібно відновити?"
+msgid "Você tem certeza que deseja restaurar todas as configurações?"
+msgstr "Ви впевнені, що хочете відновити всі налаштування?"
 
-msgid "Restaurar no modo padrão da distribuição"
-msgstr "Відновлення в стандартному режимі розсилки"
+msgid "Isso apagará todas as costumizações feitas por "
+msgstr "Це зітре всі витрати, зроблені "
 
-msgid "Cancelar"
-msgstr "Скасувати"
+msgid "Não"
+msgstr "Ні"
+
+msgid "Sim"
+msgstr "Так"
 
 msgid "Restaurar o programa no modo padrão."
 msgstr "Відновіть програму в стандартному режимі."
@@ -58,8 +61,17 @@ msgstr "Відновіть програму в стандартному режи
 msgid "Restaurar no modo padrão do programa"
 msgstr "Відновлення в стандартному програмному режимі"
 
+msgid "Cancelar"
+msgstr "Скасувати"
+
 msgid "Restaurar o programa no modo padrão ou distribuição BigLinux."
 msgstr "Відновіть програму в стандартному режимі або дистрибутив BigLinux."
+
+msgid "Em qual modo você deseja restaurar?"
+msgstr "В якому режимі потрібно відновити?"
+
+msgid "Restaurar no modo padrão da distribuição"
+msgstr "Відновлення в стандартному режимі розсилки"
 
 msgid "Músicas"
 msgstr "Пісні"
@@ -85,14 +97,11 @@ msgstr "Налаштування KDE bigLinux успішно відновлен�
 msgid "É necessário reinciar a sessão para concluir a restauração!"
 msgstr "Ви повинні відновити сеанс, щоб завершити відновлення!"
 
+msgid "Sair da sessão"
+msgstr "Вихід із сеансу"
+
 msgid "Atenção! O programa está em execução!"
 msgstr "Увага! Програма запущена!"
 
 msgid "Será fechado para que a restauração seja concluída."
 msgstr "Він буде закритий для завершення відновлення."
-
-msgid "Você tem certeza que deseja restaurar todas as configurações do BigLinux KDE?"
-msgstr "Ви впевнені, що хочете відновити всі налаштування BigLinux KDE?"
-
-msgid "Isso apagará todas as configurações definidas por "
-msgstr "Це дозволить стерти всі налаштування, встановлені "

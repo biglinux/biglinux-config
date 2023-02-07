@@ -43,14 +43,17 @@ msgstr "Système"
 msgid "Restaurar o programa no modo da distribuição BigLinux."
 msgstr "Restaurez le programme en mode de distribution BigLinux."
 
-msgid "Em qual modo você deseja restaurar?"
-msgstr "Dans quel mode souhaitez-vous restaurer ?"
+msgid "Você tem certeza que deseja restaurar todas as configurações?"
+msgstr "Êtes-vous sûr de vouloir restaurer tous les paramètres ?"
 
-msgid "Restaurar no modo padrão da distribuição"
-msgstr "Restauration en mode de distribution standard"
+msgid "Isso apagará todas as costumizações feitas por "
+msgstr "Cela effacera toutes les costumisations faites par "
 
-msgid "Cancelar"
-msgstr "Annuler"
+msgid "Não"
+msgstr "Non"
+
+msgid "Sim"
+msgstr "Oui"
 
 msgid "Restaurar o programa no modo padrão."
 msgstr "Restaurez le programme en mode standard."
@@ -58,8 +61,17 @@ msgstr "Restaurez le programme en mode standard."
 msgid "Restaurar no modo padrão do programa"
 msgstr "Restauration en mode programme standard"
 
+msgid "Cancelar"
+msgstr "Annuler"
+
 msgid "Restaurar o programa no modo padrão ou distribuição BigLinux."
 msgstr "Restaurez le programme en mode standard ou en distribution BigLinux."
+
+msgid "Em qual modo você deseja restaurar?"
+msgstr "Dans quel mode souhaitez-vous restaurer ?"
+
+msgid "Restaurar no modo padrão da distribuição"
+msgstr "Restauration en mode de distribution standard"
 
 msgid "Músicas"
 msgstr "Chansons"
@@ -85,14 +97,11 @@ msgstr "Les paramètres BigLinux KDE ont été restaurés avec succès!"
 msgid "É necessário reinciar a sessão para concluir a restauração!"
 msgstr "Vous devez reprendre la session pour terminer la restauration !"
 
+msgid "Sair da sessão"
+msgstr "Se déconnecter de la session"
+
 msgid "Atenção! O programa está em execução!"
 msgstr "Attention! Le programme est en cours d’exécution!"
 
 msgid "Será fechado para que a restauração seja concluída."
 msgstr "Il sera fermé pour que la restauration soit terminée."
-
-msgid "Você tem certeza que deseja restaurar todas as configurações do BigLinux KDE?"
-msgstr "Êtes-vous sûr de vouloir restaurer tous les paramètres BigLinux KDE?"
-
-msgid "Isso apagará todas as configurações definidas por "
-msgstr "Cela effacera tous les paramètres définis par "

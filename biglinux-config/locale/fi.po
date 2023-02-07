@@ -43,14 +43,17 @@ msgstr "Järjestelmä"
 msgid "Restaurar o programa no modo da distribuição BigLinux."
 msgstr "Palauta ohjelma BigLinux-jakelutilassa."
 
-msgid "Em qual modo você deseja restaurar?"
-msgstr "Missä tilassa haluat palauttaa?"
+msgid "Você tem certeza que deseja restaurar todas as configurações?"
+msgstr "Haluatko varmasti palauttaa kaikki asetukset?"
 
-msgid "Restaurar no modo padrão da distribuição"
-msgstr "Palauta tavallisessa jakelutilassa"
+msgid "Isso apagará todas as costumizações feitas por "
+msgstr "Tämä poistaa kaikki kustannuslaskelmat, jotka ovat tehneet "
 
-msgid "Cancelar"
-msgstr "Perua"
+msgid "Não"
+msgstr "Ei"
+
+msgid "Sim"
+msgstr "Kyllä"
 
 msgid "Restaurar o programa no modo padrão."
 msgstr "Palauta ohjelma normaalitilaan."
@@ -58,8 +61,17 @@ msgstr "Palauta ohjelma normaalitilaan."
 msgid "Restaurar no modo padrão do programa"
 msgstr "Palauta vakio-ohjelmatilassa"
 
+msgid "Cancelar"
+msgstr "Perua"
+
 msgid "Restaurar o programa no modo padrão ou distribuição BigLinux."
 msgstr "Palauta ohjelma normaalitilassa tai BigLinux-jakelussa."
+
+msgid "Em qual modo você deseja restaurar?"
+msgstr "Missä tilassa haluat palauttaa?"
+
+msgid "Restaurar no modo padrão da distribuição"
+msgstr "Palauta tavallisessa jakelutilassa"
 
 msgid "Músicas"
 msgstr "Kappaletta"
@@ -85,14 +97,11 @@ msgstr "BigLinux KDE -asetukset on palautettu onnistuneesti!"
 msgid "É necessário reinciar a sessão para concluir a restauração!"
 msgstr "Sinun on jatkettava istuntoa palautuksen loppuun saattamiseksi!"
 
+msgid "Sair da sessão"
+msgstr "Kirjaudu ulos istunnosta"
+
 msgid "Atenção! O programa está em execução!"
 msgstr "Tarkkaavaisuus! Ohjelma on käynnissä!"
 
 msgid "Será fechado para que a restauração seja concluída."
 msgstr "Se suljetaan, jotta palautus on valmis."
-
-msgid "Você tem certeza que deseja restaurar todas as configurações do BigLinux KDE?"
-msgstr "Oletko varma, että haluat palauttaa kaikki BigLinux KDE -asetukset?"
-
-msgid "Isso apagará todas as configurações definidas por "
-msgstr "Tämä poistaa kaikki asetukset, jotka on asettanut "

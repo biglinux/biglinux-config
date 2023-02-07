@@ -43,14 +43,17 @@ msgstr "Система"
 msgid "Restaurar o programa no modo da distribuição BigLinux."
 msgstr "Восстановите программу в режиме распространения BigLinux."
 
-msgid "Em qual modo você deseja restaurar?"
-msgstr "В каком режиме вы хотите восстановить?"
+msgid "Você tem certeza que deseja restaurar todas as configurações?"
+msgstr "Вы уверены, что хотите восстановить все настройки?"
 
-msgid "Restaurar no modo padrão da distribuição"
-msgstr "Восстановление в стандартном режиме распространения"
+msgid "Isso apagará todas as costumizações feitas por "
+msgstr "Это удалит все костюмы, сделанные "
 
-msgid "Cancelar"
-msgstr "Отмена"
+msgid "Não"
+msgstr "Нет"
+
+msgid "Sim"
+msgstr "Да"
 
 msgid "Restaurar o programa no modo padrão."
 msgstr "Восстановите программу в стандартном режиме."
@@ -58,8 +61,17 @@ msgstr "Восстановите программу в стандартном р
 msgid "Restaurar no modo padrão do programa"
 msgstr "Восстановление в стандартном программном режиме"
 
+msgid "Cancelar"
+msgstr "Отмена"
+
 msgid "Restaurar o programa no modo padrão ou distribuição BigLinux."
 msgstr "Восстановите программу в стандартном режиме или дистрибутиве BigLinux."
+
+msgid "Em qual modo você deseja restaurar?"
+msgstr "В каком режиме вы хотите восстановить?"
+
+msgid "Restaurar no modo padrão da distribuição"
+msgstr "Восстановление в стандартном режиме распространения"
 
 msgid "Músicas"
 msgstr "Песни"
@@ -85,14 +97,11 @@ msgstr "Настройки BigLinux KDE успешно восстановлен�
 msgid "É necessário reinciar a sessão para concluir a restauração!"
 msgstr "Вы должны возобновить сеанс, чтобы завершить восстановление!"
 
+msgid "Sair da sessão"
+msgstr "Выход из сеанса"
+
 msgid "Atenção! O programa está em execução!"
 msgstr "Внимание! Программа запущена!"
 
 msgid "Será fechado para que a restauração seja concluída."
 msgstr "Он будет закрыт для завершения восстановления."
-
-msgid "Você tem certeza que deseja restaurar todas as configurações do BigLinux KDE?"
-msgstr "Вы уверены, что хотите восстановить все настройки BigLinux KDE?"
-
-msgid "Isso apagará todas as configurações definidas por "
-msgstr "Это приведет к удалению всех настроек, установленных "

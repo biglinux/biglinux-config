@@ -43,14 +43,17 @@ msgstr "체계"
 msgid "Restaurar o programa no modo da distribuição BigLinux."
 msgstr "BigLinux 배포 모드에서 프로그램을 복원합니다."
 
-msgid "Em qual modo você deseja restaurar?"
-msgstr "어떤 모드에서 복원하시겠습니까?"
+msgid "Você tem certeza que deseja restaurar todas as configurações?"
+msgstr "모든 설정을 복원하시겠습니까?"
 
-msgid "Restaurar no modo padrão da distribuição"
-msgstr "표준 배포 모드에서 복원"
+msgid "Isso apagará todas as costumizações feitas por "
+msgstr "이렇게 하면 다음에 의해 만들어진 모든 의상이 지워집니다. "
 
-msgid "Cancelar"
-msgstr "취소"
+msgid "Não"
+msgstr "아니요"
+
+msgid "Sim"
+msgstr "예"
 
 msgid "Restaurar o programa no modo padrão."
 msgstr "프로그램을 표준 모드로 복원합니다."
@@ -58,8 +61,17 @@ msgstr "프로그램을 표준 모드로 복원합니다."
 msgid "Restaurar no modo padrão do programa"
 msgstr "표준 프로그램 모드에서 복원"
 
+msgid "Cancelar"
+msgstr "취소"
+
 msgid "Restaurar o programa no modo padrão ou distribuição BigLinux."
 msgstr "표준 모드 또는 BigLinux 배포판에서 프로그램을 복원합니다."
+
+msgid "Em qual modo você deseja restaurar?"
+msgstr "어떤 모드에서 복원하시겠습니까?"
+
+msgid "Restaurar no modo padrão da distribuição"
+msgstr "표준 배포 모드에서 복원"
 
 msgid "Músicas"
 msgstr "노래"
@@ -85,14 +97,11 @@ msgstr "BigLinux KDE 설정이 성공적으로 복원되었습니다!"
 msgid "É necessário reinciar a sessão para concluir a restauração!"
 msgstr "복원을 완료하려면 세션을 다시 시작해야 합니다!"
 
+msgid "Sair da sessão"
+msgstr "세션에서 로그아웃"
+
 msgid "Atenção! O programa está em execução!"
 msgstr "주의! 프로그램이 실행 중입니다!"
 
 msgid "Será fechado para que a restauração seja concluída."
 msgstr "복원이 완료될 때까지 닫힙니다."
-
-msgid "Você tem certeza que deseja restaurar todas as configurações do BigLinux KDE?"
-msgstr "모든 BigLinux KDE 설정을 복원하시겠습니까?"
-
-msgid "Isso apagará todas as configurações definidas por "
-msgstr "이렇게하면 설정된 모든 설정이 지워집니다. "

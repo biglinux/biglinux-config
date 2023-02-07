@@ -43,14 +43,17 @@ msgstr "制"
 msgid "Restaurar o programa no modo da distribuição BigLinux."
 msgstr "BigLinux 配布モードでプログラムを復元します。"
 
-msgid "Em qual modo você deseja restaurar?"
-msgstr "どのモードで復元しますか?"
+msgid "Você tem certeza que deseja restaurar todas as configurações?"
+msgstr "すべての設定を復元してもよろしいですか?"
 
-msgid "Restaurar no modo padrão da distribuição"
-msgstr "標準配布モードでの復元"
+msgid "Isso apagará todas as costumizações feitas por "
+msgstr "これにより、によって行われたすべてのコスチューム化が消去されます "
 
-msgid "Cancelar"
-msgstr "キャンセル"
+msgid "Não"
+msgstr "いいえ"
+
+msgid "Sim"
+msgstr "はい"
 
 msgid "Restaurar o programa no modo padrão."
 msgstr "プログラムを標準モードに復元します。"
@@ -58,8 +61,17 @@ msgstr "プログラムを標準モードに復元します。"
 msgid "Restaurar no modo padrão do programa"
 msgstr "標準プログラム・モードでのリストア"
 
+msgid "Cancelar"
+msgstr "キャンセル"
+
 msgid "Restaurar o programa no modo padrão ou distribuição BigLinux."
 msgstr "プログラムを標準モードまたは BigLinux ディストリビューションに復元します。"
+
+msgid "Em qual modo você deseja restaurar?"
+msgstr "どのモードで復元しますか?"
+
+msgid "Restaurar no modo padrão da distribuição"
+msgstr "標準配布モードでの復元"
 
 msgid "Músicas"
 msgstr "唱歌"
@@ -85,14 +97,11 @@ msgstr "BigLinux KDEの設定が正常に復元されました!"
 msgid "É necessário reinciar a sessão para concluir a restauração!"
 msgstr "復元を完了するには、セッションを再開する必要があります。"
 
+msgid "Sair da sessão"
+msgstr "セッションからサインアウトする"
+
 msgid "Atenção! O programa está em execução!"
 msgstr "気を付け！プログラムは実行中です!"
 
 msgid "Será fechado para que a restauração seja concluída."
 msgstr "復元を完了するために閉じられます。"
-
-msgid "Você tem certeza que deseja restaurar todas as configurações do BigLinux KDE?"
-msgstr "すべての BigLinux KDE 設定を復元してもよろしいですか?"
-
-msgid "Isso apagará todas as configurações definidas por "
-msgstr "これにより、によって設定されたすべての設定が消去されます "

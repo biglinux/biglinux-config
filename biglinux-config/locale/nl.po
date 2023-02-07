@@ -43,14 +43,17 @@ msgstr "Systeem"
 msgid "Restaurar o programa no modo da distribuição BigLinux."
 msgstr "Herstel het programma in de BigLinux-distributiemodus."
 
-msgid "Em qual modo você deseja restaurar?"
-msgstr "In welke modus wilt u herstellen?"
+msgid "Você tem certeza que deseja restaurar todas as configurações?"
+msgstr "Weet u zeker dat u alle instellingen wilt herstellen?"
 
-msgid "Restaurar no modo padrão da distribuição"
-msgstr "Herstellen in standaard distributiemodus"
+msgid "Isso apagará todas as costumizações feitas por "
+msgstr "Hiermee worden alle costumisaties gewist die zijn gemaakt door "
 
-msgid "Cancelar"
-msgstr "Annuleren"
+msgid "Não"
+msgstr "Nee"
+
+msgid "Sim"
+msgstr "Ja"
 
 msgid "Restaurar o programa no modo padrão."
 msgstr "Herstel het programma naar de standaardmodus."
@@ -58,8 +61,17 @@ msgstr "Herstel het programma naar de standaardmodus."
 msgid "Restaurar no modo padrão do programa"
 msgstr "Herstellen in de standaardprogrammamodus"
 
+msgid "Cancelar"
+msgstr "Annuleren"
+
 msgid "Restaurar o programa no modo padrão ou distribuição BigLinux."
 msgstr "Herstel het programma in de standaardmodus of BigLinux-distributie."
+
+msgid "Em qual modo você deseja restaurar?"
+msgstr "In welke modus wilt u herstellen?"
+
+msgid "Restaurar no modo padrão da distribuição"
+msgstr "Herstellen in standaard distributiemodus"
 
 msgid "Músicas"
 msgstr "Liederen"
@@ -85,14 +97,11 @@ msgstr "BigLinux KDE instellingen zijn succesvol hersteld!"
 msgid "É necessário reinciar a sessão para concluir a restauração!"
 msgstr "U moet de sessie hervatten om het herstel te voltooien!"
 
+msgid "Sair da sessão"
+msgstr "Afmelden bij de sessie"
+
 msgid "Atenção! O programa está em execução!"
 msgstr "Aandacht! Het programma loopt!"
 
 msgid "Será fechado para que a restauração seja concluída."
 msgstr "Het wordt gesloten om het herstel te voltooien."
-
-msgid "Você tem certeza que deseja restaurar todas as configurações do BigLinux KDE?"
-msgstr "Weet u zeker dat u alle BigLinux KDE-instellingen wilt herstellen?"
-
-msgid "Isso apagará todas as configurações definidas por "
-msgstr "Hiermee worden alle instellingen gewist die zijn ingesteld door "
