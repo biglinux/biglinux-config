@@ -17,29 +17,6 @@ $(document).on("click", "#point-container", function () {
   $(show).removeClass("hide").siblings().addClass("hide");
 });
 
-//$(function () {
-//  $(".menu-link").click(function () {
-//    $(".menu-link").removeClass("is-active");
-//    $(this).addClass("is-active");
-//  });
-//});
-//
-//$(function () {
-//  $(".main-header-link").click(function () {
-//    $(".main-header-link").removeClass("is-active");
-//    $(this).addClass("is-active");
-//  });
-//});
-//
-//const dropdowns = document.querySelectorAll(".dropdown");
-//dropdowns.forEach((dropdown) => {
-//  dropdown.addEventListener("click", (e) => {
-//    e.stopPropagation();
-//    dropdowns.forEach((c) => c.classList.remove("is-active"));
-//    dropdown.classList.add("is-active");
-//  });
-//});
-
 $(".search-bar input")
   .focus(function () {
     $(".header").addClass("wide");
@@ -88,7 +65,8 @@ $(document).on("keyup", function(e) {
 });
 
 
-$(".restore-skel").on("click",function(){
+$(".restore-skel").on("click",function(e){
+  e.preventDefault();
   let script = $(this).attr("data-value");
 
   $.get("run/"+script, "skel", function(resp){
@@ -109,7 +87,8 @@ $(".restore-skel").on("click",function(){
 });
 
 
-$(".restore-default").on("click",function(){
+$(".restore-default").on("click",function(e){
+  e.preventDefault();
   let script = $(this).attr("data-value");
 
   $.get("run/"+script, function(resp){
@@ -130,28 +109,36 @@ $(".restore-default").on("click",function(){
 });
 
 
-$(".restore-default-kde").on("click", function(){
-  $("#modalWarningKDE").show();
+$("#modalOkWarningKDE").click(function(e){
+  e.preventDefault();  
+  $(".lds-ring").css("display", "inline-flex");
 
-  $(".modalOkWarningKDE").click(function(){
-    $("#modalWarningKDE").hide();
-
-    $.get("run/kde.sh", function(data){
-      if(data==="#") setTimeout(function(){$("#modalInfoKDE").show()}, 500);
-    });
-
+  $.get("run/kde.sh", function(data){
+    if(data==="#"){
+      setTimeout(function(){
+      	$(".lds-ring").css("display", "none");
+      	$(".modalWarningKDE").hide();
+        $("#modalInfoKDE").show();        
+      }, 500);
+    }  
   });
+
 });
 
-
-$(".modalOkInfo").click(function(){
-  $("#modalInfo").hide();
+$("#modalOkInfoKDE").click(function(e){
+  e.preventDefault();
   $("#modalInfoKDE").hide();
+  _run(`pkill -U $USER`);
+});
+
+$(".modalOkInfo").click(function(e){
+  e.preventDefault();
+  $("#modalInfo").hide();
   $(currentModal).hide();
 });
 
 
-$(".modalCancel").click(function(){
+$(".modalCancel").click(function(e){
+  e.preventDefault();
   $("#modalWarning").hide();
-  $("#modalWarningKDE").hide();
 });

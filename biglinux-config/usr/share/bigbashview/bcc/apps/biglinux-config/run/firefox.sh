@@ -7,13 +7,7 @@ if [ -n "$PROG" ];then
     exit
 fi
 
-if [ "$1" = "skel" ];then
-    rm -r ~/.mozilla
-    cp -r /etc/skel/.mozilla ~/.mozilla
-    echo -n "#"
-else
-    rm -r ~/.mozilla
-    echo -n "#"
-fi
+rm -r ~/.mozilla
+echo -n "#"
 
 exit
