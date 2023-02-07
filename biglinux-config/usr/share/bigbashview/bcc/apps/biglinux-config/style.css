@@ -1395,6 +1395,30 @@ display: -webkit-box;
   white-space: nowrap;
 }
 
+.modalBtn {
+  background-color: #3a6df0;
+  border: none;
+  padding: 8px 26px;
+  color: #fff;
+  border-radius: 20px;
+  margin-top: 16px;
+  cursor: pointer;
+  transition: 0.3s;
+  white-space: nowrap;
+}
+.modalBtn:hover,
+.modalBtn:focus {
+  background-color: #3a6df0;
+  border: none;
+  padding: 8px 26px;
+  color: #fff;
+  border-radius: 20px;
+  margin-top: 16px;
+  cursor: pointer;
+  transition: 0.3s;
+  white-space: nowrap;
+}
+
 .pop-up.visible {
   visibility: visible;
   opacity: 1;
@@ -1454,4 +1478,49 @@ input[type = 'search']::-webkit-search-cancel-button{
     background: url("icons/backspace_black.svg");
     width: 17px;
     height: 12px;
+}
+
+.lds-ring {
+  display: none;
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  align-items: center;
+  justify-content: center;
+  background-color: #00000092;
+  z-index: 1;
+}
+
+.lds-ring div {
+  box-sizing: border-box;
+  display: block;
+  position: absolute;
+  width: 60px;
+  height: 60px;
+  margin: 8px;
+  border: 8px solid rgba(0, 255, 255, 0.1);
+  border-top-color: #00a8e8;
+  border-radius: 50%;
+  animation: lds-ring 1.2s infinite steps(24);
+}
+
+.lds-ring div:nth-child(1) {
+  animation-delay: -0.45s;
+}
+
+.lds-ring div:nth-child(2) {
+  animation-delay: -0.3s;
+}
+
+.lds-ring div:nth-child(3) {
+  animation-delay: -0.15s;
+}
+
+@keyframes lds-ring {
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
 }

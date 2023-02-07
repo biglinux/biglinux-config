@@ -28,6 +28,8 @@ echo '
 /usr/share/bigbashview/bcc/shell/getbgcolor.sh
 
 echo '
+<!-- loading -->
+<div class="lds-ring"><div></div><div></div><div></div><div></div></div>
 <div class="dark-light">
   <svg viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.5" fill="none" stroke-linecap="round" stroke-linejoin="round">
     <path d="M21 12.79A9 9 0 1111.21 3 7 7 0 0021 12.79z" />
@@ -147,25 +149,20 @@ echo '
                     </button>
                 </div>
 
-                <div id="modal_0" class="modal">
+                <div id="modal_0" class="modal modalOkWarningKDE">
                   <div class="modalContent">
                     <div>
                       <i style="vertical-align: middle; margin-right: 5px;">
                         <img src="icons/kde.png" width="42" height="42" >
                       </i>
-                      '$"Em qual modo você deseja restaurar?"'
+                      Biglinux KDE
                     </div><br>
-                    <div class="app-card restore-default-kde"
-                               style="width: 100%;
-                                      border: 1px solid #444444;
-                                      margin: 3px;">
-                      <span>
-                        <img src="icons/default.png" width="32" height="32" style="margin-right: 10px;">
-                        '$"Restaurar no modo padrão da distribuição"'
-                      </span>
-                    </div>
+                    '$"Você tem certeza que deseja restaurar todas as configurações?"'<br><br>
+                    '$"Isso apagará todas as costumizações feitas por "$USER'!<br>
+
                     <div class="content-button-wrapper" style="text-align: right;">
-                      <br><button class="modalClose">'$"Cancelar"'</button>
+                      <br><button class="modalClose">'$"Não"'</button>
+                      <button class="modalBtn" id="modalOkWarningKDE">'$"Sim"'</button>
                     </div>
                   </div>
                 </div>
@@ -196,7 +193,7 @@ echo '
                       <i style="vertical-align: middle; margin-right: 5px;">
                         <img src="icons/brave.png" width="42" height="42" >
                       </i>
-                      '$"Em qual modo você deseja restaurar?"'
+                      Brave
                     </div><br>
                     <div class="app-card restore-default"
                                data-value="brave.sh"
@@ -222,7 +219,7 @@ echo '
                 <div class="box-1 box-2 box-3 box-4 box-5 box-items Star">
                     <div id="box-status-bar">
                         <div id="tit-status-bar">
-                            '$"Restaurar o programa no modo padrão ou distribuição BigLinux."'
+                            '$"Restaurar o programa no modo padrão."'
                         </div>
                     </div>
                     <button onclick="openModal(`modal_2`)" id="box-subtitle" class="box-geral-icons box-geral-button">
@@ -241,19 +238,8 @@ echo '
                       <i style="vertical-align: middle; margin-right: 5px;">
                         <img src="icons/firefox.png" width="42" height="42" >
                       </i>
-                      '$"Em qual modo você deseja restaurar?"'
+                      Firefox
                     </div><br>
-                <div class="app-card restore-skel"
-                           data-value="firefox.sh"
-                           style="width: 100%;
-                                  border: 1px solid #444444;
-                                  margin: 3px;">
-                  <span>
-                    <img src="icons/biglinux.png" width="32" height="32" style="margin-right: 10px;">
-                    '$"Restaurar no modo padrão da distribuição"'
-                  </span>
-                </div>
-
                     <div class="app-card restore-default"
                                data-value="firefox.sh"
                                style="width: 100%;
@@ -390,7 +376,7 @@ echo '
                             '$"Restaurar o programa no modo da distribuição BigLinux."'
                         </div>
                     </div>
-                    <button onclick="openModal(`modal_5`)" id="box-subtitle" class="box-geral-icons box-geral-button">
+                    <button onclick="openModal(`modal_0`)" id="box-subtitle" class="box-geral-icons box-geral-button">
                         <div class="box-imagem-icon">
                             <img class="box-imagem-icon" src="icons/kde.png">
                         </div>
@@ -400,25 +386,20 @@ echo '
                     </button>
                 </div>
 
-                <div id="modal_5" class="modal">
+                <div id="modal_0" class="modal">
                   <div class="modalContent">
                     <div>
                       <i style="vertical-align: middle; margin-right: 5px;">
                         <img src="icons/kde.png" width="42" height="42" >
                       </i>
-                      '$"Em qual modo você deseja restaurar?"'
+                      Biglinux KDE
                     </div><br>
-                    <div class="app-card restore-default-kde"
-                               style="width: 100%;
-                                      border: 1px solid #444444;
-                                      margin: 3px;">
-                      <span>
-                        <img src="icons/default.png" width="32" height="32" style="margin-right: 10px;">
-                        '$"Restaurar no modo padrão da distribuição"'
-                      </span>
-                    </div>
+                    '$"Você tem certeza que deseja restaurar todas as configurações?"'<br><br>
+                    '$"Isso apagará todas as costumizações feitas por "$USER'!<br>
+
                     <div class="content-button-wrapper" style="text-align: right;">
-                      <br><button class="modalClose">'$"Cancelar"'</button>
+                      <br><button class="modalClose">'$"Não"'</button>
+                      <button class="modalBtn" id="modalOkWarningKDE">'$"Sim"'</button>
                     </div>
                   </div>
                 </div>
@@ -449,7 +430,7 @@ echo '
                       <i style="vertical-align: middle; margin-right: 5px;">
                         <img src="icons/brave.png" width="42" height="42" >
                       </i>
-                      '$"Em qual modo você deseja restaurar?"'
+                      Brave
                     </div><br>
                     <div class="app-card restore-default"
                                data-value="brave.sh"
@@ -606,7 +587,7 @@ echo '
                       <i style="vertical-align: middle; margin-right: 5px;">
                         <img src="icons/vokoscreen.png" width="42" height="42" >
                       </i>
-                      '$"Em qual modo você deseja restaurar?"'
+                      '$"Gravador de Tela"' (vokoscreenNG)
                     </div><br>
                     <div class="app-card restore-default"
                                data-value="vokoscreen.sh"
@@ -705,19 +686,8 @@ echo '
                       <i style="vertical-align: middle; margin-right: 5px;">
                         <img src="icons/firefox.png" width="42" height="42" >
                       </i>
-                      '$"Em qual modo você deseja restaurar?"'
+                      Firefox
                     </div><br>
-                <div class="app-card restore-skel"
-                           data-value="firefox.sh"
-                           style="width: 100%;
-                                  border: 1px solid #444444;
-                                  margin: 3px;">
-                  <span>
-                    <img src="icons/biglinux.png" width="32" height="32" style="margin-right: 10px;">
-                    '$"Restaurar no modo padrão da distribuição"'
-                  </span>
-                </div>
-
                     <div class="app-card restore-default"
                                data-value="firefox.sh"
                                style="width: 100%;
@@ -817,7 +787,7 @@ echo '
                       <i style="vertical-align: middle; margin-right: 5px;">
                         <img src="icons/chrome.png" width="42" height="42" >
                       </i>
-                      '$"Em qual modo você deseja restaurar?"'
+                      Google Chrome
                     </div><br>
                     <div class="app-card restore-default"
                                data-value="google-chrome.sh"
@@ -1250,7 +1220,7 @@ echo '
                       <i style="vertical-align: middle; margin-right: 5px;">
                         <img src="icons/inkscape.png" width="42" height="42" >
                       </i>
-                      '$"Em qual modo você deseja restaurar?"'
+                      Inkscape
                     </div><br>
                     <div class="app-card restore-default"
                                data-value="inkscape.sh"
@@ -1350,7 +1320,7 @@ echo '
                   </center>
                 </div><br><br>
                 <div class="content-button-wrapper" style="text-align: right;">
-                  <button class="modalClose modalOkInfo">'$"OK"'</button>
+                  <button class="modalClose" id="modalOkInfoKDE">'$"Sair da sessão"'</button>
                 </div>
               </div>
             </div>
@@ -1366,21 +1336,6 @@ echo '
                 <div class="content-button-wrapper" style="text-align: right;">
                   <button class="modalClose modalCancel">'$"Cancelar"'</button>
                   <button class="modalClose modalOkWarning" style="margin-left:10px">'$"OK"'</button>
-                </div>
-              </div>
-            </div>
-
-            <div class="modal" id="modalWarningKDE">
-              <div class="modalContent">
-                <div>
-                  <center>
-                    '$"Você tem certeza que deseja restaurar todas as configurações do BigLinux KDE?"'<br><br>
-                    '$"Isso apagará todas as configurações definidas por "$USER'!
-                  </center>
-                </div><br><br>
-                <div class="content-button-wrapper" style="text-align: right;">
-                  <button class="modalClose modalCancel">'$"Cancelar"'</button>
-                  <button class="modalClose modalOkWarningKDE" style="margin-left:10px">'$"OK"'</button>
                 </div>
               </div>
             </div>
