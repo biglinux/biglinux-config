@@ -43,14 +43,17 @@ msgstr "Kerfi"
 msgid "Restaurar o programa no modo da distribuição BigLinux."
 msgstr "Endurheimtu forritið í BigLinux dreifingarham."
 
-msgid "Em qual modo você deseja restaurar?"
-msgstr "Í hvaða ham viltu endurheimta?"
+msgid "Você tem certeza que deseja restaurar todas as configurações?"
+msgstr "Ertu viss um að þú viljir endurheimta allar stillingar?"
 
-msgid "Restaurar no modo padrão da distribuição"
-msgstr "Endurheimta í venjulegum dreifingarham"
+msgid "Isso apagará todas as costumizações feitas por "
+msgstr "Þetta mun eyða öllum kostnaði sem gerður er af "
 
-msgid "Cancelar"
-msgstr "Afturkalla"
+msgid "Não"
+msgstr "Nei"
+
+msgid "Sim"
+msgstr "Já"
 
 msgid "Restaurar o programa no modo padrão."
 msgstr "Endurheimtu forritið í venjulegan hátt."
@@ -58,8 +61,17 @@ msgstr "Endurheimtu forritið í venjulegan hátt."
 msgid "Restaurar no modo padrão do programa"
 msgstr "Endurheimta í venjulegum forritaham"
 
+msgid "Cancelar"
+msgstr "Afturkalla"
+
 msgid "Restaurar o programa no modo padrão ou distribuição BigLinux."
 msgstr "Endurheimtu forritið í venjulegum ham eða BigLinux dreifingu."
+
+msgid "Em qual modo você deseja restaurar?"
+msgstr "Í hvaða ham viltu endurheimta?"
+
+msgid "Restaurar no modo padrão da distribuição"
+msgstr "Endurheimta í venjulegum dreifingarham"
 
 msgid "Músicas"
 msgstr "Lög"
@@ -85,14 +97,11 @@ msgstr "BigLinux KDE stillingar hafa verið endurreistar með góðum árangri!"
 msgid "É necessário reinciar a sessão para concluir a restauração!"
 msgstr "Þú verður að halda áfram fundinum til að ljúka endurheimtinni!"
 
+msgid "Sair da sessão"
+msgstr "Skráðu þig út úr lotunni"
+
 msgid "Atenção! O programa está em execução!"
 msgstr "Athygli! Forritið er í gangi!"
 
 msgid "Será fechado para que a restauração seja concluída."
 msgstr "Það verður lokað til að endurheimtinni ljúki."
-
-msgid "Você tem certeza que deseja restaurar todas as configurações do BigLinux KDE?"
-msgstr "Ertu viss um að þú viljir endurheimta allar BigLinux KDE stillingar?"
-
-msgid "Isso apagará todas as configurações definidas por "
-msgstr "Þetta mun eyða öllum stillingum sem settar eru af "

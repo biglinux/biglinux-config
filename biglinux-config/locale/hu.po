@@ -43,14 +43,17 @@ msgstr "Rendszer"
 msgid "Restaurar o programa no modo da distribuição BigLinux."
 msgstr "Állítsa vissza a programot BigLinux terjesztési módban."
 
-msgid "Em qual modo você deseja restaurar?"
-msgstr "Melyik módban szeretné visszaállítani?"
+msgid "Você tem certeza que deseja restaurar todas as configurações?"
+msgstr "Biztos benne, hogy vissza akarja állítani az összes beállítást?"
 
-msgid "Restaurar no modo padrão da distribuição"
-msgstr "Visszaállítás normál elosztási módban"
+msgid "Isso apagará todas as costumizações feitas por "
+msgstr "Ez törli az összes költséget, amelyet a "
 
-msgid "Cancelar"
-msgstr "Érvénytelenít"
+msgid "Não"
+msgstr "Nem"
+
+msgid "Sim"
+msgstr "Igen"
 
 msgid "Restaurar o programa no modo padrão."
 msgstr "Állítsa vissza a programot normál módba."
@@ -58,8 +61,17 @@ msgstr "Állítsa vissza a programot normál módba."
 msgid "Restaurar no modo padrão do programa"
 msgstr "Visszaállítás normál programmódban"
 
+msgid "Cancelar"
+msgstr "Érvénytelenít"
+
 msgid "Restaurar o programa no modo padrão ou distribuição BigLinux."
 msgstr "Állítsa vissza a programot normál módban vagy BigLinux terjesztésben."
+
+msgid "Em qual modo você deseja restaurar?"
+msgstr "Melyik módban szeretné visszaállítani?"
+
+msgid "Restaurar no modo padrão da distribuição"
+msgstr "Visszaállítás normál elosztási módban"
 
 msgid "Músicas"
 msgstr "Dalok"
@@ -85,14 +97,11 @@ msgstr "A BigLinux KDE beállításai sikeresen helyreálltak!"
 msgid "É necessário reinciar a sessão para concluir a restauração!"
 msgstr "A visszaállítás befejezéséhez folytatnia kell a munkamenetet!"
 
+msgid "Sair da sessão"
+msgstr "Kijelentkezés a munkamenetből"
+
 msgid "Atenção! O programa está em execução!"
 msgstr "Figyelem! A program fut!"
 
 msgid "Será fechado para que a restauração seja concluída."
 msgstr "A visszaállítás befejeződik."
-
-msgid "Você tem certeza que deseja restaurar todas as configurações do BigLinux KDE?"
-msgstr "Biztos benne, hogy vissza akarja állítani az összes BigLinux KDE beállítást?"
-
-msgid "Isso apagará todas as configurações definidas por "
-msgstr "Ez törli az összes beállítást, amelyet "

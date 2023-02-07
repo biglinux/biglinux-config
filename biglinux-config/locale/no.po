@@ -43,14 +43,17 @@ msgstr "System"
 msgid "Restaurar o programa no modo da distribuição BigLinux."
 msgstr "Gjenopprett programmet i BigLinux-distribusjonsmodus."
 
-msgid "Em qual modo você deseja restaurar?"
-msgstr "I hvilken modus vil du gjenopprette?"
+msgid "Você tem certeza que deseja restaurar todas as configurações?"
+msgstr "Er du sikker på at du vil gjenopprette alle innstillinger?"
 
-msgid "Restaurar no modo padrão da distribuição"
-msgstr "Gjenopprette i standard distribusjonsmodus"
+msgid "Isso apagará todas as costumizações feitas por "
+msgstr "Dette vil slette alle costumizations gjort av "
 
-msgid "Cancelar"
-msgstr "Annullere"
+msgid "Não"
+msgstr "Nei"
+
+msgid "Sim"
+msgstr "Ja"
 
 msgid "Restaurar o programa no modo padrão."
 msgstr "Gjenopprett programmet til standardmodus."
@@ -58,8 +61,17 @@ msgstr "Gjenopprett programmet til standardmodus."
 msgid "Restaurar no modo padrão do programa"
 msgstr "Gjenopprette i standard programmodus"
 
+msgid "Cancelar"
+msgstr "Annullere"
+
 msgid "Restaurar o programa no modo padrão ou distribuição BigLinux."
 msgstr "Gjenopprett programmet i standardmodus eller BigLinux-distribusjon."
+
+msgid "Em qual modo você deseja restaurar?"
+msgstr "I hvilken modus vil du gjenopprette?"
+
+msgid "Restaurar no modo padrão da distribuição"
+msgstr "Gjenopprette i standard distribusjonsmodus"
 
 msgid "Músicas"
 msgstr "Sanger"
@@ -85,14 +97,11 @@ msgstr "BigLinux KDE-innstillingene er gjenopprettet!"
 msgid "É necessário reinciar a sessão para concluir a restauração!"
 msgstr "Du må fortsette økten for å fullføre gjenopprettingen."
 
+msgid "Sair da sessão"
+msgstr "Logg av økten"
+
 msgid "Atenção! O programa está em execução!"
 msgstr "Oppmerksomhet! Programmet kjører!"
 
 msgid "Será fechado para que a restauração seja concluída."
 msgstr "Den vil bli lukket for at gjenopprettingen skal fullføres."
-
-msgid "Você tem certeza que deseja restaurar todas as configurações do BigLinux KDE?"
-msgstr "Er du sikker på at du vil gjenopprette alle BigLinux KDE-innstillinger?"
-
-msgid "Isso apagará todas as configurações definidas por "
-msgstr "Dette vil slette alle innstillinger som er angitt av "

@@ -43,14 +43,17 @@ msgstr "System"
 msgid "Restaurar o programa no modo da distribuição BigLinux."
 msgstr "Gendan programmet i BigLinux distributionstilstand."
 
-msgid "Em qual modo você deseja restaurar?"
-msgstr "I hvilken tilstand vil du gendanne?"
+msgid "Você tem certeza que deseja restaurar todas as configurações?"
+msgstr "Er du sikker på, at du vil gendanne alle indstillinger?"
 
-msgid "Restaurar no modo padrão da distribuição"
-msgstr "Gendan i standarddistributionstilstand"
+msgid "Isso apagará todas as costumizações feitas por "
+msgstr "Dette vil slette alle de costumizations foretaget af "
 
-msgid "Cancelar"
-msgstr "Aflyse"
+msgid "Não"
+msgstr "Nej"
+
+msgid "Sim"
+msgstr "Ja"
 
 msgid "Restaurar o programa no modo padrão."
 msgstr "Gendan programmet til standardtilstand."
@@ -58,8 +61,17 @@ msgstr "Gendan programmet til standardtilstand."
 msgid "Restaurar no modo padrão do programa"
 msgstr "Gendan i standardprogramtilstand"
 
+msgid "Cancelar"
+msgstr "Aflyse"
+
 msgid "Restaurar o programa no modo padrão ou distribuição BigLinux."
 msgstr "Gendan programmet i standardtilstand eller BigLinux-distribution."
+
+msgid "Em qual modo você deseja restaurar?"
+msgstr "I hvilken tilstand vil du gendanne?"
+
+msgid "Restaurar no modo padrão da distribuição"
+msgstr "Gendan i standarddistributionstilstand"
 
 msgid "Músicas"
 msgstr "Sange"
@@ -85,14 +97,11 @@ msgstr "BigLinux KDE-indstillinger er blevet gendannet!"
 msgid "É necessário reinciar a sessão para concluir a restauração!"
 msgstr "Du skal genoptage sessionen for at fuldføre gendannelsen!"
 
+msgid "Sair da sessão"
+msgstr "Log ud af sessionen"
+
 msgid "Atenção! O programa está em execução!"
 msgstr "Opmærksomhed! Programmet kører!"
 
 msgid "Será fechado para que a restauração seja concluída."
 msgstr "Det vil blive lukket for gendannelsen at fuldføre."
-
-msgid "Você tem certeza que deseja restaurar todas as configurações do BigLinux KDE?"
-msgstr "Er du sikker på, at du vil gendanne alle BigLinux KDE-indstillinger?"
-
-msgid "Isso apagará todas as configurações definidas por "
-msgstr "Dette vil slette alle indstillinger indstillet af "

@@ -43,14 +43,17 @@ msgstr "Sústava"
 msgid "Restaurar o programa no modo da distribuição BigLinux."
 msgstr "Obnovte program v distribučnom režime BigLinux."
 
-msgid "Em qual modo você deseja restaurar?"
-msgstr "V akom režime chcete obnoviť?"
+msgid "Você tem certeza que deseja restaurar todas as configurações?"
+msgstr "Naozaj chcete obnoviť všetky nastavenia?"
 
-msgid "Restaurar no modo padrão da distribuição"
-msgstr "Obnovenie v štandardnom distribučnom režime"
+msgid "Isso apagará todas as costumizações feitas por "
+msgstr "Tým sa vymažú všetky costumizácie vykonané "
 
-msgid "Cancelar"
-msgstr "Zrušiť"
+msgid "Não"
+msgstr "Nie"
+
+msgid "Sim"
+msgstr "Áno"
 
 msgid "Restaurar o programa no modo padrão."
 msgstr "Obnovte program do štandardného režimu."
@@ -58,8 +61,17 @@ msgstr "Obnovte program do štandardného režimu."
 msgid "Restaurar no modo padrão do programa"
 msgstr "Obnovenie v štandardnom programovom režime"
 
+msgid "Cancelar"
+msgstr "Zrušiť"
+
 msgid "Restaurar o programa no modo padrão ou distribuição BigLinux."
 msgstr "Obnovte program v štandardnom režime alebo v distribúcii BigLinux."
+
+msgid "Em qual modo você deseja restaurar?"
+msgstr "V akom režime chcete obnoviť?"
+
+msgid "Restaurar no modo padrão da distribuição"
+msgstr "Obnovenie v štandardnom distribučnom režime"
 
 msgid "Músicas"
 msgstr "Piesne"
@@ -85,14 +97,11 @@ msgstr "Nastavenia BigLinux KDE boli úspešne obnovené!"
 msgid "É necessário reinciar a sessão para concluir a restauração!"
 msgstr "Na dokončenie obnovenia musíte pokračovať v relácii!"
 
+msgid "Sair da sessão"
+msgstr "Odhláste sa z relácie"
+
 msgid "Atenção! O programa está em execução!"
 msgstr "Pozornosť! Program beží!"
 
 msgid "Será fechado para que a restauração seja concluída."
 msgstr "Bude uzavretý, aby sa obnovenie dokončilo."
-
-msgid "Você tem certeza que deseja restaurar todas as configurações do BigLinux KDE?"
-msgstr "Naozaj chcete obnoviť všetky nastavenia BigLinux KDE?"
-
-msgid "Isso apagará todas as configurações definidas por "
-msgstr "Tým sa vymažú všetky nastavenia nastavené "

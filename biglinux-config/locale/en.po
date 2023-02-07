@@ -43,14 +43,17 @@ msgstr "System"
 msgid "Restaurar o programa no modo da distribuição BigLinux."
 msgstr "Restore the program in BigLinux distribution mode."
 
-msgid "Em qual modo você deseja restaurar?"
-msgstr "In which mode do you want to restore?"
+msgid "Você tem certeza que deseja restaurar todas as configurações?"
+msgstr "Are you sure you want to restore all settings?"
 
-msgid "Restaurar no modo padrão da distribuição"
-msgstr "Restore in standard distribution mode"
+msgid "Isso apagará todas as costumizações feitas por "
+msgstr "This will erase all the costumizations made by "
 
-msgid "Cancelar"
-msgstr "Cancel"
+msgid "Não"
+msgstr "No"
+
+msgid "Sim"
+msgstr "Yes"
 
 msgid "Restaurar o programa no modo padrão."
 msgstr "Restore the program to standard mode."
@@ -58,8 +61,17 @@ msgstr "Restore the program to standard mode."
 msgid "Restaurar no modo padrão do programa"
 msgstr "Restore in standard program mode"
 
+msgid "Cancelar"
+msgstr "Cancel"
+
 msgid "Restaurar o programa no modo padrão ou distribuição BigLinux."
 msgstr "Restore the program in standard mode or BigLinux distribution."
+
+msgid "Em qual modo você deseja restaurar?"
+msgstr "In which mode do you want to restore?"
+
+msgid "Restaurar no modo padrão da distribuição"
+msgstr "Restore in standard distribution mode"
 
 msgid "Músicas"
 msgstr "Songs"
@@ -85,14 +97,11 @@ msgstr "BigLinux KDE settings have been successfully restored!"
 msgid "É necessário reinciar a sessão para concluir a restauração!"
 msgstr "You must resume the session to complete the restore!"
 
+msgid "Sair da sessão"
+msgstr "Sign out of the session"
+
 msgid "Atenção! O programa está em execução!"
 msgstr "Attention! The program is running!"
 
 msgid "Será fechado para que a restauração seja concluída."
 msgstr "It will be closed for the restore to complete."
-
-msgid "Você tem certeza que deseja restaurar todas as configurações do BigLinux KDE?"
-msgstr "Are you sure you want to restore all BigLinux KDE settings?"
-
-msgid "Isso apagará todas as configurações definidas por "
-msgstr "This will erase all settings set by "

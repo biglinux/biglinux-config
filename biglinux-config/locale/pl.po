@@ -43,14 +43,17 @@ msgstr "System"
 msgid "Restaurar o programa no modo da distribuição BigLinux."
 msgstr "Przywróć program w trybie dystrybucji BigLinux."
 
-msgid "Em qual modo você deseja restaurar?"
-msgstr "W jakim trybie chcesz przywrócić?"
+msgid "Você tem certeza que deseja restaurar todas as configurações?"
+msgstr "Czy na pewno chcesz przywrócić wszystkie ustawienia?"
 
-msgid "Restaurar no modo padrão da distribuição"
-msgstr "Przywracanie w standardowym trybie dystrybucji"
+msgid "Isso apagará todas as costumizações feitas por "
+msgstr "Spowoduje to usunięcie wszystkich kosztorysów dokonanych przez "
 
-msgid "Cancelar"
-msgstr "Anuluj"
+msgid "Não"
+msgstr "Nie"
+
+msgid "Sim"
+msgstr "Tak"
 
 msgid "Restaurar o programa no modo padrão."
 msgstr "Przywróć program do trybu standardowego."
@@ -58,8 +61,17 @@ msgstr "Przywróć program do trybu standardowego."
 msgid "Restaurar no modo padrão do programa"
 msgstr "Przywracanie w standardowym trybie programu"
 
+msgid "Cancelar"
+msgstr "Anuluj"
+
 msgid "Restaurar o programa no modo padrão ou distribuição BigLinux."
 msgstr "Przywróć program w trybie standardowym lub dystrybucji BigLinux."
+
+msgid "Em qual modo você deseja restaurar?"
+msgstr "W jakim trybie chcesz przywrócić?"
+
+msgid "Restaurar no modo padrão da distribuição"
+msgstr "Przywracanie w standardowym trybie dystrybucji"
 
 msgid "Músicas"
 msgstr "Piosenki"
@@ -85,14 +97,11 @@ msgstr "Ustawienia BigLinux KDE zostały pomyślnie przywrócone!"
 msgid "É necessário reinciar a sessão para concluir a restauração!"
 msgstr "Musisz wznowić sesję, aby zakończyć przywracanie!"
 
+msgid "Sair da sessão"
+msgstr "Wylogowywanie się z sesji"
+
 msgid "Atenção! O programa está em execução!"
 msgstr "Uwaga! Program jest uruchomiony!"
 
 msgid "Será fechado para que a restauração seja concluída."
 msgstr "Zostanie on zamknięty w celu zakończenia przywracania."
-
-msgid "Você tem certeza que deseja restaurar todas as configurações do BigLinux KDE?"
-msgstr "Czy na pewno chcesz przywrócić wszystkie ustawienia BigLinux KDE?"
-
-msgid "Isso apagará todas as configurações definidas por "
-msgstr "Spowoduje to usunięcie wszystkich ustawień ustawionych przez "

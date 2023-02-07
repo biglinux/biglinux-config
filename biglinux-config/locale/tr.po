@@ -43,14 +43,17 @@ msgstr "Sistem"
 msgid "Restaurar o programa no modo da distribuição BigLinux."
 msgstr "Programı BigLinux dağıtım modunda geri yükleyin."
 
-msgid "Em qual modo você deseja restaurar?"
-msgstr "Hangi modda geri yüklemek istiyorsunuz?"
+msgid "Você tem certeza que deseja restaurar todas as configurações?"
+msgstr "Tüm ayarları geri yüklemek istediğinizden emin misiniz?"
 
-msgid "Restaurar no modo padrão da distribuição"
-msgstr "Standart dağıtım modunda geri yükleme"
+msgid "Isso apagará todas as costumizações feitas por "
+msgstr "Bu, tarafından yapılan tüm kostümleri silecektir. "
 
-msgid "Cancelar"
-msgstr "İptal"
+msgid "Não"
+msgstr "Hayır"
+
+msgid "Sim"
+msgstr "Evet"
 
 msgid "Restaurar o programa no modo padrão."
 msgstr "Programı standart moda geri yükleyin."
@@ -58,8 +61,17 @@ msgstr "Programı standart moda geri yükleyin."
 msgid "Restaurar no modo padrão do programa"
 msgstr "Standart program modunda geri yükleme"
 
+msgid "Cancelar"
+msgstr "İptal"
+
 msgid "Restaurar o programa no modo padrão ou distribuição BigLinux."
 msgstr "Programı standart modda veya BigLinux dağıtımında geri yükleyin."
+
+msgid "Em qual modo você deseja restaurar?"
+msgstr "Hangi modda geri yüklemek istiyorsunuz?"
+
+msgid "Restaurar no modo padrão da distribuição"
+msgstr "Standart dağıtım modunda geri yükleme"
 
 msgid "Músicas"
 msgstr "Şarkı"
@@ -85,14 +97,11 @@ msgstr "BigLinux KDE ayarları başarıyla geri yüklendi!"
 msgid "É necessário reinciar a sessão para concluir a restauração!"
 msgstr "Geri yüklemeyi tamamlamak için oturumu devam ettirmeniz gerekir!"
 
+msgid "Sair da sessão"
+msgstr "Oturumdan çıkış yapın"
+
 msgid "Atenção! O programa está em execução!"
 msgstr "Dikkat! Program çalışıyor!"
 
 msgid "Será fechado para que a restauração seja concluída."
 msgstr "Geri yüklemenin tamamlanması için kapatılır."
-
-msgid "Você tem certeza que deseja restaurar todas as configurações do BigLinux KDE?"
-msgstr "Tüm BigLinux KDE ayarlarını geri yüklemek istediğinizden emin misiniz?"
-
-msgid "Isso apagará todas as configurações definidas por "
-msgstr "Bu, tarafından ayarlanan tüm ayarları siler. "

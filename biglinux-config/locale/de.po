@@ -43,14 +43,17 @@ msgstr "System"
 msgid "Restaurar o programa no modo da distribuição BigLinux."
 msgstr "Stellen Sie das Programm im BigLinux-Distributionsmodus wieder her."
 
-msgid "Em qual modo você deseja restaurar?"
-msgstr "In welchem Modus möchten Sie wiederherstellen?"
+msgid "Você tem certeza que deseja restaurar todas as configurações?"
+msgstr "Möchten Sie wirklich alle Einstellungen wiederherstellen?"
 
-msgid "Restaurar no modo padrão da distribuição"
-msgstr "Wiederherstellen im Standardverteilungsmodus"
+msgid "Isso apagará todas as costumizações feitas por "
+msgstr "Dadurch werden alle von "
 
-msgid "Cancelar"
-msgstr "Abbrechen"
+msgid "Não"
+msgstr "Nein"
+
+msgid "Sim"
+msgstr "Ja"
 
 msgid "Restaurar o programa no modo padrão."
 msgstr "Stellen Sie das Programm im Standardmodus wieder her."
@@ -58,8 +61,17 @@ msgstr "Stellen Sie das Programm im Standardmodus wieder her."
 msgid "Restaurar no modo padrão do programa"
 msgstr "Wiederherstellen im Standardprogrammmodus"
 
+msgid "Cancelar"
+msgstr "Abbrechen"
+
 msgid "Restaurar o programa no modo padrão ou distribuição BigLinux."
 msgstr "Stellen Sie das Programm im Standardmodus oder in der BigLinux-Distribution wieder her."
+
+msgid "Em qual modo você deseja restaurar?"
+msgstr "In welchem Modus möchten Sie wiederherstellen?"
+
+msgid "Restaurar no modo padrão da distribuição"
+msgstr "Wiederherstellen im Standardverteilungsmodus"
 
 msgid "Músicas"
 msgstr "Lieder"
@@ -85,14 +97,11 @@ msgstr "BigLinux KDE-Einstellungen wurden erfolgreich wiederhergestellt!"
 msgid "É necessário reinciar a sessão para concluir a restauração!"
 msgstr "Sie müssen die Sitzung fortsetzen, um die Wiederherstellung abzuschließen!"
 
+msgid "Sair da sessão"
+msgstr "Abmelden von der Sitzung"
+
 msgid "Atenção! O programa está em execução!"
 msgstr "Aufmerksamkeit! Das Programm läuft!"
 
 msgid "Será fechado para que a restauração seja concluída."
 msgstr "Es wird geschlossen, damit die Wiederherstellung abgeschlossen werden kann."
-
-msgid "Você tem certeza que deseja restaurar todas as configurações do BigLinux KDE?"
-msgstr "Sind Sie sicher, dass Sie alle BigLinux KDE-Einstellungen wiederherstellen möchten?"
-
-msgid "Isso apagará todas as configurações definidas por "
-msgstr "Dadurch werden alle Einstellungen gelöscht, die von "

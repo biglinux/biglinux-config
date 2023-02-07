@@ -43,14 +43,17 @@ msgstr "Система"
 msgid "Restaurar o programa no modo da distribuição BigLinux."
 msgstr "Възстановяване на програмата в режим на разпространение на BigLinux."
 
-msgid "Em qual modo você deseja restaurar?"
-msgstr "В кой режим искате да възстановите?"
+msgid "Você tem certeza que deseja restaurar todas as configurações?"
+msgstr "Наистина ли искате да възстановите всички настройки?"
 
-msgid "Restaurar no modo padrão da distribuição"
-msgstr "Възстановяване в стандартен режим на разпространение"
+msgid "Isso apagará todas as costumizações feitas por "
+msgstr "Това ще изтрие всички costumizations, направени от "
 
-msgid "Cancelar"
-msgstr "Задрасквам"
+msgid "Não"
+msgstr "Не"
+
+msgid "Sim"
+msgstr "Да"
 
 msgid "Restaurar o programa no modo padrão."
 msgstr "Възстановяване на програмата в стандартен режим."
@@ -58,8 +61,17 @@ msgstr "Възстановяване на програмата в стандар
 msgid "Restaurar no modo padrão do programa"
 msgstr "Възстановяване в стандартен програмен режим"
 
+msgid "Cancelar"
+msgstr "Задрасквам"
+
 msgid "Restaurar o programa no modo padrão ou distribuição BigLinux."
 msgstr "Възстановяване на програмата в стандартен режим или BigLinux разпространение."
+
+msgid "Em qual modo você deseja restaurar?"
+msgstr "В кой режим искате да възстановите?"
+
+msgid "Restaurar no modo padrão da distribuição"
+msgstr "Възстановяване в стандартен режим на разпространение"
 
 msgid "Músicas"
 msgstr "Песни"
@@ -85,14 +97,11 @@ msgstr "Настройките на BigLinux KDE са успешно възст�
 msgid "É necessário reinciar a sessão para concluir a restauração!"
 msgstr "Трябва да възобновите сесията, за да завършите възстановяването!"
 
+msgid "Sair da sessão"
+msgstr "Излизане от сесията"
+
 msgid "Atenção! O programa está em execução!"
 msgstr "Внимание! Програмата се изпълнява!"
 
 msgid "Será fechado para que a restauração seja concluída."
 msgstr "Тя ще бъде затворена, за да завърши възстановяването."
-
-msgid "Você tem certeza que deseja restaurar todas as configurações do BigLinux KDE?"
-msgstr "Наистина ли искате да възстановите всички настройки на BigLinux KDE?"
-
-msgid "Isso apagará todas as configurações definidas por "
-msgstr "Това ще изтрие всички настройки, зададени от "

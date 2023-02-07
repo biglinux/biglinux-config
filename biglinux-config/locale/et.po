@@ -43,14 +43,17 @@ msgstr "Süsteem"
 msgid "Restaurar o programa no modo da distribuição BigLinux."
 msgstr "Taastage programm BigLinuxi jaotusrežiimis."
 
-msgid "Em qual modo você deseja restaurar?"
-msgstr "Millises režiimis soovite taastada?"
+msgid "Você tem certeza que deseja restaurar todas as configurações?"
+msgstr "Kas olete kindel, et soovite kõik seaded taastada?"
 
-msgid "Restaurar no modo padrão da distribuição"
-msgstr "Taastamine standardses jaotusrežiimis"
+msgid "Isso apagará todas as costumizações feitas por "
+msgstr "See kustutab kõik kuluarvestused, mille on teinud "
 
-msgid "Cancelar"
-msgstr "Tühistama"
+msgid "Não"
+msgstr "Ei"
+
+msgid "Sim"
+msgstr "Jah"
 
 msgid "Restaurar o programa no modo padrão."
 msgstr "Taastage programm standardrežiimi."
@@ -58,8 +61,17 @@ msgstr "Taastage programm standardrežiimi."
 msgid "Restaurar no modo padrão do programa"
 msgstr "Taastage standardses programmirežiimis"
 
+msgid "Cancelar"
+msgstr "Tühistama"
+
 msgid "Restaurar o programa no modo padrão ou distribuição BigLinux."
 msgstr "Taastage programm standardrežiimis või BigLinuxi jaotuses."
+
+msgid "Em qual modo você deseja restaurar?"
+msgstr "Millises režiimis soovite taastada?"
+
+msgid "Restaurar no modo padrão da distribuição"
+msgstr "Taastamine standardses jaotusrežiimis"
 
 msgid "Músicas"
 msgstr "Laulud"
@@ -85,14 +97,11 @@ msgstr "BigLinux KDE seaded on edukalt taastatud!"
 msgid "É necessário reinciar a sessão para concluir a restauração!"
 msgstr "Taastamise lõpuleviimiseks peate seanssi jätkama!"
 
+msgid "Sair da sessão"
+msgstr "Seansilt väljalogimine"
+
 msgid "Atenção! O programa está em execução!"
 msgstr "Tähelepanu! Programm töötab!"
 
 msgid "Será fechado para que a restauração seja concluída."
 msgstr "See suletakse taastamise lõpuleviimiseks."
-
-msgid "Você tem certeza que deseja restaurar todas as configurações do BigLinux KDE?"
-msgstr "Kas olete kindel, et soovite taastada kõik BigLinux KDE seaded?"
-
-msgid "Isso apagará todas as configurações definidas por "
-msgstr "See kustutab kõik seaded, mille on määranud "

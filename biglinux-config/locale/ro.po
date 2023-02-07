@@ -43,14 +43,17 @@ msgstr "Sistem"
 msgid "Restaurar o programa no modo da distribuição BigLinux."
 msgstr "Restaurați programul în modul de distribuție BigLinux."
 
-msgid "Em qual modo você deseja restaurar?"
-msgstr "În ce mod doriți să restaurați?"
+msgid "Você tem certeza que deseja restaurar todas as configurações?"
+msgstr "Sunteți sigur că doriți să restaurați toate setările?"
 
-msgid "Restaurar no modo padrão da distribuição"
-msgstr "Restaurarea în modul de distribuire standard"
+msgid "Isso apagará todas as costumizações feitas por "
+msgstr "Acest lucru va șterge toate costumele făcute de "
 
-msgid "Cancelar"
-msgstr "Anula"
+msgid "Não"
+msgstr "Nu"
+
+msgid "Sim"
+msgstr "Da"
 
 msgid "Restaurar o programa no modo padrão."
 msgstr "Restaurați programul în modul standard."
@@ -58,8 +61,17 @@ msgstr "Restaurați programul în modul standard."
 msgid "Restaurar no modo padrão do programa"
 msgstr "Restaurarea în modul de program standard"
 
+msgid "Cancelar"
+msgstr "Anula"
+
 msgid "Restaurar o programa no modo padrão ou distribuição BigLinux."
 msgstr "Restaurați programul în modul standard sau distribuția BigLinux."
+
+msgid "Em qual modo você deseja restaurar?"
+msgstr "În ce mod doriți să restaurați?"
+
+msgid "Restaurar no modo padrão da distribuição"
+msgstr "Restaurarea în modul de distribuire standard"
 
 msgid "Músicas"
 msgstr "Melodii"
@@ -85,14 +97,11 @@ msgstr "Setările BigLinux KDE au fost restaurate cu succes!"
 msgid "É necessário reinciar a sessão para concluir a restauração!"
 msgstr "Trebuie să reluați sesiunea pentru a finaliza restaurarea!"
 
+msgid "Sair da sessão"
+msgstr "Deconectarea de la sesiune"
+
 msgid "Atenção! O programa está em execução!"
 msgstr "Atenție! Programul se execută!"
 
 msgid "Será fechado para que a restauração seja concluída."
 msgstr "Acesta va fi închis pentru ca restaurarea să se finalizeze."
-
-msgid "Você tem certeza que deseja restaurar todas as configurações do BigLinux KDE?"
-msgstr "Sunteți sigur că doriți să restaurați toate setările BigLinux KDE?"
-
-msgid "Isso apagará todas as configurações definidas por "
-msgstr "Acest lucru va șterge toate setările stabilite de "

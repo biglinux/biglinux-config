@@ -43,14 +43,17 @@ msgstr "Systém"
 msgid "Restaurar o programa no modo da distribuição BigLinux."
 msgstr "Obnovte program v distribučním režimu BigLinux."
 
-msgid "Em qual modo você deseja restaurar?"
-msgstr "V jakém režimu chcete obnovit?"
+msgid "Você tem certeza que deseja restaurar todas as configurações?"
+msgstr "Opravdu chcete obnovit všechna nastavení?"
 
-msgid "Restaurar no modo padrão da distribuição"
-msgstr "Obnovení ve standardním distribučním režimu"
+msgid "Isso apagará todas as costumizações feitas por "
+msgstr "Tím se vymažou všechny costumizations provedené "
 
-msgid "Cancelar"
-msgstr "Zrušit"
+msgid "Não"
+msgstr "Ne"
+
+msgid "Sim"
+msgstr "Ano"
 
 msgid "Restaurar o programa no modo padrão."
 msgstr "Obnovte program do standardního režimu."
@@ -58,8 +61,17 @@ msgstr "Obnovte program do standardního režimu."
 msgid "Restaurar no modo padrão do programa"
 msgstr "Obnovení ve standardním programovém režimu"
 
+msgid "Cancelar"
+msgstr "Zrušit"
+
 msgid "Restaurar o programa no modo padrão ou distribuição BigLinux."
 msgstr "Obnovte program ve standardním režimu nebo distribuci BigLinux."
+
+msgid "Em qual modo você deseja restaurar?"
+msgstr "V jakém režimu chcete obnovit?"
+
+msgid "Restaurar no modo padrão da distribuição"
+msgstr "Obnovení ve standardním distribučním režimu"
 
 msgid "Músicas"
 msgstr "Písně"
@@ -85,14 +97,11 @@ msgstr "Nastavení BigLinux KDE byla úspěšně obnovena!"
 msgid "É necessário reinciar a sessão para concluir a restauração!"
 msgstr "Chcete-li obnovit relaci, musíte relaci obnovit!"
 
+msgid "Sair da sessão"
+msgstr "Odhlášení z relace"
+
 msgid "Atenção! O programa está em execução!"
 msgstr "Pozornost! Program je spuštěn!"
 
 msgid "Será fechado para que a restauração seja concluída."
 msgstr "Bude uzavřena, aby bylo možné obnovení dokončit."
-
-msgid "Você tem certeza que deseja restaurar todas as configurações do BigLinux KDE?"
-msgstr "Opravdu chcete obnovit všechna nastavení BigLinux KDE?"
-
-msgid "Isso apagará todas as configurações definidas por "
-msgstr "Tím se vymažou všechna nastavení nastavená "
