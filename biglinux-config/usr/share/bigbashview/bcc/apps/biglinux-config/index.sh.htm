@@ -46,35 +46,35 @@ function sh_config {
 	#Translation
 	export TEXTDOMAINDIR="/usr/share/locale"
 	export TEXTDOMAIN=biglinux-config
-	declare -gA aMenu=([TITLE]=$"Restaurar Configurações"
-							 [Principais]=$"Principais"
-							 [Internet]=$"Internet"
-							 [Multimidia]=$"Multimídia"
-							 [Graficos]=$"Gráficos"
-							 [Escritorio]=$"Escritório"
-							 [Sistema]=$"Sistema"
-							 [Musicas]=$"Músicas"
-							 [Restaurar_padrao_programa]=$"Restaurar o aplicativo no modo padrão do programa"
-							 [Restaurar_padrao_distro]=$"Restaurar o aplicativo no modo padrão da distribuição"
-							 [Restaurar_padrao_biglinux]=$"Restaurar o aplicativo no modo padrão da distribuição BigLinux."
-							 [Sim]=$"Sim"
-							 [Nao]=$"Não"
-							 [OK]=$"OK"
-							 [Cancelar]=$"Cancelar"
-							 [Restaurar_modo]=$"Em qual modo você deseja restaurar?"
-							 [Pesquisar]=$"Pesquisar aplicativo"
-							 [Confirma]=$"Você tem certeza que deseja restaurar todas as configurações?"
+	declare -gA aMenu=([TITLE]=$(gettext $"Restaurar Configurações")
+							 [Principais]=$(gettext $"Principais")
+							 [Internet]=$(gettext $"Internet")
+							 [Multimidia]=$(gettext $"Multimídia")
+							 [Graficos]=$(gettext $"Gráficos")
+							 [Escritorio]=$(gettext $"Escritório")
+							 [Sistema]=$(gettext $"Sistema")
+							 [Musicas]=$(gettext $"Músicas")
+							 [Restaurar_padrao_programa]=$(gettext $"Restaurar o aplicativo no modo padrão do programa")
+							 [Restaurar_padrao_distro]=$(gettext $"Restaurar o aplicativo no modo padrão da distribuição")
+							 [Restaurar_padrao_biglinux]=$(gettext $"Restaurar o aplicativo no modo padrão da distribuição BigLinux.")
+							 [Sim]=$(gettext $"Sim")
+							 [Nao]=$(gettext $"Não")
+							 [OK]=$(gettext $"OK")
+							 [Cancelar]=$(gettext $"Cancelar")
+							 [Restaurar_modo]=$(gettext $"Em qual modo você deseja restaurar?")
+							 [Pesquisar]=$(gettext $"Pesquisar aplicativo")
+							 [Confirma]=$(gettext $"Você tem certeza que deseja restaurar todas as configurações?")
 							 )
-	declare -gA Aapps=([vokoscreenNG]=$"Gravador de Tela"
-							 [Videos]=$"Vídeos"
-							 [mystiq]=$"Conversor de áudio e vídeo"
+	declare -gA Aapps=([vokoscreenNG]=$(gettext $"Gravador de Tela")
+							 [Videos]=$(gettext $"Vídeos")
+							 [mystiq]=$(gettext $"Conversor de áudio e vídeo")
  							)
-	declare -gA Afinish=([sucesso]=$"As configurações foram restauradas com sucesso!"
-								[sucesso_KDE]=$"As configurações do BigLinux KDE foram restauradas com sucesso!"
-								[reiniciar_sessao]=$"É necessário reinciar a sessão para concluir a restauração!"
-								[sair_sessao]=$"Sair da sessão"
-								[app_em_execucao]=$"Atenção! O programa está em execução!"
-								[app_on_close]=$"Será fechado para que a restauração seja concluída."
+	declare -gA Afinish=([sucesso]=$(gettext $"As configurações foram restauradas com sucesso!")
+								[sucesso_KDE]=$(gettext $"As configurações do BigLinux KDE foram restauradas com sucesso!")
+								[reiniciar_sessao]=$(gettext $"É necessário reiniciar a sessão para concluir a restauração!")
+								[sair_sessao]=$(gettext $"Sair da sessão")
+								[app_em_execucao]=$(gettext $"Atenção! O programa está em execução!")
+								[app_on_close]=$(gettext $"Será fechado para que a restauração seja concluída.")
 								)
 }
 
