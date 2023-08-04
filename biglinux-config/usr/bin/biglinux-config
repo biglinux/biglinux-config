@@ -1,2 +1,3 @@
- #!/usr/bin/env bash
+#!/usr/bin/env bash
+
 bbv index.sh.htm -s 1030x600 -i icon.png -d "/usr/share/bigbashview/bcc/apps/biglinux-config"
