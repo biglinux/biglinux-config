@@ -17,9 +17,6 @@ msgstr  "Project-Id-Version: biglinux-config\n"
 msgid   "Restaurar Configurações"
 msgstr  ""
 
-msgid   "Pesquisar programa"
-msgstr  ""
-
 msgid   "Principais"
 msgstr  ""
 
@@ -38,40 +35,37 @@ msgstr  ""
 msgid   "Sistema"
 msgstr  ""
 
-msgid   "Restaurar o programa no modo da distribuição BigLinux."
+msgid   "Músicas"
 msgstr  ""
 
-msgid   "Você tem certeza que deseja restaurar todas as configurações?"
+msgid   "Restaurar o aplicativo no modo padrão do programa"
 msgstr  ""
 
-msgid   "Isso apagará todas as costumizações feitas por "
+msgid   "Restaurar o aplicativo no modo padrão da distribuição"
 msgstr  ""
 
-msgid   "Não"
+msgid   "Restaurar o aplicativo no modo padrão da distribuição BigLinux."
 msgstr  ""
 
 msgid   "Sim"
 msgstr  ""
 
-msgid   "Restaurar o programa no modo padrão."
+msgid   "Não"
 msgstr  ""
 
-msgid   "Restaurar no modo padrão do programa"
+msgid   "OK"
 msgstr  ""
 
 msgid   "Cancelar"
 msgstr  ""
 
-msgid   "Restaurar o programa no modo padrão ou distribuição BigLinux."
-msgstr  ""
-
 msgid   "Em qual modo você deseja restaurar?"
 msgstr  ""
 
-msgid   "Restaurar no modo padrão da distribuição"
+msgid   "Pesquisar aplicativo"
 msgstr  ""
 
-msgid   "Músicas"
+msgid   "Você tem certeza que deseja restaurar todas as configurações?"
 msgstr  ""
 
 msgid   "Gravador de Tela"
@@ -84,9 +78,6 @@ msgid   "Conversor de áudio e vídeo"
 msgstr  ""
 
 msgid   "As configurações foram restauradas com sucesso!"
-msgstr  ""
-
-msgid   "OK"
 msgstr  ""
 
 msgid   "As configurações do BigLinux KDE foram restauradas com sucesso!"
