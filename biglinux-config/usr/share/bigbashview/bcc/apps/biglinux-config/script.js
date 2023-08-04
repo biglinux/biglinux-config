@@ -1,34 +1,34 @@
 $(function () {
-  $("#Star").trigger("click");
+	$("#Star").trigger("click");
 });
 /* LEGENDA BOX STATUS BAR */
 $(".box-items").mouseover(function () {
-  $(this).children("#box-status-bar").css("display", "block");
+	$(this).children("#box-status-bar").css("display", "block");
 });
 
 $(".box-items").mouseout(function () {
-  $(this).children("#box-status-bar").css("display", "none");
+	$(this).children("#box-status-bar").css("display", "none");
 });
 
 /* FIM LEGENDA BOX STATUS BAR */
 
 $(document).on("click", "#point-container", function () {
-  var show = $(this).data("show");
-  $(show).removeClass("hide").siblings().addClass("hide");
+	var show = $(this).data("show");
+	$(show).removeClass("hide").siblings().addClass("hide");
 });
 
 $(".search-bar input")
-  .focus(function () {
-    $(".header").addClass("wide");
-  })
-  .blur(function () {
-    $(".header").removeClass("wide");
-  });
+	.focus(function () {
+		$(".header").addClass("wide");
+	})
+	.blur(function () {
+		$(".header").removeClass("wide");
+	});
 
 const toggleButton = document.querySelector(".dark-light");
 
 toggleButton.addEventListener("click", () => {
-  document.body.classList.toggle("light-mode");
+	document.body.classList.toggle("light-mode");
 });
 
 var modals = document.getElementsByClassName("modal");
@@ -37,108 +37,145 @@ var currentModal = null;
 
 // Function to open modal by id
 function openModal(id) {
-  for (i = 0; i < modals.length; i++) {
-    if (modals[i].getAttribute("id") == id) {
-      currentModal = modals[i];
-      $(currentModal).show();
-      break;
-    }
-  }
+	for (i = 0; i < modals.length; i++) {
+		if (modals[i].getAttribute("id") == id) {
+			currentModal = modals[i];
+			$(currentModal).show();
+			break;
+		}
+	}
 }
 
 // When the user clicks the button, open modal with the same id
-modalOpenBtn.onclick = function() {
-  let currentID = modalOpenBtn.getAttribute("id");
-  openModal(currentID);
-}
+modalOpenBtn.onclick = function () {
+	let currentID = modalOpenBtn.getAttribute("id");
+	openModal(currentID);
+};
 
 // When the user clicks anywhere outside of the modal or the X, close
-window.onclick = function(event) {
-  if (event.target == currentModal || event.target.getAttribute("class") == "modalClose") {
-    $(currentModal).hide();
-  }
-}
+window.onclick = function (event) {
+	if (
+		event.target == currentModal ||
+		event.target.getAttribute("class") == "modalClose"
+	) {
+		$(currentModal).hide();
+	}
+};
 
-
-$(document).on("keyup", function(e) {
-  if (e.key == "Escape") $(currentModal).hide();
+$(document).on("keyup", function (e) {
+	if (e.key == "Escape") $(currentModal).hide();
 });
 
+$(".restore-skel").on("click", function (e) {
+	e.preventDefault();
+	let script = $(this).attr("data-value");
+	$.get("run/" + script, "skel", function (resp) {
+		if (resp === "#")
+			setTimeout(function () {
+				$("#modalInfo").show();
+			}, 500);
 
-$(".restore-skel").on("click",function(e){
-  e.preventDefault();
-  let script = $(this).attr("data-value");
+		if (resp !== "#")
+			setTimeout(function () {
+				$("#modalWarning").show();
+			}, 500);
 
-  $.get("run/"+script, "skel", function(resp){
-    if(resp==="#") setTimeout(function(){$("#modalInfo").show()}, 500);
+		$(".modalOkWarning").click(function () {
+			_run(`kill -9 ${resp}`);
+			$("#modalWarning").hide();
 
-    if(resp!=="#") setTimeout(function(){$("#modalWarning").show()}, 500);
+			$.get("run/" + script, "skel", function (data) {
+				if (data === "#")
+					setTimeout(function () {
+						$("#modalInfo").show();
+					}, 500);
+			});
+		});
+	});
+/*
+	$.get(script, "skel", function (resp) {
+		if (resp === "#")
+			setTimeout(function () {
+				$("#modalInfo").show();
+			}, 500);
 
-    $(".modalOkWarning").click(function(){
-      _run(`kill -9 ${resp}`);
-      $("#modalWarning").hide();
+		if (resp !== "#")
+			setTimeout(function () {
+				$("#modalWarning").show();
+			}, 500);
 
-      $.get("run/"+script, "skel", function(data){
-        if(data==="#") setTimeout(function(){$("#modalInfo").show()}, 500);
-      });
+		$(".modalOkWarning").click(function () {
+			_run(`kill -9 ${resp}`);
+			$("#modalWarning").hide();
 
-    });
-  });
+			$.get(script, "skel", function (data) {
+				if (data === "#")
+					setTimeout(function () {
+						$("#modalInfo").show();
+					}, 500);
+			});
+		});
+	});
+*/
 });
 
+$(".restore-default").on("click", function (e) {
+	e.preventDefault();
+	let script = $(this).attr("data-value");
 
-$(".restore-default").on("click",function(e){
-  e.preventDefault();
-  let script = $(this).attr("data-value");
+	$.get("run/" + script, function (resp) {
+		if (resp === "#")
+			setTimeout(function () {
+				$("#modalInfo").show();
+			}, 500);
 
-  $.get("run/"+script, function(resp){
-    if(resp==="#") setTimeout(function(){$("#modalInfo").show()}, 500);
+		if (resp !== "#")
+			setTimeout(function () {
+				$("#modalWarning").show();
+			}, 500);
 
-    if(resp!=="#") setTimeout(function(){$("#modalWarning").show()}, 500);
+		$(".modalOkWarning").click(function () {
+			_run(`kill -9 ${resp}`);
+			$("#modalWarning").hide();
 
-    $(".modalOkWarning").click(function(){
-      _run(`kill -9 ${resp}`);
-      $("#modalWarning").hide();
-
-      $.get("run/"+script, function(data){
-        if(data==="#") setTimeout(function(){$("#modalInfo").show()}, 500);
-      });
-
-    });
-  });
+			$.get("run/" + script, function (data) {
+				if (data === "#")
+					setTimeout(function () {
+						$("#modalInfo").show();
+					}, 500);
+			});
+		});
+	});
 });
 
+$("#modalOkWarningKDE").click(function (e) {
+	e.preventDefault();
+	$(".lds-ring").css("display", "inline-flex");
 
-$("#modalOkWarningKDE").click(function(e){
-  e.preventDefault();
-  $(".lds-ring").css("display", "inline-flex");
-
-  $.get("run/kde.sh", function(data){
-    if(data==="#"){
-      setTimeout(function(){
-      	$(".lds-ring").css("display", "none");
-      	$(".modalWarningKDE").hide();
-        $("#modalInfoKDE").show();
-      }, 500);
-    }
-  });
-
+	$.get("run/kde.sh", function (data) {
+		if (data === "#") {
+			setTimeout(function () {
+				$(".lds-ring").css("display", "none");
+				$(".modalWarningKDE").hide();
+				$("#modalInfoKDE").show();
+			}, 500);
+		}
+	});
 });
 
-$("#modalOkInfoKDE").click(function(e){
-  e.preventDefault();
-  $("#modalInfoKDE").hide();
-  _run(`qdbus org.kde.ksmserver /KSMServer logout 1 0 2`);
+$("#modalOkInfoKDE").click(function (e) {
+	e.preventDefault();
+	$("#modalInfoKDE").hide();
+	_run(`qdbus org.kde.ksmserver /KSMServer logout 1 0 2`);
 });
 
-$(".modalOkInfo").click(function(e){
-  e.preventDefault();
-  $("#modalInfo").hide();
-  $(currentModal).hide();
+$(".modalOkInfo").click(function (e) {
+	e.preventDefault();
+	$("#modalInfo").hide();
+	$(currentModal).hide();
 });
 
-
-$(".modalCancel").click(function(e){
-  e.preventDefault();
-  $("#modalWarning").hide();
+$(".modalCancel").click(function (e) {
+	e.preventDefault();
+	$("#modalWarning").hide();
 });
