@@ -83,7 +83,7 @@ msgstr  ""
 msgid   "As configurações do BigLinux KDE foram restauradas com sucesso!"
 msgstr  ""
 
-msgid   "É necessário reinciar a sessão para concluir a restauração!"
+msgid   "É necessário reiniciar a sessão para concluir a restauração!"
 msgstr  ""
 
 msgid   "Sair da sessão"
