@@ -69,7 +69,11 @@ $(document).on("keyup", function (e) {
 $(".restore-skel").on("click", function (e) {
 	e.preventDefault();
 	let script = $(this).attr("data-value");
-	$.get("run/" + script, "skel", function (resp) {
+
+//	$.get("run/" + script, "skel", function (resp) {
+//	$.get("./bcfglib.sh", script, "skel", function (resp) {
+	$.get("/usr/share/bigbashview/bcc/shell/bcfglib.sh", script, function (resp) {
+		console.log(resp);
 		if (resp === "#")
 			setTimeout(function () {
 				$("#modalInfo").show();
@@ -84,7 +88,10 @@ $(".restore-skel").on("click", function (e) {
 			_run(`kill -9 ${resp}`);
 			$("#modalWarning").hide();
 
-			$.get("run/" + script, "skel", function (data) {
+//			$.get("run/" + script, "skel", function (data) {
+//			$.get("./bcfglib.sh", script, "skel", function (data) {
+			$.get("/usr/share/bigbashview/bcc/shell/bcfglib.sh", script, "skel", function (data) {
+				console.log(resp);
 				if (data === "#")
 					setTimeout(function () {
 						$("#modalInfo").show();
@@ -92,38 +99,16 @@ $(".restore-skel").on("click", function (e) {
 			});
 		});
 	});
-/*
-	$.get(script, "skel", function (resp) {
-		if (resp === "#")
-			setTimeout(function () {
-				$("#modalInfo").show();
-			}, 500);
-
-		if (resp !== "#")
-			setTimeout(function () {
-				$("#modalWarning").show();
-			}, 500);
-
-		$(".modalOkWarning").click(function () {
-			_run(`kill -9 ${resp}`);
-			$("#modalWarning").hide();
-
-			$.get(script, "skel", function (data) {
-				if (data === "#")
-					setTimeout(function () {
-						$("#modalInfo").show();
-					}, 500);
-			});
-		});
-	});
-*/
 });
 
 $(".restore-default").on("click", function (e) {
 	e.preventDefault();
 	let script = $(this).attr("data-value");
 
-	$.get("run/" + script, function (resp) {
+//	$.get("run/" + script, function (resp) {
+//	$.get("./bcfglib.sh", script, function (resp) {
+	$.get("/usr/share/bigbashview/bcc/shell/bcfglib.sh", script, function (resp) {
+		console.log(resp);
 		if (resp === "#")
 			setTimeout(function () {
 				$("#modalInfo").show();
@@ -138,7 +123,10 @@ $(".restore-default").on("click", function (e) {
 			_run(`kill -9 ${resp}`);
 			$("#modalWarning").hide();
 
-			$.get("run/" + script, function (data) {
+//			$.get("run/" + script, function (data) {
+//			$.get("./bcfglib.sh", script, function (data) {
+			$.get("/usr/share/bigbashview/bcc/shell/bcfglib.sh", script, "skel", function (data) {
+				console.log(resp);
 				if (data === "#")
 					setTimeout(function () {
 						$("#modalInfo").show();

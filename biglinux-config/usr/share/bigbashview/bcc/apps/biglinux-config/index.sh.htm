@@ -37,8 +37,8 @@
 APP="${0##*/}"
 _VERSION_="1.0.0-20230803"
 LIBRARY=${LIBRARY:-'/usr/share/bigbashview/bcc/shell'}
-[[ -f "${LIBRARY}/bcclib.sh" ]] && source "${LIBRARY}/bcclib.sh"
-# 2>&1 | tee -i -a "$BOOTLOG" > "$LOGGER"
+[[ -f "${LIBRARY}/bcclib.sh"  ]] && source "${LIBRARY}/bcclib.sh"
+[[ -f "${LIBRARY}/bcfglib.sh" ]] && source "${LIBRARY}/bcfglib.sh"
 
 function sh_config {
 	BOOTLOG="/tmp/$APP-$(sh_diahora).log"
@@ -46,7 +46,7 @@ function sh_config {
 	#Translation
 	export TEXTDOMAINDIR="/usr/share/locale"
 	export TEXTDOMAIN=biglinux-config
-	declare -gA aMenu=([TITLE]=$(gettext $"Restaurar Configurações")
+	declare -gA aMenu=([TITLE]=$(gettext "Restaurar Configurações")
 							 [Principais]=$(gettext $"Principais")
 							 [Internet]=$(gettext $"Internet")
 							 [Multimidia]=$(gettext $"Multimídia")
@@ -56,7 +56,7 @@ function sh_config {
 							 [Musicas]=$(gettext $"Músicas")
 							 [Restaurar_padrao_programa]=$(gettext $"Restaurar o aplicativo no modo padrão do programa")
 							 [Restaurar_padrao_distro]=$(gettext $"Restaurar o aplicativo no modo padrão da distribuição")
-							 [Restaurar_padrao_biglinux]=$(gettext $"Restaurar o aplicativo no modo padrão da distribuição BigLinux.")
+							 [Restaurar_padrao_biglinux]=$(gettext $"Restaurar o aplicativo no modo padrão da distribuição BigLinux")
 							 [Sim]=$(gettext $"Sim")
 							 [Nao]=$(gettext $"Não")
 							 [OK]=$(gettext $"OK")
@@ -75,10 +75,48 @@ function sh_config {
 								[sair_sessao]=$(gettext $"Sair da sessão")
 								[app_em_execucao]=$(gettext $"Atenção! O programa está em execução!")
 								[app_on_close]=$(gettext $"Será fechado para que a restauração seja concluída.")
+								[erase_all]=$(gettext $"Isso apagará todas as costumizações feitas por" $USER!)
 								)
+
+	#	O array associa o nome do aplicativo a uma série de informações separadas por | (barra vertical).
+	#	Vou desmembrar os campos:
+	#	[brave]: Chave do array associativo, indicando o nome do aplicativo.
+	#	Valor associado à chave "brave".
+	#	"/usr/lib/brave-browser/brave|icons/brave.png|modal_1|Brave|brave.sh"
+	#	Este valor contém várias informações separadas por |.
+	#	campo1 - /usr/lib/brave-browser/brave: Caminho para o executável do aplicativo Brave.
+	#	campo2 - icons/brave.png: Caminho para o ícone do aplicativo.
+	#	campo3 - modal_1: Alguma informação relacionada a um modal.
+	#	campo4 - Brave: Nome do aplicativo.
+	#	campo5 - brave.sh: Nome de um arquivo ou script sh associado.
+	#	campo6 - Subtitulo (se houver)
+#							       [kde0]="Star|/usr/bin/true|icons/kde.png|modal_0|Biglinux KDE|sh_reset_kde"
+	declare -gA AFullNameApp=(
+								[firefox1]="Star|/usr/lib/firefox/firefox|icons/firefox.png|modal_11|Firefox|sh_reset_firefox"
+								[dolphin1]="Star|/usr/bin/dolphin|icons/dolphin.png|modal_3|Dolphin|sh_reset_dolphin"
+								  [brave1]="Star|/usr/lib/brave-browser/brave|icons/brave.png|modal_1|Brave|sh_reset_brave"
+							 	   [kate1]="Star|/usr/bin/kate|icons/kate.png|modal_4|Kate|sh_reset_kate"
+  							     [brave2]="Internet|/usr/lib/brave-browser/brave|icons/brave.png|modal_1|Brave|sh_reset_brave"
+								[firefox2]="Internet|/usr/lib/firefox/firefox|icons/firefox.png|modal_2|Firefox|sh_reset_firefox"
+							   [chromium]="Internet|/usr/lib/chromium/chromium|icons/chromium.png|modal_7|Chromium|sh_reset_chromium"
+						   [qbittorrent]="Internet|/usr/bin/qbittorrent|icons/qbittorrent.png|modal_19|qBittorrent|sh_reset_qbittorrent"
+						        [chrome]="Internet|/opt/google/chrome/google-chrome|icons/chrome.png|modal_13|Google Chrome|sh_reset_chrome"
+								[dolphin2]="System|/usr/bin/dolphin|icons/dolphin.png|modal_10|Dolphin|sh_reset_dolphin"
+							 	   [kate2]="Office|/usr/bin/kate|icons/kate.png|modal_4|Kate|sh_reset_kate"
+						 	   [lowriter]="Office|/usr/bin/lowriter|icons/libreoffice.png|modal_17|LibreOffice|sh_reset_libreoffice"
+						        [okular]="Office|/usr/bin/true|icons/okular.png|modal_18|Okular|sh_reset_okular"
+						      [smplayer]="Multimedia|/usr/bin/smplayer|icons/smplayer.png|modal_20|$(gettext $"Vídeos")|sh_reset_smplayer|(Smplayer)"						      
+						        [mystiq]="Multimedia|/usr/bin/mystiq|icons/mystiq.png|modal_22|$(gettext $"Conversor de áudio e vídeo")|sh_reset_mystiq|(MystiQ)"
+						  [vokoscreenNG]="Multimedia|/usr/bin/vokoscreenNG|icons/vokoscreen.png|modal_9|$(gettext $"Gravador de Tela")|sh_reset_vokoscreen|(vokoscreenNG)"
+						    [clementine]="Multimedia|/usr/bin/clementine|icons/clementine.png|modal_8|$(gettext $"Músicas")|sh_reset_clementine|(clementine)"
+						      [inkscape]="Graphic|/usr/bin/inkscape|icons/inkscape.png|modal_21|Inkscape|sh_reset_inkscape"
+						         [ksnip]="Graphic|/usr/bin/ksnip|icons/ksnip.png|modal_16|Ksnip|sh_reset_ksnip"
+						          [gimp]="Graphic|/usr/bin/gimp|icons/gimp.png|modal_12|Gimp|sh_reset_gimp"
+						      [gwenview]="Graphic|/usr/bin/gwenview|icons/gwenview.png|modal_14|Gwenview|sh_reset_gwenview"
+							)
 }
 
-function sh_main {
+function sh_bcfg_start_html {
 cat <<-EOF
 	<!DOCTYPE html>
 	<html lang="en">
@@ -170,7 +208,6 @@ cat <<-EOF
 	</a>
 
 	</div></div></div>
-
 	<div class="main-container" style="overflow: auto;">
 	<div class="content-wrapper" style="overflow-x: hidden;">
 	<a name="topo">
@@ -208,9 +245,16 @@ cat <<-EOF
 	<a class="menu-link-main">
 	${aMenu[Sistema]}
 	</a></div>
+EOF
+}
 
+
+function sh_bcfg_process_kde {
+	local classe="$1"
+
+cat <<-EOF
 	<!-- BEGIN Biglinux KDE -->
-	<div class="box-1 box-2 box-3 box-4 box-5 box-items Star">
+	<div class="box-1 box-2 box-3 box-4 box-5 box-items $classe">
 	<div id="box-status-bar">
 	<div id="tit-status-bar">
 	${aMenu[Restaurar_padrao_biglinux]}
@@ -224,7 +268,6 @@ cat <<-EOF
 	</div>
 	</button>
 	</div>
-
 	<div id="modal_0" class="modal modalOkWarningKDE">
 	<div class="modalContent">
 	<div>
@@ -235,7 +278,7 @@ cat <<-EOF
 	</div><br>
 	${aMenu[Conf]}
 	<br><br>
-	$"Isso apagará todas as costumizações feitas por" $USER!
+	${Afinish[erase_all]}
 	<br>
 	<div class="content-button-wrapper" style="text-align: right;">
 	<br><button class="modalClose">
@@ -249,1075 +292,72 @@ cat <<-EOF
 	</div>
 	<!-- END Biglinux KDE -->
 EOF
+}
 
-	if [ -e /usr/lib/brave-browser/brave ]; then
-cat <<-EOF
-		<!-- BEGIN Brave -->
-		<div class="box-1 box-2 box-3 box-4 box-5 box-items Star">
-		<div id="box-status-bar">
-		<div id="tit-status-bar">
-		${aMenu[Restaurar_padrao_programa]}
-		</div>
-		</div>
-		<button onclick="openModal('modal_1')" id="box-subtitle" class="box-geral-icons box-geral-button">
-		<div class="box-imagem-icon">
-		<img class="box-imagem-icon" src="icons/brave.png">
-		</div>
-		<div class="box-titulo">
-		Brave
-		</div>
-		</button>
-		</div>
+function sh_bcfg_process_apps {
+	local classe
+	local file_path
+	local file_icon
+	local modal
+	local xtitle
+	local cmd
+	local subxtitle
+	local app
 
-		<div id="modal_1" class="modal">
-		<div class="modalContent">
-		<div>
-		<i style="vertical-align: middle; margin-right: 5px;">
-		<img src="icons/brave.png" width="42" height="42" >
-		</i>
-		Brave
-		</div><br>
-		<div class="app-card restore-default"
-		data-value="brave.sh" style="width: 100%; border: 1px solid #444444; margin: 3px;">
-		<span>
-		<img src="icons/default.png" width="32" height="32" style="margin-right: 10px;">
-		${aMenu[Restaurar_padrao_programa]}
-		</span>
-		</div>
-		<div class="content-button-wrapper" style="text-align: right;">
-		<br>
-		<button class="modalClose">
-		${aMenu[Cancelar]}
-		</button>
-		</div>
-		</div>
-		</div>
-		<!-- END Brave -->
-EOF
-	fi
+	for app in "${!AFullNameApp[@]}"; do
+		IFS='|' read -r classe file_path file_icon modal xtitle cmd subxtitle <<< "${AFullNameApp[$app]}"
+		if [ -e "$file_path" ]; then
+			cat <<-EOF
+				<div class="box-1 box-2 box-3 box-4 box-5 box-items $classe">
+				<div id="box-status-bar">
+				<div id="tit-status-bar">
+				${aMenu[Restaurar_padrao_biglinux]}
+				</div>
+				</div>
+				<button onclick="openModal('$modal')" id="box-subtitle" class="box-geral-icons box-geral-button">
+				<div class="box-imagem-icon">
+				<img class="box-imagem-icon" src="$file_icon">
+				</div>
+				<div class="box-titulo">
+				$xtitle $subxtitle
+				</div>
+				</button>
+				</div>
+				<div id="$modal" class="modal">
+				<div class="modalContent">
+				<div>
+				<i style="vertical-align: middle; margin-right: 5px;">
+				<img src="$file_icon" width="42" height="42" >
+				</i>
+				${aMenu[Restaurar_modo]}
+				</div><br>
+				<div class="app-card restore-skel"
+				data-value="$cmd" style="width: 100%; border: 1px solid #444444; margin: 3px;">
+				<span>
+				<img src="icons/biglinux.png" width="32" height="32" style="margin-right: 10px;">
+				${aMenu[Restaurar_padrao_distro]}
+				</span>
+				</div>
+				<div class="app-card restore-default"
+				data-value="$cmd" style="width: 100%; border: 1px solid #444444; margin: 3px;">
+				<span>
+				<img src="icons/default.png" width="32" height="32" style="margin-right: 10px;">
+				${aMenu[Restaurar_padrao_programa]}
+				</span>
+				</div>
+				<div class="content-button-wrapper" style="text-align: right;">
+				<br><button class="modalClose">
+				${aMenu[Cancelar]}
+				</button>
+				</div>
+				</div>
+				</div>
+			EOF
+		fi
+	done
+}
 
-	if [ -e /usr/lib/firefox/firefox ];then
-cat <<-EOF
-		<!-- BEGIN Firefox -->
-		<div class="box-1 box-2 box-3 box-4 box-5 box-items Star">
-		<div id="box-status-bar">
-		<div id="tit-status-bar">
-		${aMenu[Restaurar_padrao_programa]}
-		</div>
-		</div>
-		<button onclick="openModal('modal_2')" id="box-subtitle" class="box-geral-icons box-geral-button">
-		<div class="box-imagem-icon">
-		<img class="box-imagem-icon" src="icons/firefox.png">
-		</div>
-		<div class="box-titulo">
-		Firefox
-		</div>
-		</button>
-		</div>
-
-		<div id="modal_2" class="modal">
-		<div class="modalContent">
-		<div>
-		<i style="vertical-align: middle; margin-right: 5px;">
-		<img src="icons/firefox.png" width="42" height="42" >
-		</i>
-		Firefox
-		</div><br>
-		<div class="app-card restore-default"
-		data-value="firefox.sh" style="width: 100%; border: 1px solid #444444; margin: 3px;">
-		<span>
-		<img src="icons/default.png" width="32" height="32" style="margin-right: 10px;">
-		${aMenu[Restaurar_padrao_programa]}
-		</span>
-		</div>
-		<div class="content-button-wrapper" style="text-align: right;">
-		<br><button class="modalClose">
-		${aMenu[Cancelar]}
-		</button>
-		</div>
-		</div>
-		</div>
-		<!-- END Firefox -->
-EOF
-	fi
-
-cat <<-EOF
-	<!-- BEGIN Dolphin -->
-	<div class="box-1 box-2 box-3 box-4 box-5 box-items Star">
-	<div id="box-status-bar">
-	<div id="tit-status-bar">
-	${aMenu[Restaurar_padrao_biglinux]}
-	</div>
-	</div>
-	<button onclick="openModal('modal_3')" id="box-subtitle" class="box-geral-icons box-geral-button">
-	<div class="box-imagem-icon">
-	<img class="box-imagem-icon" src="icons/dolphin.png">
-	</div>
-	<div class="box-titulo">
-	Dolphin
-	</div>
-	</button>
-	</div>
-
-	<div id="modal_3" class="modal">
-	<div class="modalContent">
-	<div>
-	<i style="vertical-align: middle; margin-right: 5px;">
-	<img src="icons/dolphin.png" width="42" height="42" >
-	</i>
-	${aMenu[Restaurar_modo]}
-	</div><br>
-	<div class="app-card restore-skel"
-	data-value="dolphin.sh" style="width: 100%; border: 1px solid #444444; margin: 3px;">
-	<span>
-	<img src="icons/biglinux.png" width="32" height="32" style="margin-right: 10px;">
-	${aMenu[Restaurar_padrao_distro]}
-	</span>
-	</div>
-
-	<div class="app-card restore-default"
-	data-value="dolphin.sh" style="width: 100%; border: 1px solid #444444; margin: 3px;">
-	<span>
-	<img src="icons/default.png" width="32" height="32" style="margin-right: 10px;">
-	${aMenu[Restaurar_padrao_programa]}
-	</span>
-	</div>
-	<div class="content-button-wrapper" style="text-align: right;">
-	<br><button class="modalClose">
-	${aMenu[Cancelar]}
-	</button>
-	</div>
-	</div>
-	</div>
-	<!-- END Dolphin -->
-EOF
-
-	if [ -e /usr/bin/kate ];then
-cat <<-EOF
-		<!-- BEGIN Kate -->
-		<div class="box-1 box-2 box-3 box-4 box-5 box-items Star">
-		<div id="box-status-bar">
-		<div id="tit-status-bar">
-		${aMenu[Restaurar_padrao_biglinux]}
-		</div>
-		</div>
-		<button onclick="openModal('modal_4')" id="box-subtitle" class="box-geral-icons box-geral-button">
-		<div class="box-imagem-icon">
-		<img class="box-imagem-icon" src="icons/kate.png">
-		</div>
-		<div class="box-titulo">
-		Kate
-		</div>
-		</button>
-		</div>
-		<div id="modal_4" class="modal">
-		<div class="modalContent">
-		<div>
-		<i style="vertical-align: middle; margin-right: 5px;">
-		<img src="icons/kate.png" width="42" height="42" >
-		</i>
-		${aMenu[Restaurar_modo]}
-		</div><br>
-		<div class="app-card restore-skel"
-		data-value="kate.sh" style="width: 100%; border: 1px solid #444444; margin: 3px;">
-		<span>
-		<img src="icons/biglinux.png" width="32" height="32" style="margin-right: 10px;">
-		${aMenu[Restaurar_padrao_distro]}
-		</span>
-		</div>
-		<div class="app-card restore-default"
-		data-value="kate.sh" style="width: 100%; border: 1px solid #444444; margin: 3px;">
-		<span>
-		<img src="icons/default.png" width="32" height="32" style="margin-right: 10px;">
-		${aMenu[Restaurar_padrao_programa]}
-		</span>
-		</div>
-		<div class="content-button-wrapper" style="text-align: right;">
-		<br><button class="modalClose">
-		${aMenu[Cancelar]}
-		</button>
-		</div>
-		</div>
-		</div>
-		<!-- END Kate -->
-EOF
-	fi
-cat <<-EOF
-	<!-- BEGIN Biglinux KDE -->
-	<div class="box-1 box-2 box-3 box-4 box-5 box-items System">
-	<div id="box-status-bar">
-	<div id="tit-status-bar">
-	${aMenu[Restaurar_padrao_biglinux]}
-	</div>
-	</div>
-	<button onclick="openModal('modal_0')" id="box-subtitle" class="box-geral-icons box-geral-button">
-	<div class="box-imagem-icon">
-	<img class="box-imagem-icon" src="icons/kde.png">
-	</div>
-	<div class="box-titulo">
-	Biglinux KDE
-	</div>
-	</button>
-	</div>
-
-	<div id="modal_0" class="modal">
-	<div class="modalContent">
-	<div>
-	<i style="vertical-align: middle; margin-right: 5px;">
-	<img src="icons/kde.png" width="42" height="42" >
-	</i>
-	Biglinux KDE
-	</div><br>
-	${aMenu[Conf]}
-	<br><br>
-	$"Isso apagará todas as costumizações feitas por" $USER!
-	<br>
-
-	<div class="content-button-wrapper" style="text-align: right;">
-	<br><button class="modalClose">
-	${aMenu[Nao]}
-	</button>
-	<button class="modalBtn" id="modalOkWarningKDE">
-	${aMenu[Sim]}
-	</button>
-	</div>
-	</div>
-	</div>
-	<!-- END Biglinux KDE -->
-EOF
-
-	if [ -e /usr/lib/brave-browser/brave ];then
-cat <<-EOF
-		<!-- BEGIN Brave -->
-		<div class="box-1 box-2 box-3 box-4 box-5 box-items Internet">
-		<div id="box-status-bar">
-		<div id="tit-status-bar">
-		${aMenu[Restaurar_padrao_programa]}
-		</div>
-		</div>
-		<button onclick="openModal('modal_6')" id="box-subtitle" class="box-geral-icons box-geral-button">
-		<div class="box-imagem-icon">
-		<img class="box-imagem-icon" src="icons/brave.png">
-		</div>
-		<div class="box-titulo">
-		Brave
-		</div>
-		</button>
-		</div>
-
-		<div id="modal_6" class="modal">
-		<div class="modalContent">
-		<div>
-		<i style="vertical-align: middle; margin-right: 5px;">
-		<img src="icons/brave.png" width="42" height="42" >
-		</i>
-		Brave
-		</div><br>
-		<div class="app-card restore-default"
-		data-value="brave.sh" style="width: 100%; border: 1px solid #444444; margin: 3px;">
-		<span>
-		<img src="icons/default.png" width="32" height="32" style="margin-right: 10px;">
-		${aMenu[Restaurar_padrao_programa]}
-		</span>
-		</div>
-		<div class="content-button-wrapper" style="text-align: right;">
-		<br><button class="modalClose">
-		${aMenu[Cancelar]}
-		</button>
-		</div>
-		</div>
-		</div>
-		<!-- END Brave -->
-EOF
-	fi
-
-	if [ -e /usr/lib/chromium/chromium ];then
-cat <<-EOF
-		<!-- BEGIN Chromium -->
-		<div class="box-1 box-2 box-3 box-4 box-5 box-items Internet">
-		<div id="box-status-bar">
-		<div id="tit-status-bar">
-		${aMenu[Restaurar_padrao_biglinux]}
-		</div>
-		</div>
-		<button onclick="openModal('modal_7')" id="box-subtitle" class="box-geral-icons box-geral-button">
-		<div class="box-imagem-icon">
-		<img class="box-imagem-icon" src="icons/chromium.png">
-		</div>
-		<div class="box-titulo">
-		Chromium
-		</div>
-		</button>
-		</div>
-
-		<div id="modal_7" class="modal">
-		<div class="modalContent">
-		<div>
-		<i style="vertical-align: middle; margin-right: 5px;">
-		<img src="icons/chromium.png" width="42" height="42" >
-		</i>
-		${aMenu[Restaurar_modo]}
-		</div><br>
-		<div class="app-card restore-skel"
-		data-value="chromium.sh" style="width: 100%; border: 1px solid #444444; margin: 3px;">
-		<span>
-		<img src="icons/biglinux.png" width="32" height="32" style="margin-right: 10px;">
-		${aMenu[Restaurar_padrao_distro]}
-		</span>
-		</div>
-
-		<div class="app-card restore-default"
-		data-value="chromium.sh" style="width: 100%; border: 1px solid #444444; margin: 3px;">
-		<span>
-		<img src="icons/default.png" width="32" height="32" style="margin-right: 10px;">
-		${aMenu[Restaurar_padrao_programa]}
-		</span>
-		</div>
-		<div class="content-button-wrapper" style="text-align: right;">
-		<br><button class="modalClose">
-		${aMenu[Cancelar]}
-		</button>
-		</div>
-		</div>
-		</div>
-		<!-- END Chromium -->
-EOF
-	fi
-
-	if test -e /usr/bin/clementine; then
-cat <<-EOF
-		<!-- BEGIN Músicas (Clementine) -->
-		<div class="box-1 box-2 box-3 box-4 box-5 box-items Multimedia">
-		<div id="box-status-bar">
-		<div id="tit-status-bar">
-		${aMenu[Restaurar_padrao_biglinux]}
-		</div>
-		</div>
-		<button onclick="openModal('modal_8')" id="box-subtitle" class="box-geral-icons box-geral-button">
-		<div class="box-imagem-icon">
-		<img class="box-imagem-icon" src="icons/clementine.png">
-		</div>
-		<div class="box-titulo">
-		${aMenu[Musicas]} '(Clementine)'
-		</div>
-		</button>
-		</div>
-		<div id="modal_8" class="modal">
-		<div class="modalContent">
-		<div>
-		<i style="vertical-align: middle; margin-right: 5px;">
-		<img src="icons/clementine.png" width="42" height="42" >
-		</i>
-		${aMenu[Restaurar_modo]}
-		</div><br>
-		<div class="app-card restore-skel"
-		data-value="clementine.sh"	style="width: 100%; border: 1px solid #444444; margin: 3px;">
-		<span>
-		<img src="icons/biglinux.png" width="32" height="32" style="margin-right: 10px;">
-		${aMenu[Restaurar_padrao_distro]}
-		</span>
-		</div>
-		<div class="app-card restore-default"
-		data-value="clementine.sh" style="width: 100%; border: 1px solid #444444; margin: 3px;">
-		<span>
-		<img src="icons/default.png" width="32" height="32" style="margin-right: 10px;">
-		${aMenu[Restaurar_padrao_programa]}
-		</span>
-		</div>
-		<div class="content-button-wrapper" style="text-align: right;">
-		<br><button class="modalClose">
-		${aMenu[Cancelar]}
-		</button>
-		</div>
-		</div>
-		</div>
-		<!-- END Músicas (Clementine) -->
-EOF
-	fi
-
-	if test -e /usr/bin/vokoscreenNG; then
-cat <<-EOF
-		<!-- BEGIN Gravador de Tela (vokoscreenNG) -->
-		<div class="box-1 box-2 box-3 box-4 box-5 box-items Multimedia">
-		<div id="box-status-bar">
-		<div id="tit-status-bar">
-		${aMenu[Restaurar_padrao_programa]}
-		</div>
-		</div>
-		<button onclick="openModal('modal_9')" id="box-subtitle" class="box-geral-icons box-geral-button">
-		<div class="box-imagem-icon">
-		<img class="box-imagem-icon" src="icons/vokoscreen.png">
-		</div>
-		<div class="box-titulo">
-		${Aapps[vokoscreenNG]} (vokoscreenNG)
-		</div>
-		</button>
-		</div>
-		<div id="modal_9" class="modal">
-		<div class="modalContent">
-		<div>
-		<i style="vertical-align: middle; margin-right: 5px;">
-		<img src="icons/vokoscreen.png" width="42" height="42" >
-		</i>
-		${Aapps[vokoscreenNG]}
-		</div><br>
-		<div class="app-card restore-default"
-		data-value="vokoscreen.sh" style="width: 100%; border: 1px solid #444444; margin: 3px;">
-		<span>
-		<img src="icons/default.png" width="32" height="32" style="margin-right: 10px;">
-		${aMenu[Restaurar_padrao_programa]}
-		</span>
-		</div>
-		<div class="content-button-wrapper" style="text-align: right;">
-		<br><button class="modalClose">
-		${aMenu[Cancelar]}
-		</button>
-		</div>
-		</div>
-		</div>
-		<!-- END Gravador de Tela (vokoscreenNG) -->
-EOF
-	fi
-
-cat <<-EOF
-	<!-- BEGIN Dolphin -->
-	<div class="box-1 box-2 box-3 box-4 box-5 box-items System">
-	<div id="box-status-bar">
-	<div id="tit-status-bar">
-	${aMenu[Restaurar_padrao_biglinux]}
-	</div>
-	</div>
-	<button onclick="openModal('modal_10')" id="box-subtitle" class="box-geral-icons box-geral-button">
-	<div class="box-imagem-icon">
-	<img class="box-imagem-icon" src="icons/dolphin.png">
-	</div>
-	<div class="box-titulo">
-	Dolphin
-	</div>
-	</button>
-	</div>
-	<div id="modal_10" class="modal">
-	<div class="modalContent">
-	<div>
-	<i style="vertical-align: middle; margin-right: 5px;">
-	<img src="icons/dolphin.png" width="42" height="42" >
-	</i>
-	${aMenu[Restaurar_modo]}
-	</div><br>
-	<div class="app-card restore-skel"
-	data-value="dolphin.sh" style="width: 100%; border: 1px solid #444444; margin: 3px;">
-	<span>
-	<img src="icons/biglinux.png" width="32" height="32" style="margin-right: 10px;">
-	${aMenu[Restaurar_padrao_distro]}
-	</span>
-	</div>
-	<div class="app-card restore-default"
-	data-value="dolphin.sh" style="width: 100%; border: 1px solid #444444; margin: 3px;">
-	<span>
-	<img src="icons/default.png" width="32" height="32" style="margin-right: 10px;">
-	${aMenu[Restaurar_padrao_programa]}
-	</span>
-	</div>
-	<div class="content-button-wrapper" style="text-align: right;">
-	<br><button class="modalClose">
-	${aMenu[Cancelar]}
-	</button>
-	</div>
-	</div>
-	</div>
-	<!-- END Dolphin -->
-EOF
-
-	if test -e /usr/lib/firefox/firefox; then
-cat <<-EOF
-		<!-- BEGIN Firefox -->
-		<div class="box-1 box-2 box-3 box-4 box-5 box-items Internet">
-		<div id="box-status-bar">
-		<div id="tit-status-bar">
-		${aMenu[Restaurar_padrao_biglinux]}
-		</div>
-		</div>
-		<button onclick="openModal('modal_11')" id="box-subtitle" class="box-geral-icons box-geral-button">
-		<div class="box-imagem-icon">
-		<img class="box-imagem-icon" src="icons/firefox.png">
-		</div>
-		<div class="box-titulo">
-		Firefox
-		</div>
-		</button>
-		</div>
-		<div id="modal_11" class="modal">
-		<div class="modalContent">
-		<div>
-		<i style="vertical-align: middle; margin-right: 5px;">
-		<img src="icons/firefox.png" width="42" height="42" >
-		</i>
-		Firefox
-		</div><br>
-		<div class="app-card restore-default"
-		data-value="firefox.sh" style="width: 100%; border: 1px solid #444444; margin: 3px;">
-		<span>
-		<img src="icons/default.png" width="32" height="32" style="margin-right: 10px;">
-		${aMenu[Restaurar_padrao_programa]}
-		</span>
-		</div>
-		<div class="content-button-wrapper" style="text-align: right;">
-		<br><button class="modalClose">
-		${aMenu[Cancelar]}
-		</button>
-		</div>
-		</div>
-		</div>
-		<!-- END Firefox -->
-EOF
-	fi
-
-	if test -e /usr/bin/gimp; then
-cat <<-EOF
-		<!-- BEGIN Gimp -->
-		<div class="box-1 box-2 box-3 box-4 box-5 box-items Graphic">
-		<div id="box-status-bar">
-		<div id="tit-status-bar">
-		${aMenu[Restaurar_padrao_biglinux]}
-		</div>
-		</div>
-		<button onclick="openModal('modal_12')" id="box-subtitle" class="box-geral-icons box-geral-button">
-		<div class="box-imagem-icon">
-		<img class="box-imagem-icon" src="icons/gimp.png">
-		</div>
-		<div class="box-titulo">
-		Gimp
-		</div>
-		</button>
-		</div>
-		<div id="modal_12" class="modal">
-		<div class="modalContent">
-		<div>
-		<i style="vertical-align: middle; margin-right: 5px;">
-		<img src="icons/gimp.png" width="42" height="42" >
-		</i>
-		${aMenu[Restaurar_modo]}
-		</div><br>
-		<div class="app-card restore-skel"
-		data-value="gimp.sh" style="width: 100%; border: 1px solid #444444; margin: 3px;">
-		<span>
-		<img src="icons/biglinux.png" width="32" height="32" style="margin-right: 10px;">
-		${aMenu[Restaurar_padrao_distro]}
-		</span>
-		</div>
-		<div class="app-card restore-default"
-		data-value="gimp.sh" style="width: 100%; border: 1px solid #444444; margin: 3px;">
-		<span>
-		<img src="icons/default.png" width="32" height="32" style="margin-right: 10px;">
-		${aMenu[Restaurar_padrao_programa]}
-		</span>
-		</div>
-		<div class="content-button-wrapper" style="text-align: right;">
-		<br><button class="modalClose">
-		${aMenu[Cancelar]}
-		</button>
-		</div>
-		</div>
-		</div>
-		<!-- END Gimp -->
-EOF
-	fi
-
-	if test -e /opt/google/chrome/google-chrome; then
-cat <<-EOF
-		<!-- BEGIN Google Chrome -->
-		<div class="box-1 box-2 box-3 box-4 box-5 box-items Internet">
-		<div id="box-status-bar">
-		<div id="tit-status-bar">
-		${aMenu[Restaurar_padrao_programa]}
-		</div>
-		</div>
-		<button onclick="openModal('modal_13')" id="box-subtitle" class="box-geral-icons box-geral-button">
-		<div class="box-imagem-icon">
-		<img class="box-imagem-icon" src="icons/chrome.png">
-		</div>
-		<div class="box-titulo">
-		Google Chrome
-		</div>
-		</button>
-		</div>
-		<div id="modal_13" class="modal">
-		<div class="modalContent">
-		<div>
-		<i style="vertical-align: middle; margin-right: 5px;">
-		<img src="icons/chrome.png" width="42" height="42" >
-		</i>
-		Google Chrome
-		</div><br>
-		<div class="app-card restore-default"
-		data-value="google-chrome.sh" style="width: 100%; border: 1px solid #444444;margin: 3px;">
-		<span>
-		<img src="icons/default.png" width="32" height="32" style="margin-right: 10px;">
-		${aMenu[Restaurar_padrao_programa]}
-		</span>
-		</div>
-		<div class="content-button-wrapper" style="text-align: right;">
-		<br><button class="modalClose">
-		${aMenu[Cancelar]}
-		</button>
-		</div>
-		</div>
-		</div>
-		<!-- END Google Chrome -->
-EOF
-	fi
-
-#  line: 899/906
-#	data-value="$(sh_reset_gwenview)" style="width: 100%; border: 1px solid #444444; margin: 3px;">
-
-cat <<-EOF
-	<!-- BEGIN Gwenview -->
-	<div class="box-1 box-2 box-3 box-4 box-5 box-items Graphic">
-	<div id="box-status-bar">
-	<div id="tit-status-bar">
-	${aMenu[Restaurar_padrao_biglinux]}
-	</div>
-	</div>
-	<button onclick="openModal('modal_14')" id="box-subtitle" class="box-geral-icons box-geral-button">
-	<div class="box-imagem-icon">
-	<img class="box-imagem-icon" src="icons/gwenview.png">
-	</div>
-	<div class="box-titulo">
-	Gwenview
-	</div>
-	</button>
-	</div>
-	<div id="modal_14" class="modal">
-	<div class="modalContent">
-	<div>
-	<i style="vertical-align: middle; margin-right: 5px;">
-	<img src="icons/gwenview.png" width="42" height="42" >
-	</i>
-	${aMenu[Restaurar_modo]}
-	</div><br>
-	<div class="app-card restore-skel"
-	data-value="gwenview.sh" style="width: 100%; border: 1px solid #444444;margin: 3px;">
-	<span>
-	<img src="icons/biglinux.png" width="32" height="32" style="margin-right: 10px;">
-	${aMenu[Restaurar_padrao_distro]}
-	</span>
-	</div>
-	<div class="app-card restore-default"
-	data-value="gwenview.sh" style="width: 100%; border: 1px solid #444444;margin: 3px;">
-	<span>
-	<img src="icons/default.png" width="32" height="32" style="margin-right: 10px;">
-	${aMenu[Restaurar_padrao_programa]}
-	</span>
-	</div>
-	<div class="content-button-wrapper" style="text-align: right;">
-	<br><button class="modalClose">
-	${aMenu[Cancelar]}
-	</button>
-	</div>
-	</div>
-	</div>
-	<!-- END Gwenview -->
-EOF
-
-	if test -e /usr/bin/kate; then
-cat <<-EOF
-		<!-- BEGIN Kate -->
-		<div class="box-1 box-2 box-3 box-4 box-5 box-items Office">
-		<div id="box-status-bar">
-		<div id="tit-status-bar">
-		${aMenu[Restaurar_padrao_biglinux]}
-		</div>
-		</div>
-		<button onclick="openModal('modal_15')" id="box-subtitle" class="box-geral-icons box-geral-button">
-		<div class="box-imagem-icon">
-		<img class="box-imagem-icon" src="icons/kate.png">
-		</div>
-		<div class="box-titulo">
-		Kate
-		</div>
-		</button>
-		</div>
-		<div id="modal_15" class="modal">
-		<div class="modalContent">
-		<div>
-		<i style="vertical-align: middle; margin-right: 5px;">
-		<img src="icons/kate.png" width="42" height="42" >
-		</i>
-		${aMenu[Restaurar_modo]}
-		</div><br>
-		<div class="app-card restore-skel"
-		data-value="kate.sh" style="width: 100%; border: 1px solid #444444;margin: 3px;">
-		<span>
-		<img src="icons/biglinux.png" width="32" height="32" style="margin-right: 10px;">
-		${aMenu[Restaurar_padrao_distro]}
-		</span>
-		</div>
-		<div class="app-card restore-default"
-		data-value="kate.sh" style="width: 100%; border: 1px solid #444444; margin: 3px;">
-		<span>
-		<img src="icons/default.png" width="32" height="32" style="margin-right: 10px;">
-		${aMenu[Restaurar_padrao_programa]}
-		</span>
-		</div>
-		<div class="content-button-wrapper" style="text-align: right;">
-		<br><button class="modalClose">
-		${aMenu[Cancelar]}
-		</button>
-		</div>
-		</div>
-		</div>
-		<!-- END Kate -->
-EOF
-	fi
-
-	if test -e /usr/bin/ksnip; then
-cat <<-EOF
-		<!-- BEGIN Ksnip -->
-		<div class="box-1 box-2 box-3 box-4 box-5 box-items Graphic">
-		<div id="box-status-bar">
-		<div id="tit-status-bar">
-		${aMenu[Restaurar_padrao_biglinux]}
-		</div>
-		</div>
-		<button onclick="openModal('modal_16')" id="box-subtitle" class="box-geral-icons box-geral-button">
-		<div class="box-imagem-icon">
-		<img class="box-imagem-icon" src="icons/ksnip.png">
-		</div>
-		<div class="box-titulo">
-		Ksnip
-		</div>
-		</button>
-		</div>
-		<div id="modal_16" class="modal">
-		<div class="modalContent">
-		<div>
-		<i style="vertical-align: middle; margin-right: 5px;">
-		<img src="icons/ksnip.png" width="42" height="42" >
-		</i>
-		${aMenu[Restaurar_modo]}
-		</div><br>
-		<div class="app-card restore-skel"
-		data-value="ksnip.sh" style="width: 100%; border: 1px solid #444444; margin: 3px;">
-		<span>
-		<img src="icons/biglinux.png" width="32" height="32" style="margin-right: 10px;">
-		${aMenu[Restaurar_padrao_distro]}
-		</span>
-		</div>
-		<div class="app-card restore-default"
-		data-value="ksnip.sh" style="width: 100%; border: 1px solid #444444; margin: 3px;">
-		<span>
-		<img src="icons/default.png" width="32" height="32" style="margin-right: 10px;">
-		${aMenu[Restaurar_padrao_programa]}
-		</span>
-		</div>
-		<div class="content-button-wrapper" style="text-align: right;">
-		<br><button class="modalClose">
-		${aMenu[Cancelar]}
-		</button>
-		</div>
-		</div>
-		</div>
-		<!-- END Ksnip -->
-EOF
-	fi
-
-	if test -e /usr/bin/lowriter; then
-cat <<-EOF
-		<!-- BEGIN LibreOffice -->
-		<div class="box-1 box-2 box-3 box-4 box-5 box-items Office">
-		<div id="box-status-bar">
-		<div id="tit-status-bar">
-		${aMenu[Restaurar_padrao_biglinux]}
-		</div>
-		</div>
-		<button onclick="openModal('modal_17')" id="box-subtitle" class="box-geral-icons box-geral-button">
-		<div class="box-imagem-icon">
-		<img class="box-imagem-icon" src="icons/libreoffice.png">
-		</div>
-		<div class="box-titulo">
-		LibreOffice
-		</div>
-		</button>
-		</div>
-		<div id="modal_17" class="modal">
-		<div class="modalContent">
-		<div>
-		<i style="vertical-align: middle; margin-right: 5px;">
-		<img src="icons/libreoffice.png" width="42" height="42" >
-		</i>
-		${aMenu[Restaurar_modo]}
-		</div><br>
-		<div class="app-card restore-skel"
-		data-value="libreoffice.sh" style="width: 100%; border: 1px solid #444444; margin: 3px;">
-		<span>
-		<img src="icons/biglinux.png" width="32" height="32" style="margin-right: 10px;">
-		${aMenu[Restaurar_padrao_distro]}
-		</span>
-		</div>
-		<div class="app-card restore-default"
-		data-value="libreoffice.sh" style="width: 100%; border: 1px solid #444444; margin: 3px;">
-		<span>
-		<img src="icons/default.png" width="32" height="32" style="margin-right: 10px;">
-		${aMenu[Restaurar_padrao_programa]}
-		</span>
-		</div>
-		<div class="content-button-wrapper" style="text-align: right;">
-		<br><button class="modalClose">
-		${aMenu[Cancelar]}
-		</button>
-		</div>
-		</div>
-		</div>
-		<!-- END LibreOffice -->
-EOF
-	fi
-
-cat <<-EOF
-	<!-- BEGIN Okular -->
-	<div class="box-1 box-2 box-3 box-4 box-5 box-items Office">
-	<div id="box-status-bar">
-	<div id="tit-status-bar">
-	${aMenu[Restaurar_padrao_biglinux]}
-	</div>
-	</div>
-	<button onclick="openModal('modal_18')" id="box-subtitle" class="box-geral-icons box-geral-button">
-	<div class="box-imagem-icon">
-	<img class="box-imagem-icon" src="icons/okular.png">
-	</div>
-	<div class="box-titulo">
-	Okular
-	</div>
-	</button>
-	</div>
-	<div id="modal_18" class="modal">
-	<div class="modalContent">
-	<div>
-	<i style="vertical-align: middle; margin-right: 5px;">
-	<img src="icons/okular.png" width="42" height="42" >
-	</i>
-	${aMenu[Restaurar_modo]}
-	</div><br>
-	<div class="app-card restore-skel"
-	data-value="okular.sh" style="width: 100%; border: 1px solid #444444; margin: 3px;">
-	<span>
-	<img src="icons/biglinux.png" width="32" height="32" style="margin-right: 10px;">
-	${aMenu[Restaurar_padrao_distro]}
-	</span>
-	</div>
-	<div class="app-card restore-default"
-	data-value="okular.sh" style="width: 100%; border: 1px solid #444444; margin: 3px;">
-	<span>
-	<img src="icons/default.png" width="32" height="32" style="margin-right: 10px;">
-	${aMenu[Restaurar_padrao_programa]}
-	</span>
-	</div>
-	<div class="content-button-wrapper" style="text-align: right;">
-	<br><button class="modalClose">
-	${aMenu[Cancelar]}
-	</button>
-	</div>
-	</div>
-	</div>
-	<!-- END Okular -->
-EOF
-
-	if test -e /usr/bin/qbittorrent; then
-cat <<-EOF
-		<!-- BEGIN qBittorrent -->
-		<div class="box-1 box-2 box-3 box-4 box-5 box-items Internet">
-		<div id="box-status-bar">
-		<div id="tit-status-bar">
-		${aMenu[Restaurar_padrao_biglinux]}
-		</div>
-		</div>
-		<button onclick="openModal('modal_19')" id="box-subtitle" class="box-geral-icons box-geral-button">
-		<div class="box-imagem-icon">
-		<img class="box-imagem-icon" src="icons/qbittorrent.png">
-		</div>
-		<div class="box-titulo">
-		qBittorrent
-		</div>
-		</button>
-		</div>
-		<div id="modal_19" class="modal">
-		<div class="modalContent">
-		<div>
-		<i style="vertical-align: middle; margin-right: 5px;">
-		<img src="icons/qbittorrent.png" width="42" height="42" >
-		</i>
-		${aMenu[Restaurar_modo]}
-		</div><br>
-		<div class="app-card restore-skel"
-		data-value="qbittorrent.sh" style="width: 100%; border: 1px solid #444444; margin: 3px;">
-		<span>
-		<img src="icons/biglinux.png" width="32" height="32" style="margin-right: 10px;">
-		${aMenu[Restaurar_padrao_distro]}
-		</span>
-		</div>
-		<div class="app-card restore-default"
-		data-value="qbittorrent.sh" style="width: 100%; border: 1px solid #444444; margin: 3px;">
-		<span>
-		<img src="icons/default.png" width="32" height="32" style="margin-right: 10px;">
-		${aMenu[Restaurar_padrao_programa]}
-		</span>
-		</div>
-		<div class="content-button-wrapper" style="text-align: right;">
-		<br><button class="modalClose">
-		${aMenu[Cancelar]}
-		</button>
-		</div>
-		</div>
-		</div>
-		<!-- END qBittorrent -->
-EOF
-	fi
-
-	if test -e /usr/bin/smplayer; then
-cat <<-EOF
-		<!-- BEGIN Vídeos (Smplayer) -->
-		<div class="box-1 box-2 box-3 box-4 box-5 box-items Multimedia">
-		<div id="box-status-bar">
-		<div id="tit-status-bar">
-		${aMenu[Restaurar_padrao_biglinux]}
-		</div>
-		</div>
-		<button onclick="openModal('modal_20')" id="box-subtitle" class="box-geral-icons box-geral-button">
-		<div class="box-imagem-icon">
-		<img class="box-imagem-icon" src="icons/smplayer.png">
-		</div>
-		<div class="box-titulo">
-		${Aapps[Videos]} '(Smplayer)'
-		</div>
-		</button>
-		</div>
-		<div id="modal_20" class="modal">
-		<div class="modalContent">
-		<div>
-		<i style="vertical-align: middle; margin-right: 5px;">
-		<img src="icons/smplayer.png" width="42" height="42" >
-		</i>
-		${aMenu[Restaurar_modo]}
-		</div><br>
-		<div class="app-card restore-skel"
-		data-value="smplayer.sh" style="width: 100%; border: 1px solid #444444; margin: 3px;">
-		<span>
-		<img src="icons/biglinux.png" width="32" height="32" style="margin-right: 10px;">
-		${aMenu[Restaurar_padrao_distro]}
-		</span>
-		</div>
-		<div class="app-card restore-default"
-		data-value="smplayer.sh" style="width: 100%; border: 1px solid #444444; margin: 3px;">
-		<span>
-		<img src="icons/default.png" width="32" height="32" style="margin-right: 10px;">
-		${aMenu[Restaurar_padrao_programa]}
-		</span>
-		</div>
-		<div class="content-button-wrapper" style="text-align: right;">
-		<br><button class="modalClose">
-		${aMenu[Cancelar]}
-		</button>
-		</div>
-		</div>
-		</div>
-		<!-- END Vídeos (Smplayer) -->
-EOF
-	fi
-
-	if test -e /usr/bin/inkscape; then
-cat <<-EOF
-		<!-- BEGIN Inkscape -->
-		<div class="box-1 box-2 box-3 box-4 box-5 box-items Graphic">
-		<div id="box-status-bar">
-		<div id="tit-status-bar">
-		${aMenu[Restaurar_padrao_programa]}
-		</div>
-		</div>
-		<button onclick="openModal('modal_21')" id="box-subtitle" class="box-geral-icons box-geral-button">
-		<div class="box-imagem-icon">
-		<img class="box-imagem-icon" src="icons/inkscape.png">
-		</div>
-		<div class="box-titulo">
-		Inkscape
-		</div>
-		</button>
-		</div>
-		<div id="modal_21" class="modal">
-		<div class="modalContent">
-		<div>
-		<i style="vertical-align: middle; margin-right: 5px;">
-		<img src="icons/inkscape.png" width="42" height="42" >
-		</i>
-		Inkscape
-		</div><br>
-		<div class="app-card restore-default"
-		data-value="inkscape.sh" style="width: 100%; border: 1px solid #444444; margin: 3px;">
-		<span>
-		<img src="icons/default.png" width="32" height="32" style="margin-right: 10px;">
-		${aMenu[Restaurar_padrao_programa]}
-		</span>
-		</div>
-		<div class="content-button-wrapper" style="text-align: right;">
-		<br><button class="modalClose">
-		${aMenu[Cancelar]}
-		</button>
-		</div>
-		</div>
-		</div>
-		<!-- END Inkscape -->
-EOF
-	fi
-
-	if test -e /usr/bin/mystiq; then
-cat <<-EOF
-		<!-- BEGIN MystiQ -->
-		<div class="box-1 box-2 box-3 box-4 box-5 box-items Multimedia">
-		<div id="box-status-bar">
-		<div id="tit-status-bar">
-		${aMenu[Restaurar_padrao_biglinux]}
-		</div>
-		</div>
-		<button onclick="openModal('modal_22')" id="box-subtitle" class="box-geral-icons box-geral-button">
-		<div class="box-imagem-icon">
-		<img class="box-imagem-icon" src="icons/mystiq.png">
-		</div>
-		<div class="box-titulo">
-		${Aapps[mystiq]} (MystiQ)
-		</div>
-		</button>
-		</div>
-		<div id="modal_22" class="modal">
-		<div class="modalContent">
-		<div>
-		<i style="vertical-align: middle; margin-right: 5px;">
-		<img src="icons/mystiq.png" width="42" height="42" >
-		</i>
-		${aMenu[Restaurar_modo]}
-		</div><br>
-		<div class="app-card restore-skel"
-		data-value="mystiq.sh" style="width: 100%; border: 1px solid #444444; margin: 3px;">
-		<span>
-		<img src="icons/biglinux.png" width="32" height="32" style="margin-right: 10px;">
-		${aMenu[Restaurar_padrao_distro]}
-		</span>
-		</div>
-		<div class="app-card restore-default"
-		data-value="mystiq.sh" style="width: 100%; border: 1px solid #444444; margin: 3px;">
-		<span>
-		<img src="icons/default.png" width="32" height="32" style="margin-right: 10px;">
-		${aMenu[Restaurar_padrao_programa]}
-		</span>
-		</div>
-		<div class="content-button-wrapper" style="text-align: right;">
-		<br><button class="modalClose">
-		${aMenu[Cancelar]}
-		</button>
-		</div>
-		</div>
-		</div>
-		<!-- END MystiQ -->
-EOF
-	fi
-
+function sh_bcfg_finish_html {
 cat <<-EOF
 	</div>
 	<div class="modal" id="modalInfo">
@@ -1334,7 +374,6 @@ cat <<-EOF
 	</div>
 	</div>
 	</div>
-
 	<div class="modal" id="modalInfoKDE">
 	<div class="modalContent">
 	<div>
@@ -1377,7 +416,6 @@ cat <<-EOF
 	<div class="logo">
 	<img id="btn-big" src="logo.png" class="logo-biglinux">
 	</div>
-
 	<!-- partial -->
 	<script src="/usr/share/bigbashview/bcc/materialize/js/jquery.js"></script>
 	<script src="filter.js"></script>
@@ -1385,6 +423,14 @@ cat <<-EOF
 	</body>
 	</html>
 EOF
+}
+
+function sh_main {
+	sh_bcfg_start_html
+	sh_bcfg_process_kde "Star"
+	sh_bcfg_process_apps
+	sh_bcfg_process_kde "System"
+	sh_bcfg_finish_html
 }
 
 #sh_debug
