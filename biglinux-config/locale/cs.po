@@ -19,9 +19,6 @@ msgstr ""
 msgid "Restaurar Configurações"
 msgstr "Obnovení nastavení"
 
-msgid "Pesquisar programa"
-msgstr "Vyhledávací program"
-
 msgid "Principais"
 msgstr "Hlavní"
 
@@ -40,62 +37,47 @@ msgstr "Úřad"
 msgid "Sistema"
 msgstr "Systém"
 
-msgid "Restaurar o programa no modo da distribuição BigLinux."
-msgstr "Obnovte program v distribučním režimu BigLinux."
+msgid "Músicas"
+msgstr "Písně"
 
-msgid "Você tem certeza que deseja restaurar todas as configurações?"
-msgstr "Opravdu chcete obnovit všechna nastavení?"
+msgid "Restaurar o aplicativo no modo padrão do programa"
+msgstr "Obnovte aplikaci ve výchozím režimu programu"
 
-msgid "Isso apagará todas as costumizações feitas por "
-msgstr "Tím se vymažou všechny costumizations provedené "
+msgid "Restaurar o aplicativo no modo padrão da distribuição"
+msgstr "Obnovte aplikaci do výchozího režimu distribuce"
 
-msgid "Não"
-msgstr "Ne"
+msgid "Restaurar o aplicativo no modo padrão da distribuição BigLinux"
+msgstr "Obnovte aplikaci ve výchozím režimu distribuce BigLinux"
 
 msgid "Sim"
 msgstr "Ano"
 
-msgid "Restaurar o programa no modo padrão."
-msgstr "Obnovte program do standardního režimu."
-
-msgid "Restaurar no modo padrão do programa"
-msgstr "Obnovení ve standardním programovém režimu"
-
-msgid "Cancelar"
-msgstr "Zrušit"
-
-msgid "Restaurar o programa no modo padrão ou distribuição BigLinux."
-msgstr "Obnovte program ve standardním režimu nebo distribuci BigLinux."
-
-msgid "Em qual modo você deseja restaurar?"
-msgstr "V jakém režimu chcete obnovit?"
-
-msgid "Restaurar no modo padrão da distribuição"
-msgstr "Obnovení ve standardním distribučním režimu"
-
-msgid "Músicas"
-msgstr "Písně"
-
-msgid "Gravador de Tela"
-msgstr "Záznamník obrazovky"
-
-msgid "Vídeos"
-msgstr "Videa"
-
-msgid "Conversor de áudio e vídeo"
-msgstr "Audio a video konvertor"
-
-msgid "As configurações foram restauradas com sucesso!"
-msgstr "Nastavení byla úspěšně obnovena!"
+msgid "Não"
+msgstr "Ne"
 
 msgid "OK"
 msgstr "Ok"
 
+msgid "Cancelar"
+msgstr "Zrušit"
+
+msgid "Em qual modo você deseja restaurar?"
+msgstr "V jakém režimu chcete obnovit?"
+
+msgid "Pesquisar aplicativo"
+msgstr "Vyhledávací aplikace"
+
+msgid "Você tem certeza que deseja restaurar todas as configurações?"
+msgstr "Opravdu chcete obnovit všechna nastavení?"
+
+msgid "As configurações foram restauradas com sucesso!"
+msgstr "Nastavení byla úspěšně obnovena!"
+
 msgid "As configurações do BigLinux KDE foram restauradas com sucesso!"
 msgstr "Nastavení BigLinux KDE byla úspěšně obnovena!"
 
-msgid "É necessário reinciar a sessão para concluir a restauração!"
-msgstr "Chcete-li obnovit relaci, musíte relaci obnovit!"
+msgid "É necessário reiniciar a sessão para concluir a restauração!"
+msgstr "Chcete-li dokončit obnovení, musíte restartovat relaci!"
 
 msgid "Sair da sessão"
 msgstr "Odhlášení z relace"
@@ -105,3 +87,15 @@ msgstr "Pozornost! Program je spuštěn!"
 
 msgid "Será fechado para que a restauração seja concluída."
 msgstr "Bude uzavřena, aby bylo možné obnovení dokončit."
+
+msgid "Isso apagará todas as costumizações feitas por "
+msgstr "Tím se vymažou všechny costumizations provedené "
+
+msgid "Vídeos"
+msgstr "Videa"
+
+msgid "Conversor de áudio e vídeo"
+msgstr "Audio a video konvertor"
+
+msgid "Gravador de Tela"
+msgstr "Záznamník obrazovky"

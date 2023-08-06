@@ -19,9 +19,6 @@ msgstr ""
 msgid "Restaurar Configurações"
 msgstr "Palauta asetukset"
 
-msgid "Pesquisar programa"
-msgstr "Hakuohjelma"
-
 msgid "Principais"
 msgstr "Pää"
 
@@ -40,62 +37,47 @@ msgstr "Toimisto"
 msgid "Sistema"
 msgstr "Järjestelmä"
 
-msgid "Restaurar o programa no modo da distribuição BigLinux."
-msgstr "Palauta ohjelma BigLinux-jakelutilassa."
+msgid "Músicas"
+msgstr "Kappaletta"
 
-msgid "Você tem certeza que deseja restaurar todas as configurações?"
-msgstr "Haluatko varmasti palauttaa kaikki asetukset?"
+msgid "Restaurar o aplicativo no modo padrão do programa"
+msgstr "Palauta sovellus ohjelman oletustilassa"
 
-msgid "Isso apagará todas as costumizações feitas por "
-msgstr "Tämä poistaa kaikki kustannuslaskelmat, jotka ovat tehneet "
+msgid "Restaurar o aplicativo no modo padrão da distribuição"
+msgstr "Palauta sovellus jakelun oletustilaan"
 
-msgid "Não"
-msgstr "Ei"
+msgid "Restaurar o aplicativo no modo padrão da distribuição BigLinux"
+msgstr "Palauta sovellus BigLinux-jakelun oletustilassa"
 
 msgid "Sim"
 msgstr "Kyllä"
 
-msgid "Restaurar o programa no modo padrão."
-msgstr "Palauta ohjelma normaalitilaan."
-
-msgid "Restaurar no modo padrão do programa"
-msgstr "Palauta vakio-ohjelmatilassa"
-
-msgid "Cancelar"
-msgstr "Perua"
-
-msgid "Restaurar o programa no modo padrão ou distribuição BigLinux."
-msgstr "Palauta ohjelma normaalitilassa tai BigLinux-jakelussa."
-
-msgid "Em qual modo você deseja restaurar?"
-msgstr "Missä tilassa haluat palauttaa?"
-
-msgid "Restaurar no modo padrão da distribuição"
-msgstr "Palauta tavallisessa jakelutilassa"
-
-msgid "Músicas"
-msgstr "Kappaletta"
-
-msgid "Gravador de Tela"
-msgstr "Näytön tallennin"
-
-msgid "Vídeos"
-msgstr "Videot"
-
-msgid "Conversor de áudio e vídeo"
-msgstr "Ääni- ja videomuunnin"
-
-msgid "As configurações foram restauradas com sucesso!"
-msgstr "Asetukset on palautettu onnistuneesti!"
+msgid "Não"
+msgstr "Ei"
 
 msgid "OK"
 msgstr "Okei"
 
+msgid "Cancelar"
+msgstr "Perua"
+
+msgid "Em qual modo você deseja restaurar?"
+msgstr "Missä tilassa haluat palauttaa?"
+
+msgid "Pesquisar aplicativo"
+msgstr "Haku-sovellus"
+
+msgid "Você tem certeza que deseja restaurar todas as configurações?"
+msgstr "Haluatko varmasti palauttaa kaikki asetukset?"
+
+msgid "As configurações foram restauradas com sucesso!"
+msgstr "Asetukset on palautettu onnistuneesti!"
+
 msgid "As configurações do BigLinux KDE foram restauradas com sucesso!"
 msgstr "BigLinux KDE -asetukset on palautettu onnistuneesti!"
 
-msgid "É necessário reinciar a sessão para concluir a restauração!"
-msgstr "Sinun on jatkettava istuntoa palautuksen loppuun saattamiseksi!"
+msgid "É necessário reiniciar a sessão para concluir a restauração!"
+msgstr "Sinun on käynnistettävä istunto uudelleen palautuksen viimeistelemiseksi!"
 
 msgid "Sair da sessão"
 msgstr "Kirjaudu ulos istunnosta"
@@ -105,3 +87,15 @@ msgstr "Tarkkaavaisuus! Ohjelma on käynnissä!"
 
 msgid "Será fechado para que a restauração seja concluída."
 msgstr "Se suljetaan, jotta palautus on valmis."
+
+msgid "Isso apagará todas as costumizações feitas por "
+msgstr "Tämä poistaa kaikki kustannuslaskelmat, jotka ovat tehneet "
+
+msgid "Vídeos"
+msgstr "Videot"
+
+msgid "Conversor de áudio e vídeo"
+msgstr "Ääni- ja videomuunnin"
+
+msgid "Gravador de Tela"
+msgstr "Näytön tallennin"

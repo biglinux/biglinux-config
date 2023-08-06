@@ -19,9 +19,6 @@ msgstr ""
 msgid "Restaurar Configurações"
 msgstr "Επαναφορά ρυθμίσεων"
 
-msgid "Pesquisar programa"
-msgstr "Πρόγραμμα αναζήτησης"
-
 msgid "Principais"
 msgstr "Κύριος"
 
@@ -40,62 +37,47 @@ msgstr "Γραφείο"
 msgid "Sistema"
 msgstr "Σύστημα"
 
-msgid "Restaurar o programa no modo da distribuição BigLinux."
-msgstr "Επαναφέρετε το πρόγραμμα στη λειτουργία διανομής BigLinux."
+msgid "Músicas"
+msgstr "Τραγούδια"
 
-msgid "Você tem certeza que deseja restaurar todas as configurações?"
-msgstr "Είστε βέβαιοι ότι θέλετε να επαναφέρετε όλες τις ρυθμίσεις;"
+msgid "Restaurar o aplicativo no modo padrão do programa"
+msgstr "Επαναφέρετε την εφαρμογή στην προεπιλεγμένη λειτουργία του προγράμματος"
 
-msgid "Isso apagará todas as costumizações feitas por "
-msgstr "Αυτό θα διαγράψει όλες τις κοστολογήσεις που έγιναν από "
+msgid "Restaurar o aplicativo no modo padrão da distribuição"
+msgstr "Επαναφορά της εφαρμογής στην προεπιλεγμένη λειτουργία διανομής"
 
-msgid "Não"
-msgstr "Όχι"
+msgid "Restaurar o aplicativo no modo padrão da distribuição BigLinux"
+msgstr "Επαναφέρετε την εφαρμογή στην προεπιλεγμένη λειτουργία της διανομής BigLinux"
 
 msgid "Sim"
 msgstr "Ναι"
 
-msgid "Restaurar o programa no modo padrão."
-msgstr "Επαναφέρετε το πρόγραμμα στην τυπική λειτουργία."
-
-msgid "Restaurar no modo padrão do programa"
-msgstr "Επαναφορά σε τυπική λειτουργία προγράμματος"
-
-msgid "Cancelar"
-msgstr "Ακυρώνω"
-
-msgid "Restaurar o programa no modo padrão ou distribuição BigLinux."
-msgstr "Επαναφέρετε το πρόγραμμα σε τυπική λειτουργία ή διανομή BigLinux."
-
-msgid "Em qual modo você deseja restaurar?"
-msgstr "Σε ποια λειτουργία θέλετε να επαναφέρετε;"
-
-msgid "Restaurar no modo padrão da distribuição"
-msgstr "Επαναφορά σε τυπική λειτουργία διανομής"
-
-msgid "Músicas"
-msgstr "Τραγούδια"
-
-msgid "Gravador de Tela"
-msgstr "Εγγραφή οθόνης"
-
-msgid "Vídeos"
-msgstr "Βίντεο"
-
-msgid "Conversor de áudio e vídeo"
-msgstr "Μετατροπέας ήχου και βίντεο"
-
-msgid "As configurações foram restauradas com sucesso!"
-msgstr "Οι ρυθμίσεις έχουν αποκατασταθεί με επιτυχία!"
+msgid "Não"
+msgstr "Όχι"
 
 msgid "OK"
 msgstr "Ok"
 
+msgid "Cancelar"
+msgstr "Ακυρώνω"
+
+msgid "Em qual modo você deseja restaurar?"
+msgstr "Σε ποια λειτουργία θέλετε να επαναφέρετε;"
+
+msgid "Pesquisar aplicativo"
+msgstr "Αναζήτηση εφαρμογής"
+
+msgid "Você tem certeza que deseja restaurar todas as configurações?"
+msgstr "Είστε βέβαιοι ότι θέλετε να επαναφέρετε όλες τις ρυθμίσεις;"
+
+msgid "As configurações foram restauradas com sucesso!"
+msgstr "Οι ρυθμίσεις έχουν αποκατασταθεί με επιτυχία!"
+
 msgid "As configurações do BigLinux KDE foram restauradas com sucesso!"
 msgstr "Οι ρυθμίσεις του BigLinux KDE έχουν αποκατασταθεί με επιτυχία!"
 
-msgid "É necessário reinciar a sessão para concluir a restauração!"
-msgstr "Πρέπει να συνεχίσετε τη συνεδρία για να ολοκληρώσετε την επαναφορά!"
+msgid "É necessário reiniciar a sessão para concluir a restauração!"
+msgstr "Πρέπει να επανεκκινήσετε τη συνεδρία σας για να ολοκληρώσετε την επαναφορά!"
 
 msgid "Sair da sessão"
 msgstr "Αποσύνδεση από τη συνεδρία"
@@ -105,3 +87,15 @@ msgstr "Προσοχή! Το πρόγραμμα τρέχει!"
 
 msgid "Será fechado para que a restauração seja concluída."
 msgstr "Θα κλείσει για να ολοκληρωθεί η επαναφορά."
+
+msgid "Isso apagará todas as costumizações feitas por "
+msgstr "Αυτό θα διαγράψει όλες τις κοστολογήσεις που έγιναν από "
+
+msgid "Vídeos"
+msgstr "Βίντεο"
+
+msgid "Conversor de áudio e vídeo"
+msgstr "Μετατροπέας ήχου και βίντεο"
+
+msgid "Gravador de Tela"
+msgstr "Εγγραφή οθόνης"

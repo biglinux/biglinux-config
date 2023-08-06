@@ -19,9 +19,6 @@ msgstr ""
 msgid "Restaurar Configurações"
 msgstr "Postavke vraćanja"
 
-msgid "Pesquisar programa"
-msgstr "Program za pretraživanje"
-
 msgid "Principais"
 msgstr "Glavni"
 
@@ -40,62 +37,47 @@ msgstr "Kancelarija"
 msgid "Sistema"
 msgstr "Sustav"
 
-msgid "Restaurar o programa no modo da distribuição BigLinux."
-msgstr "Vratite program u BigLinux distribucijskom načinu rada."
+msgid "Músicas"
+msgstr "Pjesmama"
 
-msgid "Você tem certeza que deseja restaurar todas as configurações?"
-msgstr "Jeste li sigurni da želite vratiti sve postavke?"
+msgid "Restaurar o aplicativo no modo padrão do programa"
+msgstr "Vraćanje aplikacije u zadanom načinu rada programa"
 
-msgid "Isso apagará todas as costumizações feitas por "
-msgstr "To će izbrisati sve kostarikumizacije koje je napravio "
+msgid "Restaurar o aplicativo no modo padrão da distribuição"
+msgstr "Vraćanje aplikacije u zadani način distribucije"
 
-msgid "Não"
-msgstr "Ne"
+msgid "Restaurar o aplicativo no modo padrão da distribuição BigLinux"
+msgstr "Vraćanje aplikacije u zadanom načinu distribucije BigLinuxa"
 
 msgid "Sim"
 msgstr "Da"
 
-msgid "Restaurar o programa no modo padrão."
-msgstr "Vratite program u standardni način rada."
-
-msgid "Restaurar no modo padrão do programa"
-msgstr "Vraćanje u standardnom programskom načinu rada"
-
-msgid "Cancelar"
-msgstr "Otkazati"
-
-msgid "Restaurar o programa no modo padrão ou distribuição BigLinux."
-msgstr "Vratite program u standardnom načinu rada ili BigLinux distribuciji."
-
-msgid "Em qual modo você deseja restaurar?"
-msgstr "U kojem načinu rada želite vratiti?"
-
-msgid "Restaurar no modo padrão da distribuição"
-msgstr "Vraćanje u standardnom načinu distribucije"
-
-msgid "Músicas"
-msgstr "Pjesmama"
-
-msgid "Gravador de Tela"
-msgstr "Snimač zaslona"
-
-msgid "Vídeos"
-msgstr "Video"
-
-msgid "Conversor de áudio e vídeo"
-msgstr "Pretvarač zvuka i videozapisa"
-
-msgid "As configurações foram restauradas com sucesso!"
-msgstr "Postavke su uspješno vraćene!"
+msgid "Não"
+msgstr "Ne"
 
 msgid "OK"
 msgstr "Ok"
 
+msgid "Cancelar"
+msgstr "Otkazati"
+
+msgid "Em qual modo você deseja restaurar?"
+msgstr "U kojem načinu rada želite vratiti?"
+
+msgid "Pesquisar aplicativo"
+msgstr "Aplikacija za pretraživanje"
+
+msgid "Você tem certeza que deseja restaurar todas as configurações?"
+msgstr "Jeste li sigurni da želite vratiti sve postavke?"
+
+msgid "As configurações foram restauradas com sucesso!"
+msgstr "Postavke su uspješno vraćene!"
+
 msgid "As configurações do BigLinux KDE foram restauradas com sucesso!"
 msgstr "BigLinux KDE postavke uspješno su obnovljene!"
 
-msgid "É necessário reinciar a sessão para concluir a restauração!"
-msgstr "Da biste dovršili vraćanje, morate nastaviti sesiju!"
+msgid "É necessário reiniciar a sessão para concluir a restauração!"
+msgstr "Da biste dovršili vraćanje, morate ponovno pokrenuti sesiju!"
 
 msgid "Sair da sessão"
 msgstr "Odjava iz sesije"
@@ -105,3 +87,15 @@ msgstr "Pažnja! Program radi!"
 
 msgid "Será fechado para que a restauração seja concluída."
 msgstr "Bit će zatvoren da bi se vraćanje dovršilo."
+
+msgid "Isso apagará todas as costumizações feitas por "
+msgstr "To će izbrisati sve kostarikumizacije koje je napravio "
+
+msgid "Vídeos"
+msgstr "Video"
+
+msgid "Conversor de áudio e vídeo"
+msgstr "Pretvarač zvuka i videozapisa"
+
+msgid "Gravador de Tela"
+msgstr "Snimač zaslona"

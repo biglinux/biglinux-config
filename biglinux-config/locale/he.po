@@ -19,9 +19,6 @@ msgstr ""
 msgid "Restaurar Configurações"
 msgstr "שחזור הגדרות"
 
-msgid "Pesquisar programa"
-msgstr "תוכנית חיפוש"
-
 msgid "Principais"
 msgstr "ראשי"
 
@@ -40,62 +37,47 @@ msgstr "משרד"
 msgid "Sistema"
 msgstr "מערכת"
 
-msgid "Restaurar o programa no modo da distribuição BigLinux."
-msgstr "שחזר את התוכנית במצב הפצה של BigLinux."
+msgid "Músicas"
+msgstr "שירים"
 
-msgid "Você tem certeza que deseja restaurar todas as configurações?"
-msgstr "האם אתה בטוח שברצונך לשחזר את כל ההגדרות?"
+msgid "Restaurar o aplicativo no modo padrão do programa"
+msgstr "שחזור היישום במצב ברירת המחדל של התוכנית"
 
-msgid "Isso apagará todas as costumizações feitas por "
-msgstr "זה ימחק את כל הקוסטומיזציות שנעשו על ידי "
+msgid "Restaurar o aplicativo no modo padrão da distribuição"
+msgstr "שחזור היישום למצב ברירת המחדל של ההפצה"
 
-msgid "Não"
-msgstr "לא"
+msgid "Restaurar o aplicativo no modo padrão da distribuição BigLinux"
+msgstr "שחזור היישום במצב ברירת המחדל של הפצת BigLinux"
 
 msgid "Sim"
 msgstr "כן"
 
-msgid "Restaurar o programa no modo padrão."
-msgstr "שחזר את התוכנית למצב רגיל."
-
-msgid "Restaurar no modo padrão do programa"
-msgstr "שחזור במצב תוכנית רגיל"
-
-msgid "Cancelar"
-msgstr "ביטל"
-
-msgid "Restaurar o programa no modo padrão ou distribuição BigLinux."
-msgstr "שחזר את התוכנית במצב רגיל או בהפצת BigLinux."
-
-msgid "Em qual modo você deseja restaurar?"
-msgstr "באיזה מצב ברצונך לשחזר?"
-
-msgid "Restaurar no modo padrão da distribuição"
-msgstr "שחזור במצב הפצה רגיל"
-
-msgid "Músicas"
-msgstr "שירים"
-
-msgid "Gravador de Tela"
-msgstr "מקליט מסך"
-
-msgid "Vídeos"
-msgstr "קטעי וידאו"
-
-msgid "Conversor de áudio e vídeo"
-msgstr "ממיר שמע ווידאו"
-
-msgid "As configurações foram restauradas com sucesso!"
-msgstr "ההגדרות שוחזרו בהצלחה!"
+msgid "Não"
+msgstr "לא"
 
 msgid "OK"
 msgstr "אוקיי"
 
+msgid "Cancelar"
+msgstr "ביטל"
+
+msgid "Em qual modo você deseja restaurar?"
+msgstr "באיזה מצב ברצונך לשחזר?"
+
+msgid "Pesquisar aplicativo"
+msgstr "אפליקציית חיפוש"
+
+msgid "Você tem certeza que deseja restaurar todas as configurações?"
+msgstr "האם אתה בטוח שברצונך לשחזר את כל ההגדרות?"
+
+msgid "As configurações foram restauradas com sucesso!"
+msgstr "ההגדרות שוחזרו בהצלחה!"
+
 msgid "As configurações do BigLinux KDE foram restauradas com sucesso!"
 msgstr "הגדרות BigLinux KDE שוחזרו בהצלחה!"
 
-msgid "É necessário reinciar a sessão para concluir a restauração!"
-msgstr "עליך לחדש את ההפעלה כדי להשלים את השחזור!"
+msgid "É necessário reiniciar a sessão para concluir a restauração!"
+msgstr "עליך להפעיל מחדש את ההפעלה כדי להשלים את השחזור!"
 
 msgid "Sair da sessão"
 msgstr "יציאה מההפעלה"
@@ -105,3 +87,15 @@ msgstr "תשומת לב! התוכנית פועלת!"
 
 msgid "Será fechado para que a restauração seja concluída."
 msgstr "הוא יהיה סגור כדי שהשחזור יושלם."
+
+msgid "Isso apagará todas as costumizações feitas por "
+msgstr "זה ימחק את כל הקוסטומיזציות שנעשו על ידי "
+
+msgid "Vídeos"
+msgstr "קטעי וידאו"
+
+msgid "Conversor de áudio e vídeo"
+msgstr "ממיר שמע ווידאו"
+
+msgid "Gravador de Tela"
+msgstr "מקליט מסך"
