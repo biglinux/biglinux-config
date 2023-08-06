@@ -19,9 +19,6 @@ msgstr ""
 msgid "Restaurar Configurações"
 msgstr "Відновлення параметрів"
 
-msgid "Pesquisar programa"
-msgstr "Пошукова програма"
-
 msgid "Principais"
 msgstr "Головний"
 
@@ -40,62 +37,47 @@ msgstr "Офіс"
 msgid "Sistema"
 msgstr "Система"
 
-msgid "Restaurar o programa no modo da distribuição BigLinux."
-msgstr "Відновлення програми в режимі роздачі BigLinux."
+msgid "Músicas"
+msgstr "Пісні"
 
-msgid "Você tem certeza que deseja restaurar todas as configurações?"
-msgstr "Ви впевнені, що хочете відновити всі налаштування?"
+msgid "Restaurar o aplicativo no modo padrão do programa"
+msgstr "Відновлення програми в режимі за замовчуванням"
 
-msgid "Isso apagará todas as costumizações feitas por "
-msgstr "Це зітре всі витрати, зроблені "
+msgid "Restaurar o aplicativo no modo padrão da distribuição"
+msgstr "Відновіть додаток до режиму за замовчуванням"
 
-msgid "Não"
-msgstr "Ні"
+msgid "Restaurar o aplicativo no modo padrão da distribuição BigLinux"
+msgstr "Відновіть програму в режимі за замовчуванням дистрибутива BigLinux"
 
 msgid "Sim"
 msgstr "Так"
 
-msgid "Restaurar o programa no modo padrão."
-msgstr "Відновіть програму в стандартному режимі."
-
-msgid "Restaurar no modo padrão do programa"
-msgstr "Відновлення в стандартному програмному режимі"
-
-msgid "Cancelar"
-msgstr "Скасувати"
-
-msgid "Restaurar o programa no modo padrão ou distribuição BigLinux."
-msgstr "Відновіть програму в стандартному режимі або дистрибутив BigLinux."
-
-msgid "Em qual modo você deseja restaurar?"
-msgstr "В якому режимі потрібно відновити?"
-
-msgid "Restaurar no modo padrão da distribuição"
-msgstr "Відновлення в стандартному режимі розсилки"
-
-msgid "Músicas"
-msgstr "Пісні"
-
-msgid "Gravador de Tela"
-msgstr "Рекордер екрану"
-
-msgid "Vídeos"
-msgstr "Відео"
-
-msgid "Conversor de áudio e vídeo"
-msgstr "Аудіо та відео конвертер"
-
-msgid "As configurações foram restauradas com sucesso!"
-msgstr "Налаштування успішно відновлені!"
+msgid "Não"
+msgstr "Ні"
 
 msgid "OK"
 msgstr "Гаразд"
 
+msgid "Cancelar"
+msgstr "Скасувати"
+
+msgid "Em qual modo você deseja restaurar?"
+msgstr "В якому режимі потрібно відновити?"
+
+msgid "Pesquisar aplicativo"
+msgstr "Пошук у додатку"
+
+msgid "Você tem certeza que deseja restaurar todas as configurações?"
+msgstr "Ви впевнені, що хочете відновити всі налаштування?"
+
+msgid "As configurações foram restauradas com sucesso!"
+msgstr "Налаштування успішно відновлені!"
+
 msgid "As configurações do BigLinux KDE foram restauradas com sucesso!"
 msgstr "Налаштування KDE bigLinux успішно відновлені!"
 
-msgid "É necessário reinciar a sessão para concluir a restauração!"
-msgstr "Ви повинні відновити сеанс, щоб завершити відновлення!"
+msgid "É necessário reiniciar a sessão para concluir a restauração!"
+msgstr "Ви повинні перезапустити сеанс, щоб завершити відновлення!"
 
 msgid "Sair da sessão"
 msgstr "Вихід із сеансу"
@@ -105,3 +87,15 @@ msgstr "Увага! Програма запущена!"
 
 msgid "Será fechado para que a restauração seja concluída."
 msgstr "Він буде закритий для завершення відновлення."
+
+msgid "Isso apagará todas as costumizações feitas por "
+msgstr "Це зітре всі витрати, зроблені "
+
+msgid "Vídeos"
+msgstr "Відео"
+
+msgid "Conversor de áudio e vídeo"
+msgstr "Аудіо та відео конвертер"
+
+msgid "Gravador de Tela"
+msgstr "Рекордер екрану"

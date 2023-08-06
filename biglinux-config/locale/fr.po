@@ -19,9 +19,6 @@ msgstr ""
 msgid "Restaurar Configurações"
 msgstr "Restaurer les paramètres"
 
-msgid "Pesquisar programa"
-msgstr "Programme de recherche"
-
 msgid "Principais"
 msgstr "Principal"
 
@@ -40,62 +37,47 @@ msgstr "Bureau"
 msgid "Sistema"
 msgstr "Système"
 
-msgid "Restaurar o programa no modo da distribuição BigLinux."
-msgstr "Restaurez le programme en mode de distribution BigLinux."
+msgid "Músicas"
+msgstr "Chansons"
 
-msgid "Você tem certeza que deseja restaurar todas as configurações?"
-msgstr "Êtes-vous sûr de vouloir restaurer tous les paramètres ?"
+msgid "Restaurar o aplicativo no modo padrão do programa"
+msgstr "Restaurer l’application en mode par défaut du programme"
 
-msgid "Isso apagará todas as costumizações feitas por "
-msgstr "Cela effacera toutes les costumisations faites par "
+msgid "Restaurar o aplicativo no modo padrão da distribuição"
+msgstr "Restaurer l’application au mode par défaut de la distribution"
 
-msgid "Não"
-msgstr "Non"
+msgid "Restaurar o aplicativo no modo padrão da distribuição BigLinux"
+msgstr "Restaurer l’application dans le mode par défaut de la distribution BigLinux"
 
 msgid "Sim"
 msgstr "Oui"
 
-msgid "Restaurar o programa no modo padrão."
-msgstr "Restaurez le programme en mode standard."
-
-msgid "Restaurar no modo padrão do programa"
-msgstr "Restauration en mode programme standard"
-
-msgid "Cancelar"
-msgstr "Annuler"
-
-msgid "Restaurar o programa no modo padrão ou distribuição BigLinux."
-msgstr "Restaurez le programme en mode standard ou en distribution BigLinux."
-
-msgid "Em qual modo você deseja restaurar?"
-msgstr "Dans quel mode souhaitez-vous restaurer ?"
-
-msgid "Restaurar no modo padrão da distribuição"
-msgstr "Restauration en mode de distribution standard"
-
-msgid "Músicas"
-msgstr "Chansons"
-
-msgid "Gravador de Tela"
-msgstr "Enregistreur d’écran"
-
-msgid "Vídeos"
-msgstr "Vidéos"
-
-msgid "Conversor de áudio e vídeo"
-msgstr "Convertisseur audio et vidéo"
-
-msgid "As configurações foram restauradas com sucesso!"
-msgstr "Les paramètres ont été restaurés avec succès!"
+msgid "Não"
+msgstr "Non"
 
 msgid "OK"
 msgstr "D’accord"
 
+msgid "Cancelar"
+msgstr "Annuler"
+
+msgid "Em qual modo você deseja restaurar?"
+msgstr "Dans quel mode souhaitez-vous restaurer ?"
+
+msgid "Pesquisar aplicativo"
+msgstr "Application de recherche"
+
+msgid "Você tem certeza que deseja restaurar todas as configurações?"
+msgstr "Êtes-vous sûr de vouloir restaurer tous les paramètres ?"
+
+msgid "As configurações foram restauradas com sucesso!"
+msgstr "Les paramètres ont été restaurés avec succès!"
+
 msgid "As configurações do BigLinux KDE foram restauradas com sucesso!"
 msgstr "Les paramètres BigLinux KDE ont été restaurés avec succès!"
 
-msgid "É necessário reinciar a sessão para concluir a restauração!"
-msgstr "Vous devez reprendre la session pour terminer la restauration !"
+msgid "É necessário reiniciar a sessão para concluir a restauração!"
+msgstr "Vous devez redémarrer votre session pour terminer la restauration!"
 
 msgid "Sair da sessão"
 msgstr "Se déconnecter de la session"
@@ -105,3 +87,15 @@ msgstr "Attention! Le programme est en cours d’exécution!"
 
 msgid "Será fechado para que a restauração seja concluída."
 msgstr "Il sera fermé pour que la restauration soit terminée."
+
+msgid "Isso apagará todas as costumizações feitas por "
+msgstr "Cela effacera toutes les costumisations faites par "
+
+msgid "Vídeos"
+msgstr "Vidéos"
+
+msgid "Conversor de áudio e vídeo"
+msgstr "Convertisseur audio et vidéo"
+
+msgid "Gravador de Tela"
+msgstr "Enregistreur d’écran"

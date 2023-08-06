@@ -19,9 +19,6 @@ msgstr ""
 msgid "Restaurar Configurações"
 msgstr "Återställ inställningar"
 
-msgid "Pesquisar programa"
-msgstr "Sök program"
-
 msgid "Principais"
 msgstr "Huvudsaklig"
 
@@ -40,62 +37,47 @@ msgstr "Kontor"
 msgid "Sistema"
 msgstr "System"
 
-msgid "Restaurar o programa no modo da distribuição BigLinux."
-msgstr "Återställ programmet i BigLinux-distributionsläge."
+msgid "Músicas"
+msgstr "Låtar"
 
-msgid "Você tem certeza que deseja restaurar todas as configurações?"
-msgstr "Är du säker på att du vill återställa alla inställningar?"
+msgid "Restaurar o aplicativo no modo padrão do programa"
+msgstr "Återställ programmet i programmets standardläge"
 
-msgid "Isso apagará todas as costumizações feitas por "
-msgstr "Detta kommer att radera alla kostnadsberäkningar som gjorts av "
+msgid "Restaurar o aplicativo no modo padrão da distribuição"
+msgstr "Återställ appen till distributionens standardläge"
 
-msgid "Não"
-msgstr "Nej"
+msgid "Restaurar o aplicativo no modo padrão da distribuição BigLinux"
+msgstr "Återställ programmet i standardläget för BigLinux-distributionen"
 
 msgid "Sim"
 msgstr "Ja"
 
-msgid "Restaurar o programa no modo padrão."
-msgstr "Återställ programmet till standardläge."
-
-msgid "Restaurar no modo padrão do programa"
-msgstr "Återställ i standardprogramläge"
-
-msgid "Cancelar"
-msgstr "Annullera"
-
-msgid "Restaurar o programa no modo padrão ou distribuição BigLinux."
-msgstr "Återställ programmet i standardläge eller BigLinux-distribution."
-
-msgid "Em qual modo você deseja restaurar?"
-msgstr "I vilket läge vill du återställa?"
-
-msgid "Restaurar no modo padrão da distribuição"
-msgstr "Återställ i standarddistributionsläge"
-
-msgid "Músicas"
-msgstr "Låtar"
-
-msgid "Gravador de Tela"
-msgstr "Skärminspelare"
-
-msgid "Vídeos"
-msgstr "Videor"
-
-msgid "Conversor de áudio e vídeo"
-msgstr "Ljud- och videokonverterare"
-
-msgid "As configurações foram restauradas com sucesso!"
-msgstr "Inställningarna har återställts!"
+msgid "Não"
+msgstr "Nej"
 
 msgid "OK"
 msgstr "Okej"
 
+msgid "Cancelar"
+msgstr "Annullera"
+
+msgid "Em qual modo você deseja restaurar?"
+msgstr "I vilket läge vill du återställa?"
+
+msgid "Pesquisar aplicativo"
+msgstr "Sök app"
+
+msgid "Você tem certeza que deseja restaurar todas as configurações?"
+msgstr "Är du säker på att du vill återställa alla inställningar?"
+
+msgid "As configurações foram restauradas com sucesso!"
+msgstr "Inställningarna har återställts!"
+
 msgid "As configurações do BigLinux KDE foram restauradas com sucesso!"
 msgstr "BigLinux KDE-inställningar har återställts!"
 
-msgid "É necessário reinciar a sessão para concluir a restauração!"
-msgstr "Du måste återuppta sessionen för att slutföra återställningen!"
+msgid "É necessário reiniciar a sessão para concluir a restauração!"
+msgstr "Du måste starta om din session för att slutföra återställningen!"
 
 msgid "Sair da sessão"
 msgstr "Logga ut från sessionen"
@@ -105,3 +87,15 @@ msgstr "Uppmärksamhet! Programmet är igång!"
 
 msgid "Será fechado para que a restauração seja concluída."
 msgstr "Den kommer att stängas för att återställningen ska slutföras."
+
+msgid "Isso apagará todas as costumizações feitas por "
+msgstr "Detta kommer att radera alla kostnadsberäkningar som gjorts av "
+
+msgid "Vídeos"
+msgstr "Videor"
+
+msgid "Conversor de áudio e vídeo"
+msgstr "Ljud- och videokonverterare"
+
+msgid "Gravador de Tela"
+msgstr "Skärminspelare"

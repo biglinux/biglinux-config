@@ -19,9 +19,6 @@ msgstr ""
 msgid "Restaurar Configurações"
 msgstr "Endurheimta stillingar"
 
-msgid "Pesquisar programa"
-msgstr "Leitarforrit"
-
 msgid "Principais"
 msgstr "Aðal"
 
@@ -40,62 +37,47 @@ msgstr "Skrifstofa"
 msgid "Sistema"
 msgstr "Kerfi"
 
-msgid "Restaurar o programa no modo da distribuição BigLinux."
-msgstr "Endurheimtu forritið í BigLinux dreifingarham."
+msgid "Músicas"
+msgstr "Lög"
 
-msgid "Você tem certeza que deseja restaurar todas as configurações?"
-msgstr "Ertu viss um að þú viljir endurheimta allar stillingar?"
+msgid "Restaurar o aplicativo no modo padrão do programa"
+msgstr "Endurheimta forritið í sjálfgefnum ham forritsins"
 
-msgid "Isso apagará todas as costumizações feitas por "
-msgstr "Þetta mun eyða öllum kostnaði sem gerður er af "
+msgid "Restaurar o aplicativo no modo padrão da distribuição"
+msgstr "Endurheimtu forritið í sjálfgefna stillingu dreifingar"
 
-msgid "Não"
-msgstr "Nei"
+msgid "Restaurar o aplicativo no modo padrão da distribuição BigLinux"
+msgstr "Endurheimtu forritið í sjálfgefinni stillingu BigLinux dreifingarinnar"
 
 msgid "Sim"
 msgstr "Já"
 
-msgid "Restaurar o programa no modo padrão."
-msgstr "Endurheimtu forritið í venjulegan hátt."
-
-msgid "Restaurar no modo padrão do programa"
-msgstr "Endurheimta í venjulegum forritaham"
-
-msgid "Cancelar"
-msgstr "Afturkalla"
-
-msgid "Restaurar o programa no modo padrão ou distribuição BigLinux."
-msgstr "Endurheimtu forritið í venjulegum ham eða BigLinux dreifingu."
-
-msgid "Em qual modo você deseja restaurar?"
-msgstr "Í hvaða ham viltu endurheimta?"
-
-msgid "Restaurar no modo padrão da distribuição"
-msgstr "Endurheimta í venjulegum dreifingarham"
-
-msgid "Músicas"
-msgstr "Lög"
-
-msgid "Gravador de Tela"
-msgstr "Skjáupptökutæki"
-
-msgid "Vídeos"
-msgstr "Vídeó"
-
-msgid "Conversor de áudio e vídeo"
-msgstr "Hljóð- og myndbreytir"
-
-msgid "As configurações foram restauradas com sucesso!"
-msgstr "Stillingarnar hafa verið endurreistar með góðum árangri!"
+msgid "Não"
+msgstr "Nei"
 
 msgid "OK"
 msgstr "Ókei"
 
+msgid "Cancelar"
+msgstr "Afturkalla"
+
+msgid "Em qual modo você deseja restaurar?"
+msgstr "Í hvaða ham viltu endurheimta?"
+
+msgid "Pesquisar aplicativo"
+msgstr "Leita að forriti"
+
+msgid "Você tem certeza que deseja restaurar todas as configurações?"
+msgstr "Ertu viss um að þú viljir endurheimta allar stillingar?"
+
+msgid "As configurações foram restauradas com sucesso!"
+msgstr "Stillingarnar hafa verið endurreistar með góðum árangri!"
+
 msgid "As configurações do BigLinux KDE foram restauradas com sucesso!"
 msgstr "BigLinux KDE stillingar hafa verið endurreistar með góðum árangri!"
 
-msgid "É necessário reinciar a sessão para concluir a restauração!"
-msgstr "Þú verður að halda áfram fundinum til að ljúka endurheimtinni!"
+msgid "É necessário reiniciar a sessão para concluir a restauração!"
+msgstr "Þú verður að endurræsa lotuna til að ljúka endurheimtinni!"
 
 msgid "Sair da sessão"
 msgstr "Skráðu þig út úr lotunni"
@@ -105,3 +87,15 @@ msgstr "Athygli! Forritið er í gangi!"
 
 msgid "Será fechado para que a restauração seja concluída."
 msgstr "Það verður lokað til að endurheimtinni ljúki."
+
+msgid "Isso apagará todas as costumizações feitas por "
+msgstr "Þetta mun eyða öllum kostnaði sem gerður er af "
+
+msgid "Vídeos"
+msgstr "Vídeó"
+
+msgid "Conversor de áudio e vídeo"
+msgstr "Hljóð- og myndbreytir"
+
+msgid "Gravador de Tela"
+msgstr "Skjáupptökutæki"

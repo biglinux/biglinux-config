@@ -19,9 +19,6 @@ msgstr ""
 msgid "Restaurar Configurações"
 msgstr "Taasta seaded"
 
-msgid "Pesquisar programa"
-msgstr "Otsingu programm"
-
 msgid "Principais"
 msgstr "Peamine"
 
@@ -40,62 +37,47 @@ msgstr "Kontor"
 msgid "Sistema"
 msgstr "Süsteem"
 
-msgid "Restaurar o programa no modo da distribuição BigLinux."
-msgstr "Taastage programm BigLinuxi jaotusrežiimis."
+msgid "Músicas"
+msgstr "Laulud"
 
-msgid "Você tem certeza que deseja restaurar todas as configurações?"
-msgstr "Kas olete kindel, et soovite kõik seaded taastada?"
+msgid "Restaurar o aplicativo no modo padrão do programa"
+msgstr "Rakenduse taastamine programmi vaikerežiimis"
 
-msgid "Isso apagará todas as costumizações feitas por "
-msgstr "See kustutab kõik kuluarvestused, mille on teinud "
+msgid "Restaurar o aplicativo no modo padrão da distribuição"
+msgstr "Rakenduse taastamine levitamise vaikerežiimis"
 
-msgid "Não"
-msgstr "Ei"
+msgid "Restaurar o aplicativo no modo padrão da distribuição BigLinux"
+msgstr "Taastage rakendus BigLinuxi distributsiooni vaikerežiimis"
 
 msgid "Sim"
 msgstr "Jah"
 
-msgid "Restaurar o programa no modo padrão."
-msgstr "Taastage programm standardrežiimi."
-
-msgid "Restaurar no modo padrão do programa"
-msgstr "Taastage standardses programmirežiimis"
-
-msgid "Cancelar"
-msgstr "Tühistama"
-
-msgid "Restaurar o programa no modo padrão ou distribuição BigLinux."
-msgstr "Taastage programm standardrežiimis või BigLinuxi jaotuses."
-
-msgid "Em qual modo você deseja restaurar?"
-msgstr "Millises režiimis soovite taastada?"
-
-msgid "Restaurar no modo padrão da distribuição"
-msgstr "Taastamine standardses jaotusrežiimis"
-
-msgid "Músicas"
-msgstr "Laulud"
-
-msgid "Gravador de Tela"
-msgstr "Ekraani salvestaja"
-
-msgid "Vídeos"
-msgstr "Videod"
-
-msgid "Conversor de áudio e vídeo"
-msgstr "Heli- ja videomuundur"
-
-msgid "As configurações foram restauradas com sucesso!"
-msgstr "Seaded on edukalt taastatud!"
+msgid "Não"
+msgstr "Ei"
 
 msgid "OK"
 msgstr "Ok"
 
+msgid "Cancelar"
+msgstr "Tühistama"
+
+msgid "Em qual modo você deseja restaurar?"
+msgstr "Millises režiimis soovite taastada?"
+
+msgid "Pesquisar aplicativo"
+msgstr "Otsi rakendust"
+
+msgid "Você tem certeza que deseja restaurar todas as configurações?"
+msgstr "Kas olete kindel, et soovite kõik seaded taastada?"
+
+msgid "As configurações foram restauradas com sucesso!"
+msgstr "Seaded on edukalt taastatud!"
+
 msgid "As configurações do BigLinux KDE foram restauradas com sucesso!"
 msgstr "BigLinux KDE seaded on edukalt taastatud!"
 
-msgid "É necessário reinciar a sessão para concluir a restauração!"
-msgstr "Taastamise lõpuleviimiseks peate seanssi jätkama!"
+msgid "É necessário reiniciar a sessão para concluir a restauração!"
+msgstr "Taastamise lõpuleviimiseks peate oma seansi taaskäivitama!"
 
 msgid "Sair da sessão"
 msgstr "Seansilt väljalogimine"
@@ -105,3 +87,15 @@ msgstr "Tähelepanu! Programm töötab!"
 
 msgid "Será fechado para que a restauração seja concluída."
 msgstr "See suletakse taastamise lõpuleviimiseks."
+
+msgid "Isso apagará todas as costumizações feitas por "
+msgstr "See kustutab kõik kuluarvestused, mille on teinud "
+
+msgid "Vídeos"
+msgstr "Videod"
+
+msgid "Conversor de áudio e vídeo"
+msgstr "Heli- ja videomuundur"
+
+msgid "Gravador de Tela"
+msgstr "Ekraani salvestaja"

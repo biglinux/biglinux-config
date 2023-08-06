@@ -19,9 +19,6 @@ msgstr ""
 msgid "Restaurar Configurações"
 msgstr "恢复设置"
 
-msgid "Pesquisar programa"
-msgstr "搜索程序"
-
 msgid "Principais"
 msgstr "主要"
 
@@ -40,62 +37,47 @@ msgstr "办公室"
 msgid "Sistema"
 msgstr "系统"
 
-msgid "Restaurar o programa no modo da distribuição BigLinux."
-msgstr "在 BigLinux 分发模式下恢复程序。"
+msgid "Músicas"
+msgstr "歌曲"
 
-msgid "Você tem certeza que deseja restaurar todas as configurações?"
-msgstr "是否确实要还原所有设置？"
+msgid "Restaurar o aplicativo no modo padrão do programa"
+msgstr "在程序的默认模式下还原应用程序"
 
-msgid "Isso apagará todas as costumizações feitas por "
-msgstr "这将消除所有由 "
+msgid "Restaurar o aplicativo no modo padrão da distribuição"
+msgstr "将应用还原到分配的默认模式"
 
-msgid "Não"
-msgstr "不"
+msgid "Restaurar o aplicativo no modo padrão da distribuição BigLinux"
+msgstr "在 BigLinux 发行版的默认模式下恢复应用程序"
 
 msgid "Sim"
 msgstr "是的"
 
-msgid "Restaurar o programa no modo padrão."
-msgstr "将程序还原到标准模式。"
-
-msgid "Restaurar no modo padrão do programa"
-msgstr "在标准程序模式下恢复"
-
-msgid "Cancelar"
-msgstr "取消"
-
-msgid "Restaurar o programa no modo padrão ou distribuição BigLinux."
-msgstr "以标准模式或 BigLinux 发行版恢复程序。"
-
-msgid "Em qual modo você deseja restaurar?"
-msgstr "要在哪种模式下还原？"
-
-msgid "Restaurar no modo padrão da distribuição"
-msgstr "在标准分发模式下还原"
-
-msgid "Músicas"
-msgstr "歌曲"
-
-msgid "Gravador de Tela"
-msgstr "屏幕录像机"
-
-msgid "Vídeos"
-msgstr "视频"
-
-msgid "Conversor de áudio e vídeo"
-msgstr "音频和视频转换器"
-
-msgid "As configurações foram restauradas com sucesso!"
-msgstr "设置已成功恢复！"
+msgid "Não"
+msgstr "不"
 
 msgid "OK"
 msgstr "还行"
 
+msgid "Cancelar"
+msgstr "取消"
+
+msgid "Em qual modo você deseja restaurar?"
+msgstr "要在哪种模式下还原？"
+
+msgid "Pesquisar aplicativo"
+msgstr "搜索应用"
+
+msgid "Você tem certeza que deseja restaurar todas as configurações?"
+msgstr "是否确实要还原所有设置？"
+
+msgid "As configurações foram restauradas com sucesso!"
+msgstr "设置已成功恢复！"
+
 msgid "As configurações do BigLinux KDE foram restauradas com sucesso!"
 msgstr "BigLinux KDE 设置已成功恢复！"
 
-msgid "É necessário reinciar a sessão para concluir a restauração!"
-msgstr "您必须恢复会话才能完成还原！"
+msgid "É necessário reiniciar a sessão para concluir a restauração!"
+msgstr "您必须重新启动会话才能完成还原！"
 
 msgid "Sair da sessão"
 msgstr "退出会话"
@@ -105,3 +87,15 @@ msgstr "注意力！程序正在运行！"
 
 msgid "Será fechado para que a restauração seja concluída."
 msgstr "它将关闭以完成还原。"
+
+msgid "Isso apagará todas as costumizações feitas por "
+msgstr "这将消除所有由 "
+
+msgid "Vídeos"
+msgstr "视频"
+
+msgid "Conversor de áudio e vídeo"
+msgstr "音频和视频转换器"
+
+msgid "Gravador de Tela"
+msgstr "屏幕录像机"
