@@ -6,7 +6,7 @@
 #  Description: Restore Settings to help usage of BigLinux
 #
 #  Created: 2020/09/01
-#  Altered: 2023/08/03
+#  Altered: 2023/08/05
 #
 #  Copyright (c) 2023-2023, Vilmar Catafesta <vcatafesta@gmail.com>
 #                2020-2023, Bruno Gonçalves <www.biglinux.com.br>
@@ -35,18 +35,18 @@
 #  THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 APP="${0##*/}"
-_VERSION_="1.0.0-20230803"
+_VERSION_="1.0.0-20230805"
 LIBRARY=${LIBRARY:-'/usr/share/bigbashview/bcc/shell'}
+BOOTLOG="/tmp/bigcontrolcenter-$(date +"%d%m%Y").log"
+LOGGER='/dev/tty8'
 [[ -f "${LIBRARY}/bcclib.sh"  ]] && source "${LIBRARY}/bcclib.sh"
 [[ -f "${LIBRARY}/bcfglib.sh" ]] && source "${LIBRARY}/bcfglib.sh"
 
 function sh_config {
-	BOOTLOG="/tmp/$APP-$(sh_diahora).log"
-	LOGGER='/dev/tty8'
 	#Translation
 	export TEXTDOMAINDIR="/usr/share/locale"
 	export TEXTDOMAIN=biglinux-config
-	declare -gA aMenu=([TITLE]=$(gettext "Restaurar Configurações")
+	declare -gA aMenu=([TITLE]=$(gettext $"Restaurar Configurações")
 							 [Principais]=$(gettext $"Principais")
 							 [Internet]=$(gettext $"Internet")
 							 [Multimidia]=$(gettext $"Multimídia")
@@ -65,32 +65,29 @@ function sh_config {
 							 [Pesquisar]=$(gettext $"Pesquisar aplicativo")
 							 [Confirma]=$(gettext $"Você tem certeza que deseja restaurar todas as configurações?")
 							 )
-	declare -gA Aapps=([vokoscreenNG]=$(gettext $"Gravador de Tela")
-							 [Videos]=$(gettext $"Vídeos")
-							 [mystiq]=$(gettext $"Conversor de áudio e vídeo")
- 							)
 	declare -gA Afinish=([sucesso]=$(gettext $"As configurações foram restauradas com sucesso!")
 								[sucesso_KDE]=$(gettext $"As configurações do BigLinux KDE foram restauradas com sucesso!")
 								[reiniciar_sessao]=$(gettext $"É necessário reiniciar a sessão para concluir a restauração!")
 								[sair_sessao]=$(gettext $"Sair da sessão")
 								[app_em_execucao]=$(gettext $"Atenção! O programa está em execução!")
 								[app_on_close]=$(gettext $"Será fechado para que a restauração seja concluída.")
-								[erase_all]=$(gettext $"Isso apagará todas as costumizações feitas por" $USER!)
+								[erase_all]=$(gettext $"Isso apagará todas as costumizações feitas por ")
 								)
 
-	#	O array associa o nome do aplicativo a uma série de informações separadas por | (barra vertical).
-	#	Vou desmembrar os campos:
-	#	[brave]: Chave do array associativo, indicando o nome do aplicativo.
-	#	Valor associado à chave "brave".
-	#	"/usr/lib/brave-browser/brave|icons/brave.png|modal_1|Brave|brave.sh"
-	#	Este valor contém várias informações separadas por |.
-	#	campo1 - /usr/lib/brave-browser/brave: Caminho para o executável do aplicativo Brave.
-	#	campo2 - icons/brave.png: Caminho para o ícone do aplicativo.
-	#	campo3 - modal_1: Alguma informação relacionada a um modal.
-	#	campo4 - Brave: Nome do aplicativo.
-	#	campo5 - brave.sh: Nome de um arquivo ou script sh associado.
-	#	campo6 - Subtitulo (se houver)
-#							       [kde0]="Star|/usr/bin/true|icons/kde.png|modal_0|Biglinux KDE|sh_reset_kde"
+	#	O array associa o nome do aplicativo a uma série de informações/campos separadas por | (barra vertical).
+	#  [brave]="Star|/usr/lib/brave-browser/brave|icons/brave.png|modal_1|Brave|sh_reset_brave"
+	#	Vou desmembrar as informações/campos:
+	#		[brave]: Chave do array associativo, indicando o nome do aplicativo.
+	#		Valor associado à chave "brave":
+	#		"Star|/usr/lib/brave-browser/brave|icons/brave.png|modal_1|Brave|sh_reset_brave"
+	#			Este valor contém várias informações separadas por |.
+	#				campo1 - classe                       : Classe do aplicativo.
+	#				campo2 - /usr/lib/brave-browser/brave : Caminho para o executável do aplicativo Brave.
+	#				campo3 - icons/brave.png              : Caminho para o ícone do aplicativo.
+	#				campo4 - modal_1                      : informação relacionada a um modal.
+	#				campo5 - Brave                        : Nome do aplicativo.
+	#				campo6 - sh_reset_brave               : Nome de um arquivo ou script sh associado.
+	#				campo7 - Texto (opcional)             : Subtitulo (se houver).
 	declare -gA AFullNameApp=(
 								[firefox1]="Star|/usr/lib/firefox/firefox|icons/firefox.png|modal_11|Firefox|sh_reset_firefox"
 								[dolphin1]="Star|/usr/bin/dolphin|icons/dolphin.png|modal_3|Dolphin|sh_reset_dolphin"
@@ -105,9 +102,9 @@ function sh_config {
 							 	   [kate2]="Office|/usr/bin/kate|icons/kate.png|modal_4|Kate|sh_reset_kate"
 						 	   [lowriter]="Office|/usr/bin/lowriter|icons/libreoffice.png|modal_17|LibreOffice|sh_reset_libreoffice"
 						        [okular]="Office|/usr/bin/true|icons/okular.png|modal_18|Okular|sh_reset_okular"
-						      [smplayer]="Multimedia|/usr/bin/smplayer|icons/smplayer.png|modal_20|$(gettext $"Vídeos")|sh_reset_smplayer|(Smplayer)"						      
+						      [smplayer]="Multimedia|/usr/bin/smplayer|icons/smplayer.png|modal_20|$(gettext $"Vídeos")|sh_reset_smplayer|(Smplayer)"
 						        [mystiq]="Multimedia|/usr/bin/mystiq|icons/mystiq.png|modal_22|$(gettext $"Conversor de áudio e vídeo")|sh_reset_mystiq|(MystiQ)"
-						  [vokoscreenNG]="Multimedia|/usr/bin/vokoscreenNG|icons/vokoscreen.png|modal_9|$(gettext $"Gravador de Tela")|sh_reset_vokoscreen|(vokoscreenNG)"
+						  [vokoscreenNG]="Multimedia|/usr/bin/vokoscreenNG|icons/vokoscreen.png|modal_9|$(gettext $"Gravador de Tela")|sh_reset_vokoscreenNG|(vokoscreenNG)"
 						    [clementine]="Multimedia|/usr/bin/clementine|icons/clementine.png|modal_8|$(gettext $"Músicas")|sh_reset_clementine|(clementine)"
 						      [inkscape]="Graphic|/usr/bin/inkscape|icons/inkscape.png|modal_21|Inkscape|sh_reset_inkscape"
 						         [ksnip]="Graphic|/usr/bin/ksnip|icons/ksnip.png|modal_16|Ksnip|sh_reset_ksnip"
@@ -138,7 +135,7 @@ cat <<-EOF
 	<div class="header">
 	<div class="search-bar">
 	<input type="search" id="search" class="custom-search-input form-control validate"
-	placeholder="${aMenu[Pesquisar]}" />
+	placeholder=${aMenu[Pesquisar]} />
 	</div></div>
 	$(sh_div_lang)
 	<div class="left-side">
@@ -278,7 +275,7 @@ cat <<-EOF
 	</div><br>
 	${aMenu[Conf]}
 	<br><br>
-	${Afinish[erase_all]}
+	${Afinish[erase_all]} $USER!
 	<br>
 	<div class="content-button-wrapper" style="text-align: right;">
 	<br><button class="modalClose">
