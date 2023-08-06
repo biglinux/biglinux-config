@@ -15,9 +15,6 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 
-msgid "Restaurar Configurações"
-msgstr "Restaurar Configurações"
-
 msgid "Principais"
 msgstr "Principais"
 
@@ -45,8 +42,8 @@ msgstr "Restaurar o aplicativo no modo padrão do programa"
 msgid "Restaurar o aplicativo no modo padrão da distribuição"
 msgstr "Restaurar o aplicativo no modo padrão da distribuição"
 
-msgid "Restaurar o aplicativo no modo padrão da distribuição BigLinux."
-msgstr "Restaurar o aplicativo no modo padrão da distribuição BigLinux."
+msgid "Restaurar o aplicativo no modo padrão da distribuição BigLinux"
+msgstr "Restaurar o aplicativo no modo padrão da distribuição BigLinux"
 
 msgid "Sim"
 msgstr "Sim"
@@ -84,8 +81,8 @@ msgstr "As configurações foram restauradas com sucesso!"
 msgid "As configurações do BigLinux KDE foram restauradas com sucesso!"
 msgstr "As configurações do BigLinux KDE foram restauradas com sucesso!"
 
-msgid "É necessário reinciar a sessão para concluir a restauração!"
-msgstr "É necessário reinciar a sessão para concluir a restauração!"
+msgid "É necessário reiniciar a sessão para concluir a restauração!"
+msgstr "É necessário reiniciar a sessão para concluir a restauração!"
 
 msgid "Sair da sessão"
 msgstr "Sair da sessão"
@@ -95,3 +92,6 @@ msgstr "Atenção! O programa está em execução!"
 
 msgid "Será fechado para que a restauração seja concluída."
 msgstr "Será fechado para que a restauração seja concluída."
+
+msgid "Isso apagará todas as costumizações feitas por"
+msgstr "Isso apagará todas as costumizações feitas por"

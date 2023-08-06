@@ -14,9 +14,6 @@ msgstr  "Project-Id-Version: biglinux-config\n"
         "Content-Type: text/plain; charset=UTF-8\n"
         "Content-Transfer-Encoding: 8bit\n"
 
-msgid   "Restaurar Configurações"
-msgstr  ""
-
 msgid   "Principais"
 msgstr  ""
 
@@ -44,7 +41,7 @@ msgstr  ""
 msgid   "Restaurar o aplicativo no modo padrão da distribuição"
 msgstr  ""
 
-msgid   "Restaurar o aplicativo no modo padrão da distribuição BigLinux."
+msgid   "Restaurar o aplicativo no modo padrão da distribuição BigLinux"
 msgstr  ""
 
 msgid   "Sim"
@@ -83,7 +80,7 @@ msgstr  ""
 msgid   "As configurações do BigLinux KDE foram restauradas com sucesso!"
 msgstr  ""
 
-msgid   "É necessário reinciar a sessão para concluir a restauração!"
+msgid   "É necessário reiniciar a sessão para concluir a restauração!"
 msgstr  ""
 
 msgid   "Sair da sessão"
@@ -93,4 +90,7 @@ msgid   "Atenção! O programa está em execução!"
 msgstr  ""
 
 msgid   "Será fechado para que a restauração seja concluída."
+msgstr  ""
+
+msgid   "Isso apagará todas as costumizações feitas por"
 msgstr  ""
