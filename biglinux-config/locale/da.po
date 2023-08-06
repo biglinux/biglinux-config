@@ -19,9 +19,6 @@ msgstr ""
 msgid "Restaurar Configurações"
 msgstr "Gendan indstillinger"
 
-msgid "Pesquisar programa"
-msgstr "Søg program"
-
 msgid "Principais"
 msgstr "Vigtigste"
 
@@ -40,62 +37,47 @@ msgstr "Kontor"
 msgid "Sistema"
 msgstr "System"
 
-msgid "Restaurar o programa no modo da distribuição BigLinux."
-msgstr "Gendan programmet i BigLinux distributionstilstand."
+msgid "Músicas"
+msgstr "Sange"
 
-msgid "Você tem certeza que deseja restaurar todas as configurações?"
-msgstr "Er du sikker på, at du vil gendanne alle indstillinger?"
+msgid "Restaurar o aplicativo no modo padrão do programa"
+msgstr "Gendan programmet i programmets standardtilstand"
 
-msgid "Isso apagará todas as costumizações feitas por "
-msgstr "Dette vil slette alle de costumizations foretaget af "
+msgid "Restaurar o aplicativo no modo padrão da distribuição"
+msgstr "Gendan appen til distributionens standardtilstand"
 
-msgid "Não"
-msgstr "Nej"
+msgid "Restaurar o aplicativo no modo padrão da distribuição BigLinux"
+msgstr "Gendan applikationen i standardtilstanden for BigLinux-distributionen"
 
 msgid "Sim"
 msgstr "Ja"
 
-msgid "Restaurar o programa no modo padrão."
-msgstr "Gendan programmet til standardtilstand."
-
-msgid "Restaurar no modo padrão do programa"
-msgstr "Gendan i standardprogramtilstand"
-
-msgid "Cancelar"
-msgstr "Aflyse"
-
-msgid "Restaurar o programa no modo padrão ou distribuição BigLinux."
-msgstr "Gendan programmet i standardtilstand eller BigLinux-distribution."
-
-msgid "Em qual modo você deseja restaurar?"
-msgstr "I hvilken tilstand vil du gendanne?"
-
-msgid "Restaurar no modo padrão da distribuição"
-msgstr "Gendan i standarddistributionstilstand"
-
-msgid "Músicas"
-msgstr "Sange"
-
-msgid "Gravador de Tela"
-msgstr "Skærmoptager"
-
-msgid "Vídeos"
-msgstr "Videoer"
-
-msgid "Conversor de áudio e vídeo"
-msgstr "Lyd- og videokonverter"
-
-msgid "As configurações foram restauradas com sucesso!"
-msgstr "Indstillingerne er blevet gendannet!"
+msgid "Não"
+msgstr "Nej"
 
 msgid "OK"
 msgstr "Ok"
 
+msgid "Cancelar"
+msgstr "Aflyse"
+
+msgid "Em qual modo você deseja restaurar?"
+msgstr "I hvilken tilstand vil du gendanne?"
+
+msgid "Pesquisar aplicativo"
+msgstr "Søg app"
+
+msgid "Você tem certeza que deseja restaurar todas as configurações?"
+msgstr "Er du sikker på, at du vil gendanne alle indstillinger?"
+
+msgid "As configurações foram restauradas com sucesso!"
+msgstr "Indstillingerne er blevet gendannet!"
+
 msgid "As configurações do BigLinux KDE foram restauradas com sucesso!"
 msgstr "BigLinux KDE-indstillinger er blevet gendannet!"
 
-msgid "É necessário reinciar a sessão para concluir a restauração!"
-msgstr "Du skal genoptage sessionen for at fuldføre gendannelsen!"
+msgid "É necessário reiniciar a sessão para concluir a restauração!"
+msgstr "Du skal genstarte din session for at fuldføre gendannelsen!"
 
 msgid "Sair da sessão"
 msgstr "Log ud af sessionen"
@@ -105,3 +87,15 @@ msgstr "Opmærksomhed! Programmet kører!"
 
 msgid "Será fechado para que a restauração seja concluída."
 msgstr "Det vil blive lukket for gendannelsen at fuldføre."
+
+msgid "Isso apagará todas as costumizações feitas por "
+msgstr "Dette vil slette alle de costumizations foretaget af "
+
+msgid "Vídeos"
+msgstr "Videoer"
+
+msgid "Conversor de áudio e vídeo"
+msgstr "Lyd- og videokonverter"
+
+msgid "Gravador de Tela"
+msgstr "Skærmoptager"

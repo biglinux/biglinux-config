@@ -19,9 +19,6 @@ msgstr ""
 msgid "Restaurar Configurações"
 msgstr "Восстановление настроек"
 
-msgid "Pesquisar programa"
-msgstr "Поисковая программа"
-
 msgid "Principais"
 msgstr "Главный"
 
@@ -40,62 +37,47 @@ msgstr "Офис"
 msgid "Sistema"
 msgstr "Система"
 
-msgid "Restaurar o programa no modo da distribuição BigLinux."
-msgstr "Восстановите программу в режиме распространения BigLinux."
+msgid "Músicas"
+msgstr "Песни"
 
-msgid "Você tem certeza que deseja restaurar todas as configurações?"
-msgstr "Вы уверены, что хотите восстановить все настройки?"
+msgid "Restaurar o aplicativo no modo padrão do programa"
+msgstr "Восстановите приложение в режиме программы по умолчанию"
 
-msgid "Isso apagará todas as costumizações feitas por "
-msgstr "Это удалит все костюмы, сделанные "
+msgid "Restaurar o aplicativo no modo padrão da distribuição"
+msgstr "Восстановление приложения в режиме дистрибутива по умолчанию"
 
-msgid "Não"
-msgstr "Нет"
+msgid "Restaurar o aplicativo no modo padrão da distribuição BigLinux"
+msgstr "Восстановите приложение в режиме по умолчанию дистрибутива BigLinux"
 
 msgid "Sim"
 msgstr "Да"
 
-msgid "Restaurar o programa no modo padrão."
-msgstr "Восстановите программу в стандартном режиме."
-
-msgid "Restaurar no modo padrão do programa"
-msgstr "Восстановление в стандартном программном режиме"
-
-msgid "Cancelar"
-msgstr "Отмена"
-
-msgid "Restaurar o programa no modo padrão ou distribuição BigLinux."
-msgstr "Восстановите программу в стандартном режиме или дистрибутиве BigLinux."
-
-msgid "Em qual modo você deseja restaurar?"
-msgstr "В каком режиме вы хотите восстановить?"
-
-msgid "Restaurar no modo padrão da distribuição"
-msgstr "Восстановление в стандартном режиме распространения"
-
-msgid "Músicas"
-msgstr "Песни"
-
-msgid "Gravador de Tela"
-msgstr "Экранный рекордер"
-
-msgid "Vídeos"
-msgstr "Видео"
-
-msgid "Conversor de áudio e vídeo"
-msgstr "Аудио и видео конвертер"
-
-msgid "As configurações foram restauradas com sucesso!"
-msgstr "Настройки успешно восстановлены!"
+msgid "Não"
+msgstr "Нет"
 
 msgid "OK"
 msgstr "Хорошо"
 
+msgid "Cancelar"
+msgstr "Отмена"
+
+msgid "Em qual modo você deseja restaurar?"
+msgstr "В каком режиме вы хотите восстановить?"
+
+msgid "Pesquisar aplicativo"
+msgstr "Поисковое приложение"
+
+msgid "Você tem certeza que deseja restaurar todas as configurações?"
+msgstr "Вы уверены, что хотите восстановить все настройки?"
+
+msgid "As configurações foram restauradas com sucesso!"
+msgstr "Настройки успешно восстановлены!"
+
 msgid "As configurações do BigLinux KDE foram restauradas com sucesso!"
 msgstr "Настройки BigLinux KDE успешно восстановлены!"
 
-msgid "É necessário reinciar a sessão para concluir a restauração!"
-msgstr "Вы должны возобновить сеанс, чтобы завершить восстановление!"
+msgid "É necessário reiniciar a sessão para concluir a restauração!"
+msgstr "Вы должны перезапустить сеанс, чтобы завершить восстановление!"
 
 msgid "Sair da sessão"
 msgstr "Выход из сеанса"
@@ -105,3 +87,15 @@ msgstr "Внимание! Программа запущена!"
 
 msgid "Será fechado para que a restauração seja concluída."
 msgstr "Он будет закрыт для завершения восстановления."
+
+msgid "Isso apagará todas as costumizações feitas por "
+msgstr "Это удалит все костюмы, сделанные "
+
+msgid "Vídeos"
+msgstr "Видео"
+
+msgid "Conversor de áudio e vídeo"
+msgstr "Аудио и видео конвертер"
+
+msgid "Gravador de Tela"
+msgstr "Экранный рекордер"

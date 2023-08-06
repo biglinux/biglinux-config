@@ -19,9 +19,6 @@ msgstr ""
 msgid "Restaurar Configurações"
 msgstr "Beállítások visszaállítása"
 
-msgid "Pesquisar programa"
-msgstr "Keresőprogram"
-
 msgid "Principais"
 msgstr "Fő"
 
@@ -40,62 +37,47 @@ msgstr "Iroda"
 msgid "Sistema"
 msgstr "Rendszer"
 
-msgid "Restaurar o programa no modo da distribuição BigLinux."
-msgstr "Állítsa vissza a programot BigLinux terjesztési módban."
+msgid "Músicas"
+msgstr "Dalok"
 
-msgid "Você tem certeza que deseja restaurar todas as configurações?"
-msgstr "Biztos benne, hogy vissza akarja állítani az összes beállítást?"
+msgid "Restaurar o aplicativo no modo padrão do programa"
+msgstr "Az alkalmazás visszaállítása a program alapértelmezett módjában"
 
-msgid "Isso apagará todas as costumizações feitas por "
-msgstr "Ez törli az összes költséget, amelyet a "
+msgid "Restaurar o aplicativo no modo padrão da distribuição"
+msgstr "Az alkalmazás visszaállítása a disztribúció alapértelmezett módjára"
 
-msgid "Não"
-msgstr "Nem"
+msgid "Restaurar o aplicativo no modo padrão da distribuição BigLinux"
+msgstr "Állítsa vissza az alkalmazást a BigLinux disztribúció alapértelmezett módjában"
 
 msgid "Sim"
 msgstr "Igen"
 
-msgid "Restaurar o programa no modo padrão."
-msgstr "Állítsa vissza a programot normál módba."
-
-msgid "Restaurar no modo padrão do programa"
-msgstr "Visszaállítás normál programmódban"
-
-msgid "Cancelar"
-msgstr "Érvénytelenít"
-
-msgid "Restaurar o programa no modo padrão ou distribuição BigLinux."
-msgstr "Állítsa vissza a programot normál módban vagy BigLinux terjesztésben."
-
-msgid "Em qual modo você deseja restaurar?"
-msgstr "Melyik módban szeretné visszaállítani?"
-
-msgid "Restaurar no modo padrão da distribuição"
-msgstr "Visszaállítás normál elosztási módban"
-
-msgid "Músicas"
-msgstr "Dalok"
-
-msgid "Gravador de Tela"
-msgstr "Képernyő-felvevő"
-
-msgid "Vídeos"
-msgstr "Videók"
-
-msgid "Conversor de áudio e vídeo"
-msgstr "Audio- és videokonverter"
-
-msgid "As configurações foram restauradas com sucesso!"
-msgstr "A beállítások sikeresen vissza lettek állítva!"
+msgid "Não"
+msgstr "Nem"
 
 msgid "OK"
 msgstr "Oké"
 
+msgid "Cancelar"
+msgstr "Érvénytelenít"
+
+msgid "Em qual modo você deseja restaurar?"
+msgstr "Melyik módban szeretné visszaállítani?"
+
+msgid "Pesquisar aplicativo"
+msgstr "Keresés az alkalmazásban"
+
+msgid "Você tem certeza que deseja restaurar todas as configurações?"
+msgstr "Biztos benne, hogy vissza akarja állítani az összes beállítást?"
+
+msgid "As configurações foram restauradas com sucesso!"
+msgstr "A beállítások sikeresen vissza lettek állítva!"
+
 msgid "As configurações do BigLinux KDE foram restauradas com sucesso!"
 msgstr "A BigLinux KDE beállításai sikeresen helyreálltak!"
 
-msgid "É necessário reinciar a sessão para concluir a restauração!"
-msgstr "A visszaállítás befejezéséhez folytatnia kell a munkamenetet!"
+msgid "É necessário reiniciar a sessão para concluir a restauração!"
+msgstr "A visszaállítás befejezéséhez újra kell indítania a munkamenetet!"
 
 msgid "Sair da sessão"
 msgstr "Kijelentkezés a munkamenetből"
@@ -105,3 +87,15 @@ msgstr "Figyelem! A program fut!"
 
 msgid "Será fechado para que a restauração seja concluída."
 msgstr "A visszaállítás befejeződik."
+
+msgid "Isso apagará todas as costumizações feitas por "
+msgstr "Ez törli az összes költséget, amelyet a "
+
+msgid "Vídeos"
+msgstr "Videók"
+
+msgid "Conversor de áudio e vídeo"
+msgstr "Audio- és videokonverter"
+
+msgid "Gravador de Tela"
+msgstr "Képernyő-felvevő"

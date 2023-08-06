@@ -19,9 +19,6 @@ msgstr ""
 msgid "Restaurar Configurações"
 msgstr "Geri Yükleme Ayarları"
 
-msgid "Pesquisar programa"
-msgstr "Arama programı"
-
 msgid "Principais"
 msgstr "Ana"
 
@@ -40,62 +37,47 @@ msgstr "Ofis"
 msgid "Sistema"
 msgstr "Sistem"
 
-msgid "Restaurar o programa no modo da distribuição BigLinux."
-msgstr "Programı BigLinux dağıtım modunda geri yükleyin."
+msgid "Músicas"
+msgstr "Şarkı"
 
-msgid "Você tem certeza que deseja restaurar todas as configurações?"
-msgstr "Tüm ayarları geri yüklemek istediğinizden emin misiniz?"
+msgid "Restaurar o aplicativo no modo padrão do programa"
+msgstr "Uygulamayı programın varsayılan modunda geri yükleme"
 
-msgid "Isso apagará todas as costumizações feitas por "
-msgstr "Bu, tarafından yapılan tüm kostümleri silecektir. "
+msgid "Restaurar o aplicativo no modo padrão da distribuição"
+msgstr "Uygulamayı dağıtımın varsayılan moduna geri yükleme"
 
-msgid "Não"
-msgstr "Hayır"
+msgid "Restaurar o aplicativo no modo padrão da distribuição BigLinux"
+msgstr "Uygulamayı BigLinux dağıtımının varsayılan modunda geri yükleyin"
 
 msgid "Sim"
 msgstr "Evet"
 
-msgid "Restaurar o programa no modo padrão."
-msgstr "Programı standart moda geri yükleyin."
-
-msgid "Restaurar no modo padrão do programa"
-msgstr "Standart program modunda geri yükleme"
-
-msgid "Cancelar"
-msgstr "İptal"
-
-msgid "Restaurar o programa no modo padrão ou distribuição BigLinux."
-msgstr "Programı standart modda veya BigLinux dağıtımında geri yükleyin."
-
-msgid "Em qual modo você deseja restaurar?"
-msgstr "Hangi modda geri yüklemek istiyorsunuz?"
-
-msgid "Restaurar no modo padrão da distribuição"
-msgstr "Standart dağıtım modunda geri yükleme"
-
-msgid "Músicas"
-msgstr "Şarkı"
-
-msgid "Gravador de Tela"
-msgstr "Ekran Kaydedici"
-
-msgid "Vídeos"
-msgstr "Video"
-
-msgid "Conversor de áudio e vídeo"
-msgstr "Ses ve video dönüştürücü"
-
-msgid "As configurações foram restauradas com sucesso!"
-msgstr "Ayarlar başarıyla geri yüklendi!"
+msgid "Não"
+msgstr "Hayır"
 
 msgid "OK"
 msgstr "Tamam"
 
+msgid "Cancelar"
+msgstr "İptal"
+
+msgid "Em qual modo você deseja restaurar?"
+msgstr "Hangi modda geri yüklemek istiyorsunuz?"
+
+msgid "Pesquisar aplicativo"
+msgstr "Arama uygulaması"
+
+msgid "Você tem certeza que deseja restaurar todas as configurações?"
+msgstr "Tüm ayarları geri yüklemek istediğinizden emin misiniz?"
+
+msgid "As configurações foram restauradas com sucesso!"
+msgstr "Ayarlar başarıyla geri yüklendi!"
+
 msgid "As configurações do BigLinux KDE foram restauradas com sucesso!"
 msgstr "BigLinux KDE ayarları başarıyla geri yüklendi!"
 
-msgid "É necessário reinciar a sessão para concluir a restauração!"
-msgstr "Geri yüklemeyi tamamlamak için oturumu devam ettirmeniz gerekir!"
+msgid "É necessário reiniciar a sessão para concluir a restauração!"
+msgstr "Geri yüklemeyi tamamlamak için oturumunuzu yeniden başlatmanız gerekir!"
 
 msgid "Sair da sessão"
 msgstr "Oturumdan çıkış yapın"
@@ -105,3 +87,15 @@ msgstr "Dikkat! Program çalışıyor!"
 
 msgid "Será fechado para que a restauração seja concluída."
 msgstr "Geri yüklemenin tamamlanması için kapatılır."
+
+msgid "Isso apagará todas as costumizações feitas por "
+msgstr "Bu, tarafından yapılan tüm kostümleri silecektir. "
+
+msgid "Vídeos"
+msgstr "Video"
+
+msgid "Conversor de áudio e vídeo"
+msgstr "Ses ve video dönüştürücü"
+
+msgid "Gravador de Tela"
+msgstr "Ekran Kaydedici"

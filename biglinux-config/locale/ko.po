@@ -19,9 +19,6 @@ msgstr ""
 msgid "Restaurar Configurações"
 msgstr "설정 복원"
 
-msgid "Pesquisar programa"
-msgstr "검색 프로그램"
-
 msgid "Principais"
 msgstr "주요한"
 
@@ -40,61 +37,46 @@ msgstr "사무실"
 msgid "Sistema"
 msgstr "체계"
 
-msgid "Restaurar o programa no modo da distribuição BigLinux."
-msgstr "BigLinux 배포 모드에서 프로그램을 복원합니다."
+msgid "Músicas"
+msgstr "노래"
 
-msgid "Você tem certeza que deseja restaurar todas as configurações?"
-msgstr "모든 설정을 복원하시겠습니까?"
+msgid "Restaurar o aplicativo no modo padrão do programa"
+msgstr "프로그램의 기본 모드에서 응용 프로그램을 복원합니다."
 
-msgid "Isso apagará todas as costumizações feitas por "
-msgstr "이렇게 하면 다음에 의해 만들어진 모든 의상이 지워집니다. "
+msgid "Restaurar o aplicativo no modo padrão da distribuição"
+msgstr "앱을 배포판의 기본 모드로 복원Restore the app to the distribution's default mode"
 
-msgid "Não"
-msgstr "아니요"
+msgid "Restaurar o aplicativo no modo padrão da distribuição BigLinux"
+msgstr "BigLinux 배포판의 기본 모드에서 애플리케이션을 복원하십시오"
 
 msgid "Sim"
 msgstr "예"
 
-msgid "Restaurar o programa no modo padrão."
-msgstr "프로그램을 표준 모드로 복원합니다."
-
-msgid "Restaurar no modo padrão do programa"
-msgstr "표준 프로그램 모드에서 복원"
-
-msgid "Cancelar"
-msgstr "취소"
-
-msgid "Restaurar o programa no modo padrão ou distribuição BigLinux."
-msgstr "표준 모드 또는 BigLinux 배포판에서 프로그램을 복원합니다."
-
-msgid "Em qual modo você deseja restaurar?"
-msgstr "어떤 모드에서 복원하시겠습니까?"
-
-msgid "Restaurar no modo padrão da distribuição"
-msgstr "표준 배포 모드에서 복원"
-
-msgid "Músicas"
-msgstr "노래"
-
-msgid "Gravador de Tela"
-msgstr "스크린 레코더"
-
-msgid "Vídeos"
-msgstr "동영상"
-
-msgid "Conversor de áudio e vídeo"
-msgstr "오디오 및 비디오 변환기"
-
-msgid "As configurações foram restauradas com sucesso!"
-msgstr "설정이 성공적으로 복원되었습니다!"
+msgid "Não"
+msgstr "아니요"
 
 msgid "OK"
 msgstr "그래"
 
+msgid "Cancelar"
+msgstr "취소"
+
+msgid "Em qual modo você deseja restaurar?"
+msgstr "어떤 모드에서 복원하시겠습니까?"
+
+msgid "Pesquisar aplicativo"
+msgstr "검색 앱"
+
+msgid "Você tem certeza que deseja restaurar todas as configurações?"
+msgstr "모든 설정을 복원하시겠습니까?"
+
+msgid "As configurações foram restauradas com sucesso!"
+msgstr "설정이 성공적으로 복원되었습니다!"
+
 msgid "As configurações do BigLinux KDE foram restauradas com sucesso!"
 msgstr "BigLinux KDE 설정이 성공적으로 복원되었습니다!"
 
-msgid "É necessário reinciar a sessão para concluir a restauração!"
+msgid "É necessário reiniciar a sessão para concluir a restauração!"
 msgstr "복원을 완료하려면 세션을 다시 시작해야 합니다!"
 
 msgid "Sair da sessão"
@@ -105,3 +87,15 @@ msgstr "주의! 프로그램이 실행 중입니다!"
 
 msgid "Será fechado para que a restauração seja concluída."
 msgstr "복원이 완료될 때까지 닫힙니다."
+
+msgid "Isso apagará todas as costumizações feitas por "
+msgstr "이렇게 하면 다음에 의해 만들어진 모든 의상이 지워집니다. "
+
+msgid "Vídeos"
+msgstr "동영상"
+
+msgid "Conversor de áudio e vídeo"
+msgstr "오디오 및 비디오 변환기"
+
+msgid "Gravador de Tela"
+msgstr "스크린 레코더"

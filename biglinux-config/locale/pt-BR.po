@@ -15,6 +15,9 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 
+msgid "Restaurar Configurações"
+msgstr "Restaurar Configurações"
+
 msgid "Principais"
 msgstr "Principais"
 
@@ -66,15 +69,6 @@ msgstr "Pesquisar aplicativo"
 msgid "Você tem certeza que deseja restaurar todas as configurações?"
 msgstr "Você tem certeza que deseja restaurar todas as configurações?"
 
-msgid "Gravador de Tela"
-msgstr "Gravador de Tela"
-
-msgid "Vídeos"
-msgstr "Vídeos"
-
-msgid "Conversor de áudio e vídeo"
-msgstr "Conversor de áudio e vídeo"
-
 msgid "As configurações foram restauradas com sucesso!"
 msgstr "As configurações foram restauradas com sucesso!"
 
@@ -93,5 +87,14 @@ msgstr "Atenção! O programa está em execução!"
 msgid "Será fechado para que a restauração seja concluída."
 msgstr "Será fechado para que a restauração seja concluída."
 
-msgid "Isso apagará todas as costumizações feitas por"
-msgstr "Isso apagará todas as costumizações feitas por"
+msgid "Isso apagará todas as costumizações feitas por "
+msgstr "Isso apagará todas as costumizações feitas por "
+
+msgid "Vídeos"
+msgstr "Vídeos"
+
+msgid "Conversor de áudio e vídeo"
+msgstr "Conversor de áudio e vídeo"
+
+msgid "Gravador de Tela"
+msgstr "Gravador de Tela"

@@ -14,6 +14,9 @@ msgstr  "Project-Id-Version: biglinux-config\n"
         "Content-Type: text/plain; charset=UTF-8\n"
         "Content-Transfer-Encoding: 8bit\n"
 
+msgid   "Restaurar Configurações"
+msgstr  ""
+
 msgid   "Principais"
 msgstr  ""
 
@@ -65,15 +68,6 @@ msgstr  ""
 msgid   "Você tem certeza que deseja restaurar todas as configurações?"
 msgstr  ""
 
-msgid   "Gravador de Tela"
-msgstr  ""
-
-msgid   "Vídeos"
-msgstr  ""
-
-msgid   "Conversor de áudio e vídeo"
-msgstr  ""
-
 msgid   "As configurações foram restauradas com sucesso!"
 msgstr  ""
 
@@ -92,5 +86,14 @@ msgstr  ""
 msgid   "Será fechado para que a restauração seja concluída."
 msgstr  ""
 
-msgid   "Isso apagará todas as costumizações feitas por"
+msgid   "Isso apagará todas as costumizações feitas por "
+msgstr  ""
+
+msgid   "Vídeos"
+msgstr  ""
+
+msgid   "Conversor de áudio e vídeo"
+msgstr  ""
+
+msgid   "Gravador de Tela"
 msgstr  ""
