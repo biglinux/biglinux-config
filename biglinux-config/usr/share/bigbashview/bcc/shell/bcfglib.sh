@@ -515,6 +515,23 @@ function sh_reset_vokoscreenNG {
 }
 export -f sh_reset_vokoscreenNG
 
+function sh_reset_vlc {
+	local result
+
+	if result=$(pidof vlc) && [[ -n $result ]]; then
+		echo -n "$result"
+		return
+	fi
+
+	cmdlogger rm -r ~/.config/vlc
+	if [ "$1" = "skel" ]; then
+		cmdlogger cp -r /etc/skel/.config/vlc ~/.config/vlc
+	fi
+	echo -n "#"
+	return
+}
+export -f sh_reset_vlc
+
 function sh_main {
 	local execute_app="$1"
 	eval "$execute_app"
