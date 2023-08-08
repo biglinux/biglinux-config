@@ -137,10 +137,31 @@ $(".restore-default").on("click", function (e) {
 });
 
 $("#modalOkWarningKDE").click(function (e) {
+	let script = "sh_reset_kde";
 	e.preventDefault();
 	$(".lds-ring").css("display", "inline-flex");
 
-	$.get("run/kde.sh", function (data) {
+//	$.get("run/kde.sh", function (data) {
+	$.get("/usr/share/bigbashview/bcc/shell/bcfglib.sh", script, "skel", function (data) {
+		console.log(resp);
+		if (data === "#") {
+			setTimeout(function () {
+				$(".lds-ring").css("display", "none");
+				$(".modalWarningKDE").hide();
+				$("#modalInfoKDE").show();
+			}, 500);
+		}
+	});
+});
+
+$("#modalOkWarningXFCE").click(function (e) {
+	let script = "sh_reset_xfce";
+	e.preventDefault();
+	$(".lds-ring").css("display", "inline-flex");
+
+//	$.get("run/kde.sh", function (data) {
+	$.get("/usr/share/bigbashview/bcc/shell/bcfglib.sh", script, "skel", function (data) {
+		console.log(resp);
 		if (data === "#") {
 			setTimeout(function () {
 				$(".lds-ring").css("display", "none");
