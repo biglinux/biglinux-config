@@ -6,7 +6,7 @@
 #  Description: Control Center to help usage of BigLinux
 #
 #  Created: 2023/08/04
-#  Altered: 2023/08/04
+#  Altered: 2023/08/08
 #
 #  Copyright (c) 2023-2023, Vilmar Catafesta <vcatafesta@gmail.com>
 #  All rights reserved.

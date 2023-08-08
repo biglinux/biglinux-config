@@ -6,7 +6,7 @@
 #  Description: Restore Settings to help usage of BigLinux
 #
 #  Created: 2020/09/01
-#  Altered: 2023/08/07
+#  Altered: 2023/08/08
 #
 #  Copyright (c) 2023-2023, Vilmar Catafesta <vcatafesta@gmail.com>
 #                2020-2023, Bruno Gonçalves <www.biglinux.com.br>
@@ -35,7 +35,7 @@
 #  THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 APP="${0##*/}"
-_VERSION_="1.0.0-20230807"
+_VERSION_="1.0.0-20230808"
 LIBRARY=${LIBRARY:-'/usr/share/bigbashview/bcc/shell'}
 BOOTLOG="/tmp/bigcontrolcenter-$USER-$(date +"%d%m%Y").log"
 LOGGER='/dev/tty8'
@@ -67,6 +67,7 @@ function sh_config {
 							 )
 	declare -gA Afinish=([sucesso]=$(gettext $"As configurações foram restauradas com sucesso!")
 								[sucesso_KDE]=$(gettext $"As configurações do BigLinux KDE foram restauradas com sucesso!")
+								[sucesso_XFCE]=$(gettext $"As configurações do BigLinux XFCE foram restauradas com sucesso!")
 								[reiniciar_sessao]=$(gettext $"É necessário reiniciar a sessão para concluir a restauração!")
 								[sair_sessao]=$(gettext $"Sair da sessão")
 								[app_em_execucao]=$(gettext $"Atenção! O programa está em execução!")
@@ -289,6 +290,7 @@ cat <<-EOF
 	</div>
 	</div>
 	<!-- END Biglinux KDE -->
+	$(sh_finish_kde)
 EOF
 }
 
@@ -302,7 +304,7 @@ cat <<-EOF
 	<div id="tit-status-bar">
 	${aMenu[Restaurar_padrao_biglinux]}
 	</div></div>
-	<button onclick="openModal('modal_0')" id="box-subtitle" class="box-geral-icons box-geral-button">
+	<button onclick="openModal('modal_24')" id="box-subtitle" class="box-geral-icons box-geral-button">
 	<div class="box-imagem-icon">
 	<img class="box-imagem-icon" src="icons/xfce.png">
 	</div>
@@ -311,7 +313,7 @@ cat <<-EOF
 	</div>
 	</button>
 	</div>
-	<div id="modal_0" class="modal modalOkWarningXFCE">
+	<div id="modal_24" class="modal modalOkWarningXFCE">
 	<div class="modalContent">
 	<div>
 	<i style="vertical-align: middle; margin-right: 5px;">
@@ -334,6 +336,7 @@ cat <<-EOF
 	</div>
 	</div>
 	<!-- END Biglinux XFCE -->
+	$(sh_finish_xfce)
 EOF
 }
 
@@ -400,6 +403,52 @@ function sh_bcfg_process_apps {
 	done
 }
 
+function sh_finish_kde {
+cat <<-EOF
+	<!-- KDE -->
+	<div class="modal" id="modalInfoKDE">
+	<div class="modalContent">
+	<div>
+	<center>
+	${Afinish[sucesso_KDE]}
+	<br><br>
+	${Afinish[reiniciar_sessao]}
+	</center>
+	</div><br><br>
+	<div class="content-button-wrapper" style="text-align: right;">
+	<button class="modalBtn" id="modalOkInfoKDE">
+	${Afinish[sair_sessao]}
+	</button>
+	</div>
+	</div>
+	</div>
+	<!-- KDE -->
+EOF
+}
+
+function sh_finish_xfce {
+cat <<-EOF
+	<!-- XFCE -->
+	<div class="modal" id="modalInfoXFCE">
+	<div class="modalContent">
+	<div>
+	<center>
+	${Afinish[sucesso_XFCE]}
+	<br><br>
+	${Afinish[reiniciar_sessao]}
+	</center>
+	</div><br><br>
+	<div class="content-button-wrapper" style="text-align: right;">
+	<button class="modalBtn" id="modalOkInfoXFCE">
+	${Afinish[sair_sessao]}
+	</button>
+	</div>
+	</div>
+	</div>
+	<!-- XFCE -->
+EOF
+}
+
 function sh_bcfg_finish_html {
 cat <<-EOF
 	</div>
@@ -417,22 +466,10 @@ cat <<-EOF
 	</div>
 	</div>
 	</div>
-	<div class="modal" id="modalInfoKDE">
-	<div class="modalContent">
-	<div>
-	<center>
-	${Afinish[sucesso_KDE]}
-	<br><br>
-	${Afinish[reiniciar_sessao]}
-	</center>
-	</div><br><br>
-	<div class="content-button-wrapper" style="text-align: right;">
-	<button class="modalBtn" id="modalOkInfoKDE">
-	${Afinish[sair_sessao]}
-	</button>
-	</div>
-	</div>
-	</div>
+
+	<!-- $(sh_finish_kde) -->
+	<!-- $(sh_finish_xfce) -->
+
 	<div class="modal" id="modalWarning">
 	<div class="modalContent">
 	<div>
@@ -469,17 +506,19 @@ EOF
 }
 
 function sh_main {
-	local current_desktop="$(sh_get_current_desktop)"
+	local current_desktop="$(sh_get_de)"
 
 	sh_bcfg_start_html
 	case "$current_desktop" in
-		XFCE) sh_bcfg_process_xfce "Star";;
-		KDE)  sh_bcfg_process_kde "Star";;
+		Xfce4) sh_bcfg_process_xfce "Star";;
+		Plasma)  sh_bcfg_process_kde "Star";;
+		*)    sh_bcfg_process_kde "System";;
 	esac
 	sh_bcfg_process_apps
 	case "$current_desktop" in
-		XFCE) sh_bcfg_process_xfce "System";;
-		KDE)  sh_bcfg_process_kde "System";;
+		Xfce4) sh_bcfg_process_xfce "System";;
+		Plasma)  sh_bcfg_process_kde "System";;
+		*)    sh_bcfg_process_kde "System";;
 	esac
 	sh_bcfg_finish_html
 }
