@@ -76,6 +76,9 @@ msgstr "設定が正常に復元されました!"
 msgid "As configurações do BigLinux KDE foram restauradas com sucesso!"
 msgstr "BigLinux KDEの設定が正常に復元されました!"
 
+msgid "As configurações do BigLinux XFCE foram restauradas com sucesso!"
+msgstr "BigLinux XFCEの設定が正常に復元されました!"
+
 msgid "É necessário reiniciar a sessão para concluir a restauração!"
 msgstr "復元を完了するには、セッションを再起動する必要があります。"
 

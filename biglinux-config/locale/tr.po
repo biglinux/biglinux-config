@@ -76,6 +76,9 @@ msgstr "Ayarlar başarıyla geri yüklendi!"
 msgid "As configurações do BigLinux KDE foram restauradas com sucesso!"
 msgstr "BigLinux KDE ayarları başarıyla geri yüklendi!"
 
+msgid "As configurações do BigLinux XFCE foram restauradas com sucesso!"
+msgstr "BigLinux XFCE ayarları başarıyla geri yüklendi!"
+
 msgid "É necessário reiniciar a sessão para concluir a restauração!"
 msgstr "Geri yüklemeyi tamamlamak için oturumunuzu yeniden başlatmanız gerekir!"
 

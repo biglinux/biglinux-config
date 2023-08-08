@@ -76,6 +76,9 @@ msgstr "Seaded on edukalt taastatud!"
 msgid "As configurações do BigLinux KDE foram restauradas com sucesso!"
 msgstr "BigLinux KDE seaded on edukalt taastatud!"
 
+msgid "As configurações do BigLinux XFCE foram restauradas com sucesso!"
+msgstr "BigLinux XFCE seaded on edukalt taastatud!"
+
 msgid "É necessário reiniciar a sessão para concluir a restauração!"
 msgstr "Taastamise lõpuleviimiseks peate oma seansi taaskäivitama!"
 
