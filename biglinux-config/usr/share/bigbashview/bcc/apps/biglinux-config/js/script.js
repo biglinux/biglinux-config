@@ -137,31 +137,13 @@ $(".restore-default").on("click", function (e) {
 });
 
 $("#modalOkWarningKDE").click(function (e) {
+	e.preventDefault();
 	let script = "sh_reset_kde";
-	e.preventDefault();
 	$(".lds-ring").css("display", "inline-flex");
 
 //	$.get("run/kde.sh", function (data) {
-	$.get("/usr/share/bigbashview/bcc/shell/bcfglib.sh", script, "skel", function (data) {
-		console.log(resp);
-		if (data === "#") {
-			setTimeout(function () {
-				$(".lds-ring").css("display", "none");
-				$(".modalWarningKDE").hide();
-				$("#modalInfoKDE").show();
-			}, 500);
-		}
-	});
-});
-
-$("#modalOkWarningXFCE").click(function (e) {
-	let script = "sh_reset_xfce";
-	e.preventDefault();
-	$(".lds-ring").css("display", "inline-flex");
-
-//	$.get("run/kde.sh", function (data) {
-	$.get("/usr/share/bigbashview/bcc/shell/bcfglib.sh", script, "skel", function (data) {
-		console.log(resp);
+	$.get("/usr/share/bigbashview/bcc/shell/bcfglib.sh", script, function (data) {
+		console.log(data);
 		if (data === "#") {
 			setTimeout(function () {
 				$(".lds-ring").css("display", "none");
@@ -187,4 +169,30 @@ $(".modalOkInfo").click(function (e) {
 $(".modalCancel").click(function (e) {
 	e.preventDefault();
 	$("#modalWarning").hide();
+});
+
+// ##########################################################################################
+
+$("#modalOkInfoXFCE").click(function (e) {
+	e.preventDefault();
+	$("#modalInfoXFCE").hide();
+	_run(`qdbus org.kde.ksmserver /KSMServer logout 1 0 2`);
+});
+
+$("#modalOkWarningXFCE").click(function (e) {
+	e.preventDefault();
+	let script = "sh_reset_xfce";
+	$(".lds-ring").css("display", "inline-flex");
+
+//	$.get("run/kde.sh", function (data) {
+	$.get("/usr/share/bigbashview/bcc/shell/bcfglib.sh", script, function (data) {
+		console.log(data);
+		if (data === "#") {
+			setTimeout(function () {
+				$(".lds-ring").css("display", "none");
+				$(".modalWarningXFCE").hide();
+				$("#modalInfoXFCE").show();
+			}, 500);
+		}
+	});
 });
