@@ -6,7 +6,7 @@
 #  Description: Control Center to help usage of BigLinux
 #
 #  Created: 2023/08/04
-#  Altered: 2023/08/04
+#  Altered: 2023/08/08
 #
 #  Copyright (c) 2023-2023, Vilmar Catafesta <vcatafesta@gmail.com>
 #  All rights reserved.
@@ -537,6 +537,47 @@ function sh_main {
 	eval "$execute_app"
 	return
 }
+
+function sh_reset_xfce {
+	local result
+
+	if result=$(pidof dolphin) && [[ -n $result ]]; then
+		kill -9 "$result"
+		return
+	fi
+
+	#Remove(home) folders
+	cmdlogger rm -r ~/.cache/*
+	cmdlogger mv ~/.config/xfce4 /tmp/./config/xfce4_backup
+
+	#Remove(home) files
+	cmdlogger rm ~/.bash_history
+	cmdlogger rm ~/.bash_logout
+	cmdlogger rm ~/.bashrc
+	cmdlogger rm ~/.bash_profile
+	cmdlogger rm ~/.big_desktop_theme
+	cmdlogger rm ~/.big_performance
+	cmdlogger rm ~/.big_preload
+	cmdlogger rm ~/.local/share/RecentDocuments/*
+	cmdlogger rm ~/.local/share/Trash/files/*
+
+	#Copy(skel) folders
+	cmdlogger cp -rf /etc/skel/.config ~
+	cmdlogger cp -rf /etc/skel/.local ~
+	cmdlogger cp -rf /etc/skel/.pje ~
+	cmdlogger cp -rf /etc/skel/.pki ~
+
+	#Copy(skel) files
+	cmdlogger cp -f /etc/skel/.bash_logout ~
+	cmdlogger cp -f /etc/skel/.bash_profile ~
+	cmdlogger cp -f /etc/skel/.bashrc ~
+	cmdlogger cp -f /etc/skel/.xinitrc ~
+
+	sleep 1
+	echo -n "#"
+	return
+}
+export -f sh_reset_xfce
 
 #sh_debug
 sh_main "$@"
