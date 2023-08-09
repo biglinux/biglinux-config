@@ -76,6 +76,9 @@ msgstr "Οι ρυθμίσεις έχουν αποκατασταθεί με επ�
 msgid "As configurações do BigLinux KDE foram restauradas com sucesso!"
 msgstr "Οι ρυθμίσεις του BigLinux KDE έχουν αποκατασταθεί με επιτυχία!"
 
+msgid "As configurações do BigLinux XFCE foram restauradas com sucesso!"
+msgstr "Οι ρυθμίσεις του BigLinux XFCE αποκαταστάθηκαν με επιτυχία!"
+
 msgid "É necessário reiniciar a sessão para concluir a restauração!"
 msgstr "Πρέπει να επανεκκινήσετε τη συνεδρία σας για να ολοκληρώσετε την επαναφορά!"
 

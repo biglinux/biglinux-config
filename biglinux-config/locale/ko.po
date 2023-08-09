@@ -76,6 +76,9 @@ msgstr "설정이 성공적으로 복원되었습니다!"
 msgid "As configurações do BigLinux KDE foram restauradas com sucesso!"
 msgstr "BigLinux KDE 설정이 성공적으로 복원되었습니다!"
 
+msgid "As configurações do BigLinux XFCE foram restauradas com sucesso!"
+msgstr "BigLinux XFCE 설정이 성공적으로 복원되었습니다!"
+
 msgid "É necessário reiniciar a sessão para concluir a restauração!"
 msgstr "복원을 완료하려면 세션을 다시 시작해야 합니다!"
 

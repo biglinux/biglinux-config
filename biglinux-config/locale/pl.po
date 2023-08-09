@@ -76,6 +76,9 @@ msgstr "Ustawienia zostały pomyślnie przywrócone!"
 msgid "As configurações do BigLinux KDE foram restauradas com sucesso!"
 msgstr "Ustawienia BigLinux KDE zostały pomyślnie przywrócone!"
 
+msgid "As configurações do BigLinux XFCE foram restauradas com sucesso!"
+msgstr "Ustawienia BigLinux XFCE zostały pomyślnie przywrócone!"
+
 msgid "É necessário reiniciar a sessão para concluir a restauração!"
 msgstr "Musisz ponownie uruchomić sesję, aby ukończyć przywracanie!"
 

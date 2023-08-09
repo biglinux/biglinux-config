@@ -76,6 +76,9 @@ msgstr "¡La configuración se ha restaurado con éxito!"
 msgid "As configurações do BigLinux KDE foram restauradas com sucesso!"
 msgstr "¡La configuración de BigLinux KDE se ha restaurado con éxito!"
 
+msgid "As configurações do BigLinux XFCE foram restauradas com sucesso!"
+msgstr "¡La configuración de BigLinux XFCE se ha restaurado con éxito!"
+
 msgid "É necessário reiniciar a sessão para concluir a restauração!"
 msgstr "¡Debe reiniciar su sesión para completar la restauración!"
 

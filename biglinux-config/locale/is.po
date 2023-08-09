@@ -76,6 +76,9 @@ msgstr "Stillingarnar hafa verið endurreistar með góðum árangri!"
 msgid "As configurações do BigLinux KDE foram restauradas com sucesso!"
 msgstr "BigLinux KDE stillingar hafa verið endurreistar með góðum árangri!"
 
+msgid "As configurações do BigLinux XFCE foram restauradas com sucesso!"
+msgstr "BigLinux XFCE stillingar hafa verið endurheimtar!"
+
 msgid "É necessário reiniciar a sessão para concluir a restauração!"
 msgstr "Þú verður að endurræsa lotuna til að ljúka endurheimtinni!"
 

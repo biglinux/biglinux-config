@@ -76,6 +76,9 @@ msgstr "Postavke su uspješno vraćene!"
 msgid "As configurações do BigLinux KDE foram restauradas com sucesso!"
 msgstr "BigLinux KDE postavke uspješno su obnovljene!"
 
+msgid "As configurações do BigLinux XFCE foram restauradas com sucesso!"
+msgstr "BigLinux XFCE postavke uspješno su vraćene!"
+
 msgid "É necessário reiniciar a sessão para concluir a restauração!"
 msgstr "Da biste dovršili vraćanje, morate ponovno pokrenuti sesiju!"
 

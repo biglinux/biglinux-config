@@ -76,6 +76,9 @@ msgstr "Setările au fost restaurate cu succes!"
 msgid "As configurações do BigLinux KDE foram restauradas com sucesso!"
 msgstr "Setările BigLinux KDE au fost restaurate cu succes!"
 
+msgid "As configurações do BigLinux XFCE foram restauradas com sucesso!"
+msgstr "Setările BigLinux XFCE au fost restaurate cu succes!"
+
 msgid "É necessário reiniciar a sessão para concluir a restauração!"
 msgstr "Trebuie să reporniți sesiunea pentru a finaliza restaurarea!"
 
