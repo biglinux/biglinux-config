@@ -6,7 +6,7 @@
 #  Description: Restore Settings to help usage of BigLinux
 #
 #  Created: 2020/09/01
-#  Altered: 2023/08/08
+#  Altered: 2023/08/09
 #
 #  Copyright (c) 2023-2023, Vilmar Catafesta <vcatafesta@gmail.com>
 #                2020-2023, Bruno Gonçalves <www.biglinux.com.br>
@@ -35,7 +35,7 @@
 #  THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 APP="${0##*/}"
-_VERSION_="1.0.0-20230808"
+_VERSION_="1.0.0-20230809"
 LIBRARY=${LIBRARY:-'/usr/share/bigbashview/bcc/shell'}
 BOOTLOG="/tmp/bigcontrolcenter-$USER-$(date +"%d%m%Y").log"
 LOGGER='/dev/tty8'
@@ -137,7 +137,7 @@ cat <<-EOF
 	<div class="header">
 	<div class="search-bar">
 	<input type="search" id="search" class="custom-search-input form-control validate"
-	placeholder=${aMenu[Pesquisar]} />
+	placeholder="${aMenu[Pesquisar]}" />
 	</div></div>
 	$(sh_div_lang)
 	<div class="left-side">
@@ -467,9 +467,6 @@ cat <<-EOF
 	</div>
 	</div>
 
-	<!-- $(sh_finish_kde) -->
-	<!-- $(sh_finish_xfce) -->
-
 	<div class="modal" id="modalWarning">
 	<div class="modalContent">
 	<div>
@@ -507,20 +504,21 @@ EOF
 
 function sh_main {
 	local current_desktop="$(sh_get_de)"
+	local process_function="sh_bcfg_process_kde"
 
 	sh_bcfg_start_html
-	case "$current_desktop" in
-		Xfce4) sh_bcfg_process_xfce "Star";;
-		Plasma)  sh_bcfg_process_kde "Star";;
-		*)    sh_bcfg_process_kde "System";;
+
+	case "${current_desktop^^}" in
+		XFCE|XFCE4) process_function="sh_bcfg_process_xfce";;
+		PLASMA) ;;
+		*) ;;
 	esac
-	sh_bcfg_process_apps
-	case "$current_desktop" in
-		Xfce4) sh_bcfg_process_xfce "System";;
-		Plasma)  sh_bcfg_process_kde "System";;
-		*)    sh_bcfg_process_kde "System";;
-	esac
-	sh_bcfg_finish_html
+
+   $process_function "Star"
+   $process_function "System"
+
+   sh_bcfg_process_apps
+   sh_bcfg_finish_html
 }
 
 #sh_debug
