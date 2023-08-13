@@ -90,7 +90,7 @@ $(".restore-skel").on("click", function (e) {
 
 //			$.get("run/" + script, "skel", function (data) {
 //			$.get("./bcfglib.sh", script, "skel", function (data) {
-			$.get("/usr/share/bigbashview/bcc/shell/bcfglib.sh", script, "skel", function (data) {
+			$.get("/usr/share/bigbashview/bcc/shell/bcfglib.sh", script, function (data) {
 				console.log(resp);
 				if (data === "#")
 					setTimeout(function () {
@@ -125,7 +125,7 @@ $(".restore-default").on("click", function (e) {
 
 //			$.get("run/" + script, function (data) {
 //			$.get("./bcfglib.sh", script, function (data) {
-			$.get("/usr/share/bigbashview/bcc/shell/bcfglib.sh", script, "skel", function (data) {
+			$.get("/usr/share/bigbashview/bcc/shell/bcfglib.sh", script, function (data) {
 				console.log(resp);
 				if (data === "#")
 					setTimeout(function () {
