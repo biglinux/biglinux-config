@@ -6,7 +6,7 @@
 #  Description: Control Center to help usage of BigLinux
 #
 #  Created: 2023/08/04
-#  Altered: 2023/08/08
+#  Altered: 2023/08/12
 #
 #  Copyright (c) 2023-2023, Vilmar Catafesta <vcatafesta@gmail.com>
 #  All rights reserved.
@@ -532,12 +532,6 @@ function sh_reset_vlc {
 }
 export -f sh_reset_vlc
 
-function sh_main {
-	local execute_app="$1"
-	eval "$execute_app"
-	return
-}
-
 function sh_reset_xfce {
 	local result
 
@@ -578,6 +572,14 @@ function sh_reset_xfce {
 	return
 }
 export -f sh_reset_xfce
+
+function sh_main {
+   local execute_app="$1"
+   local param_skel="$2"
+
+   eval "$execute_app $param_skel"
+   return
+}
 
 #sh_debug
 sh_main "$@"
