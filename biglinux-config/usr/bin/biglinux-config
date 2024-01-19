@@ -43,7 +43,7 @@ LOGGER='/dev/tty8'
 export XDG_RUNTIME="${XDG_RUNTIME:-/run/user/$(id -g)}"
 
 function sh_main {
-	cmdlogger bigbashview index.sh.htm -s 1030x600 -i icon.png -d "/usr/share/bigbashview/bcc/apps/biglinux-config"
+	bigbashview index.sh.htm -s 1030x600 -i icon.png -d "/usr/share/bigbashview/bcc/apps/biglinux-config"
 }
 
 #sh_debug
