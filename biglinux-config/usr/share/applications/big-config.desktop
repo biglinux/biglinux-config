@@ -1,0 +1,10 @@
+[Desktop Entry]
+Type=Application
+Name=Restore Configuration
+Name[pt_BR]=Restaurar Configurações
+Exec=big-config
+Icon=big-config
+Categories=System;
+StartupNotify=true
+Terminal=false
+
