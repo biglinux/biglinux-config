@@ -3,7 +3,7 @@
 #  Description: JS Library for BigLinux Config
 #
 #  Created: 2024/05/31
-#  Altered: 2024/07/03
+#  Altered: 2024/07/14
 #
 #  Copyright (c) 2023-2024, Vilmar Catafesta <vcatafesta@gmail.com>
 #                2020-2023, Bruno Gonçalves <www.biglinux.com.br>
@@ -35,6 +35,7 @@
 $(function () {
   $("#Star").trigger("click");
 });
+
 /* LEGENDA BOX STATUS BAR */
 $(".box-items").mouseover(function () {
   $(this).children("#box-status-bar").css("display", "block");
@@ -45,7 +46,6 @@ $(".box-items").mouseout(function () {
 });
 
 /* FIM LEGENDA BOX STATUS BAR */
-
 $(document).on("click", "#point-container", function () {
   var show = $(this).data("show");
   $(show).removeClass("hide").siblings().addClass("hide");
@@ -59,14 +59,14 @@ $(".search-bar input")
     $(".header").removeClass("wide");
   });
 
-const toggleButton = document.querySelector(".dark-light");
-toggleButton.addEventListener("click", () => {
-	let state = document.body.classList.contains("light-mode");
-	_run('sh_bcfg_setbgcolor ' + state);
-	console.log("light-mode =:", state);
-    document.body.classList.toggle("light-mode");
-	state = document.body.classList.contains("light-mode");
-	console.log("light-mode =:", state);
+$(".dark-light").click(function (e) {
+  e.preventDefault();
+  var state = $("body").hasClass("light-mode");
+  _run("sh_bcfg_setbgcolor " + state);
+  console.log("light-mode =:", state);
+  $("body").toggleClass("light-mode");
+  state = $("body").hasClass("light-mode");
+  console.log("light-mode =:", state);
 });
 
 var modals = document.getElementsByClassName("modal");
@@ -137,7 +137,7 @@ $(".restore-skel").on("click", function (e) {
             setTimeout(function () {
               $("#modalInfo").show();
             }, 500);
-        }
+        },
       );
     });
   });
@@ -176,7 +176,7 @@ $(".restore-default").on("click", function (e) {
             setTimeout(function () {
               $("#modalInfo").show();
             }, 500);
-        }
+        },
       );
     });
   });

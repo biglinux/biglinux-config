@@ -55,7 +55,7 @@ function sh_big_config() {
 	export TEXTDOMAIN=biglinux-config
 	declare -g bigconfigpath='/usr/share/bigbashview/bcc/apps/biglinux-config'
 	declare -g bigconfig_icon_file='icons/icon.png'
-	declare -g TITLE="Big-Config - Restaurar Configurações"
+	declare -g TITLE="Big-Config - Restaurar Configurações de Aplicativos"
 	declare -gA Amsg=(
 		[error_open]=$(gettext $"Outra instância do Big-Config já está em execução.")
 		[error_access_dir]=$(gettext $"Erro ao acessar o diretório:")
