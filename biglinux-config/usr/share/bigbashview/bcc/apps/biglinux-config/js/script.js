@@ -242,3 +242,22 @@ $("#modalOkWarningXFCE").click(function (e) {
     }
   });
 });
+
+$(document).ready(function () {
+  // Itera sobre todos os quadros que têm a classe box-not-exist
+  $(".box-not-exist").each(function () {
+    // Desabilita todos os botões dentro do quadro
+    $(this).find(".box-geral-button").attr("disabled", "disabled");
+  });
+});
+
+$(document).ready(function () {
+  // Verifica se há algum elemento com a classe box-not-exist
+  if ($(".box-not-exist").length) {
+    // Altera a cor de fundo e a cor do texto de todos os elementos com a classe status-bar dentro da div box-not-exist
+    $(".box-not-exist #tit-status-bar").css({
+      "background-color": "#FF0000", // Vermelho
+      color: "#FFFFFF", // Branco
+    });
+  }
+});
