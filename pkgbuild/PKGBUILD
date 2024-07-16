@@ -5,11 +5,11 @@ pkgver=$(date +%Y_%m_%d)
 pkgrel=$(date +%H%M)
 arch=('any')
 license=('GPL')
-url="https://github.com/biglinux/biglinux-config"
+url="https://github.com/biglinux/$pkgname"
+source=("git+${url}.git")
 pkgdesc="Complete control center to use in BigLinux with DE's"
 depends=('bigbashview' 'kdialog')
 depends+=('bigcontrolcenter-base') #qui 18 jan 2024 19:36:34 -04 - vcatafesta@gmail.com
-source=("git+${url}.git")
 md5sums=(SKIP)
 
 package() {
