@@ -1384,6 +1384,7 @@ body.light-mode .video-bg:before {
   border-radius: 6px;
   flex-direction: column;
   white-space: normal;
+  text-align: left; /* Adicionado para alinhar o texto à esquerda */
 }
 
 .modalClose {

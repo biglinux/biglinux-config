@@ -182,6 +182,8 @@ $(".restore-default").on("click", function (e) {
   });
 });
 
+//#################################################################################################
+
 $("#modalOkWarningKDE").click(function (e) {
   e.preventDefault();
   let script = "sh_reset_kde";
@@ -219,29 +221,77 @@ $(".modalCancel").click(function (e) {
 
 // ##########################################################################################
 
-$("#modalOkInfoXFCE").click(function (e) {
+$("#modalOkWarning").click(function (e) {
+  // Previne a ação padrão do elemento (se for um link, por exemplo)
   e.preventDefault();
-  $("#modalInfoXFCE").hide();
-  _run(`qdbus org.kde.ksmserver /KSMServer logout 1 0 2`);
-});
 
-$("#modalOkWarningXFCE").click(function (e) {
-  e.preventDefault();
-  let script = "sh_reset_xfce";
+  // Obtém o valor do atributo data-value do elemento clicado
+  let script = $(this).attr("data-value");
+  console.log(script);
+
+  // Esconde o modal de aviso
+  $(".modalOkWarning").hide();
+
+  // Mostra o indicador de carregamento
   $(".lds-ring").css("display", "inline-flex");
 
-  //	$.get("run/kde.sh", function (data) {
+  // Faz uma requisição GET para o script especificado
   $.get("/usr/share/bigbashview/bcc/shell/bcfglib.sh", script, function (data) {
     console.log(data);
+
+    // Verifica se os dados retornados são exatamente "#"
     if (data === "#") {
+      // Esconde o indicador de carregamento e mostra o modal de informação após 500ms
       setTimeout(function () {
         $(".lds-ring").css("display", "none");
-        $(".modalWarningXFCE").hide();
-        $("#modalInfoXFCE").show();
+        $("#modalInfo").show();
+      }, 500);
+    } else {
+      // Esconde o indicador de carregamento e mostra o modal de erro após 500ms
+      setTimeout(function () {
+        $(".lds-ring").css("display", "none");
+        $("#modalErro").show();
       }, 500);
     }
   });
 });
+
+// ##########################################################################################
+
+$(".modalClose").click(function (e) {
+  e.preventDefault();
+//  $("#modalInfo").hide();
+//	var modalAtual = getCurrentModal();
+//  $(modalAtual).hide();
+	$(getCurrentModal()).hide();
+});
+
+$("#modalErro").click(function (e) {
+  e.preventDefault();
+  $("#modalErro").hide();
+});
+
+$("#modalOkInfo").click(function (e) {
+  e.preventDefault();
+  let killcmd = $(this).attr("data-value");
+  console.log(killcmd);
+	$("#modalInfo").hide();
+  //  _run(`qdbus org.kde.ksmserver /KSMServer logout 1 0 2`);
+  _run(killcmd);
+});
+
+$(".modalOkInfo").click(function (e) {
+  e.preventDefault();
+	$("#modalInfo").hide();
+	$(currentModal).hide();
+});
+
+$(".modalCancel").click(function (e) {
+  e.preventDefault();
+  $("#modalWarning").hide();
+});
+
+// ##########################################################################################
 
 $(document).ready(function () {
   // Itera sobre todos os quadros que têm a classe box-not-exist
@@ -250,6 +300,8 @@ $(document).ready(function () {
     $(this).find(".box-geral-button").attr("disabled", "disabled");
   });
 });
+
+//#################################################################################################
 
 $(document).ready(function () {
   // Verifica se há algum elemento com a classe box-not-exist
@@ -261,3 +313,20 @@ $(document).ready(function () {
     });
   }
 });
+
+//#################################################################################################
+
+function getCurrentModal() {
+  // Seleciona o modal atualmente visível
+  var currentModal = $(".modal:visible");
+
+  // Verifica se existe um modal visível
+  if (currentModal.length) {
+		console.log("Current Modal:", currentModal.attr('id'));
+    return currentModal;
+  } else {
+    return null; // Retorna null se nenhum modal estiver visível
+  }
+}
+
+//#################################################################################################
