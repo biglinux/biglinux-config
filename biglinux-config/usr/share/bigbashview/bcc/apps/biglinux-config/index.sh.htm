@@ -35,7 +35,10 @@
 #  THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 APP="${0##*/}"
-_VERSION_="1.0.0-20240702"
+_DATE_ALTERED_='16-07-2024 - 11:05'
+_VERSION_="1.0.0-20240716"
+_HTML_VERSION_="${_VERSION_} - ${_DATE_ALTERED_}"
+_UPDATED_="${_DATE_ALTERED_}"
 export BOOTLOG="/tmp/big-config-$USER-$(date +"%d%m%Y").log"
 export LOGGER='/dev/tty8'
 export HOME_FOLDER="$HOME/.big-config"
@@ -57,8 +60,9 @@ function sh_bcfg_config() {
 							 [Multimidia]=$(gettext "Multimídia")
 							 [Graficos]=$(gettext "Gráficos")
 							 [Escritorio]=$(gettext "Escritório")
-							 [Sistema]=$(gettext "Sistema")
 							 [Musicas]=$(gettext "Músicas")
+							 [Sistema]=$(gettext "Sistema")
+							 [Sobre]=$(gettext "Sobre")
 							 [Aplicativo_Not_Installed]=$(gettext "Aplicativo não está instalado")
 							 [Restaurar_Clique_Escolher]=$(gettext "Clique para escolher modo de restauração das configurações do aplicativo")
 							 [Restaurar_padrao_programa]=$(gettext "Restaurar as configurações no modo padrão do aplicativo")
@@ -118,6 +122,7 @@ function sh_bcfg_config() {
 				        [palemoon]="Internet|/usr/lib/palemoon/palemoon|icons/palemoon.svg|modal_25|Palemoon|sh_reset_palemoon"
 
 								[dolphin2]="System|/usr/bin/dolphin|icons/dolphin.png|modal_10|Dolphin|sh_reset_dolphin"
+								[nautilus]="System|/usr/bin/nautilus|icons/nautilus.svg|modal_26|Nautilus|sh_reset_nautilus"
 
 							 	   [kate2]="Office|/usr/bin/kate|icons/kate.png|modal_4|Kate|sh_reset_kate"
 			  	 	    [lowriter]="Office|/usr/bin/lowriter|icons/libreoffice.png|modal_17|LibreOffice|sh_reset_libreoffice"
@@ -147,12 +152,7 @@ function sh_bcfg_start_html() {
 			</title>
 			<link rel="stylesheet" href="css/style.css">
 		</head>
-
 		<body>
-		<div class="de">
-		$(sh_get_de)
-		</div>
-
 			$(sh_bcfg_getbgcolor)
 			<div class="lds-ring">
 				<div></div>
@@ -176,6 +176,11 @@ function sh_bcfg_start_html() {
 							placeholder="${aMenu[Pesquisar]}" />
 					</div>
 				</div>
+
+			<div class="de-session">
+			$(sh_get_de)
+			</div>
+
 				$(sh_div_lang)
 				<div class="left-side">
 					<div class="side-wrapper">
@@ -250,6 +255,18 @@ function sh_bcfg_start_html() {
 								</span>
 							</a>
 
+							<a href="#" id="About" class="btn">
+								<svg viewBox="0 0 512 512">
+									<g transform="translate(0.000000,512.000000) scale(0.100000,-0.100000)" fill="#FFFFFF">
+										<path fill="currentColor"
+										d="M2325 4874 c-342 -49 -526 -102 -780 -224 -238 -115 -428 -252 -626 -449 -355 -355 -567 -767 -656 -1276 -25 -143 -25 -587 0 -730 89 -509 301 -921 656 -1276 356 -356 775 -571 1279 -656 153 -26 571 -26 724 0 504 85 923 300 1279 656 356 356 571 775 656 1279 26 153 26 571 0 724 -85 504 -300 923 -656 1279 -354 353 -770 568 -1271 655 -91 16 -529 29 -605 18z m595 -915 c67 -31 140 -102 172 -166 19 -40 23 -64 23 -138 0 -81 -3 -95 -29 -143 -35 -63 -86 -111 -158 -149 -48 -25 -63 -28 -158 -28 -93 0 -112 3 -162 27 -69 32 -136 97 -169 163 -20 41 -24 65 -24 135 0 72 4 93 27 135 26 51 103 131 149 155 88 48 236 52 329 9z m-331 -950 c70 -15 145 -56 193 -105 88 -89 113 -181 97 -359 -8 -83 -29 -171 -95 -408 -105 -371 -125 -460 -127 -562 -2 -94 16 -135 73 -162 53 -25 177 -23 269 5 40 13 75 21 78 18 3 -2 -3 -39 -13 -80 l-18 -76 -50 -19 c-312 -117 -328 -121 -476 -121 -168 -1 -265 29 -352 108 -90 82 -124 176 -114 320 9 123 21 178 110 494 96 338 116 429 116 524 0 138 -41 178 -185 178 -55 0 -103 -7 -154 -22 -40 -13 -75 -22 -77 -20 -5 6 34 150 43 158 12 12 189 76 289 105 148 44 266 51 393 24z" />
+									</g>
+								</svg>
+								<span>
+									${aMenu[Sobre]}
+								</span>
+							</a>
+
 						</div>
 					</div>
 				</div>
@@ -295,6 +312,41 @@ function sh_bcfg_start_html() {
 								<a class="menu-link-main">
 									${aMenu[Sistema]}
 								</a>
+							</div>
+
+							<div class="main-header About">
+								<a class="menu-link-main">
+									${aMenu[Sobre]}
+								</a>
+								<!-- INSERT -->
+								<br>
+								<div id="about-tab-content" class="fc-card" style="margin-top:-10px;padding:30px;">
+								<div class="content-section" style="margin-top:-10px;padding:30px;">
+								<ul style="margin-top:-10px;padding:10px;">
+								<li>$(gettext "Ambiente"):
+								<br>&nbsp;&nbsp;&nbsp;&nbsp;$(gettext "Desktop") : $XDG_CURRENT_DESKTOP
+								<br>&nbsp;&nbsp;&nbsp;&nbsp;$(gettext "Sessão") : $XDG_SESSION_TYPE
+								<li>$(gettext "Aplicativo"):
+								<br>&nbsp;&nbsp;&nbsp;&nbsp;$(gettext "Nome") : $TEXTDOMAIN</span>
+								<br>&nbsp;&nbsp;&nbsp;&nbsp;$(gettext "Htm versão") : $_HTML_VERSION_
+								<br>&nbsp;&nbsp;&nbsp;&nbsp;$(gettext "Lib versão") : $_BCFGLIB_VERSION_
+								<li>$(gettext "Desenvolvedores"):
+								<br>&nbsp;&nbsp;&nbsp;&nbsp;2023-2024, Vilmar Catafesta, vcatafesta@gmail.com
+								<br>&nbsp;&nbsp;&nbsp;&nbsp;2023-2023, Bruno Gonçalves, biglinux.com.br
+								<br>&nbsp;&nbsp;&nbsp;&nbsp;2023-2023, Rafael Ruscher, rruscher@gmail.com
+								<br>&nbsp;&nbsp;&nbsp;&nbsp;2020-2023, eltonff, biglinux.com.br
+
+								<li>$(gettext "Colaboradores"):
+								<br>&nbsp;&nbsp;&nbsp;&nbsp;-2024, Tales, @talesam
+								<br>&nbsp;&nbsp;&nbsp;&nbsp;-2024, Narayan, @narayansilva
+								<br>&nbsp;&nbsp;&nbsp;&nbsp;-2024, Thiago, @thiago_brgs
+								<br>&nbsp;&nbsp;&nbsp;&nbsp;-2024, Marcelo, @elppans
+								<br>&nbsp;&nbsp;&nbsp;&nbsp;-2024, Lucas, @luskaedivinsky
+								</li>
+								</ul>
+								</div>
+								</div>
+								<!-- INSERT -->
 							</div>
 	EOF
 }
@@ -587,9 +639,8 @@ function sh_bcfg_finish_html() {
 }
 
 function sh_bcfg_main() {
-	local regex="(XFCE|XFCE4|PLASMA|GNOME)"
+	local regex="(XFCE|XFCE4|PLASMA|GNOME|DDE)"
 	local current_desktop="$(sh_get_de)"
-	local process_func="sh_bcfg_process_kde"
 	local icon
 	local titulo
 	local cmd
@@ -613,6 +664,11 @@ function sh_bcfg_main() {
 			icon="icons/gnome.png"
 			cmd="sh_reset_gnome"
 			killcmd='gnome-session-quit --no-prompt'
+			;;
+		DDE)
+			icon="icons/deepin.svg"
+			cmd="sh_reset_dde"
+			killcmd='dde-session-logout'
 			;;
 		*) ;;
 	esac
