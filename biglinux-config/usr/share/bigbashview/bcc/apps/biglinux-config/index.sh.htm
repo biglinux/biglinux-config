@@ -35,7 +35,7 @@
 #  THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 APP="${0##*/}"
-_DATE_ALTERED_='17-07-2024 - 00:28'
+_DATE_ALTERED_='17-07-2024 - 18:21'
 _VERSION_="1.0.0-20240717"
 _HTML_VERSION_="${_VERSION_} - ${_DATE_ALTERED_}"
 _UPDATED_="${_DATE_ALTERED_}"
@@ -134,6 +134,8 @@ function sh_bcfg_config() {
 				      [clementine]="Multimedia|/usr/bin/clementine|icons/clementine.png|modal_8|$(gettext "Músicas")|sh_reset_clementine|(clementine)"
 					     	     [vlc]="Multimedia|/usr/bin/vlc|icons/vlc.png|modal_23|vlc|sh_reset_vlc"
       [/usr/bin/rhythmbox]="Multimedia|/usr/bin/rhythmbox|icons/Rhythmbox.png|modal_27|Rhythmbox|sh_reset_Rhythmbox"
+      [/usr/bin/parole]="Multimedia|/usr/bin/parole|icons/parole.svg|modal_28|Parole|sh_reset_parole"
+
 				        [inkscape]="Graphic|/usr/bin/inkscape|icons/inkscape.png|modal_21|Inkscape|sh_reset_inkscape"
 				           [ksnip]="Graphic|/usr/bin/ksnip|icons/ksnip.png|modal_16|Ksnip|sh_reset_ksnip"
 				            [gimp]="Graphic|/usr/bin/gimp|icons/gimp.png|modal_12|Gimp|sh_reset_gimp"
@@ -177,11 +179,9 @@ function sh_bcfg_start_html() {
 							placeholder="${aMenu[Pesquisar]}" />
 					</div>
 				</div>
-
-			<div class="de-session">
-			$(sh_get_de)
-			</div>
-
+				<div class="de-session">
+					$(sh_get_de)
+				</div>
 				$(sh_div_lang)
 				<div class="left-side">
 					<div class="side-wrapper">
@@ -202,10 +202,10 @@ function sh_bcfg_start_html() {
 							</a>
 						</div>
 					</div>
+
 					<div class="side-wrapper">
 						<!-- <div class="side-title">$CATEGORY</div> -->
 						<div class="side-menu">
-
 							<a href="#" id="Internet" class="btn">
 								<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 496 512">
 									<path fill="currentColor"
@@ -424,8 +424,7 @@ function sh_bcfg_process_de() {
 				</div>
 			</div>
 		</div>
-
-	<!-- BEGIN Biglinux DE -->
+		<!-- BEGIN Biglinux DE -->
 	EOF
 }
 
@@ -439,124 +438,71 @@ function sh_bcfg_process_apps() {
 	local subxtitle
 	local app
 	local IsExist
+	local fullTitle
+	local boxTitle
 
 	for app in "${!AFullNameApp[@]}"; do
 		IsExist=
 		IFS='|' read -r classe file_path file_icon modal xtitle cmd subxtitle <<< "${AFullNameApp[$app]}"
 		if [[ ! -e "$file_path" ]]; then
 			IsExist='box-not-exist'
+			fullTitle="${aMenu[Aplicativo_Not_Installed]} $xtitle"
+			boxTitle="$xtitle $subxtitle<br>[${aMenu[Aplicativo_Not_Installed]}]"
+		else
+			fullTitle="${aMenu[Restaurar_Clique_Escolher]} $xtitle"
+			boxTitle="$xtitle $subxtitle"
 		fi
 
-			cat <<-EOF
-				<div class="box-1 box-2 box-3 box-4 box-5 box-items $classe $IsExist">
-					<div id="box-status-bar">
-						<div id="tit-status-bar">
-			EOF
-			if [[ -z $IsExist ]]; then
-				cat <<-EOF
-							${aMenu[Restaurar_Clique_Escolher]} $xtitle
-				EOF
-			else
-				cat <<-EOF
-							${aMenu[Aplicativo_Not_Installed]} $xtitle
-				EOF
-			fi
-
-			cat <<-EOF
-						</div>
+		cat <<-EOF
+			<div class="box-1 box-2 box-3 box-4 box-5 box-items $classe $IsExist">
+				<div id="box-status-bar">
+					<div id="tit-status-bar">
+						${fullTitle}
 					</div>
-					<button onclick="openModal('$modal')" id="box-subtitle" class="box-geral-icons box-geral-button">
-						<div class="box-imagem-icon">
-							<img class="box-imagem-icon" src="$file_icon">
-						</div>
-						<div class="box-titulo">
-							$xtitle $subxtitle
-						</div>
-					</button>
 				</div>
-			EOF
-
-			cat <<-EOF
-				<div id="$modal" class="modal">
-					<div class="modalContent">
-						<div>
-							<i style="vertical-align: middle; margin-right: 5px;">
-								<img src="$file_icon" width="42" height="42">
-							</i>
-							$xtitle
-							<br>
-							${aMenu[Em_qual_modo_você_deseja_restaurar]}
-						</div>
+				<button onclick="openModal('$modal')" id="box-subtitle" class="box-geral-icons box-geral-button">
+					<div class="box-imagem-icon">
+						<img class="box-imagem-icon" src="$file_icon">
+					</div>
+					<div class="box-titulo">
+						${boxTitle}
+					</div>
+				</button>
+			</div>
+			<div id="$modal" class="modal">
+				<div class="modalContent">
+					<div>
+						<i style="vertical-align: middle; margin-right: 5px;">
+							<img src="$file_icon" width="42" height="42">
+						</i>
+						$xtitle
 						<br>
-						<div class="app-card restore-skel" data-value="$cmd skel"
-							style="width: 100%; border: 1px solid #444444; margin: 3px;">
-							<span>
-								<img src="icons/biglinux.png" width="32" height="32" style="margin-right: 10px;">
-								${aMenu[Restaurar_padrao_distro]}
-							</span>
-						</div>
-						<div class="app-card restore-default" data-value="$cmd"
-							style="width: 100%; border: 1px solid #444444; margin: 3px;">
-							<span>
-								<img src="icons/default.png" width="32" height="32" style="margin-right: 10px;">
-								${aMenu[Restaurar_padrao_programa]} $xtitle
-							</span>
-						</div>
-						<div class="content-button-wrapper" style="text-align: right;">
-							<br><button class="modalClose">
-								${aMenu[Cancelar]}
-							</button>
-						</div>
+						${aMenu[Em_qual_modo_você_deseja_restaurar]}
+					</div>
+					<br>
+					<div class="app-card restore-skel" data-value="$cmd skel"
+						style="width: 100%; border: 1px solid #444444; margin: 3px;">
+						<span>
+							<img src="icons/biglinux.png" width="32" height="32" style="margin-right: 10px;">
+							${aMenu[Restaurar_padrao_distro]}
+						</span>
+					</div>
+					<div class="app-card restore-default" data-value="$cmd"
+						style="width: 100%; border: 1px solid #444444; margin: 3px;">
+						<span>
+							<img src="icons/default.png" width="32" height="32" style="margin-right: 10px;">
+							${aMenu[Restaurar_padrao_programa]} $xtitle
+						</span>
+					</div>
+					<div class="content-button-wrapper" style="text-align: right;">
+						<br><button class="modalClose">
+							${aMenu[Cancelar]}
+						</button>
 					</div>
 				</div>
-			EOF
+			</div>
+		EOF
 	done
-}
-
-function sh_finish_kde() {
-	cat <<-EOF
-		<!-- KDE -->
-		<div class="modal" id="modalInfoKDE">
-			<div class="modalContent">
-				<div>
-					<center>
-						${Afinish[sucesso_KDE]}
-						<br><br>
-						${Afinish[reiniciar_sessao]}
-					</center>
-				</div><br><br>
-				<div class="content-button-wrapper" style="text-align: right;">
-					<button class="modalBtn" id="modalOkInfoKDE">
-						${Afinish[sair_sessao]}
-					</button>
-				</div>
-			</div>
-		</div>
-		<!-- KDE -->
-	EOF
-}
-
-function sh_finish_xfce {
-	cat <<-EOF
-		<!-- XFCE -->
-		<div class="modal" id="modalInfoXFCE">
-			<div class="modalContent">
-				<div>
-					<center>
-						${Afinish[sucesso_XFCE]}
-						<br><br>
-						${Afinish[reiniciar_sessao]}
-					</center>
-				</div><br><br>
-				<div class="content-button-wrapper" style="text-align: right;">
-					<button class="modalBtn" id="modalOkInfoXFCE">
-						${Afinish[sair_sessao]}
-					</button>
-				</div>
-			</div>
-		</div>
-		<!-- XFCE -->
-	EOF
 }
 
 function sh_bcfg_finish_html() {
@@ -622,7 +568,6 @@ function sh_bcfg_finish_html() {
 				</div>
 			</div>
 		</div>
-
 		</div>
 		</div>
 		</div>
@@ -630,8 +575,7 @@ function sh_bcfg_finish_html() {
 		<div class="logo">
 			<img id="btn-big" src="icons/logo.png" class="logo-biglinux">
 		</div>
-		<!-- partial -->
-		<script src="/usr/share/bigbashview/bcc/materialize/js/jquery.js"></script>
+		<script src="js/jquery.js"></script>
 		<script src="js/filter.js"></script>
 		<script src="js/script.js"></script>
 		</body>
@@ -646,8 +590,6 @@ function sh_bcfg_main() {
 	local titulo
 	local cmd
 	local killcmd
-
-	sh_bcfg_start_html
 
 	[[ "${current_desktop^^}" =~ $regex ]]
 	case "${BASH_REMATCH[0]}" in
@@ -675,6 +617,7 @@ function sh_bcfg_main() {
 	esac
 	titulo="BigLinux $current_desktop"
 
+	sh_bcfg_start_html
 	sh_bcfg_process_de "Star"   "$icon" "$titulo" "$cmd" "$killcmd"
 	sh_bcfg_process_de "System" "$icon" "$titulo" "$cmd" "$killcmd"
 	sh_bcfg_process_apps
