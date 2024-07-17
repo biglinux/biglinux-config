@@ -6,7 +6,7 @@
 #  Description: Restore Settings to help usage of BigLinux
 #
 #  Created: 2020/09/01
-#  Altered: 2024/07/02
+#  Altered: 2024/07/17
 #
 #  Copyright (c) 2023-2024, Vilmar Catafesta <vcatafesta@gmail.com>
 #                2020-2023, Bruno Gonçalves <www.biglinux.com.br>
@@ -35,8 +35,8 @@
 #  THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 APP="${0##*/}"
-_DATE_ALTERED_='16-07-2024 - 11:05'
-_VERSION_="1.0.0-20240716"
+_DATE_ALTERED_='17-07-2024 - 00:28'
+_VERSION_="1.0.0-20240717"
 _HTML_VERSION_="${_VERSION_} - ${_DATE_ALTERED_}"
 _UPDATED_="${_DATE_ALTERED_}"
 export BOOTLOG="/tmp/big-config-$USER-$(date +"%d%m%Y").log"
@@ -133,7 +133,7 @@ function sh_bcfg_config() {
 				    [vokoscreenNG]="Multimedia|/usr/bin/vokoscreenNG|icons/vokoscreen.png|modal_9|$(gettext "Gravador de Tela")|sh_reset_vokoscreenNG|(vokoscreenNG)"
 				      [clementine]="Multimedia|/usr/bin/clementine|icons/clementine.png|modal_8|$(gettext "Músicas")|sh_reset_clementine|(clementine)"
 					     	     [vlc]="Multimedia|/usr/bin/vlc|icons/vlc.png|modal_23|vlc|sh_reset_vlc"
-
+      [/usr/bin/rhythmbox]="Multimedia|/usr/bin/rhythmbox|icons/Rhythmbox.png|modal_27|Rhythmbox|sh_reset_Rhythmbox"
 				        [inkscape]="Graphic|/usr/bin/inkscape|icons/inkscape.png|modal_21|Inkscape|sh_reset_inkscape"
 				           [ksnip]="Graphic|/usr/bin/ksnip|icons/ksnip.png|modal_16|Ksnip|sh_reset_ksnip"
 				            [gimp]="Graphic|/usr/bin/gimp|icons/gimp.png|modal_12|Gimp|sh_reset_gimp"
@@ -640,7 +640,7 @@ function sh_bcfg_finish_html() {
 }
 
 function sh_bcfg_main() {
-	local regex="(XFCE|XFCE4|PLASMA|GNOME|DDE)"
+	local regex="(XFCE|XFCE4|PLASMA|KDE|GNOME|DDE)"
 	local current_desktop="$(sh_get_de)"
 	local icon
 	local titulo
@@ -649,14 +649,14 @@ function sh_bcfg_main() {
 
 	sh_bcfg_start_html
 
-	[[ "$current_desktop" =~ $regex ]]
+	[[ "${current_desktop^^}" =~ $regex ]]
 	case "${BASH_REMATCH[0]}" in
 		XFCE|XFCE4)
 			icon="icons/xfce.png"
 			cmd="sh_reset_xfce"
 			killcmd='xfce4-session-logout --logout'
 			;;
-		PLASMA)
+		PLASMA|KDE)
 			icon="icons/kde.png"
 			cmd="sh_reset_kde"
 			killcmd='qdbus org.kde.ksmserver /KSMServer logout 1 0 2'
