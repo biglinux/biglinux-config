@@ -6,7 +6,7 @@
 #  Description: Restore Settings to help usage of BigLinux
 #
 #  Created: 2020/09/01
-#  Altered: 2024/07/17
+#  Altered: 2024/07/19
 #
 #  Copyright (c) 2023-2024, Vilmar Catafesta <vcatafesta@gmail.com>
 #                2020-2023, Bruno Gonçalves <www.biglinux.com.br>
@@ -35,8 +35,8 @@
 #  THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 APP="${0##*/}"
-_DATE_ALTERED_='17-07-2024 - 18:21'
-_VERSION_="1.0.0-20240717"
+_DATE_ALTERED_='19-07-2024 - 23:23'
+_VERSION_="1.0.0-20240719"
 _HTML_VERSION_="${_VERSION_} - ${_DATE_ALTERED_}"
 _UPDATED_="${_DATE_ALTERED_}"
 export BOOTLOG="/tmp/big-config-$USER-$(date +"%d%m%Y").log"
@@ -611,7 +611,7 @@ function sh_bcfg_finish_html() {
 }
 
 function sh_bcfg_main() {
-	local regex="(XFCE|XFCE4|PLASMA|KDE|GNOME|DDE)"
+	local regex="(XFCE|XFCE4|PLASMA|KDE|GNOME|DDE|CINNAMON)"
 	local current_desktop="$(sh_get_de)"
 	local icon
 	local titulo
@@ -639,6 +639,11 @@ function sh_bcfg_main() {
 			icon="icons/deepin.svg"
 			cmd="sh_reset_dde"
 			killcmd='dde-session-logout'
+			;;
+		CINNAMON)
+			icon="icons/cinnamon.svg"
+			cmd="sh_reset_cinnamon"
+			killcmd='cinnamon-session-quit --logout --no-prompt'
 			;;
 		*) ;;
 	esac
