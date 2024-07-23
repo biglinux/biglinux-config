@@ -54,43 +54,43 @@ function sh_bcfg_config() {
 	export TEXTDOMAINDIR="/usr/share/locale"
 	export TEXTDOMAIN=biglinux-config
 	declare -gA aMenu=(
-										[TITLE]=$(gettext "Big-Config - Restaurar Configurações de Aplicativos")
-							 [Principais]=$(gettext "Principais")
-							 [Internet]=$(gettext "Internet")
-							 [Multimidia]=$(gettext "Multimídia")
-							 [Graficos]=$(gettext "Gráficos")
-							 [Escritorio]=$(gettext "Escritório")
-							 [Musicas]=$(gettext "Músicas")
-							 [Sistema]=$(gettext "Sistema")
-							 [Terminal]=$(gettext "Terminal")
-							 [FileManager]=$(gettext "Gerenciador de Arquivos")
-							 [Sobre]=$(gettext "Sobre")
-							 [Aplicativo_Not_Installed]=$(gettext "Aplicativo não está instalado")
-							 [Restaurar_Clique_Escolher]=$(gettext "Clique para escolher modo de restauração das configurações do aplicativo")
-							 [Restaurar_padrao_programa]=$(gettext "Restaurar as configurações no modo padrão do aplicativo")
-							 [Restaurar_padrao_distro]=$(gettext "Restaurar as configurações no modo padrão da distribuição")
-							 [Restaurar_padrao_biglinux]=$(gettext "Restaurar as configurações no modo padrão da distribuição BigLinux")
-							 [Sim]=$(gettext "Sim")
-							 [Nao]=$(gettext "Não")
-							 [OK]=$(gettext "OK")
-							 [Cancelar]=$(gettext "Cancelar")
-							 [Em_qual_modo_você_deseja_restaurar]=$(gettext "Em qual modo você deseja restaurar?")
-							 [Pesquisar]=$(gettext "Pesquisar aplicativo")
-							 [Confirma]=$(gettext "Você tem certeza que deseja restaurar todas as configurações?")
+										[TITLE]="$(gettext "Big-Config - Restaurar Configurações de Aplicativos")"
+							 [Principais]="$(gettext "Principais")"
+							 [Internet]="$(gettext "Internet")"
+							 [Multimidia]="$(gettext "Multimídia")"
+							 [Graficos]="$(gettext "Gráficos")"
+							 [Escritorio]="$(gettext "Escritório")"
+							 [Musicas]="$(gettext "Músicas")"
+							 [Sistema]="$(gettext "Sistema")"
+							 [Terminal]="$(gettext "Terminal")"
+							 [FileManager]="$(gettext "Gerenciador de Arquivos")"
+							 [Sobre]="$(gettext "Sobre")"
+							 [Aplicativo_Not_Installed]="$(gettext "Aplicativo não está instalado")"
+							 [Restaurar_Clique_Escolher]="$(gettext "Clique para escolher modo de restauração das configurações do aplicativo")"
+							 [Restaurar_padrao_programa]="$(gettext "Restaurar as configurações no modo padrão do aplicativo")"
+							 [Restaurar_padrao_distro]="$(gettext "Restaurar as configurações no modo padrão da distribuição")"
+							 [Restaurar_padrao_biglinux]="$(gettext "Restaurar as configurações no modo padrão da distribuição BigLinux")"
+							 [Sim]="$(gettext "Sim")"
+							 [Nao]="$(gettext "Não")"
+							 [OK]="$(gettext "OK")"
+							 [Cancelar]="$(gettext "Cancelar")"
+							 [Em_qual_modo_você_deseja_restaurar]="$(gettext "Em qual modo você deseja restaurar?")"
+							 [Pesquisar]="$(gettext "Pesquisar aplicativo")"
+							 [Confirma]="$(gettext "Você tem certeza que deseja restaurar todas as configurações?")"
 							 )
 	declare -gA Afinish=(
-										[finish-erro]=$(gettext "Houve erro na restauração das configurações")
-										[sucesso]=$(gettext "As configurações foram restauradas com sucesso!")
-								 [sucesso_DE1]=$(gettext "As configurações do")
-								 [sucesso_DE2]=$(gettext "foram restauradas com sucesso!")
-								[sucesso_KDE]=$(gettext "As configurações do BigLinux KDE foram restauradas com sucesso!")
-							 [sucesso_XFCE]=$(gettext "As configurações do BigLinux XFCE foram restauradas com sucesso!")
-				 	 [reiniciar_sessao]=$(gettext "É necessário reiniciar a sessão para concluir a restauração!")
-								[sair_sessao]=$(gettext "Sair da sessão")
-						[app_em_execucao]=$(gettext "Atenção! O programa está em execução!")
-							 [app_on_close]=$(gettext "Será fechado para que a restauração seja concluída.")
-									[erase_all]=$(gettext "Isso apagará todas as customizações feitas por")
-									[prosseguir]=$(gettext "Prosseguir?")
+										[finish-erro]="$(gettext "Houve erro na restauração das configurações")"
+										[sucesso]="$(gettext "As configurações foram restauradas com sucesso!")"
+								 [sucesso_DE1]="$(gettext "As configurações do")"
+								 [sucesso_DE2]="$(gettext "foram restauradas com sucesso!")"
+								[sucesso_KDE]="$(gettext "As configurações do BigLinux KDE foram restauradas com sucesso!")"
+							 [sucesso_XFCE]="$(gettext "As configurações do BigLinux XFCE foram restauradas com sucesso!")"
+				 	 [reiniciar_sessao]="$(gettext "É necessário reiniciar a sessão para concluir a restauração!")"
+								[sair_sessao]="$(gettext "Sair da sessão")"
+						[app_em_execucao]="$(gettext "Atenção! O programa está em execução!")"
+							 [app_on_close]="$(gettext "Será fechado para que a restauração seja concluída.")"
+									[erase_all]="$(gettext "Isso apagará todas as customizações feitas por")"
+									[prosseguir]="$(gettext "Prosseguir?")"
 								)
 
 	#	O array associa o nome do aplicativo a uma série de informações/campos separadas por | (barra vertical).
@@ -126,6 +126,7 @@ function sh_bcfg_config() {
 
 								[dolphin2]="System|/usr/bin/dolphin|icons/dolphin.png|modal_10|Dolphin|sh_reset_dolphin"
 		 	 	 			 [nautilus1]="System|/usr/bin/nautilus|icons/nautilus.svg|modal_26|Nautilus|sh_reset_nautilus"
+					 				 [nemo2]="System|/usr/bin/nemo|icons/nemo.svg|modal_29|Nemo|sh_reset_nemo"
 
 							 	   [kate2]="Office|/usr/bin/kate|icons/kate.png|modal_4|Kate|sh_reset_kate"
 			  	 	    [lowriter]="Office|/usr/bin/lowriter|icons/libreoffice.png|modal_17|LibreOffice|sh_reset_libreoffice"
@@ -150,7 +151,7 @@ function sh_bcfg_config() {
 
 								[dolphin3]="FileManager|/usr/bin/dolphin|icons/dolphin.png|modal_10|Dolphin|sh_reset_dolphin"
 	  	 				 [nautilus2]="FileManager|/usr/bin/nautilus|icons/nautilus.svg|modal_26|Nautilus|sh_reset_nautilus"
-					 				 [nemo2]="FileManager|/usr/bin/nemo|icons/nemo.svg|modal_29|Nemo|sh_reset_nemo"
+					 				 [nemo3]="FileManager|/usr/bin/nemo|icons/nemo.svg|modal_29|Nemo|sh_reset_nemo"
 							)
 }
 
