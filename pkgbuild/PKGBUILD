@@ -1,36 +1,35 @@
-# Maintainer: Bruno Goncalves <bigbruno@gmail.com>
+# Maintainer: Vilmar Catafesta <vcatafesta@gmail.com>
 
 pkgname=biglinux-config
 pkgver=$(date +%Y_%m_%d)
 pkgrel=$(date +%H%M)
 arch=('any')
 license=('GPL')
-url="https://github.com/biglinux/biglinux-config"
-pkgdesc="Complete control center to use in BigLinux with KDE"
+url="https://github.com/biglinux/$pkgname"
+source=("git+${url}.git")
+pkgdesc="Complete control center to use in BigLinux with DE's"
 depends=('bigbashview' 'kdialog')
 depends+=('bigcontrolcenter-base') #qui 18 jan 2024 19:36:34 -04 - vcatafesta@gmail.com
-source=("git+https://github.com/biglinux/biglinux-config.git")
 md5sums=(SKIP)
 
 package() {
-    # Verify default folder
-    if [ -d "${srcdir}/${pkgname}/${pkgname}" ]; then
-        InternalDir="${srcdir}/${pkgname}/${pkgname}"
-    else
-        InternalDir="${srcdir}/${pkgname}"
-    fi
+	# Verify default folder
+	if [ -d "${srcdir}/${pkgname}/${pkgname}" ]; then
+		InternalDir="${srcdir}/${pkgname}/${pkgname}"
+	else
+		InternalDir="${srcdir}/${pkgname}"
+	fi
 
+	# Copy files
+	if [ -d "${InternalDir}/usr" ]; then
+		cp -r "${InternalDir}/usr" "${pkgdir}/"
+	fi
 
-    # Copy files
-    if [ -d "${InternalDir}/usr" ]; then
-        cp -r "${InternalDir}/usr" "${pkgdir}/"
-    fi
+	if [ -d "${InternalDir}/etc" ]; then
+		cp -r "${InternalDir}/etc" "${pkgdir}/"
+	fi
 
-    if [ -d "${InternalDir}/etc" ]; then
-        cp -r "${InternalDir}/etc" "${pkgdir}/"
-    fi
-
-    if [ -d "${InternalDir}/opt" ]; then
-        cp -r "${InternalDir}/opt" "${pkgdir}/"
-    fi
+	if [ -d "${InternalDir}/opt" ]; then
+		cp -r "${InternalDir}/opt" "${pkgdir}/"
+	fi
 }

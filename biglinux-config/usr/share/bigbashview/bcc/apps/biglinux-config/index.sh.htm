@@ -2,13 +2,13 @@
 #shellcheck disable=SC2155,SC2034,SC1135
 #shellcheck source=/dev/null
 
-#  usr/share/bigbashview/bcc/apps/biglinux-config/index.sh.htm
+#  /usr/share/bigbashview/bcc/apps/biglinux-config/index.sh.htm
 #  Description: Restore Settings to help usage of BigLinux
 #
 #  Created: 2020/09/01
-#  Altered: 2023/08/12
+#  Altered: 2024/07/19
 #
-#  Copyright (c) 2023-2023, Vilmar Catafesta <vcatafesta@gmail.com>
+#  Copyright (c) 2023-2024, Vilmar Catafesta <vcatafesta@gmail.com>
 #                2020-2023, Bruno Gonçalves <www.biglinux.com.br>
 #                2020-2023, Rafael Ruscher <rruscher@gmail.com>
 #                2020-2023, eltonff        <www.biglinux.com.br>
@@ -35,44 +35,62 @@
 #  THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 APP="${0##*/}"
-_VERSION_="1.0.0-20230812"
-LIBRARY=${LIBRARY:-'/usr/share/bigbashview/bcc/shell'}
-export BOOTLOG="/tmp/bigcontrolcenter-$USER-$(date +"%d%m%Y").log"
+_DATE_ALTERED_='19-07-2024 - 23:23'
+_VERSION_="1.0.0-20240719"
+_HTML_VERSION_="${_VERSION_} - ${_DATE_ALTERED_}"
+_UPDATED_="${_DATE_ALTERED_}"
+export BOOTLOG="/tmp/big-config-$USER-$(date +"%d%m%Y").log"
 export LOGGER='/dev/tty8'
-[[ -f "${LIBRARY}/bcclib.sh"  ]] && source "${LIBRARY}/bcclib.sh"
+export HOME_FOLDER="$HOME/.big-config"
+export TMP_FOLDER="/tmp/big-config-$USER"
+export INI_FILE_BIG_CONFIG="$HOME_FOLDER/big-config.ini"
+LIBRARY=${LIBRARY:-'/usr/share/bigbashview/bcc/shell'}
+[[ -f "${LIBRARY}/bcclib.sh" ]] && source "${LIBRARY}/bcclib.sh"
+[[ -f "${LIBRARY}/tinilib.sh" ]] && source "${LIBRARY}/tinilib.sh"
 [[ -f "${LIBRARY}/bcfglib.sh" ]] && source "${LIBRARY}/bcfglib.sh"
 
-function sh_config {
+function sh_bcfg_config() {
 	#Translation
 	export TEXTDOMAINDIR="/usr/share/locale"
 	export TEXTDOMAIN=biglinux-config
-	declare -gA aMenu=([TITLE]=$(gettext $"Restaurar Configurações")
-							 [Principais]=$(gettext $"Principais")
-							 [Internet]=$(gettext $"Internet")
-							 [Multimidia]=$(gettext $"Multimídia")
-							 [Graficos]=$(gettext $"Gráficos")
-							 [Escritorio]=$(gettext $"Escritório")
-							 [Sistema]=$(gettext $"Sistema")
-							 [Musicas]=$(gettext $"Músicas")
-							 [Restaurar_padrao_programa]=$(gettext $"Restaurar o aplicativo no modo padrão do programa")
-							 [Restaurar_padrao_distro]=$(gettext $"Restaurar o aplicativo no modo padrão da distribuição")
-							 [Restaurar_padrao_biglinux]=$(gettext $"Restaurar o aplicativo no modo padrão da distribuição BigLinux")
-							 [Sim]=$(gettext $"Sim")
-							 [Nao]=$(gettext $"Não")
-							 [OK]=$(gettext $"OK")
-							 [Cancelar]=$(gettext $"Cancelar")
-							 [Restaurar_modo]=$(gettext $"Em qual modo você deseja restaurar?")
-							 [Pesquisar]=$(gettext $"Pesquisar aplicativo")
-							 [Confirma]=$(gettext $"Você tem certeza que deseja restaurar todas as configurações?")
+	declare -gA aMenu=(
+										[TITLE]="$(gettext "Big-Config - Restaurar Configurações de Aplicativos")"
+							 [Principais]="$(gettext "Principais")"
+							 [Internet]="$(gettext "Internet")"
+							 [Multimidia]="$(gettext "Multimídia")"
+							 [Graficos]="$(gettext "Gráficos")"
+							 [Escritorio]="$(gettext "Escritório")"
+							 [Musicas]="$(gettext "Músicas")"
+							 [Sistema]="$(gettext "Sistema")"
+							 [Terminal]="$(gettext "Terminal")"
+							 [FileManager]="$(gettext "Gerenciador de Arquivos")"
+							 [Sobre]="$(gettext "Sobre")"
+							 [Aplicativo_Not_Installed]="$(gettext "Aplicativo não está instalado")"
+							 [Restaurar_Clique_Escolher]="$(gettext "Clique para escolher modo de restauração das configurações do aplicativo")"
+							 [Restaurar_padrao_programa]="$(gettext "Restaurar as configurações no modo padrão do aplicativo")"
+							 [Restaurar_padrao_distro]="$(gettext "Restaurar as configurações no modo padrão da distribuição")"
+							 [Restaurar_padrao_biglinux]="$(gettext "Restaurar as configurações no modo padrão da distribuição BigLinux")"
+							 [Sim]="$(gettext "Sim")"
+							 [Nao]="$(gettext "Não")"
+							 [OK]="$(gettext "OK")"
+							 [Cancelar]="$(gettext "Cancelar")"
+							 [Em_qual_modo_você_deseja_restaurar]="$(gettext "Em qual modo você deseja restaurar?")"
+							 [Pesquisar]="$(gettext "Pesquisar aplicativo")"
+							 [Confirma]="$(gettext "Você tem certeza que deseja restaurar todas as configurações?")"
 							 )
-	declare -gA Afinish=([sucesso]=$(gettext $"As configurações foram restauradas com sucesso!")
-								[sucesso_KDE]=$(gettext $"As configurações do BigLinux KDE foram restauradas com sucesso!")
-								[sucesso_XFCE]=$(gettext $"As configurações do BigLinux XFCE foram restauradas com sucesso!")
-								[reiniciar_sessao]=$(gettext $"É necessário reiniciar a sessão para concluir a restauração!")
-								[sair_sessao]=$(gettext $"Sair da sessão")
-								[app_em_execucao]=$(gettext $"Atenção! O programa está em execução!")
-								[app_on_close]=$(gettext $"Será fechado para que a restauração seja concluída.")
-								[erase_all]=$(gettext $"Isso apagará todas as costumizações feitas por ")
+	declare -gA Afinish=(
+										[finish-erro]="$(gettext "Houve erro na restauração das configurações")"
+										[sucesso]="$(gettext "As configurações foram restauradas com sucesso!")"
+								 [sucesso_DE1]="$(gettext "As configurações do")"
+								 [sucesso_DE2]="$(gettext "foram restauradas com sucesso!")"
+								[sucesso_KDE]="$(gettext "As configurações do BigLinux KDE foram restauradas com sucesso!")"
+							 [sucesso_XFCE]="$(gettext "As configurações do BigLinux XFCE foram restauradas com sucesso!")"
+				 	 [reiniciar_sessao]="$(gettext "É necessário reiniciar a sessão para concluir a restauração!")"
+								[sair_sessao]="$(gettext "Sair da sessão")"
+						[app_em_execucao]="$(gettext "Atenção! O programa está em execução!")"
+							 [app_on_close]="$(gettext "Será fechado para que a restauração seja concluída.")"
+									[erase_all]="$(gettext "Isso apagará todas as customizações feitas por")"
+									[prosseguir]="$(gettext "Prosseguir?")"
 								)
 
 	#	O array associa o nome do aplicativo a uma série de informações/campos separadas por | (barra vertical).
@@ -90,257 +108,370 @@ function sh_config {
 	#				campo6 - sh_reset_brave               : Nome de um arquivo ou script sh associado.
 	#				campo7 - Texto (opcional)             : Subtitulo (se houver).
 	declare -gA AFullNameApp=(
+								  [brave1]="Star|/usr/lib/brave-browser/brave|icons/brave.png|modal_1|Brave|sh_reset_brave"
 								[firefox1]="Star|/usr/lib/firefox/firefox|icons/firefox.png|modal_11|Firefox|sh_reset_firefox"
 								[dolphin1]="Star|/usr/bin/dolphin|icons/dolphin.png|modal_3|Dolphin|sh_reset_dolphin"
-								  [brave1]="Star|/usr/lib/brave-browser/brave|icons/brave.png|modal_1|Brave|sh_reset_brave"
 							 	   [kate1]="Star|/usr/bin/kate|icons/kate.png|modal_4|Kate|sh_reset_kate"
-  							     [brave2]="Internet|/usr/lib/brave-browser/brave|icons/brave.png|modal_1|Brave|sh_reset_brave"
-								[firefox2]="Internet|/usr/lib/firefox/firefox|icons/firefox.png|modal_2|Firefox|sh_reset_firefox"
-							   [chromium]="Internet|/usr/lib/chromium/chromium|icons/chromium.png|modal_7|Chromium|sh_reset_chromium"
-						   [qbittorrent]="Internet|/usr/bin/qbittorrent|icons/qbittorrent.png|modal_19|qBittorrent|sh_reset_qbittorrent"
-						        [chrome]="Internet|/opt/google/chrome/google-chrome|icons/chrome.png|modal_13|Google Chrome|sh_reset_chrome"
+			  	 	   [lowriter2]="Star|/usr/bin/lowriter|icons/libreoffice.png|modal_17|LibreOffice|sh_reset_libreoffice"
+				          [chrome]="Star|/opt/google/chrome/google-chrome|icons/chrome.png|modal_13|Google Chrome|sh_reset_chrome"
+					 				 [nemo1]="Star|/usr/bin/nemo|icons/nemo.svg|modal_29|Nemo|sh_reset_nemo"
+
+  							  [brave2]="Internet|/usr/lib/brave-browser/brave|icons/brave.png|modal_1|Brave|sh_reset_brave"
+								[firefox2]="Internet|/usr/lib/firefox/firefox|icons/firefox.png|modal_2|Firefox|sh_reset_firx"
+						    [chromium]="Internet|/usr/lib/chromium/chromium|icons/chromium.png|modal_7|Chromium|sh_reset_chromium"
+				     [qbittorrent]="Internet|/usr/bin/qbittorrent|icons/qbittorrent.png|modal_19|qBittorrent|sh_reset_qbittorrent"
+
+				         [chrome2]="Internet|/opt/google/chrome/google-chrome|icons/chrome.png|modal_13|Google Chrome|sh_reset_chrome"
+				        [palemoon]="Internet|/usr/lib/palemoon/palemoon|icons/palemoon.svg|modal_25|Palemoon|sh_reset_palemoon"
+
 								[dolphin2]="System|/usr/bin/dolphin|icons/dolphin.png|modal_10|Dolphin|sh_reset_dolphin"
+		 	 	 			 [nautilus1]="System|/usr/bin/nautilus|icons/nautilus.svg|modal_26|Nautilus|sh_reset_nautilus"
+					 				 [nemo2]="System|/usr/bin/nemo|icons/nemo.svg|modal_29|Nemo|sh_reset_nemo"
+
 							 	   [kate2]="Office|/usr/bin/kate|icons/kate.png|modal_4|Kate|sh_reset_kate"
-						 	   [lowriter]="Office|/usr/bin/lowriter|icons/libreoffice.png|modal_17|LibreOffice|sh_reset_libreoffice"
-						        [okular]="Office|/usr/bin/true|icons/okular.png|modal_18|Okular|sh_reset_okular"
-						      [smplayer]="Multimedia|/usr/bin/smplayer|icons/smplayer.png|modal_20|$(gettext $"Vídeos")|sh_reset_smplayer|(Smplayer)"
-						        [mystiq]="Multimedia|/usr/bin/mystiq|icons/mystiq.png|modal_22|$(gettext $"Conversor de áudio e vídeo")|sh_reset_mystiq|(MystiQ)"
-						  [vokoscreenNG]="Multimedia|/usr/bin/vokoscreenNG|icons/vokoscreen.png|modal_9|$(gettext $"Gravador de Tela")|sh_reset_vokoscreenNG|(vokoscreenNG)"
-						    [clementine]="Multimedia|/usr/bin/clementine|icons/clementine.png|modal_8|$(gettext $"Músicas")|sh_reset_clementine|(clementine)"
-						    		  [vlc]="Multimedia|/usr/bin/vlc|icons/vlc.png|modal_23|vlc|sh_reset_vlc"
-						      [inkscape]="Graphic|/usr/bin/inkscape|icons/inkscape.png|modal_21|Inkscape|sh_reset_inkscape"
-						         [ksnip]="Graphic|/usr/bin/ksnip|icons/ksnip.png|modal_16|Ksnip|sh_reset_ksnip"
-						          [gimp]="Graphic|/usr/bin/gimp|icons/gimp.png|modal_12|Gimp|sh_reset_gimp"
-						      [gwenview]="Graphic|/usr/bin/gwenview|icons/gwenview.png|modal_14|Gwenview|sh_reset_gwenview"
+			  	 	    [lowriter]="Office|/usr/bin/lowriter|icons/libreoffice.png|modal_17|LibreOffice|sh_reset_libreoffice"
+				          [okular]="Office|/usr/bin/true|icons/okular.png|modal_18|Okular|sh_reset_okular"
+
+				        [smplayer]="Multimedia|/usr/bin/smplayer|icons/smplayer.png|modal_20|$(gettext "Vídeos")|sh_reset_smplayer|(Smplayer)"
+				          [mystiq]="Multimedia|/usr/bin/mystiq|icons/mystiq.png|modal_22|$(gettext "Conversor de áudio e vídeo")|sh_reset_mystiq|(MystiQ)"
+				    [vokoscreenNG]="Multimedia|/usr/bin/vokoscreenNG|icons/vokoscreen.png|modal_9|$(gettext "Gravador de Tela")|sh_reset_vokoscreenNG|(vokoscreenNG)"
+				      [clementine]="Multimedia|/usr/bin/clementine|icons/clementine.png|modal_8|$(gettext "Músicas")|sh_reset_clementine|(clementine)"
+					     	     [vlc]="Multimedia|/usr/bin/vlc|icons/vlc.png|modal_23|vlc|sh_reset_vlc"
+      [/usr/bin/rhythmbox]="Multimedia|/usr/bin/rhythmbox|icons/Rhythmbox.png|modal_27|Rhythmbox|sh_reset_Rhythmbox"
+         [/usr/bin/parole]="Multimedia|/usr/bin/parole|icons/parole.svg|modal_28|Parole|sh_reset_parole"
+
+				        [inkscape]="Graphic|/usr/bin/inkscape|icons/inkscape.png|modal_21|Inkscape|sh_reset_inkscape"
+				           [ksnip]="Graphic|/usr/bin/ksnip|icons/ksnip.png|modal_16|Ksnip|sh_reset_ksnip"
+				            [gimp]="Graphic|/usr/bin/gimp|icons/gimp.png|modal_12|Gimp|sh_reset_gimp"
+				        [gwenview]="Graphic|/usr/bin/gwenview|icons/gwenview.png|modal_14|Gwenview|sh_reset_gwenview"
+				       [ristretto]="Graphic|/usr/bin/ristretto|icons/ristretto.png|modal_27|Ristretto|sh_reset_ristretto"
+
+ 					[xfce4-terminal]="Terminal|/usr/bin/xfce4-terminal|icons/xfce4-terminal.svg|modal_28|xfce4-terminal|sh_reset_xfce4_terminal"
+ 					          [bash]="Terminal|/usr/bin/bash|icons/bash.svg|modal_30|bash|sh_reset_bash"
+
+								[dolphin3]="FileManager|/usr/bin/dolphin|icons/dolphin.png|modal_10|Dolphin|sh_reset_dolphin"
+	  	 				 [nautilus2]="FileManager|/usr/bin/nautilus|icons/nautilus.svg|modal_26|Nautilus|sh_reset_nautilus"
+					 				 [nemo3]="FileManager|/usr/bin/nemo|icons/nemo.svg|modal_29|Nemo|sh_reset_nemo"
 							)
 }
 
-function sh_bcfg_start_html {
-cat <<-EOF
-	<!DOCTYPE html>
-	<html lang="en">
-	<head>
-	<meta charset="UTF-8">
-	<title>
-	${aMenu[TITLE]}
-	</title>
-	<link rel="stylesheet" href="css/style.css">
-	</head>
-	<body>
-	$(sh_getbgcolor)
-	<div class="lds-ring"><div></div><div></div><div></div><div></div></div>
-	<div class="dark-light">
-	<svg viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.5" fill="none" stroke-linecap="round" stroke-linejoin="round">
-	<path d="M21 12.79A9 9 0 1111.21 3 7 7 0 0021 12.79z" /></svg>
-	</div>
-	<div class="app">
-	<div class="header">
-	<div class="search-bar">
-	<input type="search" id="search" class="custom-search-input form-control validate"
-	placeholder="${aMenu[Pesquisar]}" />
-	</div></div>
-	$(sh_div_lang)
-	<div class="left-side">
-	<div class="side-wrapper">
-	<div class="side-menu">
-	<a href="#" id="Star" class="btn">
-	<svg viewBox="0 0 512 512">
-	<g fill="currentColor">
-	<path d="M0 0h128v128H0zm0 0M192 0h128v128H192zm0 0M384 0h128v128H384zm0 0M0 192h128v128H0zm0 0" data-original="#bfc9d1" />
-	</g>
-	<path d="M192 192h128v128H192zm0 0" fill="currentColor" data-original="#82b1ff" />
-	<path d="M384 192h128v128H384zm0 0M0 384h128v128H0zm0 0M192 384h128v128H192zm0 0M384 384h128v128H384zm0 0" fill="currentColor" data-original="#bfc9d1" />
-	</svg>
-	<span>
-	${aMenu[Principais]}
-	</span>
-	</a>
-	</div>
-	</div>
-	<div class="side-wrapper">
-	<!-- <div class="side-title">$CATEGORY</div> -->
-	<div class="side-menu">
+function sh_bcfg_start_html() {
+	cat <<-EOF
+		<!DOCTYPE html>
+		<html lang="en">
+		<head>
+			<meta charset="UTF-8">
+			<title>
+				${aMenu[TITLE]}
+			</title>
+			<link rel="stylesheet" href="css/style.css">
+			<link href="fontawesome/css/all.css" rel="stylesheet">
+		</head>
+		<body>
+			$(sh_bcfg_getbgcolor)
+			<div class="lds-ring">
+				<div></div>
+				<div></div>
+				<div></div>
+				<div></div>
+			</div>
 
-	<a href="#" id="Internet" class="btn">
-	<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 496 512">
-	<path fill="currentColor" d="M248 8C111.03 8 0 119.03 0 256s111.03 248 248 248 248-111.03 248-248S384.97 8 248 8zm82.29 357.6c-3.9 3.88-7.99 7.95-11.31 11.28-2.99 3-5.1 6.7-6.17 10.71-1.51 5.66-2.73 11.38-4.77 16.87l-17.39 46.85c-13.76 3-28 4.69-42.65 4.69v-27.38c1.69-12.62-7.64-36.26-22.63-51.25-6-6-9.37-14.14-9.37-22.63v-32.01c0-11.64-6.27-22.34-16.46-27.97-14.37-7.95-34.81-19.06-48.81-26.11-11.48-5.78-22.1-13.14-31.65-21.75l-.8-.72a114.792 114.792 0 0 1-18.06-20.74c-9.38-13.77-24.66-36.42-34.59-51.14 20.47-45.5 57.36-82.04 103.2-101.89l24.01 12.01C203.48 89.74 216 82.01 216 70.11v-11.3c7.99-1.29 16.12-2.11 24.39-2.42l28.3 28.3c6.25 6.25 6.25 16.38 0 22.63L264 112l-10.34 10.34c-3.12 3.12-3.12 8.19 0 11.31l4.69 4.69c3.12 3.12 3.12 8.19 0 11.31l-8 8a8.008 8.008 0 0 1-5.66 2.34h-8.99c-2.08 0-4.08.81-5.58 2.27l-9.92 9.65a8.008 8.008 0 0 0-1.58 9.31l15.59 31.19c2.66 5.32-1.21 11.58-7.15 11.58h-5.64c-1.93 0-3.79-.7-5.24-1.96l-9.28-8.06a16.017 16.017 0 0 0-15.55-3.1l-31.17 10.39a11.95 11.95 0 0 0-8.17 11.34c0 4.53 2.56 8.66 6.61 10.69l11.08 5.54c9.41 4.71 19.79 7.16 30.31 7.16s22.59 27.29 32 32h66.75c8.49 0 16.62 3.37 22.63 9.37l13.69 13.69a30.503 30.503 0 0 1 8.93 21.57 46.536 46.536 0 0 1-13.72 32.98zM417 274.25c-5.79-1.45-10.84-5-14.15-9.97l-17.98-26.97a23.97 23.97 0 0 1 0-26.62l19.59-29.38c2.32-3.47 5.5-6.29 9.24-8.15l12.98-6.49C440.2 193.59 448 223.87 448 256c0 8.67-.74 17.16-1.82 25.54L417 274.25z"/>
-	</svg>
-	<span>
-	${aMenu[Internet]}
-	</span>
-	</a>
+			<!-- toggle theme -->
+			<div class="dark-light">
+				<svg viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.5" fill="none" stroke-linecap="round"
+					stroke-linejoin="round">
+					<path d="M21 12.79A9 9 0 1111.21 3 7 7 0 0021 12.79z" />
+				</svg>
+			</div>
 
-	<a href="#" id="Multimedia" class="btn">
-	<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">
-	<path fill="currentColor" d="M470.38 1.51L150.41 96A32 32 0 0 0 128 126.51v261.41A139 139 0 0 0 96 384c-53 0-96 28.66-96 64s43 64 96 64 96-28.66 96-64V214.32l256-75v184.61a138.4 138.4 0 0 0-32-3.93c-53 0-96 28.66-96 64s43 64 96 64 96-28.65 96-64V32a32 32 0 0 0-41.62-30.49z"/>
-	</svg>
-	<span>
-	${aMenu[Multimidia]}
-	</span>
-	</a>
+			<div class="app">
+				<div class="header">
+					<div class="search-bar">
+						<input type="search" id="search" class="custom-search-input form-control validate"
+							placeholder="${aMenu[Pesquisar]}" />
+					</div>
+				</div>
+				<div class="de-session">
+					$(sh_get_de)
+				</div>
+				$(sh_div_lang)
+				<div class="left-side">
+					<div class="side-wrapper">
+						<div class="side-menu">
+							<a href="#" id="Star" class="btn">
+								<svg viewBox="0 0 512 512">
+									<g fill="currentColor">
+										<path d="M0 0h128v128H0zm0 0M192 0h128v128H192zm0 0M384 0h128v128H384zm0 0M0 192h128v128H0zm0 0"
+											data-original="#bfc9d1" />
+									</g>
+									<path d="M192 192h128v128H192zm0 0" fill="currentColor" data-original="#82b1ff" />
+									<path d="M384 192h128v128H384zm0 0M0 384h128v128H0zm0 0M192 384h128v128H192zm0 0M384 384h128v128H384zm0 0"
+										fill="currentColor" data-original="#bfc9d1" />
+								</svg>
+								<span>
+									${aMenu[Principais]}
+								</span>
+							</a>
+						</div>
+					</div>
 
-	<a href="#" id="Graphic" class="btn">
-	<svg viewBox="0 0 576 512">
-	<path fill="currentColor" d="M224 263.3C224.2 233.3 238.4 205.2 262.4 187.2L499.1 9.605C517.7-4.353 543.6-2.965 560.7 12.9C577.7 28.76 580.8 54.54 568.2 74.07L406.5 324.1C391.3 347.7 366.6 363.2 339.3 367.1L224 263.3zM320 400C320 461.9 269.9 512 208 512H64C46.33 512 32 497.7 32 480C32 462.3 46.33 448 64 448H68.81C86.44 448 98.4 429.1 96.59 411.6C96.2 407.8 96 403.9 96 400C96 339.6 143.9 290.3 203.7 288.1L319.8 392.5C319.9 394.1 320 397.5 320 400V400z"/>
-	</svg>
-	<span>
-	${aMenu[Graficos]}
-	</span>
-	</a>
+					<div class="side-wrapper">
+						<!-- <div class="side-title">$CATEGORY</div> -->
+						<div class="side-menu">
+							<a href="#" id="Internet" class="btn">
+								<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 496 512">
+									<path fill="currentColor"
+										d="M248 8C111.03 8 0 119.03 0 256s111.03 248 248 248 248-111.03 248-248S384.97 8 248 8zm82.29 357.6c-3.9 3.88-7.99 7.95-11.31 11.28-2.99 3-5.1 6.7-6.17 10.71-1.51 5.66-2.73 11.38-4.77 16.87l-17.39 46.85c-13.76 3-28 4.69-42.65 4.69v-27.38c1.69-12.62-7.64-36.26-22.63-51.25-6-6-9.37-14.14-9.37-22.63v-32.01c0-11.64-6.27-22.34-16.46-27.97-14.37-7.95-34.81-19.06-48.81-26.11-11.48-5.78-22.1-13.14-31.65-21.75l-.8-.72a114.792 114.792 0 0 1-18.06-20.74c-9.38-13.77-24.66-36.42-34.59-51.14 20.47-45.5 57.36-82.04 103.2-101.89l24.01 12.01C203.48 89.74 216 82.01 216 70.11v-11.3c7.99-1.29 16.12-2.11 24.39-2.42l28.3 28.3c6.25 6.25 6.25 16.38 0 22.63L264 112l-10.34 10.34c-3.12 3.12-3.12 8.19 0 11.31l4.69 4.69c3.12 3.12 3.12 8.19 0 11.31l-8 8a8.008 8.008 0 0 1-5.66 2.34h-8.99c-2.08 0-4.08.81-5.58 2.27l-9.92 9.65a8.008 8.008 0 0 0-1.58 9.31l15.59 31.19c2.66 5.32-1.21 11.58-7.15 11.58h-5.64c-1.93 0-3.79-.7-5.24-1.96l-9.28-8.06a16.017 16.017 0 0 0-15.55-3.1l-31.17 10.39a11.95 11.95 0 0 0-8.17 11.34c0 4.53 2.56 8.66 6.61 10.69l11.08 5.54c9.41 4.71 19.79 7.16 30.31 7.16s22.59 27.29 32 32h66.75c8.49 0 16.62 3.37 22.63 9.37l13.69 13.69a30.503 30.503 0 0 1 8.93 21.57 46.536 46.536 0 0 1-13.72 32.98zM417 274.25c-5.79-1.45-10.84-5-14.15-9.97l-17.98-26.97a23.97 23.97 0 0 1 0-26.62l19.59-29.38c2.32-3.47 5.5-6.29 9.24-8.15l12.98-6.49C440.2 193.59 448 223.87 448 256c0 8.67-.74 17.16-1.82 25.54L417 274.25z" />
+								</svg>
+								<span>
+									${aMenu[Internet]}
+								</span>
+							</a>
 
-	<a href="#" id="Office" class="btn">
-	<svg viewBox="0 0 512 512">
-	<path fill="currentColor" d="M320 336c0 8.844-7.156 16-16 16h-96C199.2 352 192 344.8 192 336V288H0v144C0 457.6 22.41 480 48 480h416c25.59 0 48-22.41 48-48V288h-192V336zM464 96H384V48C384 22.41 361.6 0 336 0h-160C150.4 0 128 22.41 128 48V96H48C22.41 96 0 118.4 0 144V256h512V144C512 118.4 489.6 96 464 96zM336 96h-160V48h160V96z"/>
-	</svg>
-	<span>
-	${aMenu[Escritorio]}
-	</span>
-	</a>
+							<a href="#" id="Multimedia" class="btn">
+								<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">
+									<path fill="currentColor"
+										d="M470.38 1.51L150.41 96A32 32 0 0 0 128 126.51v261.41A139 139 0 0 0 96 384c-53 0-96 28.66-96 64s43 64 96 64 96-28.66 96-64V214.32l256-75v184.61a138.4 138.4 0 0 0-32-3.93c-53 0-96 28.66-96 64s43 64 96 64 96-28.65 96-64V32a32 32 0 0 0-41.62-30.49z" />
+								</svg>
+								<span>
+									${aMenu[Multimidia]}
+								</span>
+							</a>
 
-	<a href="#" id="System" class="btn">
-	<svg viewBox="0 0 512 512">
-	<path fill="currentColor" d="M331.8 224.1c28.29 0 54.88 10.99 74.86 30.97l19.59 19.59c40.01-17.74 71.25-53.3 81.62-96.65c5.725-23.92 5.34-47.08 .2148-68.4c-2.613-10.88-16.43-14.51-24.34-6.604l-68.9 68.9h-75.6V97.2l68.9-68.9c7.912-7.912 4.275-21.73-6.604-24.34c-21.32-5.125-44.48-5.51-68.4 .2148c-55.3 13.23-98.39 60.22-107.2 116.4C224.5 128.9 224.2 137 224.3 145l82.78 82.86C315.2 225.1 323.5 224.1 331.8 224.1zM384 278.6c-23.16-23.16-57.57-27.57-85.39-13.9L191.1 158L191.1 95.99l-127.1-95.99L0 63.1l96 127.1l62.04 .0077l106.7 106.6c-13.67 27.82-9.251 62.23 13.91 85.39l117 117.1c14.62 14.5 38.21 14.5 52.71-.0016l52.75-52.75c14.5-14.5 14.5-38.08-.0016-52.71L384 278.6zM227.9 307L168.7 247.9l-148.9 148.9c-26.37 26.37-26.37 69.08 0 95.45C32.96 505.4 50.21 512 67.5 512s34.54-6.592 47.72-19.78l119.1-119.1C225.5 352.3 222.6 329.4 227.9 307zM64 472c-13.25 0-24-10.75-24-24c0-13.26 10.75-24 24-24S88        434.7 88 448C88 461.3 77.25 472 64 472z"/>
-	</svg>
-	<span>
-	${aMenu[Sistema]}
-	</span>
-	</a>
+							<a href="#" id="Graphic" class="btn">
+								<svg viewBox="0 0 576 512">
+									<path fill="currentColor"
+										d="M224 263.3C224.2 233.3 238.4 205.2 262.4 187.2L499.1 9.605C517.7-4.353 543.6-2.965 560.7 12.9C577.7 28.76 580.8 54.54 568.2 74.07L406.5 324.1C391.3 347.7 366.6 363.2 339.3 367.1L224 263.3zM320 400C320 461.9 269.9 512 208 512H64C46.33 512 32 497.7 32 480C32 462.3 46.33 448 64 448H68.81C86.44 448 98.4 429.1 96.59 411.6C96.2 407.8 96 403.9 96 400C96 339.6 143.9 290.3 203.7 288.1L319.8 392.5C319.9 394.1 320 397.5 320 400V400z" />
+								</svg>
+								<span>
+									${aMenu[Graficos]}
+								</span>
+							</a>
 
-	</div></div></div>
-	<div class="main-container" style="overflow: auto;">
-	<div class="content-wrapper" style="overflow-x: hidden;">
-	<a name="topo">
-	</a>
-	<div class="content-section-title Star"></div>
-	<div class="apps-card">
-	<div class="apps-card-flex Star"></div>
+							<a href="#" id="Office" class="btn">
+								<svg viewBox="0 0 512 512">
+									<path fill="currentColor"
+										d="M320 336c0 8.844-7.156 16-16 16h-96C199.2 352 192 344.8 192 336V288H0v144C0 457.6 22.41 480 48 480h416c25.59 0 48-22.41 48-48V288h-192V336zM464 96H384V48C384 22.41 361.6 0 336 0h-160C150.4 0 128 22.41 128 48V96H48C22.41 96 0 118.4 0 144V256h512V144C512 118.4 489.6 96 464 96zM336 96h-160V48h160V96z" />
+								</svg>
+								<span>
+									${aMenu[Escritorio]}
+								</span>
+							</a>
 
-	<div class="main-header Star">
-	<a class="menu-link-main">
-	${aMenu[Principais]}
-	</a></div>
+							<a href="#" id="System" class="btn">
+								<svg viewBox="0 0 512 512">
+									<path fill="currentColor"
+										d="M331.8 224.1c28.29 0 54.88 10.99 74.86 30.97l19.59 19.59c40.01-17.74 71.25-53.3 81.62-96.65c5.725-23.92 5.34-47.08 .2148-68.4c-2.613-10.88-16.43-14.51-24.34-6.604l-68.9 68.9h-75.6V97.2l68.9-68.9c7.912-7.912 4.275-21.73-6.604-24.34c-21.32-5.125-44.48-5.51-68.4 .2148c-55.3 13.23-98.39 60.22-107.2 116.4C224.5 128.9 224.2 137 224.3 145l82.78 82.86C315.2 225.1 323.5 224.1 331.8 224.1zM384 278.6c-23.16-23.16-57.57-27.57-85.39-13.9L191.1 158L191.1 95.99l-127.1-95.99L0 63.1l96 127.1l62.04 .0077l106.7 106.6c-13.67 27.82-9.251 62.23 13.91 85.39l117 117.1c14.62 14.5 38.21 14.5 52.71-.0016l52.75-52.75c14.5-14.5 14.5-38.08-.0016-52.71L384 278.6zM227.9 307L168.7 247.9l-148.9 148.9c-26.37 26.37-26.37 69.08 0 95.45C32.96 505.4 50.21 512 67.5 512s34.54-6.592 47.72-19.78l119.1-119.1C225.5 352.3 222.6 329.4 227.9 307zM64 472c-13.25 0-24-10.75-24-24c0-13.26 10.75-24 24-24S88        434.7 88 448C88 461.3 77.25 472 64 472z" />
+								</svg>
+								<span>
+									${aMenu[Sistema]}
+								</span>
+							</a>
 
-	<div class="main-header Internet">
-	<a class="menu-link-main">
-	${aMenu[Internet]}
-	</a></div>
+							<a href="#" id="Terminal" class="btn">
+								<i class="fa fa-terminal" aria-hidden="true"> ${aMenu[Terminal]} </i>
+							</a>
 
-	<div class="main-header Multimedia">
-	<a class="menu-link-main">
-	${aMenu[Multimidia]}
-	</a></div>
+							<a href="#" id="FileManager" class="btn">
+								<i class="fa fa-folder-open" aria-hidden="true"> ${aMenu[FileManager]} </i>
+							</a>
 
-	<div class="main-header Graphic">
-	<a class="menu-link-main">
-	${aMenu[Graficos]}
-	</a></div>
+							<a href="#" id="About" class="btn">
+								<svg viewBox="0 0 512 512">
+									<g transform="translate(0.000000,512.000000) scale(0.100000,-0.100000)" fill="#FFFFFF">
+										<path fill="currentColor"
+										d="M2325 4874 c-342 -49 -526 -102 -780 -224 -238 -115 -428 -252 -626 -449 -355 -355 -567 -767 -656 -1276 -25 -143 -25 -587 0 -730 89 -509 301 -921 656 -1276 356 -356 775 -571 1279 -656 153 -26 571 -26 724 0 504 85 923 300 1279 656 356 356 571 775 656 1279 26 153 26 571 0 724 -85 504 -300 923 -656 1279 -354 353 -770 568 -1271 655 -91 16 -529 29 -605 18z m595 -915 c67 -31 140 -102 172 -166 19 -40 23 -64 23 -138 0 -81 -3 -95 -29 -143 -35 -63 -86 -111 -158 -149 -48 -25 -63 -28 -158 -28 -93 0 -112 3 -162 27 -69 32 -136 97 -169 163 -20 41 -24 65 -24 135 0 72 4 93 27 135 26 51 103 131 149 155 88 48 236 52 329 9z m-331 -950 c70 -15 145 -56 193 -105 88 -89 113 -181 97 -359 -8 -83 -29 -171 -95 -408 -105 -371 -125 -460 -127 -562 -2 -94 16 -135 73 -162 53 -25 177 -23 269 5 40 13 75 21 78 18 3 -2 -3 -39 -13 -80 l-18 -76 -50 -19 c-312 -117 -328 -121 -476 -121 -168 -1 -265 29 -352 108 -90 82 -124 176 -114 320 9 123 21 178 110 494 96 338 116 429 116 524 0 138 -41 178 -185 178 -55 0 -103 -7 -154 -22 -40 -13 -75 -22 -77 -20 -5 6 34 150 43 158 12 12 189 76 289 105 148 44 266 51 393 24z" />
+									</g>
+								</svg>
+								<span>
+									${aMenu[Sobre]}
+								</span>
+							</a>
 
-	<div class="main-header Office">
-	<a class="menu-link-main">
-	${aMenu[Escritorio]}
-	</a></div>
+						</div>
+					</div>
+				</div>
+				<div class="main-container" style="overflow: auto;">
+					<div class="content-wrapper" style="overflow-x: hidden;">
+						<a name="topo">
+						</a>
+						<div class="content-section-title Star"></div>
+						<div class="apps-card">
+							<div class="apps-card-flex Star"></div>
 
-	<div class="main-header System">
-	<a class="menu-link-main">
-	${aMenu[Sistema]}
-	</a></div>
-EOF
+							<div class="main-header Star">
+								<a class="menu-link-main">
+							  	<i class="fa fa-main" aria-hidden="true"> ${aMenu[Principais]}</i>
+								</a>
+							</div>
+
+							<div class="main-header Internet">
+								<a class="menu-link-main">
+							  	<i class="fa fa-internet" aria-hidden="true"> ${aMenu[Internet]}</i>
+								</a>
+							</div>
+
+							<div class="main-header Multimedia">
+								<a class="menu-link-main">
+							  	<i class="fa fa-music" aria-hidden="true"> ${aMenu[Multimidia]}</i>
+								</a>
+							</div>
+
+							<div class="main-header Graphic">
+								<a class="menu-link-main">
+							  	<i class="fa fa-grafics" aria-hidden="true"> ${aMenu[Graficos]}</i>
+								</a>
+							</div>
+
+							<div class="main-header Office">
+								<a class="menu-link-main">
+							  	<i class="fa fa-office" aria-hidden="true"> ${aMenu[Escritorio]}</i>
+								</a>
+							</div>
+
+							<div class="main-header System">
+								<a class="menu-link-main">
+							  	<i class="fa fa-office" aria-hidden="true"> ${aMenu[Sistema]}</i>
+								</a>
+							</div>
+
+							<div class="main-header Terminal">
+								<a class="menu-link-main">
+							  	<i class="fa fa-terminal" aria-hidden="true"> ${aMenu[Terminal]}</i>
+								</a>
+							</div>
+
+							<div class="main-header FileManager">
+								<a class="menu-link-main">
+							  	<i class="fa fa-folder-open" aria-hidden="true"> ${aMenu[FileManager]}</i>
+								</a>
+							</div>
+
+							<!-- INSERT -->
+							<div class="main-header About">
+								<a class="menu-link-main">
+								  <i class="fa fa-info" aria-hidden="true"> ${aMenu[Sobre]}</i>
+								</a>
+
+								<br>
+								<div id="about-tab-content" class="fc-card" style="margin-top:-10px;padding:30px;">
+								<div class="content-section" style="margin-top:-10px;padding:30px;">
+								<ul style="padding:30px;">
+									<li>$(gettext "Ambiente"):
+									<div id="div-about-color">
+									<br>&nbsp;&nbsp;&nbsp;&nbsp;$(gettext "Desktop") : $XDG_CURRENT_DESKTOP
+									<br>&nbsp;&nbsp;&nbsp;&nbsp;$(gettext "Sessão") : $XDG_SESSION_TYPE
+									</div>
+
+									<li>$(gettext "Aplicativo"):
+									<div id="div-about-color">
+									<br>&nbsp;&nbsp;&nbsp;&nbsp;$(gettext "Nome") : $TEXTDOMAIN</span>
+									<br>&nbsp;&nbsp;&nbsp;&nbsp;$(gettext "Htm versão") : $_HTML_VERSION_
+									<br>&nbsp;&nbsp;&nbsp;&nbsp;$(gettext "Lib versão") : $_BCFGLIB_VERSION_
+									</div>
+
+									<li>$(gettext "Desenvolvedores"):
+									<div id="div-about-color">
+								  <br>&nbsp;&nbsp;&nbsp;&nbsp;2023-2024, Vilmar Catafesta, vcatafesta@gmail.com
+									<br>&nbsp;&nbsp;&nbsp;&nbsp;2023-2023, Bruno Gonçalves, biglinux.com.br
+									<br>&nbsp;&nbsp;&nbsp;&nbsp;2023-2023, Rafael Ruscher, rruscher@gmail.com
+									<br>&nbsp;&nbsp;&nbsp;&nbsp;2020-2023, eltonff, biglinux.com.br
+									</div>
+
+									<li>$(gettext "Colaboradores"):
+									<div id="div-about-color">
+									<br>&nbsp;&nbsp;&nbsp;&nbsp;Tales, @talesam
+									<br>&nbsp;&nbsp;&nbsp;&nbsp;Narayan, @narayansilva
+									<br>&nbsp;&nbsp;&nbsp;&nbsp;Thiago, @thiago_brgs
+									<br>&nbsp;&nbsp;&nbsp;&nbsp;Marcelo, @elppans
+									<br>&nbsp;&nbsp;&nbsp;&nbsp;Lucas, @luskaedivinsky
+									</div>
+
+								</ul>
+								</div>
+								</div>
+								<!-- INSERT -->
+							</div>
+	EOF
 }
 
-
-function sh_bcfg_process_kde {
+function sh_bcfg_process_de() {
 	local classe="$1"
+	local icon="$2"
+	local titulo="$3"
+	local cmd="$4"
+	local killcmd="$5"
 
-cat <<-EOF
-	<!-- BEGIN Biglinux KDE -->
-	<div class="box-1 box-2 box-3 box-4 box-5 box-items $classe">
-	<div id="box-status-bar">
-	<div id="tit-status-bar">
-	${aMenu[Restaurar_padrao_biglinux]}
-	</div></div>
-	<button onclick="openModal('modal_0')" id="box-subtitle" class="box-geral-icons box-geral-button">
-	<div class="box-imagem-icon">
-	<img class="box-imagem-icon" src="icons/kde.png">
-	</div>
-	<div class="box-titulo">
-	Biglinux KDE
-	</div>
-	</button>
-	</div>
-	<div id="modal_0" class="modal modalOkWarningKDE">
-	<div class="modalContent">
-	<div>
-	<i style="vertical-align: middle; margin-right: 5px;">
-	<img src="icons/kde.png" width="42" height="42" >
-	</i>
-	Biglinux KDE
-	</div><br>
-	${aMenu[Conf]}
-	<br><br>
-	${Afinish[erase_all]} $USER!
-	<br>
-	<div class="content-button-wrapper" style="text-align: right;">
-	<br><button class="modalClose">
-	${aMenu[Nao]}
-	</button>
-	<button class="modalBtn" id="modalOkWarningKDE">
-	${aMenu[Sim]}
-	</button>
-	</div>
-	</div>
-	</div>
-	<!-- END Biglinux KDE -->
-	$(sh_finish_kde)
-EOF
+	cat <<-EOF
+		<!-- BEGIN Biglinux DE -->
+		<div class="box-1 box-2 box-3 box-4 box-5 box-items $classe">
+			<div id="box-status-bar">
+				<div id="tit-status-bar">
+					${aMenu[Restaurar_padrao_biglinux]}
+				</div>
+			</div>
+			<button onclick="openModal('modal_0')" id="box-subtitle" class="box-geral-icons box-geral-button">
+				<div class="box-imagem-icon">
+					<img class="box-imagem-icon" src="$icon">
+				</div>
+				<div class="box-titulo">
+					$titulo
+				</div>
+			</button>
+		</div>
+
+		<div id="modal_0" class="modal modalOkWarning">
+			<div class="modalContent">
+				<div>
+					<i style="vertical-align: middle; margin-right: 5px;">
+						<img src="$icon" width="42" height="42" >
+					</i>
+					$titulo
+				</div>
+
+				${aMenu[Conf]}
+				<br>
+				${Afinish[erase_all]}: $USER!
+				<br>
+				${Afinish[prosseguir]}
+				<br>
+				<div class="content-button-wrapper" style="text-align: right;">
+					<br>
+					<button class="modalClose">
+						${aMenu[Nao]}
+					</button>
+					<button class="modalBtn" id="modalOkWarning" data-value="$cmd">
+						${aMenu[Sim]}
+					</button>
+				</div>
+			</div>
+		</div>
+
+		<div class="modal" id="modalInfo">
+			<div class="modalContent">
+				<div class="finish-sucess">
+						${Afinish[sucesso_DE1]} $titulo ${Afinish[sucesso_DE2]}
+						<br>
+						<br>
+						${Afinish[reiniciar_sessao]}
+				</div>
+				<br>
+				<br>
+				<div class="content-button-wrapper" style="text-align: right;">
+					<button class="modalClose">
+						${aMenu[Nao]}
+					</button>
+					<button class="modalBtn" id="modalOkInfo" data-value="$killcmd">
+						${Afinish[sair_sessao]}
+					</button>
+				</div>
+			</div>
+		</div>
+		<!-- BEGIN Biglinux DE -->
+	EOF
 }
 
-function sh_bcfg_process_xfce {
-	local classe="$1"
-
-cat <<-EOF
-	<!-- BEGIN Biglinux XFCE -->
-	<div class="box-1 box-2 box-3 box-4 box-5 box-items $classe">
-	<div id="box-status-bar">
-	<div id="tit-status-bar">
-	${aMenu[Restaurar_padrao_biglinux]}
-	</div></div>
-	<button onclick="openModal('modal_24')" id="box-subtitle" class="box-geral-icons box-geral-button">
-	<div class="box-imagem-icon">
-	<img class="box-imagem-icon" src="icons/xfce.png">
-	</div>
-	<div class="box-titulo">
-	Biglinux XFCE
-	</div>
-	</button>
-	</div>
-	<div id="modal_24" class="modal modalOkWarningXFCE">
-	<div class="modalContent">
-	<div>
-	<i style="vertical-align: middle; margin-right: 5px;">
-	<img src="icons/xfce.png" width="42" height="42" >
-	</i>
-	Biglinux XFCE
-	</div><br>
-	${aMenu[Conf]}
-	<br><br>
-	${Afinish[erase_all]} $USER!
-	<br>
-	<div class="content-button-wrapper" style="text-align: right;">
-	<br><button class="modalClose">
-	${aMenu[Nao]}
-	</button>
-	<button class="modalBtn" id="modalOkWarningXFCE">
-	${aMenu[Sim]}
-	</button>
-	</div>
-	</div>
-	</div>
-	<!-- END Biglinux XFCE -->
-	$(sh_finish_xfce)
-EOF
-}
-
-function sh_bcfg_process_apps {
+function sh_bcfg_process_apps() {
 	local classe
 	local file_path
 	local file_icon
@@ -349,178 +480,198 @@ function sh_bcfg_process_apps {
 	local cmd
 	local subxtitle
 	local app
+	local IsExist
+	local fullTitle
+	local boxTitle
 
 	for app in "${!AFullNameApp[@]}"; do
+		IsExist=
 		IFS='|' read -r classe file_path file_icon modal xtitle cmd subxtitle <<< "${AFullNameApp[$app]}"
-		if [ -e "$file_path" ]; then
-			cat <<-EOF
-				<div class="box-1 box-2 box-3 box-4 box-5 box-items $classe">
+		if [[ ! -e "$file_path" ]]; then
+			IsExist='box-not-exist'
+			fullTitle="${aMenu[Aplicativo_Not_Installed]} $xtitle"
+			boxTitle="$xtitle $subxtitle<br>[${aMenu[Aplicativo_Not_Installed]}]"
+		else
+			fullTitle="${aMenu[Restaurar_Clique_Escolher]} $xtitle"
+			boxTitle="$xtitle $subxtitle"
+		fi
+
+		cat <<-EOF
+			<div class="box-1 box-2 box-3 box-4 box-5 box-items $classe $IsExist">
 				<div id="box-status-bar">
-				<div id="tit-status-bar">
-				${aMenu[Restaurar_padrao_biglinux]}
-				</div>
+					<div id="tit-status-bar">
+						${fullTitle}
+					</div>
 				</div>
 				<button onclick="openModal('$modal')" id="box-subtitle" class="box-geral-icons box-geral-button">
-				<div class="box-imagem-icon">
-				<img class="box-imagem-icon" src="$file_icon">
-				</div>
-				<div class="box-titulo">
-				$xtitle $subxtitle
-				</div>
+					<div class="box-imagem-icon">
+						<img class="box-imagem-icon" src="$file_icon">
+					</div>
+					<div class="box-titulo">
+						${boxTitle}
+					</div>
 				</button>
-				</div>
-				<div id="$modal" class="modal">
+			</div>
+			<div id="$modal" class="modal">
 				<div class="modalContent">
-				<div>
-				<i style="vertical-align: middle; margin-right: 5px;">
-				<img src="$file_icon" width="42" height="42" >
-				</i>
-				${aMenu[Restaurar_modo]}
-				</div><br>
-				<div class="app-card restore-skel"
-				data-value="$cmd skel" style="width: 100%; border: 1px solid #444444; margin: 3px;">
-				<span>
-				<img src="icons/biglinux.png" width="32" height="32" style="margin-right: 10px;">
-				${aMenu[Restaurar_padrao_distro]}
-				</span>
+					<div>
+						<i style="vertical-align: middle; margin-right: 5px;">
+							<img src="$file_icon" width="42" height="42">
+						</i>
+						$xtitle
+						<br>
+						${aMenu[Em_qual_modo_você_deseja_restaurar]}
+					</div>
+					<br>
+					<div class="app-card restore-skel" data-value="$cmd skel"
+						style="width: 100%; border: 1px solid #444444; margin: 3px;">
+						<span>
+							<img src="icons/biglinux.png" width="32" height="32" style="margin-right: 10px;">
+							${aMenu[Restaurar_padrao_distro]}
+						</span>
+					</div>
+					<div class="app-card restore-default" data-value="$cmd"
+						style="width: 100%; border: 1px solid #444444; margin: 3px;">
+						<span>
+							<img src="icons/default.png" width="32" height="32" style="margin-right: 10px;">
+							${aMenu[Restaurar_padrao_programa]} $xtitle
+						</span>
+					</div>
+					<div class="content-button-wrapper" style="text-align: right;">
+						<br><button class="modalClose">
+							${aMenu[Cancelar]}
+						</button>
+					</div>
 				</div>
-				<div class="app-card restore-default"
-				data-value="$cmd" style="width: 100%; border: 1px solid #444444; margin: 3px;">
-				<span>
-				<img src="icons/default.png" width="32" height="32" style="margin-right: 10px;">
-				${aMenu[Restaurar_padrao_programa]}
-				</span>
-				</div>
-				<div class="content-button-wrapper" style="text-align: right;">
-				<br><button class="modalClose">
-				${aMenu[Cancelar]}
-				</button>
-				</div>
-				</div>
-				</div>
-			EOF
-		fi
+			</div>
+		EOF
 	done
 }
 
-function sh_finish_kde {
-cat <<-EOF
-	<!-- KDE -->
-	<div class="modal" id="modalInfoKDE">
-	<div class="modalContent">
-	<div>
-	<center>
-	${Afinish[sucesso_KDE]}
-	<br><br>
-	${Afinish[reiniciar_sessao]}
-	</center>
-	</div><br><br>
-	<div class="content-button-wrapper" style="text-align: right;">
-	<button class="modalBtn" id="modalOkInfoKDE">
-	${Afinish[sair_sessao]}
-	</button>
-	</div>
-	</div>
-	</div>
-	<!-- KDE -->
-EOF
+function sh_bcfg_finish_html() {
+	local titulo="$1"
+	cat <<-EOF
+		</div>
+		<div class="modal" id="modalInfo">
+			<div class="modalContent">
+				<div>
+					<center>
+						${Afinish[sucesso]}
+					</center>
+				</div>
+				<br>
+				<br>
+				<div class="content-button-wrapper" style="text-align: right;">
+					<button class="modalClose modalOkInfo">
+						${aMenu[OK]}
+					</button>
+				</div>
+			</div>
+		</div>
+
+		<div class="modal" id="modalWarning">
+			<div class="modalContent">
+				<div>
+					<center>
+						${Afinish[app_em_execucao]}
+						<br>
+						${Afinish[app_on_close]}
+					</center>
+				</div>
+				<br>
+				<br>
+				<div class="content-button-wrapper" style="text-align: right;">
+					<button class="modalClose modalCancel">
+						${aMenu[Cancelar]}
+					</button>
+					<button class="modalClose modalOkWarning" style="margin-left:10px">
+						${aMenu[OK]}
+					</button>
+				</div>
+			</div>
+		</div>
+
+		<div class="modal" id="modalErro">
+			<div class="modalContent">
+				<div>
+					<i style="vertical-align: middle; margin-right: 5px;">
+						<img src="$icon" width="42" height="42" >
+					</i>
+					$titulo
+				</div>
+				<br>
+				<div>
+						${Afinish[finish-erro]}
+				</div>
+				<br>
+				<div class="content-button-wrapper" style="text-align: right;">
+					<button class="modalClose modalErro" style="margin-left:10px">
+						${aMenu[OK]}
+					</button>
+				</div>
+			</div>
+		</div>
+		</div>
+		</div>
+		</div>
+		<div class="footer"></div>
+		<div class="logo">
+			<img id="btn-big" src="icons/logo.png" class="logo-biglinux">
+		</div>
+		<script src="js/jquery.js"></script>
+		<script src="js/filter.js"></script>
+		<script src="js/script.js"></script>
+		</body>
+		</html>
+	EOF
 }
 
-function sh_finish_xfce {
-cat <<-EOF
-	<!-- XFCE -->
-	<div class="modal" id="modalInfoXFCE">
-	<div class="modalContent">
-	<div>
-	<center>
-	${Afinish[sucesso_XFCE]}
-	<br><br>
-	${Afinish[reiniciar_sessao]}
-	</center>
-	</div><br><br>
-	<div class="content-button-wrapper" style="text-align: right;">
-	<button class="modalBtn" id="modalOkInfoXFCE">
-	${Afinish[sair_sessao]}
-	</button>
-	</div>
-	</div>
-	</div>
-	<!-- XFCE -->
-EOF
-}
-
-function sh_bcfg_finish_html {
-cat <<-EOF
-	</div>
-	<div class="modal" id="modalInfo">
-	<div class="modalContent">
-	<div>
-	<center>
-	${Afinish[sucesso]}
-	</center>
-	</div><br><br>
-	<div class="content-button-wrapper" style="text-align: right;">
-	<button class="modalClose modalOkInfo">
-	${aMenu[OK]}
-	</button>
-	</div>
-	</div>
-	</div>
-
-	<div class="modal" id="modalWarning">
-	<div class="modalContent">
-	<div>
-	<center>
-	${Afinish[app_em_execucao]}
-	<br>
-	${Afinish[app_on_close]}
-	</center>
-	</div><br><br>
-	<div class="content-button-wrapper" style="text-align: right;">
-	<button class="modalClose modalCancel">
-	${aMenu[Cancelar]}
-	</button>
-	<button class="modalClose modalOkWarning" style="margin-left:10px">
-	${aMenu[OK]}
-	</button>
-	</div>
-	</div>
-	</div>
-	</div>
-	</div>
-	</div>
-	<div class="footer"></div>
-	<div class="logo">
-	<img id="btn-big" src="icons/logo.png" class="logo-biglinux">
-	</div>
-	<!-- partial -->
-	<script src="/usr/share/bigbashview/bcc/materialize/js/jquery.js"></script>
-	<script src="js/filter.js"></script>
-	<script src="js/script.js"></script>
-	</body>
-	</html>
-EOF
-}
-
-function sh_main {
+function sh_bcfg_main() {
+	local regex="(XFCE|XFCE4|PLASMA|KDE|GNOME|DDE|CINNAMON)"
 	local current_desktop="$(sh_get_de)"
-	local process_function="sh_bcfg_process_kde"
+	local icon
+	local titulo
+	local cmd
+	local killcmd
 
-	sh_bcfg_start_html
-
-	case "${current_desktop^^}" in
-		XFCE|XFCE4) process_function="sh_bcfg_process_xfce";;
-		PLASMA) ;;
+	[[ "${current_desktop^^}" =~ $regex ]]
+	case "${BASH_REMATCH[0]}" in
+		XFCE|XFCE4)
+			icon="icons/xfce.png"
+			cmd="sh_reset_xfce"
+			killcmd='xfce4-session-logout --logout'
+			;;
+		PLASMA|KDE)
+			icon="icons/kde.png"
+			cmd="sh_reset_kde"
+			killcmd='qdbus org.kde.ksmserver /KSMServer logout 1 0 2'
+			;;
+		GNOME)
+			icon="icons/gnome.png"
+			cmd="sh_reset_gnome"
+			killcmd='gnome-session-quit --no-prompt'
+			;;
+		DDE)
+			icon="icons/deepin.svg"
+			cmd="sh_reset_dde"
+			killcmd='dde-session-logout'
+			;;
+		CINNAMON)
+			icon="icons/cinnamon.svg"
+			cmd="sh_reset_cinnamon"
+			killcmd='cinnamon-session-quit --logout --no-prompt'
+			;;
 		*) ;;
 	esac
+	titulo="BigLinux $current_desktop"
 
-   $process_function "Star"
-   $process_function "System"
-
-   sh_bcfg_process_apps
-   sh_bcfg_finish_html
+	sh_bcfg_start_html
+	sh_bcfg_process_de "Star"   "$icon" "$titulo" "$cmd" "$killcmd"
+	sh_bcfg_process_de "System" "$icon" "$titulo" "$cmd" "$killcmd"
+	sh_bcfg_process_apps
+	sh_bcfg_finish_html "$titulo"
 }
 
 #sh_debug
-sh_config
-sh_main
+sh_bcfg_config
+sh_bcfg_main "$@"

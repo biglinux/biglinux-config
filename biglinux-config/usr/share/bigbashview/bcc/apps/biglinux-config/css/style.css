@@ -17,6 +17,7 @@
   --hover-menu-bg: rgba(12 15 25 / 30%);
   --content-title-color: #797e84;
   --content-bg: rgb(146 151 179 / 13%);
+/*  --content-bg: blue;*/
   --button-inactive: rgb(249 250 251 / 55%);
   --border-card-color: rgb(70 70 70);
   --dropdown-bg: #21242d;
@@ -50,7 +51,7 @@
   --border-color: rgb(255 255 255 / 35%);
   --popup-bg: rgb(255 255 255);
   --subtitle-bg: rgb(255 255 255);
-  --hover-menu-bg: rgba(255 255 255 / 35%);
+  --hover-menu-bg: rgba(255 255 255 35%);
   --scrollbar-bg: #428bff;
   --content-title-color: --theme-color;
   --content-bg: rgb(255 255 255 / 19%);
@@ -74,10 +75,7 @@ body {
   width: 100%;
   height: 100vh;
   margin: 0;
-  font-family:
-    Lato,
-    Ubuntu Condensed,
-    sans-serif;
+  font-family: "Ubuntu Condensed", Lato, sans-serif;
 }
 
 .hide {
@@ -267,6 +265,7 @@ img {
   height: 40px;
   cursor: pointer;
 }
+
 .dark-light svg {
   width: 24px;
   flex-shrink: 0;
@@ -1179,6 +1178,7 @@ body.light-mode .video-bg:before {
   /*  width: 200px;
   height: 200px;*/
 }
+
 .box-geral-button {
   background: none;
   color: inherit;
@@ -1189,6 +1189,16 @@ body.light-mode .video-bg:before {
   font: inherit;
   cursor: pointer;
   outline: inherit;
+}
+
+.box-geral-button:disabled {
+  cursor: not-allowed;
+  opacity: 0.5;
+}
+
+.box-geral-button:disabled:hover,
+.box-geral-button:disabled:focus {
+  border: 2px solid #ff0000;
 }
 
 .box-items .box-geral-icons:hover,
@@ -1373,6 +1383,7 @@ body.light-mode .video-bg:before {
   border-radius: 6px;
   flex-direction: column;
   white-space: normal;
+  text-align: left; /* Adicionado para alinhar o texto à esquerda */
 }
 
 .modalClose {
@@ -1528,3 +1539,21 @@ input[type="search"]::-webkit-search-cancel-button {
     transform: rotate(360deg);
   }
 }
+
+.de-session {
+  color: red !important;
+}
+
+.light-mode .de-session {
+  color: white;
+  fill: black;
+}
+
+.content-section li {
+  color: red;
+}
+
+#div-about-color {
+  color: var(--theme-color);
+}
+
