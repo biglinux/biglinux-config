@@ -2,7 +2,7 @@
 # Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
 # This file is distributed under the same license as the biglinux-config package.
 # FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
-# 
+#
 #, fuzzy
 msgid ""
 msgstr ""
@@ -14,91 +14,9 @@ msgstr ""
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"X-Generator: attranslate\n"
 
-msgid "Restaurar Configurações"
-msgstr "Restore Settings"
+msgid "Outra instância do Big-Config já está em execução."
+msgstr "Outra instância do Big-Config já está em execução."
 
-msgid "Principais"
-msgstr "Main"
-
-msgid "Internet"
-msgstr "Internet"
-
-msgid "Multimídia"
-msgstr "Multimedia"
-
-msgid "Gráficos"
-msgstr "Graphics"
-
-msgid "Escritório"
-msgstr "Office"
-
-msgid "Sistema"
-msgstr "System"
-
-msgid "Músicas"
-msgstr "Songs"
-
-msgid "Restaurar o aplicativo no modo padrão do programa"
-msgstr "Restore the application in the program's default mode"
-
-msgid "Restaurar o aplicativo no modo padrão da distribuição"
-msgstr "Restore the app to the distribution's default mode"
-
-msgid "Restaurar o aplicativo no modo padrão da distribuição BigLinux"
-msgstr "Restore the application in the default mode of the BigLinux distribution"
-
-msgid "Sim"
-msgstr "Yes"
-
-msgid "Não"
-msgstr "No"
-
-msgid "OK"
-msgstr "OK"
-
-msgid "Cancelar"
-msgstr "Cancel"
-
-msgid "Em qual modo você deseja restaurar?"
-msgstr "In which mode do you want to restore?"
-
-msgid "Pesquisar aplicativo"
-msgstr "Search app"
-
-msgid "Você tem certeza que deseja restaurar todas as configurações?"
-msgstr "Are you sure you want to restore all settings?"
-
-msgid "As configurações foram restauradas com sucesso!"
-msgstr "The settings have been successfully restored!"
-
-msgid "As configurações do BigLinux KDE foram restauradas com sucesso!"
-msgstr "BigLinux KDE settings have been successfully restored!"
-
-msgid "As configurações do BigLinux XFCE foram restauradas com sucesso!"
-msgstr "BigLinux XFCE settings have been successfully restored!"
-
-msgid "É necessário reiniciar a sessão para concluir a restauração!"
-msgstr "You must restart your session to complete the restore!"
-
-msgid "Sair da sessão"
-msgstr "Sign out of the session"
-
-msgid "Atenção! O programa está em execução!"
-msgstr "Attention! The program is running!"
-
-msgid "Será fechado para que a restauração seja concluída."
-msgstr "It will be closed for the restore to complete."
-
-msgid "Isso apagará todas as costumizações feitas por "
-msgstr "This will erase all the costumizations made by "
-
-msgid "Vídeos"
-msgstr "Videos"
-
-msgid "Conversor de áudio e vídeo"
-msgstr "Audio and video converter"
-
-msgid "Gravador de Tela"
-msgstr "Screen Recorder"
+msgid "Erro ao acessar o diretório:"
+msgstr "Erro ao acessar o diretório:"
