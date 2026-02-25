@@ -8,7 +8,8 @@ license=('GPL')
 url="https://github.com/ruscher/$pkgname"
 source=("git+${url}.git")
 pkgdesc="Restore application settings to defaults — GTK4/Adwaita"
-depends=('python' 'python-gobject' 'gtk4' 'libadwaita' 'flatpak')
+depends=('python' 'python-gobject' 'gtk4' 'libadwaita' 'procps-ng')
+optdepends=('flatpak: Flatpak application settings support')
 md5sums=(SKIP)
 
 package() {
