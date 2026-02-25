@@ -3,7 +3,6 @@
 # This file is distributed under the same license as the biglinux-config package.
 # FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
 # 
-#, fuzzy
 msgid ""
 msgstr ""
 "Project-Id-Version: biglinux-config\n"
@@ -15,9 +14,542 @@ msgstr ""
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "X-Generator: attranslate\n"
-
-msgid "Outra instância do Big-Config já está em execução."
-msgstr "Another instance of Big-Config is already running."
-
-msgid "Erro ao acessar o diretório:"
-msgstr "Kesalahan saat mengakses direktori:"
+# 
+# File: biglinux-config/biglinux-config/usr/share/biglinux/biglinux-config/ui/app_grid.py, line: 54
+msgid "No applications found"
+msgstr "Engin fannst ekki"
+# 
+# File: biglinux-config/biglinux-config/usr/share/biglinux/biglinux-config/ui/app_grid.py, line: 56
+msgid "Try another category or search term"
+msgstr "Reyndu aðra flokk eða leitarorð"
+# 
+# File: biglinux-config/biglinux-config/usr/share/biglinux/biglinux-config/ui/about_dialog.py, line: 31
+msgid "Legal"
+msgstr "Löglegt"
+# 
+# File: biglinux-config/biglinux-config/usr/share/biglinux/biglinux-config/ui/about_dialog.py, line: 34
+msgid "The GPL-3.0 license applies to this configuration interface."
+msgstr "GPL-3.0 leyfilegning gildir um þessa stillingarviðmót."
+# 
+# File: biglinux-config/biglinux-config/usr/share/biglinux/biglinux-config/ui/about_dialog.py, line: 40
+msgid "Technologies used"
+msgstr "Tækni sem notuð er"
+# 
+# #-#-#-#-#  biglinux-config.pot (biglinux-config)  #-#-#-#-#
+# 
+# File: biglinux-config/biglinux-config/usr/share/biglinux/biglinux-config/ui/restore_dialog.py, line: 36
+# File: biglinux-config/biglinux-config/usr/share/biglinux/biglinux-config/ui/application.py, line: 169
+# File: biglinux-config/biglinux-config/usr/share/biglinux/biglinux-config/ui/application.py, line: 220
+msgid "Restore Settings"
+msgstr "Endurðu stillingar"
+# 
+# File: biglinux-config/biglinux-config/usr/share/biglinux/biglinux-config/ui/restore_dialog.py, line: 84
+#, python-format
+msgid "Settings size: %s"
+msgstr "Stærð stillinga: %s"
+# 
+# File: biglinux-config/biglinux-config/usr/share/biglinux/biglinux-config/ui/restore_dialog.py, line: 92
+msgid "Choose restore mode"
+msgstr "Veldu endurheimt ham."
+# 
+# File: biglinux-config/biglinux-config/usr/share/biglinux/biglinux-config/ui/restore_dialog.py, line: 93
+msgid "Restore options"
+msgstr "Endurðarvalkostir"
+# 
+# File: biglinux-config/biglinux-config/usr/share/biglinux/biglinux-config/ui/restore_dialog.py, line: 98
+msgid "Restore BigLinux defaults"
+msgstr "Endurðu sjálfgefnar stillingar BigLinux."
+# 
+# File: biglinux-config/biglinux-config/usr/share/biglinux/biglinux-config/ui/restore_dialog.py, line: 100
+msgid "Restores BigLinux settings from /etc/skel"
+msgstr "Endurðar BigLinux stillingar frá /etc/skel"
+# 
+# File: biglinux-config/biglinux-config/usr/share/biglinux/biglinux-config/ui/restore_dialog.py, line: 103
+#, python-format
+msgid "Restore BigLinux default settings for %s"
+msgstr "Endurðu sjálfgefnar stillingar BigLinux fyrir %s"
+# 
+# File: biglinux-config/biglinux-config/usr/share/biglinux/biglinux-config/ui/restore_dialog.py, line: 121
+msgid "Restore program defaults"
+msgstr "Endurðu forstilltur."
+# 
+# File: biglinux-config/biglinux-config/usr/share/biglinux/biglinux-config/ui/restore_dialog.py, line: 123
+msgid "Removes settings so the program recreates its defaults"
+msgstr "Fjarlægir stillingar svo forritið endurheimti sjálfgefnar stillingar sínar."
+# 
+# File: biglinux-config/biglinux-config/usr/share/biglinux/biglinux-config/ui/restore_dialog.py, line: 126
+#, python-format
+msgid "Restore default settings for %s"
+msgstr "Endurðu sjálfgefnar stillingar fyrir %s"
+# 
+# File: biglinux-config/biglinux-config/usr/share/biglinux/biglinux-config/ui/restore_dialog.py, line: 168
+msgid "BigLinux defaults"
+msgstr "BigLinux sjálfgefin gildi"
+# 
+# File: biglinux-config/biglinux-config/usr/share/biglinux/biglinux-config/ui/restore_dialog.py, line: 170
+msgid "program defaults"
+msgstr "ברירות מחדל של התוכנית"
+# 
+# File: biglinux-config/biglinux-config/usr/share/biglinux/biglinux-config/ui/restore_dialog.py, line: 173
+msgid "Restore settings?"
+msgstr "Endur stillingar?"
+# 
+# File: biglinux-config/biglinux-config/usr/share/biglinux/biglinux-config/ui/restore_dialog.py, line: 175
+#, python-format
+msgid ""
+"All customizations for %s will be lost.\n"
+"\n"
+"Mode: %s\n"
+"\n"
+"You may need to restart the application to see the changes."
+msgstr ""
+"Öll sérsnið fyrir %s munu tapast.\n"
+"\n"
+"Ham: %s\n"
+"\n"
+"Þú gætir þurft að endurræsa forritið til að sjá breytingarnar."
+# 
+# #-#-#-#-#  biglinux-config.pot (biglinux-config)  #-#-#-#-#
+# 
+# File: biglinux-config/biglinux-config/usr/share/biglinux/biglinux-config/ui/restore_dialog.py, line: 182
+# File: biglinux-config/biglinux-config/usr/share/biglinux/biglinux-config/ui/restore_dialog.py, line: 236
+# File: biglinux-config/biglinux-config/usr/share/biglinux/biglinux-config/ui/backup_dialog.py, line: 158
+# File: biglinux-config/biglinux-config/usr/share/biglinux/biglinux-config/ui/backup_dialog.py, line: 465
+# File: biglinux-config/biglinux-config/usr/share/biglinux/biglinux-config/ui/backup_dialog.py, line: 503
+msgid "Cancel"
+msgstr "Hætta við"
+# 
+# File: biglinux-config/biglinux-config/usr/share/biglinux/biglinux-config/ui/restore_dialog.py, line: 183
+msgid "Restore"
+msgstr "Endurheimta"
+# 
+# File: biglinux-config/biglinux-config/usr/share/biglinux/biglinux-config/ui/restore_dialog.py, line: 230
+msgid "Application is running"
+msgstr "Forritið er að keyra."
+# 
+# File: biglinux-config/biglinux-config/usr/share/biglinux/biglinux-config/ui/restore_dialog.py, line: 232
+#, python-format
+msgid "%s is running and will be closed so that the restore can be completed."
+msgstr "%s er í gangi og verður lokað svo að endurheimtin geti verið lokið."
+# 
+# File: biglinux-config/biglinux-config/usr/share/biglinux/biglinux-config/ui/restore_dialog.py, line: 237
+msgid "Close and restore"
+msgstr "Lokaðu og endurheimtu"
+# 
+# File: biglinux-config/biglinux-config/usr/share/biglinux/biglinux-config/ui/restore_dialog.py, line: 262
+msgid "Restoring…"
+msgstr "Endurheimta…"
+# 
+# File: biglinux-config/biglinux-config/usr/share/biglinux/biglinux-config/ui/restore_dialog.py, line: 278
+#, python-format
+msgid "Restoring settings for %s…"
+msgstr "Endur aðgerðir fyrir %s…"
+# 
+# File: biglinux-config/biglinux-config/usr/share/biglinux/biglinux-config/ui/restore_dialog.py, line: 370
+msgid "Settings restored"
+msgstr "stillingar endurheimtar"
+# 
+# File: biglinux-config/biglinux-config/usr/share/biglinux/biglinux-config/ui/restore_dialog.py, line: 378
+#, python-format
+msgid ""
+"Settings for %s have been restored.\n"
+"You need to log out to complete the process."
+msgstr ""
+"Stillingar fyrir %s hafa verið endurheimtar.  \n"
+"Þú þarft að skrá þig út til að ljúka ferlinu."
+# 
+# File: biglinux-config/biglinux-config/usr/share/biglinux/biglinux-config/ui/restore_dialog.py, line: 383
+#, python-format
+msgid "Settings for %s have been restored successfully."
+msgstr "Stillingar fyrir %s hafa verið endurheimtar með góðum árangri."
+# 
+# #-#-#-#-#  biglinux-config.pot (biglinux-config)  #-#-#-#-#
+# 
+# File: biglinux-config/biglinux-config/usr/share/biglinux/biglinux-config/ui/restore_dialog.py, line: 399
+# File: biglinux-config/biglinux-config/usr/share/biglinux/biglinux-config/ui/restore_dialog.py, line: 432
+# File: biglinux-config/biglinux-config/usr/share/biglinux/biglinux-config/ui/backup_dialog.py, line: 300
+# File: biglinux-config/biglinux-config/usr/share/biglinux/biglinux-config/ui/backup_dialog.py, line: 597
+msgid "Close"
+msgstr "Lokaðu"
+# 
+# File: biglinux-config/biglinux-config/usr/share/biglinux/biglinux-config/ui/restore_dialog.py, line: 403
+msgid "Log out"
+msgstr "Skrá út"
+# 
+# #-#-#-#-#  biglinux-config.pot (biglinux-config)  #-#-#-#-#
+# 
+# File: biglinux-config/biglinux-config/usr/share/biglinux/biglinux-config/ui/restore_dialog.py, line: 408
+# File: biglinux-config/biglinux-config/usr/share/biglinux/biglinux-config/ui/backup_dialog.py, line: 287
+# File: biglinux-config/biglinux-config/usr/share/biglinux/biglinux-config/ui/backup_dialog.py, line: 584
+# File: biglinux-config/biglinux-config/usr/share/biglinux/biglinux-config/ui/backup_dialog.py, line: 615
+# 
+# #-#-#-#-#  biglinux-config.pot (biglinux-config)  #-#-#-#-#
+# 
+# File: biglinux-config/biglinux-config/usr/share/biglinux/biglinux-config/ui/restore_dialog.py, line: 408
+# File: biglinux-config/biglinux-config/usr/share/biglinux/biglinux-config/ui/backup_dialog.py, line: 287
+# File: biglinux-config/biglinux-config/usr/share/biglinux/biglinux-config/ui/backup_dialog.py, line: 584
+# File: biglinux-config/biglinux-config/usr/share/biglinux/biglinux-config/ui/backup_dialog.py, line: 615
+# 
+# File: biglinux-config/biglinux-config/usr/share/biglinux/biglinux-config/ui/restore_dialog.py, line: 427
+msgid "Restore error"
+msgstr "Endurta villa"
+# 
+# File: biglinux-config/biglinux-config/usr/share/biglinux/biglinux-config/ui/restore_dialog.py, line: 429
+#, python-format
+msgid ""
+"An error occurred while restoring settings for %s:\n"
+"%s"
+msgstr ""
+"Villa kom upp á meðan stillingum var endurheimt fyrir %s:  \n"
+"%s"
+# 
+# File: biglinux-config/biglinux-config/usr/share/biglinux/biglinux-config/ui/welcome_dialog.py, line: 76
+msgid "Welcome to Restore Settings"
+msgstr "Velkomin í Endurheimta Stillingar"
+# 
+# File: biglinux-config/biglinux-config/usr/share/biglinux/biglinux-config/ui/welcome_dialog.py, line: 83
+msgid "Easily restore, backup, and manage application settings on BigLinux."
+msgstr "Auðveldlega endurheimtu, afritaðu og stjórnaðu stillingum forrita á BigLinux."
+# 
+# File: biglinux-config/biglinux-config/usr/share/biglinux/biglinux-config/ui/welcome_dialog.py, line: 104
+msgid "Restore BigLinux Defaults"
+msgstr "Restore BigLinux stillingar"
+# 
+# File: biglinux-config/biglinux-config/usr/share/biglinux/biglinux-config/ui/welcome_dialog.py, line: 106
+msgid ""
+"Reset any application to the BigLinux default\n"
+"settings with a single click using /etc/skel."
+msgstr ""
+"Endurstilla hvaða forrit sem er í BigLinux sjálfgefnar stillingar með einum smelli með því að nota "
+"/etc/skel."
+# 
+# File: biglinux-config/biglinux-config/usr/share/biglinux/biglinux-config/ui/welcome_dialog.py, line: 111
+msgid "Restore Program Defaults"
+msgstr "Endurðu forritastillingar"
+# 
+# File: biglinux-config/biglinux-config/usr/share/biglinux/biglinux-config/ui/welcome_dialog.py, line: 113
+msgid ""
+"Remove all custom settings so the program\n"
+"recreates its original default configuration."
+msgstr "Fjarlægðu allar sérsniðnar stillingar svo forritið endurskapi upprunalegu sjálfgefnu stillinguna."
+# 
+# #-#-#-#-#  biglinux-config.pot (biglinux-config)  #-#-#-#-#
+# 
+# File: biglinux-config/biglinux-config/usr/share/biglinux/biglinux-config/ui/welcome_dialog.py, line: 118
+# File: biglinux-config/biglinux-config/usr/share/biglinux/biglinux-config/ui/backup_dialog.py, line: 43
+msgid "Export Settings"
+msgstr "Útflutningsstillingar"
+# 
+# File: biglinux-config/biglinux-config/usr/share/biglinux/biglinux-config/ui/welcome_dialog.py, line: 120
+msgid ""
+"Back up dotfiles for multiple applications\n"
+"into a single compressed .tar.gz archive."
+msgstr ""
+"Skerðu dotfils fyrir margar forrit\n"
+"í eina þjappaða .tar.gz skrá."
+# 
+# File: biglinux-config/biglinux-config/usr/share/biglinux/biglinux-config/ui/welcome_dialog.py, line: 125
+msgid "Search Across All Apps"
+msgstr "Leitaðu í öllum forritum"
+# 
+# File: biglinux-config/biglinux-config/usr/share/biglinux/biglinux-config/ui/welcome_dialog.py, line: 127
+msgid ""
+"Quickly find any installed application\n"
+"using the integrated search in the header bar."
+msgstr "Finndu fljótt hvaða uppsettu forrit er með því að nota samþætt leitarvélina í fyrirsagnarlínunni."
+# 
+# #-#-#-#-#  biglinux-config.pot (biglinux-config)  #-#-#-#-#
+# 
+# File: biglinux-config/biglinux-config/usr/share/biglinux/biglinux-config/ui/welcome_dialog.py, line: 141
+# File: biglinux-config/biglinux-config/usr/share/biglinux/biglinux-config/ui/backup_dialog.py, line: 362
+msgid "Import Settings"
+msgstr "Flytja stillingar"
+# 
+# File: biglinux-config/biglinux-config/usr/share/biglinux/biglinux-config/ui/welcome_dialog.py, line: 143
+msgid ""
+"Restore previously exported settings from\n"
+"a .tar.gz backup with per-application selection."
+msgstr "Endurðu áður fluttar stillingar frá .tar.gz afriti með val á hverri forrit."
+# 
+# File: biglinux-config/biglinux-config/usr/share/biglinux/biglinux-config/ui/welcome_dialog.py, line: 148
+msgid "Full Directory Backup"
+msgstr "Heildar skráarsafn öryggisafrit"
+# 
+# File: biglinux-config/biglinux-config/usr/share/biglinux/biglinux-config/ui/welcome_dialog.py, line: 150
+msgid ""
+"Optionally copy entire configuration\n"
+"directories instead of individual files."
+msgstr "Valkostulega afrita heildaruppsetningu skráasafna í stað einstakra skráa."
+# 
+# File: biglinux-config/biglinux-config/usr/share/biglinux/biglinux-config/ui/welcome_dialog.py, line: 155
+msgid "Flatpak Support"
+msgstr "Flatpak stuðningur"
+# 
+# File: biglinux-config/biglinux-config/usr/share/biglinux/biglinux-config/ui/welcome_dialog.py, line: 157
+msgid ""
+"View and manage Flatpak application\n"
+"settings alongside native packages."
+msgstr "Skoðaðu og stjórnaðu Flatpak forritastillingum ásamt innfæddum pakkningum."
+# 
+# File: biglinux-config/biglinux-config/usr/share/biglinux/biglinux-config/ui/welcome_dialog.py, line: 162
+msgid "Organized by Category"
+msgstr "Flokkuð eftir Flokki"
+# 
+# File: biglinux-config/biglinux-config/usr/share/biglinux/biglinux-config/ui/welcome_dialog.py, line: 164
+msgid ""
+"Browse applications grouped by category:\n"
+"browsers, multimedia, office, system, and more."
+msgstr "Skoðaðu forrit flokkað eftir flokkum: vafrar, fjölmiðlar, skrifstofa, kerfi og fleira."
+# 
+# File: biglinux-config/biglinux-config/usr/share/biglinux/biglinux-config/ui/welcome_dialog.py, line: 183
+msgid "Show this dialog on startup"
+msgstr "Sýna þessa samræðu við upphaf"
+# 
+# File: biglinux-config/biglinux-config/usr/share/biglinux/biglinux-config/ui/welcome_dialog.py, line: 200
+msgid "Let's Start"
+msgstr "Byrjum að vinna"
+# 
+# File: biglinux-config/biglinux-config/usr/share/biglinux/biglinux-config/ui/application.py, line: 211
+msgid "About Restore Settings"
+msgstr "Um endurheimta stillingar"
+# 
+# File: biglinux-config/biglinux-config/usr/share/biglinux/biglinux-config/ui/application.py, line: 230
+msgid "Categories"
+msgstr "Flokkar"
+# 
+# File: biglinux-config/biglinux-config/usr/share/biglinux/biglinux-config/ui/application.py, line: 239
+msgid "Search..."
+msgstr "Leita..."
+# 
+# File: biglinux-config/biglinux-config/usr/share/biglinux/biglinux-config/ui/application.py, line: 251
+msgid "Export settings…"
+msgstr "Útflutningsstillingar…"
+# 
+# File: biglinux-config/biglinux-config/usr/share/biglinux/biglinux-config/ui/application.py, line: 252
+msgid "Import settings…"
+msgstr "Flytja stillingar…"
+# 
+# File: biglinux-config/biglinux-config/usr/share/biglinux/biglinux-config/ui/application.py, line: 256
+msgid "Welcome"
+msgstr "Velkomin"
+# 
+# File: biglinux-config/biglinux-config/usr/share/biglinux/biglinux-config/ui/application.py, line: 257
+msgid "About"
+msgstr "Um umfjöllun"
+# 
+# File: biglinux-config/biglinux-config/usr/share/biglinux/biglinux-config/ui/application.py, line: 263
+msgid "Menu"
+msgstr "Valmynd"
+# 
+# File: biglinux-config/biglinux-config/usr/share/biglinux/biglinux-config/ui/application.py, line: 296
+msgid "Loading applications…"
+msgstr "Hlaða forritum…"
+# 
+# File: biglinux-config/biglinux-config/usr/share/biglinux/biglinux-config/ui/application.py, line: 313
+msgid "Applications"
+msgstr "Forrit."
+# 
+# File: biglinux-config/biglinux-config/usr/share/biglinux/biglinux-config/ui/backup_dialog.py, line: 66
+msgid ""
+"Select the applications whose settings you want to export. A .tar.gz archive will be created with "
+"the dotfiles."
+msgstr ""
+"Veldu forritin sem stillingar þeirra þú vilt flytja út. .tar.gz skrá verður búin til með "
+"punktaskrám."
+# 
+# File: biglinux-config/biglinux-config/usr/share/biglinux/biglinux-config/ui/backup_dialog.py, line: 76
+msgid "Copy full directories"
+msgstr "Afrittu fullar skráasafn."
+# 
+# File: biglinux-config/biglinux-config/usr/share/biglinux/biglinux-config/ui/backup_dialog.py, line: 78
+msgid "Include all files in each config directory, not just the listed paths"
+msgstr "Innihalda öll skrár í hverju stillingaskrá, ekki bara þær skráðar leiðir."
+# 
+# File: biglinux-config/biglinux-config/usr/share/biglinux/biglinux-config/ui/backup_dialog.py, line: 82
+msgid "Options"
+msgstr "Valkostir"
+# 
+# File: biglinux-config/biglinux-config/usr/share/biglinux/biglinux-config/ui/backup_dialog.py, line: 88
+#, python-format
+msgid "Applications (%d available)"
+msgstr "Forrit (%d í boði)"
+# 
+# File: biglinux-config/biglinux-config/usr/share/biglinux/biglinux-config/ui/backup_dialog.py, line: 89
+msgid "Select applications to export"
+msgstr "Veldu forrit til að flytja út"
+# 
+# File: biglinux-config/biglinux-config/usr/share/biglinux/biglinux-config/ui/backup_dialog.py, line: 95
+# File: biglinux-config/biglinux-config/usr/share/biglinux/biglinux-config/ui/backup_dialog.py, line: 412
+msgid "Select all"
+msgstr "Veldu allt"
+# 
+# File: biglinux-config/biglinux-config/usr/share/biglinux/biglinux-config/ui/backup_dialog.py, line: 99
+# File: biglinux-config/biglinux-config/usr/share/biglinux/biglinux-config/ui/backup_dialog.py, line: 416
+msgid "Deselect all"
+msgstr "Fellaðu allt"
+# 
+# File: biglinux-config/biglinux-config/usr/share/biglinux/biglinux-config/ui/backup_dialog.py, line: 126
+# File: biglinux-config/biglinux-config/usr/share/biglinux/biglinux-config/ui/backup_dialog.py, line: 434
+#, python-format
+msgid "Include %s"
+msgstr "Inni %s"
+# 
+# File: biglinux-config/biglinux-config/usr/share/biglinux/biglinux-config/ui/backup_dialog.py, line: 162
+msgid "Export…"
+msgstr "Flytja út…"
+# 
+# File: biglinux-config/biglinux-config/usr/share/biglinux/biglinux-config/ui/backup_dialog.py, line: 164
+msgid "Choose destination and export"
+msgstr "Veldu áfangastað og útflutning."
+# 
+# File: biglinux-config/biglinux-config/usr/share/biglinux/biglinux-config/ui/backup_dialog.py, line: 190
+msgid "Save backup as"
+msgstr "Vista afritun sem"
+# 
+# File: biglinux-config/biglinux-config/usr/share/biglinux/biglinux-config/ui/backup_dialog.py, line: 199
+msgid "Compressed archives (*.tar.gz)"
+msgstr "Þjappaðar skráasafn (*.tar.gz)"
+# 
+# File: biglinux-config/biglinux-config/usr/share/biglinux/biglinux-config/ui/backup_dialog.py, line: 230
+msgid "Exporting…"
+msgstr "Útflutningur…"
+# 
+# File: biglinux-config/biglinux-config/usr/share/biglinux/biglinux-config/ui/backup_dialog.py, line: 245
+#, python-format
+msgid "Exporting settings for %d applications…"
+msgstr "Að flytja út stillingar fyrir %d forrit…"
+# 
+# File: biglinux-config/biglinux-config/usr/share/biglinux/biglinux-config/ui/backup_dialog.py, line: 281
+msgid "Backup created!"
+msgstr "Öryggisafn búið til!"
+# 
+# File: biglinux-config/biglinux-config/usr/share/biglinux/biglinux-config/ui/backup_dialog.py, line: 283
+#, python-format
+msgid ""
+"%d applications exported (%s)\n"
+"\n"
+"Saved to:\n"
+"%s"
+msgstr ""
+"%d forrit flutt út (%s)\n"
+"\n"
+"Vistað í:\n"
+"%s"
+# 
+# File: biglinux-config/biglinux-config/usr/share/biglinux/biglinux-config/ui/backup_dialog.py, line: 296
+msgid "Export error"
+msgstr "Villa útflutningsvilla"
+# 
+# File: biglinux-config/biglinux-config/usr/share/biglinux/biglinux-config/ui/backup_dialog.py, line: 298
+#, python-format
+msgid ""
+"An error occurred while creating the backup:\n"
+"%s"
+msgstr "Villa kom upp við að búa til afritið: %s"
+# 
+# File: biglinux-config/biglinux-config/usr/share/biglinux/biglinux-config/ui/backup_dialog.py, line: 320
+msgid "Open backup file"
+msgstr "Opna afritunar skrá"
+# 
+# File: biglinux-config/biglinux-config/usr/share/biglinux/biglinux-config/ui/backup_dialog.py, line: 323
+msgid "BigLinux backups (*.tar.gz)"
+msgstr "BigLinux afritir (*.tar.gz)"
+# 
+# File: biglinux-config/biglinux-config/usr/share/biglinux/biglinux-config/ui/backup_dialog.py, line: 353
+msgid "This file is not a valid BigLinux backup archive."
+msgstr "Þetta skjal er ekki gilt BigLinux afritarskrá."
+# 
+# File: biglinux-config/biglinux-config/usr/share/biglinux/biglinux-config/ui/backup_dialog.py, line: 358
+msgid "The backup archive contains no application settings."
+msgstr "Öryggisafnið inniheldur engar forritastillingar."
+# 
+# File: biglinux-config/biglinux-config/usr/share/biglinux/biglinux-config/ui/backup_dialog.py, line: 389
+#, python-format
+msgid ""
+"<b>Backup from:</b> %s\n"
+"<b>Host:</b> %s\n"
+"<b>Full directories:</b> %s"
+msgstr ""
+"<b>Afritun frá:</b> %s\n"
+"<b>Gestgjafi:</b> %s\n"
+"<b>Heildarskráar:</b> %s"
+# 
+# File: biglinux-config/biglinux-config/usr/share/biglinux/biglinux-config/ui/backup_dialog.py, line: 390
+# 
+# File: biglinux-config/biglinux-config/usr/share/biglinux/biglinux-config/ui/backup_dialog.py, line: 390
+# 
+# File: biglinux-config/biglinux-config/usr/share/biglinux/biglinux-config/ui/backup_dialog.py, line: 390
+msgid "No"
+msgstr "Nei"
+# 
+# File: biglinux-config/biglinux-config/usr/share/biglinux/biglinux-config/ui/backup_dialog.py, line: 400
+msgid "Importing will overwrite existing settings for selected applications."
+msgstr "Innflutning mun skrifa yfir núverandi stillingar fyrir valdar forrit."
+# 
+# File: biglinux-config/biglinux-config/usr/share/biglinux/biglinux-config/ui/backup_dialog.py, line: 407
+#, python-format
+msgid "Applications in backup (%d)"
+msgstr "Forrit í afritun (%d)"
+# 
+# File: biglinux-config/biglinux-config/usr/share/biglinux/biglinux-config/ui/backup_dialog.py, line: 469
+# File: biglinux-config/biglinux-config/usr/share/biglinux/biglinux-config/ui/backup_dialog.py, line: 504
+msgid "Import"
+msgstr "Innflutning"
+# 
+# File: biglinux-config/biglinux-config/usr/share/biglinux/biglinux-config/ui/backup_dialog.py, line: 471
+msgid "Import selected settings"
+msgstr "Flytja inn valdar stillingar"
+# 
+# File: biglinux-config/biglinux-config/usr/share/biglinux/biglinux-config/ui/backup_dialog.py, line: 496
+msgid "Import settings?"
+msgstr "Flytja stillingar?"
+# 
+# File: biglinux-config/biglinux-config/usr/share/biglinux/biglinux-config/ui/backup_dialog.py, line: 498
+#, python-format
+msgid ""
+"Existing settings for %d selected applications will be overwritten.\n"
+"\n"
+"This action cannot be undone."
+msgstr ""
+"Núverandi stillingar fyrir %d valdar forrit verða skrifaðar yfir.\n"
+"\n"
+"Þessi aðgerð er ekki hægt að afturkalla."
+# 
+# File: biglinux-config/biglinux-config/usr/share/biglinux/biglinux-config/ui/backup_dialog.py, line: 522
+msgid "Importing…"
+msgstr "Innflutning…"
+# 
+# File: biglinux-config/biglinux-config/usr/share/biglinux/biglinux-config/ui/backup_dialog.py, line: 537
+msgid "Importing settings from backup…"
+msgstr "Innflutning stillinga frá afriti…"
+# 
+# File: biglinux-config/biglinux-config/usr/share/biglinux/biglinux-config/ui/backup_dialog.py, line: 573
+msgid "Settings imported!"
+msgstr "Stillingar fluttar inn!"
+# 
+# File: biglinux-config/biglinux-config/usr/share/biglinux/biglinux-config/ui/backup_dialog.py, line: 575
+#, python-format
+msgid "%d applications restored."
+msgstr "%d forrit endurheimt."
+# 
+# File: biglinux-config/biglinux-config/usr/share/biglinux/biglinux-config/ui/backup_dialog.py, line: 580
+#, python-format
+msgid "Skipped: %s"
+msgstr "Slepp: %s"
+# 
+# File: biglinux-config/biglinux-config/usr/share/biglinux/biglinux-config/ui/backup_dialog.py, line: 593
+msgid "Import error"
+msgstr "שגיאת ייבוא"
+# 
+# File: biglinux-config/biglinux-config/usr/share/biglinux/biglinux-config/ui/backup_dialog.py, line: 595
+#, python-format
+msgid ""
+"An error occurred while importing settings:\n"
+"%s"
+msgstr ""
+"Villa kom upp við innflutning stillinga:  \n"
+"%s"
+# 
+# File: biglinux-config/biglinux-config/usr/share/biglinux/biglinux-config/ui/backup_dialog.py, line: 613
+msgid "Invalid backup"
+msgstr "Ógildur afritun"

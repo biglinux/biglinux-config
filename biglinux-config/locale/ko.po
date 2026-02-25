@@ -3,7 +3,6 @@
 # This file is distributed under the same license as the biglinux-config package.
 # FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
 # 
-#, fuzzy
 msgid ""
 msgstr ""
 "Project-Id-Version: biglinux-config\n"
@@ -15,9 +14,7 @@ msgstr ""
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "X-Generator: attranslate\n"
-
 msgid "Outra instância do Big-Config já está em execução."
 msgstr "다른 Big-Config 인스턴스가 이미 실행 중입니다."
-
 msgid "Erro ao acessar o diretório:"
 msgstr "디렉토리에 액세스하는 중 오류 발생:"
