@@ -7,9 +7,9 @@ arch=('any')
 license=('GPL')
 url="https://github.com/biglinux/$pkgname"
 source=("git+${url}.git")
-pkgdesc="Complete control center to use in BigLinux with DE's"
-depends=('bigbashview' 'kdialog')
-depends+=('bigcontrolcenter-base') #qui 18 jan 2024 19:36:34 -04 - vcatafesta@gmail.com
+pkgdesc="Restore application settings to defaults — GTK4/Adwaita"
+depends=('python' 'python-gobject' 'gtk4' 'libadwaita' 'procps-ng')
+optdepends=('flatpak: Flatpak application settings support')
 md5sums=(SKIP)
 
 package() {
