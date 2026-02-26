@@ -12,6 +12,7 @@ from gi.repository import Adw, Gdk, Gtk, Pango
 
 from utils import _, set_label
 from data.app_registry import AppEntry
+from backend.app_detector import get_localized_name
 from backend.reset_manager import has_config
 
 
@@ -112,8 +113,10 @@ class AppGrid(Gtk.Box):
         query = text.lower().strip()
         visible_count = 0
         for fb_child, entry in self._cards:
+            display_name = get_localized_name(entry)
             match = (
                 not query
+                or query in display_name.lower()
                 or query in entry.name.lower()
                 or query in entry.app_id.lower()
             )
@@ -154,7 +157,7 @@ class AppGrid(Gtk.Box):
         content.append(icon)
 
         # Name label — ellipsize, wrap, centered
-        name_label = Gtk.Label(label=entry.name)
+        name_label = Gtk.Label(label=get_localized_name(entry))
         name_label.set_ellipsize(Pango.EllipsizeMode.END)
         name_label.set_max_width_chars(20)
         name_label.set_width_chars(10)

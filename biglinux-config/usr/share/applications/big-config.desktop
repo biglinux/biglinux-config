@@ -29,6 +29,7 @@ Name[uk]=Відновити налаштування
 Name[zh]=恢复设置
 Categories=Settings;Biglinux;
 StartupNotify=true
+StartupWMClass=com.biglinux.config
 Terminal=false
 Type=Application
 Exec=biglinux-config

@@ -120,9 +120,7 @@ class BigConfigApp(Adw.Application):
         for entry in all_apps:
             self._apps_by_category.setdefault(entry.category, []).append(entry)
 
-        favorites = get_favorites(installed)
-        if flatpaks:
-            favorites.extend(flatpaks[:3])
+        favorites = get_favorites(all_apps)
         self._apps_by_category["favorites"] = favorites
 
         for cat_info in CATEGORIES:
