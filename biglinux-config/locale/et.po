@@ -15,13 +15,89 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "X-Generator: attranslate\n"
 # 
-# File: biglinux-config/biglinux-config/usr/share/biglinux/biglinux-config/ui/app_grid.py, line: 54
-msgid "No applications found"
-msgstr "Rakendusi ei leitud"
+# File: biglinux-config/biglinux-config/usr/share/biglinux/biglinux-config/ui/welcome_dialog.py, line: 76
+msgid "Welcome to Restore Settings"
+msgstr "Tere tulemast Seadete taastamisse"
 # 
-# File: biglinux-config/biglinux-config/usr/share/biglinux/biglinux-config/ui/app_grid.py, line: 56
-msgid "Try another category or search term"
-msgstr "Proovi teist kategooriat või otsinguterminit."
+# File: biglinux-config/biglinux-config/usr/share/biglinux/biglinux-config/ui/welcome_dialog.py, line: 83
+msgid "Easily restore, backup, and manage application settings on BigLinux."
+msgstr "Lihtsalt taastage, varundage ja hallake rakenduse seadeid BigLinuxis."
+# 
+# File: biglinux-config/biglinux-config/usr/share/biglinux/biglinux-config/ui/welcome_dialog.py, line: 104
+msgid "Restore BigLinux Defaults"
+msgstr "Taasta BigLinuxi vaikeväärtused"
+# 
+# File: biglinux-config/biglinux-config/usr/share/biglinux/biglinux-config/ui/welcome_dialog.py, line: 106
+msgid ""
+"Reset any application to the BigLinux default\n"
+"settings with a single click using /etc/skel."
+msgstr "Lähtestage kõik rakendused BigLinuxi vaikeseadetele ühe klõpsuga, kasutades /etc/skel."
+# 
+# #-#-#-#-#  biglinux-config.pot (biglinux-config)  #-#-#-#-#
+# 
+# File: biglinux-config/biglinux-config/usr/share/biglinux/biglinux-config/ui/welcome_dialog.py, line: 118
+# File: biglinux-config/biglinux-config/usr/share/biglinux/biglinux-config/ui/backup_dialog.py, line: 43
+msgid "Export Settings"
+msgstr "Eksportimise seaded"
+# 
+# File: biglinux-config/biglinux-config/usr/share/biglinux/biglinux-config/ui/welcome_dialog.py, line: 120
+msgid ""
+"Back up dotfiles for multiple applications\n"
+"into a single compressed .tar.gz archive."
+msgstr ""
+"Varundage dotfailid mitme rakenduse jaoks\n"
+"üheks kompressitud .tar.gz arhiiviks."
+# 
+# File: biglinux-config/biglinux-config/usr/share/biglinux/biglinux-config/ui/welcome_dialog.py, line: 125
+msgid "Search Across All Apps"
+msgstr "Otsi kõigist rakendustest"
+# 
+# File: biglinux-config/biglinux-config/usr/share/biglinux/biglinux-config/ui/welcome_dialog.py, line: 127
+msgid ""
+"Quickly find any installed application\n"
+"using the integrated search in the header bar."
+msgstr "Kiirelt leidke kõik installitud rakendused, kasutades päiseribal olevat integreeritud otsingut."
+# 
+# #-#-#-#-#  biglinux-config.pot (biglinux-config)  #-#-#-#-#
+# 
+# File: biglinux-config/biglinux-config/usr/share/biglinux/biglinux-config/ui/welcome_dialog.py, line: 141
+# File: biglinux-config/biglinux-config/usr/share/biglinux/biglinux-config/ui/backup_dialog.py, line: 362
+msgid "Import Settings"
+msgstr "Importimise seaded"
+# 
+# File: biglinux-config/biglinux-config/usr/share/biglinux/biglinux-config/ui/welcome_dialog.py, line: 143
+msgid ""
+"Restore previously exported settings from\n"
+"a .tar.gz backup with per-application selection."
+msgstr "Taasta varem eksporditud seaded .tar.gz varukoopiast rakenduse kaupa valiku tegemisega."
+# 
+# File: biglinux-config/biglinux-config/usr/share/biglinux/biglinux-config/ui/welcome_dialog.py, line: 155
+msgid "Flatpak Support"
+msgstr "Flatpaki tugi"
+# 
+# File: biglinux-config/biglinux-config/usr/share/biglinux/biglinux-config/ui/welcome_dialog.py, line: 157
+msgid ""
+"View and manage Flatpak application\n"
+"settings alongside native packages."
+msgstr "Vaata ja halda Flatpak rakenduse seadeid koos kohalike pakettidega."
+# 
+# File: biglinux-config/biglinux-config/usr/share/biglinux/biglinux-config/ui/welcome_dialog.py, line: 162
+msgid "Organized by Category"
+msgstr "Kategooria järgi korraldatud"
+# 
+# File: biglinux-config/biglinux-config/usr/share/biglinux/biglinux-config/ui/welcome_dialog.py, line: 164
+msgid ""
+"Browse applications grouped by category:\n"
+"browsers, multimedia, office, system, and more."
+msgstr "Sirvi rakendusi kategooriate kaupa: brauserid, multimeedia, kontor, süsteem ja palju muud."
+# 
+# File: biglinux-config/biglinux-config/usr/share/biglinux/biglinux-config/ui/welcome_dialog.py, line: 183
+msgid "Show this dialog on startup"
+msgstr "Kuvaa see dialoog käivitamisel"
+# 
+# File: biglinux-config/biglinux-config/usr/share/biglinux/biglinux-config/ui/welcome_dialog.py, line: 200
+msgid "Let's Start"
+msgstr "Alustame"
 # 
 # File: biglinux-config/biglinux-config/usr/share/biglinux/biglinux-config/ui/about_dialog.py, line: 31
 msgid "Legal"
@@ -35,56 +111,304 @@ msgstr "GPL-3.0 litsents kehtib selle konfiguratsiooniliidese kohta."
 msgid "Technologies used"
 msgstr "Kasutatud tehnoloogiad"
 # 
+# File: biglinux-config/biglinux-config/usr/share/biglinux/biglinux-config/ui/backup_dialog.py, line: 66
+msgid ""
+"Select the applications whose settings you want to export. A .tar.gz archive will be created with "
+"the dotfiles."
+msgstr "Valige rakendused, mille seadeid soovite eksportida. .tar.gz arhiiv luuakse koos dotfailidega."
+# 
+# File: biglinux-config/biglinux-config/usr/share/biglinux/biglinux-config/ui/backup_dialog.py, line: 76
+msgid "Copy full directories"
+msgstr "Kopeeri täiskaustad"
+# 
+# File: biglinux-config/biglinux-config/usr/share/biglinux/biglinux-config/ui/backup_dialog.py, line: 78
+msgid "Include all files in each config directory, not just the listed paths"
+msgstr "Kaasuta kõiki faile igas konfiguratsioonikaustas, mitte ainult loetletud teid."
+# 
+# File: biglinux-config/biglinux-config/usr/share/biglinux/biglinux-config/ui/backup_dialog.py, line: 82
+msgid "Options"
+msgstr "Valikud"
+# 
+# File: biglinux-config/biglinux-config/usr/share/biglinux/biglinux-config/ui/application.py, line: 313
+msgid "Applications"
+msgstr "Rakendused"
+# 
+# File: biglinux-config/biglinux-config/usr/share/biglinux/biglinux-config/ui/backup_dialog.py, line: 89
+msgid "Select applications to export"
+msgstr "Valige eksportimiseks rakendused"
+# 
+# File: biglinux-config/biglinux-config/usr/share/biglinux/biglinux-config/ui/backup_dialog.py, line: 93
+msgid "Select or deselect all"
+msgstr "Vali või tühista kõik"
+# 
+# File: biglinux-config/biglinux-config/usr/share/biglinux/biglinux-config/ui/backup_dialog.py, line: 102
+msgid "Scanning applications…"
+msgstr "Rakenduste skaneerimine…"
+# 
 # #-#-#-#-#  biglinux-config.pot (biglinux-config)  #-#-#-#-#
 # 
-# File: biglinux-config/biglinux-config/usr/share/biglinux/biglinux-config/ui/restore_dialog.py, line: 36
-# File: biglinux-config/biglinux-config/usr/share/biglinux/biglinux-config/ui/application.py, line: 169
-# File: biglinux-config/biglinux-config/usr/share/biglinux/biglinux-config/ui/application.py, line: 220
-msgid "Restore Settings"
-msgstr "Taasta seaded"
+# File: biglinux-config/biglinux-config/usr/share/biglinux/biglinux-config/ui/restore_dialog.py, line: 182
+# File: biglinux-config/biglinux-config/usr/share/biglinux/biglinux-config/ui/restore_dialog.py, line: 236
+# File: biglinux-config/biglinux-config/usr/share/biglinux/biglinux-config/ui/backup_dialog.py, line: 158
+# File: biglinux-config/biglinux-config/usr/share/biglinux/biglinux-config/ui/backup_dialog.py, line: 465
+# File: biglinux-config/biglinux-config/usr/share/biglinux/biglinux-config/ui/backup_dialog.py, line: 503
+msgid "Cancel"
+msgstr "Tühista"
 # 
-# File: biglinux-config/biglinux-config/usr/share/biglinux/biglinux-config/ui/restore_dialog.py, line: 84
+# File: biglinux-config/biglinux-config/usr/share/biglinux/biglinux-config/ui/backup_dialog.py, line: 162
+msgid "Export…"
+msgstr "Eksport…"
+# 
+# File: biglinux-config/biglinux-config/usr/share/biglinux/biglinux-config/ui/backup_dialog.py, line: 164
+msgid "Choose destination and export"
+msgstr "Vali sihtkoht ja eksportige"
+# 
+# File: biglinux-config/biglinux-config/usr/share/biglinux/biglinux-config/ui/backup_dialog.py, line: 156
 #, python-format
-msgid "Settings size: %s"
-msgstr "Seadete suurus: %s"
+msgid "Scanning: %s"
+msgstr "Skaneerimine: %s"
 # 
-# File: biglinux-config/biglinux-config/usr/share/biglinux/biglinux-config/ui/restore_dialog.py, line: 92
-msgid "Choose restore mode"
-msgstr "Vali taastamisrežiim"
-# 
-# File: biglinux-config/biglinux-config/usr/share/biglinux/biglinux-config/ui/restore_dialog.py, line: 93
-msgid "Restore options"
-msgstr "Taasta valikud"
-# 
-# File: biglinux-config/biglinux-config/usr/share/biglinux/biglinux-config/ui/restore_dialog.py, line: 98
-msgid "Restore BigLinux defaults"
-msgstr "Taasta BigLinuxi vaikeväärtused"
-# 
-# File: biglinux-config/biglinux-config/usr/share/biglinux/biglinux-config/ui/restore_dialog.py, line: 100
-msgid "Restores BigLinux settings from /etc/skel"
-msgstr "Taastab BigLinuxi seaded failist /etc/skel"
-# 
-# File: biglinux-config/biglinux-config/usr/share/biglinux/biglinux-config/ui/restore_dialog.py, line: 103
+# File: biglinux-config/biglinux-config/usr/share/biglinux/biglinux-config/ui/backup_dialog.py, line: 88
 #, python-format
-msgid "Restore BigLinux default settings for %s"
-msgstr "Taasta BigLinuxi vaikeseaded %s jaoks"
+msgid "Applications (%d available)"
+msgstr "Rakendused (%d saadaval)"
 # 
-# File: biglinux-config/biglinux-config/usr/share/biglinux/biglinux-config/ui/restore_dialog.py, line: 121
-msgid "Restore program defaults"
-msgstr "Taasta programmi vaike seadistused"
-# 
-# File: biglinux-config/biglinux-config/usr/share/biglinux/biglinux-config/ui/restore_dialog.py, line: 123
-msgid "Removes settings so the program recreates its defaults"
-msgstr "Eemaldab seaded, et programm saaks oma vaikeseaded uuesti luua."
-# 
-# File: biglinux-config/biglinux-config/usr/share/biglinux/biglinux-config/ui/restore_dialog.py, line: 126
+# File: biglinux-config/biglinux-config/usr/share/biglinux/biglinux-config/ui/backup_dialog.py, line: 126
+# File: biglinux-config/biglinux-config/usr/share/biglinux/biglinux-config/ui/backup_dialog.py, line: 434
 #, python-format
-msgid "Restore default settings for %s"
-msgstr "Taasta vaikeseaded %s jaoks"
+msgid "Include %s"
+msgstr "Sisaldab %s"
+# 
+# File: biglinux-config/biglinux-config/usr/share/biglinux/biglinux-config/ui/backup_dialog.py, line: 190
+msgid "Save backup as"
+msgstr "Salvesta varukoopia nimega"
+# 
+# File: biglinux-config/biglinux-config/usr/share/biglinux/biglinux-config/ui/backup_dialog.py, line: 199
+msgid "Compressed archives (*.tar.gz)"
+msgstr "Kompresseeritud arhiivid (*.tar.gz)"
+# 
+# File: biglinux-config/biglinux-config/usr/share/biglinux/biglinux-config/ui/backup_dialog.py, line: 230
+msgid "Exporting…"
+msgstr "Eksporditakse…"
+# 
+# File: biglinux-config/biglinux-config/usr/share/biglinux/biglinux-config/ui/backup_dialog.py, line: 245
+#, python-format
+msgid "Exporting settings for %d applications…"
+msgstr "Eksporditakse seadeid %d rakenduse jaoks…"
+# 
+# File: biglinux-config/biglinux-config/usr/share/biglinux/biglinux-config/ui/backup_dialog.py, line: 281
+msgid "Backup created!"
+msgstr "Varundus loodud!"
+# 
+# File: biglinux-config/biglinux-config/usr/share/biglinux/biglinux-config/ui/backup_dialog.py, line: 376
+#, python-format
+msgid "%d applications exported (%s)"
+msgstr "%d rakendust eksporditud (%s)"
+# 
+# File: biglinux-config/biglinux-config/usr/share/biglinux/biglinux-config/ui/backup_dialog.py, line: 386
+msgid "Saved to:"
+msgstr "Salvestatud:"
+# 
+# #-#-#-#-#  biglinux-config.pot (biglinux-config)  #-#-#-#-#
+# 
+# File: biglinux-config/biglinux-config/usr/share/biglinux/biglinux-config/ui/backup_dialog.py, line: 404
+# File: biglinux-config/biglinux-config/usr/share/biglinux/biglinux-config/ui/restore_dialog.py, line: 276
+msgid "Open in file manager"
+msgstr "Ava failihalduris"
+# 
+# #-#-#-#-#  biglinux-config.pot (biglinux-config)  #-#-#-#-#
+# 
+# File: biglinux-config/biglinux-config/usr/share/biglinux/biglinux-config/ui/backup_dialog.py, line: 418
+# File: biglinux-config/biglinux-config/usr/share/biglinux/biglinux-config/ui/backup_dialog.py, line: 928
+# File: biglinux-config/biglinux-config/usr/share/biglinux/biglinux-config/ui/backup_dialog.py, line: 956
+# File: biglinux-config/biglinux-config/usr/share/biglinux/biglinux-config/ui/restore_dialog.py, line: 664
+# 
+# #-#-#-#-#  biglinux-config.pot (biglinux-config)  #-#-#-#-#
+# 
+# File: biglinux-config/biglinux-config/usr/share/biglinux/biglinux-config/ui/backup_dialog.py, line: 418
+# File: biglinux-config/biglinux-config/usr/share/biglinux/biglinux-config/ui/backup_dialog.py, line: 928
+# File: biglinux-config/biglinux-config/usr/share/biglinux/biglinux-config/ui/backup_dialog.py, line: 956
+# File: biglinux-config/biglinux-config/usr/share/biglinux/biglinux-config/ui/restore_dialog.py, line: 664
+# 
+# File: biglinux-config/biglinux-config/usr/share/biglinux/biglinux-config/ui/backup_dialog.py, line: 296
+msgid "Export error"
+msgstr "Eksportimise viga"
+# 
+# File: biglinux-config/biglinux-config/usr/share/biglinux/biglinux-config/ui/backup_dialog.py, line: 298
+#, python-format
+msgid ""
+"An error occurred while creating the backup:\n"
+"%s"
+msgstr ""
+"Varund tekkis varukoopia loomisel:  \n"
+"%s"
+# 
+# #-#-#-#-#  biglinux-config.pot (biglinux-config)  #-#-#-#-#
+# 
+# File: biglinux-config/biglinux-config/usr/share/biglinux/biglinux-config/ui/restore_dialog.py, line: 399
+# File: biglinux-config/biglinux-config/usr/share/biglinux/biglinux-config/ui/restore_dialog.py, line: 432
+# File: biglinux-config/biglinux-config/usr/share/biglinux/biglinux-config/ui/backup_dialog.py, line: 300
+# File: biglinux-config/biglinux-config/usr/share/biglinux/biglinux-config/ui/backup_dialog.py, line: 597
+msgid "Close"
+msgstr "Sulge"
+# 
+# File: biglinux-config/biglinux-config/usr/share/biglinux/biglinux-config/ui/backup_dialog.py, line: 320
+msgid "Open backup file"
+msgstr "Ava varukoopia fail"
+# 
+# File: biglinux-config/biglinux-config/usr/share/biglinux/biglinux-config/ui/backup_dialog.py, line: 323
+msgid "BigLinux backups (*.tar.gz)"
+msgstr "BigLinux varukoopiad (*.tar.gz)"
+# 
+# File: biglinux-config/biglinux-config/usr/share/biglinux/biglinux-config/ui/backup_dialog.py, line: 499
+msgid "Reading backup…"
+msgstr "Lugemise varukoopia…"
+# 
+# File: biglinux-config/biglinux-config/usr/share/biglinux/biglinux-config/ui/backup_dialog.py, line: 353
+msgid "This file is not a valid BigLinux backup archive."
+msgstr "See fail ei ole kehtiv BigLinuxi varukoopia arhiiv."
+# 
+# File: biglinux-config/biglinux-config/usr/share/biglinux/biglinux-config/ui/backup_dialog.py, line: 358
+msgid "The backup archive contains no application settings."
+msgstr "Varundusarhiiv ei sisalda rakenduse seadeid."
+# 
+# File: biglinux-config/biglinux-config/usr/share/biglinux/biglinux-config/ui/backup_dialog.py, line: 589
+#, python-format
+msgid "Host: %s"
+msgstr "Host: %s"
+# 
+# File: biglinux-config/biglinux-config/usr/share/biglinux/biglinux-config/ui/backup_dialog.py, line: 595
+#, python-format
+msgid "Full directories: %s"
+msgstr "Täielikud kataloogid: %s"
+# 
+# File: biglinux-config/biglinux-config/usr/share/biglinux/biglinux-config/ui/backup_dialog.py, line: 390
+msgid "Yes"
+msgstr "Jah"
+# 
+# File: biglinux-config/biglinux-config/usr/share/biglinux/biglinux-config/ui/backup_dialog.py, line: 390
+# 
+# File: biglinux-config/biglinux-config/usr/share/biglinux/biglinux-config/ui/backup_dialog.py, line: 390
+msgid "No"
+msgstr "Ei"
+# 
+# File: biglinux-config/biglinux-config/usr/share/biglinux/biglinux-config/ui/backup_dialog.py, line: 400
+msgid "Importing will overwrite existing settings for selected applications."
+msgstr "Impordimine kirjutab üle valitud rakenduste olemasolevad seaded."
+# 
+# File: biglinux-config/biglinux-config/usr/share/biglinux/biglinux-config/ui/backup_dialog.py, line: 407
+#, python-format
+msgid "Applications in backup (%d)"
+msgstr "Rakendused varukoopias (%d)"
+# 
+# File: biglinux-config/biglinux-config/usr/share/biglinux/biglinux-config/ui/backup_dialog.py, line: 641
+msgid "Select/deselect all"
+msgstr "Vali/tühista kõik"
+# 
+# File: biglinux-config/biglinux-config/usr/share/biglinux/biglinux-config/ui/backup_dialog.py, line: 469
+# File: biglinux-config/biglinux-config/usr/share/biglinux/biglinux-config/ui/backup_dialog.py, line: 504
+msgid "Import"
+msgstr "Importima"
+# 
+# File: biglinux-config/biglinux-config/usr/share/biglinux/biglinux-config/ui/backup_dialog.py, line: 471
+msgid "Import selected settings"
+msgstr "Impordi valitud seaded"
+# 
+# File: biglinux-config/biglinux-config/usr/share/biglinux/biglinux-config/ui/backup_dialog.py, line: 496
+msgid "Import settings?"
+msgstr "Importimise seaded?"
+# 
+# File: biglinux-config/biglinux-config/usr/share/biglinux/biglinux-config/ui/backup_dialog.py, line: 498
+#, python-format
+msgid ""
+"Existing settings for %d selected applications will be overwritten.\n"
+"\n"
+"This action cannot be undone."
+msgstr ""
+"% d valitud rakenduse olemasolevad seaded kirjutatakse üle.\n"
+"\n"
+"Seda toimingut ei saa tagasi võtta."
+# 
+# File: biglinux-config/biglinux-config/usr/share/biglinux/biglinux-config/ui/backup_dialog.py, line: 522
+msgid "Importing…"
+msgstr "Impordit…"
+# 
+# File: biglinux-config/biglinux-config/usr/share/biglinux/biglinux-config/ui/backup_dialog.py, line: 537
+msgid "Importing settings from backup…"
+msgstr "Seadmete importimine varukoopiast…"
+# 
+# File: biglinux-config/biglinux-config/usr/share/biglinux/biglinux-config/ui/backup_dialog.py, line: 823
+msgid "Preparing…"
+msgstr "Valmistamine…"
+# 
+# File: biglinux-config/biglinux-config/usr/share/biglinux/biglinux-config/ui/backup_dialog.py, line: 573
+msgid "Settings imported!"
+msgstr "Seaded imporditud!"
+# 
+# File: biglinux-config/biglinux-config/usr/share/biglinux/biglinux-config/ui/backup_dialog.py, line: 575
+#, python-format
+msgid "%d applications restored."
+msgstr "%d rakendust taastatud."
+# 
+# File: biglinux-config/biglinux-config/usr/share/biglinux/biglinux-config/ui/backup_dialog.py, line: 580
+#, python-format
+msgid "Skipped: %s"
+msgstr "Jätetud: %s"
+# 
+# File: biglinux-config/biglinux-config/usr/share/biglinux/biglinux-config/ui/backup_dialog.py, line: 593
+msgid "Import error"
+msgstr "Importimise viga"
+# 
+# File: biglinux-config/biglinux-config/usr/share/biglinux/biglinux-config/ui/backup_dialog.py, line: 595
+#, python-format
+msgid ""
+"An error occurred while importing settings:\n"
+"%s"
+msgstr ""
+"Seaduslikku seade importimisel tekkis viga:  \n"
+"%s"
+# 
+# File: biglinux-config/biglinux-config/usr/share/biglinux/biglinux-config/ui/backup_dialog.py, line: 613
+msgid "Invalid backup"
+msgstr "Kehtetu varukoopia"
+# 
+# File: biglinux-config/biglinux-config/usr/share/biglinux/biglinux-config/ui/app_grid.py, line: 54
+msgid "No applications found"
+msgstr "Rakendusi ei leitud"
+# 
+# File: biglinux-config/biglinux-config/usr/share/biglinux/biglinux-config/ui/app_grid.py, line: 56
+msgid "Try another category or search term"
+msgstr "Proovi teist kategooriat või otsinguterminit."
+# 
+# File: biglinux-config/biglinux-config/usr/share/biglinux/biglinux-config/ui/restore_dialog.py, line: 205
+msgid "Choose how to restore the settings for this application."
+msgstr "Valige, kuidas taastada selle rakenduse seaded."
+# 
+# File: biglinux-config/biglinux-config/usr/share/biglinux/biglinux-config/ui/restore_dialog.py, line: 243
+msgid "Paths that will be replaced"
+msgstr "Teed, mis asendatakse"
+# 
+# File: biglinux-config/biglinux-config/usr/share/biglinux/biglinux-config/ui/restore_dialog.py, line: 244
+#, python-format
+msgid "%d path"
+msgid_plural "%d paths"
+msgstr[0] "%d teed,%d teed"
+# 
+# File: biglinux-config/biglinux-config/usr/share/biglinux/biglinux-config/ui/restore_dialog.py, line: 302
+msgid "No settings found for this application."
+msgstr "Selle rakenduse jaoks seadeid ei leitud."
 # 
 # File: biglinux-config/biglinux-config/usr/share/biglinux/biglinux-config/ui/restore_dialog.py, line: 168
 msgid "BigLinux defaults"
 msgstr "BigLinuxi vaikeused"
+# 
+# File: biglinux-config/biglinux-config/usr/share/biglinux/biglinux-config/ui/restore_dialog.py, line: 183
+msgid "Restore"
+msgstr "Taasta"
+# 
+# File: biglinux-config/biglinux-config/usr/share/biglinux/biglinux-config/ui/restore_dialog.py, line: 387
+msgid "Program defaults"
+msgstr "Programmi vaikeused"
 # 
 # File: biglinux-config/biglinux-config/usr/share/biglinux/biglinux-config/ui/restore_dialog.py, line: 170
 msgid "program defaults"
@@ -108,20 +432,6 @@ msgstr ""
 "Režiim: %s\n"
 "\n"
 "Võite vajada rakenduse taaskäivitamist, et muudatusi näha."
-# 
-# #-#-#-#-#  biglinux-config.pot (biglinux-config)  #-#-#-#-#
-# 
-# File: biglinux-config/biglinux-config/usr/share/biglinux/biglinux-config/ui/restore_dialog.py, line: 182
-# File: biglinux-config/biglinux-config/usr/share/biglinux/biglinux-config/ui/restore_dialog.py, line: 236
-# File: biglinux-config/biglinux-config/usr/share/biglinux/biglinux-config/ui/backup_dialog.py, line: 158
-# File: biglinux-config/biglinux-config/usr/share/biglinux/biglinux-config/ui/backup_dialog.py, line: 465
-# File: biglinux-config/biglinux-config/usr/share/biglinux/biglinux-config/ui/backup_dialog.py, line: 503
-msgid "Cancel"
-msgstr "Tühista"
-# 
-# File: biglinux-config/biglinux-config/usr/share/biglinux/biglinux-config/ui/restore_dialog.py, line: 183
-msgid "Restore"
-msgstr "Taasta"
 # 
 # File: biglinux-config/biglinux-config/usr/share/biglinux/biglinux-config/ui/restore_dialog.py, line: 230
 msgid "Application is running"
@@ -163,15 +473,6 @@ msgstr ""
 msgid "Settings for %s have been restored successfully."
 msgstr "%s seaded on edukalt taastatud."
 # 
-# #-#-#-#-#  biglinux-config.pot (biglinux-config)  #-#-#-#-#
-# 
-# File: biglinux-config/biglinux-config/usr/share/biglinux/biglinux-config/ui/restore_dialog.py, line: 399
-# File: biglinux-config/biglinux-config/usr/share/biglinux/biglinux-config/ui/restore_dialog.py, line: 432
-# File: biglinux-config/biglinux-config/usr/share/biglinux/biglinux-config/ui/backup_dialog.py, line: 300
-# File: biglinux-config/biglinux-config/usr/share/biglinux/biglinux-config/ui/backup_dialog.py, line: 597
-msgid "Close"
-msgstr "Sulge"
-# 
 # File: biglinux-config/biglinux-config/usr/share/biglinux/biglinux-config/ui/restore_dialog.py, line: 403
 msgid "Log out"
 msgstr "Logi välja"
@@ -203,109 +504,13 @@ msgstr ""
 "Seadete taastamisel %s tekkis viga:  \n"
 "%s"
 # 
-# File: biglinux-config/biglinux-config/usr/share/biglinux/biglinux-config/ui/welcome_dialog.py, line: 76
-msgid "Welcome to Restore Settings"
-msgstr "Tere tulemast Seadete taastamisse"
-# 
-# File: biglinux-config/biglinux-config/usr/share/biglinux/biglinux-config/ui/welcome_dialog.py, line: 83
-msgid "Easily restore, backup, and manage application settings on BigLinux."
-msgstr "Lihtsalt taastage, varundage ja hallake rakenduse seadeid BigLinuxis."
-# 
-# File: biglinux-config/biglinux-config/usr/share/biglinux/biglinux-config/ui/welcome_dialog.py, line: 104
-msgid "Restore BigLinux Defaults"
-msgstr "Taasta BigLinuxi vaikeväärtused"
-# 
-# File: biglinux-config/biglinux-config/usr/share/biglinux/biglinux-config/ui/welcome_dialog.py, line: 106
-msgid ""
-"Reset any application to the BigLinux default\n"
-"settings with a single click using /etc/skel."
-msgstr "Lähtestage kõik rakendused BigLinuxi vaikeseadetele ühe klõpsuga, kasutades /etc/skel."
-# 
-# File: biglinux-config/biglinux-config/usr/share/biglinux/biglinux-config/ui/welcome_dialog.py, line: 111
-msgid "Restore Program Defaults"
-msgstr "Taasta programmide vaikeväärtused"
-# 
-# File: biglinux-config/biglinux-config/usr/share/biglinux/biglinux-config/ui/welcome_dialog.py, line: 113
-msgid ""
-"Remove all custom settings so the program\n"
-"recreates its original default configuration."
-msgstr "Eemalda kõik kohandatud seaded, et programm saaks luua oma algse vaikekonfiguratsiooni."
-# 
 # #-#-#-#-#  biglinux-config.pot (biglinux-config)  #-#-#-#-#
 # 
-# File: biglinux-config/biglinux-config/usr/share/biglinux/biglinux-config/ui/welcome_dialog.py, line: 118
-# File: biglinux-config/biglinux-config/usr/share/biglinux/biglinux-config/ui/backup_dialog.py, line: 43
-msgid "Export Settings"
-msgstr "Eksportimise seaded"
-# 
-# File: biglinux-config/biglinux-config/usr/share/biglinux/biglinux-config/ui/welcome_dialog.py, line: 120
-msgid ""
-"Back up dotfiles for multiple applications\n"
-"into a single compressed .tar.gz archive."
-msgstr ""
-"Varundage dotfailid mitme rakenduse jaoks\n"
-"üheks kompressitud .tar.gz arhiiviks."
-# 
-# File: biglinux-config/biglinux-config/usr/share/biglinux/biglinux-config/ui/welcome_dialog.py, line: 125
-msgid "Search Across All Apps"
-msgstr "Otsi kõigist rakendustest"
-# 
-# File: biglinux-config/biglinux-config/usr/share/biglinux/biglinux-config/ui/welcome_dialog.py, line: 127
-msgid ""
-"Quickly find any installed application\n"
-"using the integrated search in the header bar."
-msgstr "Kiirelt leidke kõik installitud rakendused, kasutades päiseribal olevat integreeritud otsingut."
-# 
-# #-#-#-#-#  biglinux-config.pot (biglinux-config)  #-#-#-#-#
-# 
-# File: biglinux-config/biglinux-config/usr/share/biglinux/biglinux-config/ui/welcome_dialog.py, line: 141
-# File: biglinux-config/biglinux-config/usr/share/biglinux/biglinux-config/ui/backup_dialog.py, line: 362
-msgid "Import Settings"
-msgstr "Importimise seaded"
-# 
-# File: biglinux-config/biglinux-config/usr/share/biglinux/biglinux-config/ui/welcome_dialog.py, line: 143
-msgid ""
-"Restore previously exported settings from\n"
-"a .tar.gz backup with per-application selection."
-msgstr "Taasta varem eksporditud seaded .tar.gz varukoopiast rakenduse kaupa valiku tegemisega."
-# 
-# File: biglinux-config/biglinux-config/usr/share/biglinux/biglinux-config/ui/welcome_dialog.py, line: 148
-msgid "Full Directory Backup"
-msgstr "Täielik katalooge varukoopia"
-# 
-# File: biglinux-config/biglinux-config/usr/share/biglinux/biglinux-config/ui/welcome_dialog.py, line: 150
-msgid ""
-"Optionally copy entire configuration\n"
-"directories instead of individual files."
-msgstr "Valikuliselt kopeerige kogu konfiguratsioon, mitte üksikud failid."
-# 
-# File: biglinux-config/biglinux-config/usr/share/biglinux/biglinux-config/ui/welcome_dialog.py, line: 155
-msgid "Flatpak Support"
-msgstr "Flatpaki tugi"
-# 
-# File: biglinux-config/biglinux-config/usr/share/biglinux/biglinux-config/ui/welcome_dialog.py, line: 157
-msgid ""
-"View and manage Flatpak application\n"
-"settings alongside native packages."
-msgstr "Vaata ja halda Flatpak rakenduse seadeid koos kohalike pakettidega."
-# 
-# File: biglinux-config/biglinux-config/usr/share/biglinux/biglinux-config/ui/welcome_dialog.py, line: 162
-msgid "Organized by Category"
-msgstr "Kategooria järgi korraldatud"
-# 
-# File: biglinux-config/biglinux-config/usr/share/biglinux/biglinux-config/ui/welcome_dialog.py, line: 164
-msgid ""
-"Browse applications grouped by category:\n"
-"browsers, multimedia, office, system, and more."
-msgstr "Sirvi rakendusi kategooriate kaupa: brauserid, multimeedia, kontor, süsteem ja palju muud."
-# 
-# File: biglinux-config/biglinux-config/usr/share/biglinux/biglinux-config/ui/welcome_dialog.py, line: 183
-msgid "Show this dialog on startup"
-msgstr "Kuvaa see dialoog käivitamisel"
-# 
-# File: biglinux-config/biglinux-config/usr/share/biglinux/biglinux-config/ui/welcome_dialog.py, line: 200
-msgid "Let's Start"
-msgstr "Alustame"
+# File: biglinux-config/biglinux-config/usr/share/biglinux/biglinux-config/ui/restore_dialog.py, line: 36
+# File: biglinux-config/biglinux-config/usr/share/biglinux/biglinux-config/ui/application.py, line: 169
+# File: biglinux-config/biglinux-config/usr/share/biglinux/biglinux-config/ui/application.py, line: 220
+msgid "Restore Settings"
+msgstr "Taasta seaded"
 # 
 # File: biglinux-config/biglinux-config/usr/share/biglinux/biglinux-config/ui/application.py, line: 211
 msgid "About Restore Settings"
@@ -342,214 +547,3 @@ msgstr "Menüü"
 # File: biglinux-config/biglinux-config/usr/share/biglinux/biglinux-config/ui/application.py, line: 296
 msgid "Loading applications…"
 msgstr "Rakenduste laadimine…"
-# 
-# File: biglinux-config/biglinux-config/usr/share/biglinux/biglinux-config/ui/application.py, line: 313
-msgid "Applications"
-msgstr "Rakendused"
-# 
-# File: biglinux-config/biglinux-config/usr/share/biglinux/biglinux-config/ui/backup_dialog.py, line: 66
-msgid ""
-"Select the applications whose settings you want to export. A .tar.gz archive will be created with "
-"the dotfiles."
-msgstr "Valige rakendused, mille seadeid soovite eksportida. .tar.gz arhiiv luuakse koos dotfailidega."
-# 
-# File: biglinux-config/biglinux-config/usr/share/biglinux/biglinux-config/ui/backup_dialog.py, line: 76
-msgid "Copy full directories"
-msgstr "Kopeeri täiskaustad"
-# 
-# File: biglinux-config/biglinux-config/usr/share/biglinux/biglinux-config/ui/backup_dialog.py, line: 78
-msgid "Include all files in each config directory, not just the listed paths"
-msgstr "Kaasuta kõiki faile igas konfiguratsioonikaustas, mitte ainult loetletud teid."
-# 
-# File: biglinux-config/biglinux-config/usr/share/biglinux/biglinux-config/ui/backup_dialog.py, line: 82
-msgid "Options"
-msgstr "Valikud"
-# 
-# File: biglinux-config/biglinux-config/usr/share/biglinux/biglinux-config/ui/backup_dialog.py, line: 88
-#, python-format
-msgid "Applications (%d available)"
-msgstr "Rakendused (%d saadaval)"
-# 
-# File: biglinux-config/biglinux-config/usr/share/biglinux/biglinux-config/ui/backup_dialog.py, line: 89
-msgid "Select applications to export"
-msgstr "Valige eksportimiseks rakendused"
-# 
-# File: biglinux-config/biglinux-config/usr/share/biglinux/biglinux-config/ui/backup_dialog.py, line: 95
-# File: biglinux-config/biglinux-config/usr/share/biglinux/biglinux-config/ui/backup_dialog.py, line: 412
-msgid "Select all"
-msgstr "Vali kõik"
-# 
-# File: biglinux-config/biglinux-config/usr/share/biglinux/biglinux-config/ui/backup_dialog.py, line: 99
-# File: biglinux-config/biglinux-config/usr/share/biglinux/biglinux-config/ui/backup_dialog.py, line: 416
-msgid "Deselect all"
-msgstr "Tühista kõik"
-# 
-# File: biglinux-config/biglinux-config/usr/share/biglinux/biglinux-config/ui/backup_dialog.py, line: 126
-# File: biglinux-config/biglinux-config/usr/share/biglinux/biglinux-config/ui/backup_dialog.py, line: 434
-#, python-format
-msgid "Include %s"
-msgstr "Sisaldab %s"
-# 
-# File: biglinux-config/biglinux-config/usr/share/biglinux/biglinux-config/ui/backup_dialog.py, line: 162
-msgid "Export…"
-msgstr "Eksport…"
-# 
-# File: biglinux-config/biglinux-config/usr/share/biglinux/biglinux-config/ui/backup_dialog.py, line: 164
-msgid "Choose destination and export"
-msgstr "Vali sihtkoht ja eksportige"
-# 
-# File: biglinux-config/biglinux-config/usr/share/biglinux/biglinux-config/ui/backup_dialog.py, line: 190
-msgid "Save backup as"
-msgstr "Salvesta varukoopia nimega"
-# 
-# File: biglinux-config/biglinux-config/usr/share/biglinux/biglinux-config/ui/backup_dialog.py, line: 199
-msgid "Compressed archives (*.tar.gz)"
-msgstr "Kompresseeritud arhiivid (*.tar.gz)"
-# 
-# File: biglinux-config/biglinux-config/usr/share/biglinux/biglinux-config/ui/backup_dialog.py, line: 230
-msgid "Exporting…"
-msgstr "Eksporditakse…"
-# 
-# File: biglinux-config/biglinux-config/usr/share/biglinux/biglinux-config/ui/backup_dialog.py, line: 245
-#, python-format
-msgid "Exporting settings for %d applications…"
-msgstr "Eksporditakse seadeid %d rakenduse jaoks…"
-# 
-# File: biglinux-config/biglinux-config/usr/share/biglinux/biglinux-config/ui/backup_dialog.py, line: 281
-msgid "Backup created!"
-msgstr "Varundus loodud!"
-# 
-# File: biglinux-config/biglinux-config/usr/share/biglinux/biglinux-config/ui/backup_dialog.py, line: 283
-#, python-format
-msgid ""
-"%d applications exported (%s)\n"
-"\n"
-"Saved to:\n"
-"%s"
-msgstr ""
-"%d rakendust eksporditud (%s)\n"
-"\n"
-"Salvestatud:\n"
-"%s"
-# 
-# File: biglinux-config/biglinux-config/usr/share/biglinux/biglinux-config/ui/backup_dialog.py, line: 296
-msgid "Export error"
-msgstr "Eksportimise viga"
-# 
-# File: biglinux-config/biglinux-config/usr/share/biglinux/biglinux-config/ui/backup_dialog.py, line: 298
-#, python-format
-msgid ""
-"An error occurred while creating the backup:\n"
-"%s"
-msgstr ""
-"Varund tekkis varukoopia loomisel:  \n"
-"%s"
-# 
-# File: biglinux-config/biglinux-config/usr/share/biglinux/biglinux-config/ui/backup_dialog.py, line: 320
-msgid "Open backup file"
-msgstr "Ava varukoopia fail"
-# 
-# File: biglinux-config/biglinux-config/usr/share/biglinux/biglinux-config/ui/backup_dialog.py, line: 323
-msgid "BigLinux backups (*.tar.gz)"
-msgstr "BigLinux varukoopiad (*.tar.gz)"
-# 
-# File: biglinux-config/biglinux-config/usr/share/biglinux/biglinux-config/ui/backup_dialog.py, line: 353
-msgid "This file is not a valid BigLinux backup archive."
-msgstr "See fail ei ole kehtiv BigLinuxi varukoopia arhiiv."
-# 
-# File: biglinux-config/biglinux-config/usr/share/biglinux/biglinux-config/ui/backup_dialog.py, line: 358
-msgid "The backup archive contains no application settings."
-msgstr "Varundusarhiiv ei sisalda rakenduse seadeid."
-# 
-# File: biglinux-config/biglinux-config/usr/share/biglinux/biglinux-config/ui/backup_dialog.py, line: 389
-#, python-format
-msgid ""
-"<b>Backup from:</b> %s\n"
-"<b>Host:</b> %s\n"
-"<b>Full directories:</b> %s"
-msgstr ""
-"<b>Varundus:</b> %s\n"
-"<b>Host:</b> %s\n"
-"<b>Täisdirektorid:</b> %s"
-# 
-# File: biglinux-config/biglinux-config/usr/share/biglinux/biglinux-config/ui/backup_dialog.py, line: 390
-msgid "Yes"
-msgstr "Jah"
-# 
-# File: biglinux-config/biglinux-config/usr/share/biglinux/biglinux-config/ui/backup_dialog.py, line: 390
-# 
-# File: biglinux-config/biglinux-config/usr/share/biglinux/biglinux-config/ui/backup_dialog.py, line: 390
-msgid "No"
-msgstr "Ei"
-# 
-# File: biglinux-config/biglinux-config/usr/share/biglinux/biglinux-config/ui/backup_dialog.py, line: 400
-msgid "Importing will overwrite existing settings for selected applications."
-msgstr "Impordimine kirjutab üle valitud rakenduste olemasolevad seaded."
-# 
-# File: biglinux-config/biglinux-config/usr/share/biglinux/biglinux-config/ui/backup_dialog.py, line: 407
-#, python-format
-msgid "Applications in backup (%d)"
-msgstr "Rakendused varukoopias (%d)"
-# 
-# File: biglinux-config/biglinux-config/usr/share/biglinux/biglinux-config/ui/backup_dialog.py, line: 469
-# File: biglinux-config/biglinux-config/usr/share/biglinux/biglinux-config/ui/backup_dialog.py, line: 504
-msgid "Import"
-msgstr "Importima"
-# 
-# File: biglinux-config/biglinux-config/usr/share/biglinux/biglinux-config/ui/backup_dialog.py, line: 471
-msgid "Import selected settings"
-msgstr "Impordi valitud seaded"
-# 
-# File: biglinux-config/biglinux-config/usr/share/biglinux/biglinux-config/ui/backup_dialog.py, line: 496
-msgid "Import settings?"
-msgstr "Importimise seaded?"
-# 
-# File: biglinux-config/biglinux-config/usr/share/biglinux/biglinux-config/ui/backup_dialog.py, line: 498
-#, python-format
-msgid ""
-"Existing settings for %d selected applications will be overwritten.\n"
-"\n"
-"This action cannot be undone."
-msgstr ""
-"% d valitud rakenduse olemasolevad seaded kirjutatakse üle.\n"
-"\n"
-"Seda toimingut ei saa tagasi võtta."
-# 
-# File: biglinux-config/biglinux-config/usr/share/biglinux/biglinux-config/ui/backup_dialog.py, line: 522
-msgid "Importing…"
-msgstr "Impordit…"
-# 
-# File: biglinux-config/biglinux-config/usr/share/biglinux/biglinux-config/ui/backup_dialog.py, line: 537
-msgid "Importing settings from backup…"
-msgstr "Seadmete importimine varukoopiast…"
-# 
-# File: biglinux-config/biglinux-config/usr/share/biglinux/biglinux-config/ui/backup_dialog.py, line: 573
-msgid "Settings imported!"
-msgstr "Seaded imporditud!"
-# 
-# File: biglinux-config/biglinux-config/usr/share/biglinux/biglinux-config/ui/backup_dialog.py, line: 575
-#, python-format
-msgid "%d applications restored."
-msgstr "%d rakendust taastatud."
-# 
-# File: biglinux-config/biglinux-config/usr/share/biglinux/biglinux-config/ui/backup_dialog.py, line: 580
-#, python-format
-msgid "Skipped: %s"
-msgstr "Jätetud: %s"
-# 
-# File: biglinux-config/biglinux-config/usr/share/biglinux/biglinux-config/ui/backup_dialog.py, line: 593
-msgid "Import error"
-msgstr "Importimise viga"
-# 
-# File: biglinux-config/biglinux-config/usr/share/biglinux/biglinux-config/ui/backup_dialog.py, line: 595
-#, python-format
-msgid ""
-"An error occurred while importing settings:\n"
-"%s"
-msgstr ""
-"Seaduslikku seade importimisel tekkis viga:  \n"
-"%s"
-# 
-# File: biglinux-config/biglinux-config/usr/share/biglinux/biglinux-config/ui/backup_dialog.py, line: 613
-msgid "Invalid backup"
-msgstr "Kehtetu varukoopia"
