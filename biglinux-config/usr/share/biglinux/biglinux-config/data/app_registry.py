@@ -51,15 +51,23 @@ CATEGORIES: list[dict[str, str]] = [
 CATEGORY_IDS: set[str] = {c["id"] for c in CATEGORIES}
 
 # ---------------------------------------------------------------------------
-# Favorites — these app_ids are shown in the "favorites" virtual category
+# Favorites — apps that always show in favorites if installed (no MIME-based detection)
 # ---------------------------------------------------------------------------
-FAVORITE_IDS: set[str] = {
-    "firefox", "brave", "google-chrome", "chromium",
-    "dolphin", "nautilus", "nemo", "thunar",
-    "vlc", "libreoffice",
-    "kate", "konsole", "gnome-terminal",
-    "gimp", "obs-studio",
+STATIC_FAVORITE_IDS: set[str] = {
+    "gimp", "libreoffice", "lutris", "steam",
+    "dolphin", "spectacle", "konsole",
 }
+
+# MIME types used to detect the system default app for each favorite "slot"
+# Each tuple: (mime_type_or_command, description)
+# The xdg-settings command is used for web browser; xdg-mime for the rest.
+FAVORITE_MIME_SLOTS: list[tuple[str, str]] = [
+    ("x-scheme-handler/http", "browser"),
+    ("application/pdf", "pdf_viewer"),
+    ("image/png", "image_viewer"),
+    ("text/plain", "text_editor"),
+    ("video/mp4", "media_player"),
+]
 
 # ---------------------------------------------------------------------------
 # Full application registry

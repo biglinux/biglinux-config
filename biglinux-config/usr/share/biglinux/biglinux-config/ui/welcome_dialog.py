@@ -108,13 +108,6 @@ class WelcomeDialog:
                 ),
             ),
             (
-                "🗑️ " + _("Restore Program Defaults"),
-                _(
-                    "Remove all custom settings so the program\n"
-                    "recreates its original default configuration."
-                ),
-            ),
-            (
                 "📦 " + _("Export Settings"),
                 _(
                     "Back up dotfiles for multiple applications\n"
@@ -138,17 +131,10 @@ class WelcomeDialog:
 
         right_features = [
             (
-                "📥 " + _("Import Settings"),
+                "📂 " + _("Import Settings"),
                 _(
                     "Restore previously exported settings from\n"
                     "a .tar.gz backup with per-application selection."
-                ),
-            ),
-            (
-                "📂 " + _("Full Directory Backup"),
-                _(
-                    "Optionally copy entire configuration\n"
-                    "directories instead of individual files."
                 ),
             ),
             (
@@ -157,15 +143,13 @@ class WelcomeDialog:
                     "View and manage Flatpak application\n"
                     "settings alongside native packages."
                 ),
-            ),
-            (
+            ),            (
                 "📋 " + _("Organized by Category"),
                 _(
                     "Browse applications grouped by category:\n"
                     "browsers, multimedia, office, system, and more."
                 ),
-            ),
-        ]
+            ),        ]
         for t, d in right_features:
             right.append(self._feature_box(t, d))
         columns.append(right)
@@ -220,8 +204,8 @@ class WelcomeDialog:
     def _feature_box(title: str, description: str) -> Gtk.Box:
         box = Gtk.Box(orientation=Gtk.Orientation.VERTICAL, spacing=4)
 
-        t = Gtk.Label()
-        t.set_markup(title)
+        t = Gtk.Label(label=title)
+        t.add_css_class("heading")
         t.set_halign(Gtk.Align.START)
         t.set_wrap(True)
         box.append(t)

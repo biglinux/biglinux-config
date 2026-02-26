@@ -10,7 +10,7 @@ import gi
 
 gi.require_version("Gtk", "4.0")
 gi.require_version("Adw", "1")
-from gi.repository import Adw, Gio, GLib, Gtk
+from gi.repository import Adw, Gdk, Gio, GLib, Gtk
 
 from utils import _, set_label
 from data.app_registry import AppEntry
@@ -34,10 +34,6 @@ def show_export_dialog(
     apps: list[AppEntry],
 ) -> None:
     """Present the export dialog with app selection checkboxes."""
-
-    # Filter to apps that actually have config on disk
-    available = [a for a in apps if has_config(a)]
-    available.sort(key=lambda a: a.name.lower())
 
     dialog = Adw.Dialog()
     dialog.set_title(_("Export Settings"))
@@ -83,71 +79,42 @@ def show_export_dialog(
     options_group.add(full_dir_row)
     content_box.append(options_group)
 
-    # App selection group
+    # App selection group — starts with loading indicator
     apps_group = Adw.PreferencesGroup()
-    apps_group.set_title(_("Applications (%d available)") % len(available))
+    apps_group.set_title(_("Applications"))
     set_label(apps_group, _("Select applications to export"))
 
-    # Select all / deselect all buttons
-    select_box = Gtk.Box(orientation=Gtk.Orientation.HORIZONTAL, spacing=8)
-    select_box.set_halign(Gtk.Align.END)
+    # Select/deselect all checkbox in the group header (hidden during scan)
+    select_all_check = Gtk.CheckButton()
+    select_all_check.set_active(True)
+    select_all_check.set_valign(Gtk.Align.CENTER)
+    select_all_check.set_margin_end(12)
+    select_all_check.set_visible(False)
+    set_label(select_all_check, _("Select or deselect all"))
+    apps_group.set_header_suffix(select_all_check)
 
-    select_all_btn = Gtk.Button(label=_("Select all"))
-    select_all_btn.add_css_class("flat")
-    select_box.append(select_all_btn)
+    # Loading indicator
+    loading_box = Gtk.Box(orientation=Gtk.Orientation.VERTICAL, spacing=12)
+    loading_box.set_margin_top(24)
+    loading_box.set_margin_bottom(24)
+    loading_box.set_halign(Gtk.Align.CENTER)
 
-    deselect_all_btn = Gtk.Button(label=_("Deselect all"))
-    deselect_all_btn.add_css_class("flat")
-    select_box.append(deselect_all_btn)
+    loading_label = Gtk.Label(label=_("Scanning applications…"))
+    loading_label.add_css_class("dim-label")
+    loading_box.append(loading_label)
 
-    content_box.append(select_box)
+    progress_bar = Gtk.ProgressBar()
+    progress_bar.set_size_request(300, -1)
+    loading_box.append(progress_bar)
 
-    # Checkboxes for each app
-    check_rows: list[tuple[Adw.ActionRow, Gtk.CheckButton, AppEntry]] = []
-
-    for app_entry in available:
-        row = Adw.ActionRow()
-        row.set_title(app_entry.name)
-
-        size = get_config_size(app_entry)
-        paths_str = ", ".join(app_entry.config_paths[:3])
-        if len(app_entry.config_paths) > 3:
-            paths_str += f" (+{len(app_entry.config_paths) - 3})"
-        row.set_subtitle(f"{format_size(size)} — {paths_str}")
-
-        icon = Gtk.Image.new_from_icon_name(
-            app_entry.icon if not app_entry.icon.startswith("/") else "application-x-executable"
-        )
-        icon.set_pixel_size(32)
-        row.add_prefix(icon)
-
-        check = Gtk.CheckButton()
-        check.set_active(True)
-        set_label(check, _("Include %s") % app_entry.name)
-        row.add_suffix(check)
-        row.set_activatable_widget(check)
-
-        apps_group.add(row)
-        check_rows.append((row, check, app_entry))
+    apps_group.add(loading_box)
 
     content_box.append(apps_group)
-
-    # Select all / deselect all handlers
-    def _select_all(_btn: Gtk.Button) -> None:
-        for _, chk, _ in check_rows:
-            chk.set_active(True)
-
-    def _deselect_all(_btn: Gtk.Button) -> None:
-        for _, chk, _ in check_rows:
-            chk.set_active(False)
-
-    select_all_btn.connect("clicked", _select_all)
-    deselect_all_btn.connect("clicked", _deselect_all)
 
     scroll.set_child(content_box)
     toolbar_view.set_content(scroll)
 
-    # Bottom bar with export button
+    # Bottom bar with export button (disabled during scan)
     bottom_box = Gtk.Box(orientation=Gtk.Orientation.HORIZONTAL, spacing=12)
     bottom_box.set_margin_top(12)
     bottom_box.set_margin_bottom(12)
@@ -161,10 +128,80 @@ def show_export_dialog(
 
     export_btn = Gtk.Button(label=_("Export…"))
     export_btn.add_css_class("suggested-action")
+    export_btn.set_sensitive(False)
     set_label(export_btn, _("Choose destination and export"))
     bottom_box.append(export_btn)
 
     toolbar_view.add_bottom_bar(bottom_box)
+
+    dialog.set_child(toolbar_view)
+    dialog.present(parent)
+
+    # Scan apps in background thread
+    check_rows: list[tuple[Adw.ActionRow, Gtk.CheckButton, AppEntry]] = []
+    total = len(apps)
+
+    def _scan_worker() -> None:
+        available: list[tuple[AppEntry, int]] = []
+        for i, app in enumerate(apps):
+            if has_config(app):
+                size = get_config_size(app)
+                available.append((app, size))
+            fraction = (i + 1) / total
+            GLib.idle_add(_update_progress, app.name, fraction)
+        available.sort(key=lambda t: t[0].name.lower())
+        GLib.idle_add(_populate_rows, available)
+
+    def _update_progress(name: str, fraction: float) -> bool:
+        loading_label.set_label(_("Scanning: %s") % name)
+        progress_bar.set_fraction(fraction)
+        return False
+
+    def _populate_rows(available: list[tuple[AppEntry, int]]) -> bool:
+        apps_group.remove(loading_box)
+        apps_group.set_title(_("Applications (%d available)") % len(available))
+
+        for app_entry, size in available:
+            row = Adw.ActionRow()
+            row.set_title(app_entry.name)
+
+            paths_str = ", ".join(app_entry.config_paths[:3])
+            if len(app_entry.config_paths) > 3:
+                paths_str += f" (+{len(app_entry.config_paths) - 3})"
+            row.set_subtitle(f"{format_size(size)} — {paths_str}")
+
+            icon = Gtk.Image.new_from_icon_name(
+                app_entry.icon if not app_entry.icon.startswith("/") else "application-x-executable"
+            )
+            icon.set_pixel_size(32)
+            row.add_prefix(icon)
+
+            check = Gtk.CheckButton()
+            check.set_active(True)
+            set_label(check, _("Include %s") % app_entry.name)
+            row.add_suffix(check)
+            row.set_activatable_widget(check)
+
+            apps_group.add(row)
+            check_rows.append((row, check, app_entry))
+
+        select_all_check.set_visible(True)
+        export_btn.set_sensitive(True)
+        return False
+
+    # Toggle all checkboxes when the header checkbox changes
+    _toggling = [False]  # guard against recursive toggling
+
+    def _on_select_all_toggled(_chk: Gtk.CheckButton) -> None:
+        if _toggling[0]:
+            return
+        active = select_all_check.get_active()
+        _toggling[0] = True
+        for _, chk, _ in check_rows:
+            chk.set_active(active)
+        _toggling[0] = False
+
+    select_all_check.connect("toggled", _on_select_all_toggled)
 
     def _on_export_clicked(_btn: Gtk.Button) -> None:
         selected = [entry for _, chk, entry in check_rows if chk.get_active()]
@@ -175,8 +212,7 @@ def show_export_dialog(
 
     export_btn.connect("clicked", _on_export_clicked)
 
-    dialog.set_child(toolbar_view)
-    dialog.present(parent)
+    threading.Thread(target=_scan_worker, daemon=True).start()
 
 
 def _pick_save_location(
@@ -225,37 +261,71 @@ def _execute_export(
     archive_path: str,
     full_directory: bool,
 ) -> None:
-    """Run the export in a background thread with a spinner dialog."""
-    spinner_dialog = Adw.Dialog()
-    spinner_dialog.set_title(_("Exporting…"))
-    spinner_dialog.set_content_width(420)
-    spinner_dialog.set_content_height(220)
+    """Run the export in a background thread with a progress dialog."""
+    cancel_event = threading.Event()
 
-    spinner_box = Gtk.Box(
+    progress_dialog = Adw.Dialog()
+    progress_dialog.set_title(_("Exporting…"))
+    progress_dialog.set_content_width(420)
+    progress_dialog.set_content_height(260)
+
+    def _on_dialog_closed(_dialog: Adw.Dialog) -> None:
+        cancel_event.set()
+
+    progress_dialog.connect("closed", _on_dialog_closed)
+
+    progress_box = Gtk.Box(
         orientation=Gtk.Orientation.VERTICAL, spacing=16
     )
-    spinner_box.set_valign(Gtk.Align.CENTER)
-    spinner_box.set_halign(Gtk.Align.CENTER)
+    progress_box.set_valign(Gtk.Align.CENTER)
+    progress_box.set_halign(Gtk.Align.CENTER)
+    progress_box.set_margin_start(24)
+    progress_box.set_margin_end(24)
 
     spinner = Adw.Spinner()
     spinner.set_size_request(48, 48)
-    spinner_box.append(spinner)
+    progress_box.append(spinner)
 
-    spinner_label = Gtk.Label(
+    title_label = Gtk.Label(
         label=_("Exporting settings for %d applications…") % len(entries)
     )
-    spinner_label.add_css_class("title-4")
-    spinner_box.append(spinner_label)
+    title_label.add_css_class("title-4")
+    progress_box.append(title_label)
+
+    progress_bar = Gtk.ProgressBar()
+    progress_bar.set_show_text(True)
+    progress_box.append(progress_bar)
+
+    app_label = Gtk.Label(label="")
+    app_label.add_css_class("dim-label")
+    app_label.set_ellipsize(3)  # Pango.EllipsizeMode.END
+    progress_box.append(app_label)
 
     toolbar = Adw.ToolbarView()
     toolbar.add_top_bar(Adw.HeaderBar())
-    toolbar.set_content(spinner_box)
-    spinner_dialog.set_child(toolbar)
-    spinner_dialog.present(parent)
+    toolbar.set_content(progress_box)
+    progress_dialog.set_child(toolbar)
+    progress_dialog.present(parent)
+
+    def _update_progress(current: int, total: int, app_name: str) -> None:
+        if cancel_event.is_set():
+            return
+        def _do_update() -> bool:
+            fraction = (current + 1) / total if total > 0 else 0
+            progress_bar.set_fraction(fraction)
+            progress_bar.set_text(f"{current + 1}/{total}")
+            app_label.set_label(app_name)
+            return False
+        GLib.idle_add(_do_update)
 
     def _worker() -> None:
-        result = export_backup(entries, archive_path, full_directory)
-        GLib.idle_add(_on_export_done, result, spinner_dialog, parent)
+        result = export_backup(
+            entries, archive_path, full_directory,
+            progress_callback=_update_progress,
+            cancel_event=cancel_event,
+        )
+        if not cancel_event.is_set():
+            GLib.idle_add(_on_export_done, result, progress_dialog, parent)
 
     thread = threading.Thread(target=_worker, daemon=True)
     thread.start()
@@ -263,49 +333,107 @@ def _execute_export(
 
 def _on_export_done(
     result: BackupResult,
-    spinner_dialog: Adw.Dialog,
+    progress_dialog: Adw.Dialog,
     parent: Adw.ApplicationWindow,
 ) -> bool:
-    spinner_dialog.close()
-
-    result_dialog = Adw.Dialog()
-    result_dialog.set_content_width(540)
-    result_dialog.set_content_height(380)
-
-    toolbar = Adw.ToolbarView()
-    toolbar.add_top_bar(Adw.HeaderBar())
+    progress_dialog.close()
 
     if result.success:
-        status = Adw.StatusPage()
-        status.set_icon_name("document-save-symbolic")
-        status.set_title(_("Backup created!"))
-        status.set_description(
-            _("%d applications exported (%s)\n\nSaved to:\n%s")
-            % (result.app_count, format_size(result.total_size), result.archive_path)
+        dialog = Adw.Dialog()
+        dialog.set_content_width(400)
+        dialog.set_content_height(-1)
+
+        box = Gtk.Box(orientation=Gtk.Orientation.VERTICAL, spacing=12)
+        box.set_margin_top(24)
+        box.set_margin_bottom(24)
+        box.set_margin_start(24)
+        box.set_margin_end(24)
+        box.set_halign(Gtk.Align.CENTER)
+        box.set_valign(Gtk.Align.CENTER)
+
+        # App icon with green check badge (upper-right)
+        overlay = Gtk.Overlay()
+        app_icon = Gtk.Image.new_from_icon_name("restore-settings")
+        app_icon.set_pixel_size(48)
+        overlay.set_child(app_icon)
+
+        badge = Gtk.Image.new_from_icon_name("emblem-ok-symbolic")
+        badge.set_pixel_size(16)
+        badge.add_css_class("success")
+        badge.set_halign(Gtk.Align.END)
+        badge.set_valign(Gtk.Align.START)
+        overlay.add_overlay(badge)
+
+        overlay.set_halign(Gtk.Align.CENTER)
+        box.append(overlay)
+
+        heading = Gtk.Label(label=_("Backup created!"))
+        heading.add_css_class("title-3")
+        heading.set_halign(Gtk.Align.CENTER)
+        box.append(heading)
+
+        desc = Gtk.Label(
+            label=_("%d applications exported (%s)")
+            % (result.app_count, format_size(result.total_size))
         )
+        desc.add_css_class("dim-label")
+        desc.set_wrap(True)
+        desc.set_halign(Gtk.Align.CENTER)
+        desc.set_justify(Gtk.Justification.CENTER)
+        box.append(desc)
+
+        # "Saved to:" row with path and open-in-file-manager button
+        saved_label = Gtk.Label(label=_("Saved to:"))
+        saved_label.add_css_class("dim-label")
+        saved_label.set_halign(Gtk.Align.CENTER)
+        saved_label.set_margin_top(4)
+        box.append(saved_label)
+
+        path_row = Gtk.Box(orientation=Gtk.Orientation.HORIZONTAL, spacing=8)
+        path_row.set_halign(Gtk.Align.CENTER)
+
+        path_label = Gtk.Label(label=result.archive_path)
+        path_label.add_css_class("dim-label")
+        path_label.set_wrap(True)
+        path_label.set_ellipsize(3)  # Pango.EllipsizeMode.END
+        path_label.set_max_width_chars(35)
+        path_row.append(path_label)
+
+        open_btn = Gtk.Button()
+        open_btn.set_icon_name("folder-open-symbolic")
+        open_btn.set_tooltip_text(_("Open in file manager"))
+        open_btn.add_css_class("flat")
+        open_btn.add_css_class("circular")
+
+        def _open_folder(_btn: Gtk.Button, path: str = result.archive_path) -> None:
+            folder = os.path.dirname(path)
+            Gio.AppInfo.launch_default_for_uri(
+                Gio.File.new_for_path(folder).get_uri(), None
+            )
+
+        open_btn.connect("clicked", _open_folder)
+        path_row.append(open_btn)
+        box.append(path_row)
 
         ok_btn = Gtk.Button(label=_("OK"))
         ok_btn.set_halign(Gtk.Align.CENTER)
         ok_btn.add_css_class("pill")
         ok_btn.add_css_class("suggested-action")
-        ok_btn.connect("clicked", lambda _b: result_dialog.close())
-        status.set_child(ok_btn)
-    else:
-        status = Adw.StatusPage()
-        status.set_icon_name("dialog-error-symbolic")
-        status.set_title(_("Export error"))
-        status.set_description(
-            _("An error occurred while creating the backup:\n%s") % result.message
-        )
-        ok_btn = Gtk.Button(label=_("Close"))
-        ok_btn.set_halign(Gtk.Align.CENTER)
-        ok_btn.add_css_class("pill")
-        ok_btn.connect("clicked", lambda _b: result_dialog.close())
-        status.set_child(ok_btn)
+        ok_btn.set_margin_top(8)
+        ok_btn.connect("clicked", lambda _b: dialog.close())
+        box.append(ok_btn)
 
-    toolbar.set_content(status)
-    result_dialog.set_child(toolbar)
-    result_dialog.present(parent)
+        dialog.set_child(box)
+        dialog.present(parent)
+    elif result.message == "cancelled":
+        pass  # User cancelled — do nothing
+    else:
+        error_dialog = Adw.AlertDialog.new(
+            _("Export error"),
+            _("An error occurred while creating the backup:\n%s") % result.message,
+        )
+        error_dialog.add_response("close", _("Close"))
+        error_dialog.present(parent)
 
     return GLib.SOURCE_REMOVE
 
@@ -347,17 +475,7 @@ def _show_import_options(
     parent: Adw.ApplicationWindow,
     archive_path: str,
 ) -> None:
-    """Read the manifest and show a dialog with selectable apps to restore."""
-    manifest = read_backup_manifest(archive_path)
-    if manifest is None:
-        _show_import_error(parent, _("This file is not a valid BigLinux backup archive."))
-        return
-
-    apps_in_backup = manifest.get("apps", [])
-    if not apps_in_backup:
-        _show_import_error(parent, _("The backup archive contains no application settings."))
-        return
-
+    """Open dialog immediately with loading, read manifest in background."""
     dialog = Adw.Dialog()
     dialog.set_title(_("Import Settings"))
     dialog.set_content_width(560)
@@ -366,6 +484,75 @@ def _show_import_options(
     toolbar_view = Adw.ToolbarView()
     header = Adw.HeaderBar()
     toolbar_view.add_top_bar(header)
+
+    # Initial loading state
+    loading_box = Gtk.Box(
+        orientation=Gtk.Orientation.VERTICAL, spacing=16
+    )
+    loading_box.set_valign(Gtk.Align.CENTER)
+    loading_box.set_halign(Gtk.Align.CENTER)
+
+    spinner = Adw.Spinner()
+    spinner.set_size_request(48, 48)
+    loading_box.append(spinner)
+
+    loading_label = Gtk.Label(label=_("Reading backup…"))
+    loading_label.add_css_class("title-4")
+    loading_box.append(loading_label)
+
+    progress_bar = Gtk.ProgressBar()
+    progress_bar.set_margin_start(48)
+    progress_bar.set_margin_end(48)
+    progress_bar.pulse()
+    loading_box.append(progress_bar)
+
+    toolbar_view.set_content(loading_box)
+    dialog.set_child(toolbar_view)
+    dialog.present(parent)
+
+    # Pulse animation
+    pulse_active = [True]
+
+    def _pulse() -> bool:
+        if pulse_active[0]:
+            progress_bar.pulse()
+            return True
+        return False
+
+    GLib.timeout_add(100, _pulse)
+
+    def _read_worker() -> None:
+        manifest = read_backup_manifest(archive_path)
+        GLib.idle_add(
+            _on_manifest_ready, manifest, dialog, toolbar_view,
+            header, parent, archive_path, pulse_active,
+        )
+
+    threading.Thread(target=_read_worker, daemon=True).start()
+
+
+def _on_manifest_ready(
+    manifest: dict | None,
+    dialog: Adw.Dialog,
+    toolbar_view: Adw.ToolbarView,
+    header: Adw.HeaderBar,
+    parent: Adw.ApplicationWindow,
+    archive_path: str,
+    pulse_active: list[bool],
+) -> bool:
+    """Populate the import dialog after manifest is read."""
+    pulse_active[0] = False
+
+    if manifest is None:
+        dialog.close()
+        _show_import_error(parent, _("This file is not a valid BigLinux backup archive."))
+        return False
+
+    apps_in_backup = manifest.get("apps", [])
+    if not apps_in_backup:
+        dialog.close()
+        _show_import_error(parent, _("The backup archive contains no application settings."))
+        return False
 
     scroll = Gtk.ScrolledWindow()
     scroll.set_policy(Gtk.PolicyType.NEVER, Gtk.PolicyType.AUTOMATIC)
@@ -379,47 +566,82 @@ def _show_import_options(
     content_box.set_margin_start(24)
     content_box.set_margin_end(24)
 
-    # Backup info
+    # Backup info with icon
+    info_box = Gtk.Box(orientation=Gtk.Orientation.HORIZONTAL, spacing=16)
+    info_box.set_margin_bottom(4)
+
+    info_icon = Gtk.Image.new_from_icon_name("restore-settings")
+    info_icon.set_pixel_size(48)
+    info_icon.set_valign(Gtk.Align.CENTER)
+    info_box.append(info_icon)
+
     ts = manifest.get("timestamp", "?")
     hostname = manifest.get("hostname", "?")
     full_dir = manifest.get("full_directory", False)
 
-    info_label = Gtk.Label()
-    info_label.set_markup(
-        _("<b>Backup from:</b> %s\n<b>Host:</b> %s\n<b>Full directories:</b> %s")
-        % (ts, hostname, _("Yes") if full_dir else _("No"))
-    )
-    info_label.set_xalign(0)
-    info_label.set_wrap(True)
-    info_label.add_css_class("dim-label")
-    content_box.append(info_label)
+    info_details = Gtk.Box(orientation=Gtk.Orientation.VERTICAL, spacing=4)
 
-    # Warning banner
-    banner = Adw.Banner()
-    banner.set_title(
-        _("Importing will overwrite existing settings for selected applications.")
-    )
-    banner.set_revealed(True)
-    content_box.append(banner)
+    info_date = Gtk.Label(label=ts)
+    info_date.add_css_class("title-4")
+    info_date.set_xalign(0)
+    info_details.append(info_date)
 
-    # App selection
+    info_host = Gtk.Label(label=_("Host: %s") % hostname)
+    info_host.add_css_class("dim-label")
+    info_host.set_xalign(0)
+    info_details.append(info_host)
+
+    info_full = Gtk.Label(
+        label=_("Full directories: %s") % (_("Yes") if full_dir else _("No"))
+    )
+    info_full.add_css_class("dim-label")
+    info_full.set_xalign(0)
+    info_details.append(info_full)
+
+    info_box.append(info_details)
+    content_box.append(info_box)
+
+    # Warning banner with exclamation icon
+    warning_box = Gtk.Box(orientation=Gtk.Orientation.HORIZONTAL, spacing=10)
+    warning_box.add_css_class("card")
+    warning_box.set_margin_top(4)
+    warning_box.set_margin_bottom(4)
+
+    _ensure_import_css()
+
+    warning_box.add_css_class("import-warning-card")
+
+    warn_icon = Gtk.Image.new_from_icon_name("dialog-warning-symbolic")
+    warn_icon.set_pixel_size(24)
+    warn_icon.add_css_class("warning")
+    warn_icon.set_margin_start(12)
+    warn_icon.set_margin_top(10)
+    warn_icon.set_margin_bottom(10)
+    warning_box.append(warn_icon)
+
+    warn_label = Gtk.Label(
+        label=_("Importing will overwrite existing settings for selected applications.")
+    )
+    warn_label.set_wrap(True)
+    warn_label.set_xalign(0)
+    warn_label.set_margin_top(10)
+    warn_label.set_margin_bottom(10)
+    warn_label.set_margin_end(12)
+    warning_box.append(warn_label)
+
+    content_box.append(warning_box)
+
+    # App selection group with single checkbox header
     apps_group = Adw.PreferencesGroup()
     apps_group.set_title(_("Applications in backup (%d)") % len(apps_in_backup))
 
-    select_box = Gtk.Box(orientation=Gtk.Orientation.HORIZONTAL, spacing=8)
-    select_box.set_halign(Gtk.Align.END)
+    select_all_check = Gtk.CheckButton()
+    select_all_check.set_active(True)
+    select_all_check.set_margin_end(12)
+    select_all_check.set_tooltip_text(_("Select/deselect all"))
+    apps_group.set_header_suffix(select_all_check)
 
-    select_all_btn = Gtk.Button(label=_("Select all"))
-    select_all_btn.add_css_class("flat")
-    select_box.append(select_all_btn)
-
-    deselect_all_btn = Gtk.Button(label=_("Deselect all"))
-    deselect_all_btn.add_css_class("flat")
-    select_box.append(deselect_all_btn)
-
-    content_box.append(select_box)
-
-    check_rows: list[tuple[Gtk.CheckButton, str, str]] = []  # (check, app_id, name)
+    check_rows: list[tuple[Gtk.CheckButton, str, str]] = []
 
     for app_info in apps_in_backup:
         row = Adw.ActionRow()
@@ -438,18 +660,40 @@ def _show_import_options(
         apps_group.add(row)
         check_rows.append((check, app_info["app_id"], app_info["name"]))
 
+    updating_select_all = [False]
+
+    def _on_row_check_toggled(_chk: Gtk.CheckButton) -> None:
+        if updating_select_all[0]:
+            return
+        all_active = all(c.get_active() for c, _aid, _nm in check_rows)
+        any_active = any(c.get_active() for c, _aid, _nm in check_rows)
+        updating_select_all[0] = True
+        if all_active:
+            select_all_check.set_active(True)
+            select_all_check.set_inconsistent(False)
+        elif any_active:
+            select_all_check.set_inconsistent(True)
+        else:
+            select_all_check.set_active(False)
+            select_all_check.set_inconsistent(False)
+        updating_select_all[0] = False
+
+    for chk, _aid, _nm in check_rows:
+        chk.connect("toggled", _on_row_check_toggled)
+
+    def _on_select_all_toggled(_chk: Gtk.CheckButton) -> None:
+        if updating_select_all[0]:
+            return
+        updating_select_all[0] = True
+        active = select_all_check.get_active()
+        select_all_check.set_inconsistent(False)
+        for chk, _aid, _nm in check_rows:
+            chk.set_active(active)
+        updating_select_all[0] = False
+
+    select_all_check.connect("toggled", _on_select_all_toggled)
+
     content_box.append(apps_group)
-
-    def _select_all(_btn: Gtk.Button) -> None:
-        for chk, _, _ in check_rows:
-            chk.set_active(True)
-
-    def _deselect_all(_btn: Gtk.Button) -> None:
-        for chk, _, _ in check_rows:
-            chk.set_active(False)
-
-    select_all_btn.connect("clicked", _select_all)
-    deselect_all_btn.connect("clicked", _deselect_all)
 
     scroll.set_child(content_box)
     toolbar_view.set_content(scroll)
@@ -482,8 +726,30 @@ def _show_import_options(
 
     import_btn.connect("clicked", _on_import_clicked)
 
-    dialog.set_child(toolbar_view)
-    dialog.present(parent)
+    return False
+
+
+_import_css_loaded = False
+
+
+def _ensure_import_css() -> None:
+    global _import_css_loaded
+    if _import_css_loaded:
+        return
+    _import_css_loaded = True
+    css = b"""
+    .import-warning-card {
+        background-color: alpha(@warning_color, 0.12);
+        border: 1px solid alpha(@warning_color, 0.3);
+    }
+    """
+    provider = Gtk.CssProvider()
+    provider.load_from_data(css)
+    Gtk.StyleContext.add_provider_for_display(
+        Gdk.Display.get_default(),
+        provider,
+        Gtk.STYLE_PROVIDER_PRIORITY_APPLICATION,
+    )
 
 
 def _confirm_import(
@@ -517,37 +783,87 @@ def _execute_import(
     archive_path: str,
     selected_ids: set[str],
 ) -> None:
-    """Run the import in a background thread with a spinner."""
-    spinner_dialog = Adw.Dialog()
-    spinner_dialog.set_title(_("Importing…"))
-    spinner_dialog.set_content_width(420)
-    spinner_dialog.set_content_height(220)
+    """Run the import in a background thread with a progress dialog."""
+    cancel_event = threading.Event()
 
-    spinner_box = Gtk.Box(
+    progress_dialog = Adw.Dialog()
+    progress_dialog.set_title(_("Importing…"))
+    progress_dialog.set_content_width(420)
+    progress_dialog.set_content_height(260)
+
+    def _on_dialog_closed(_dialog: Adw.Dialog) -> None:
+        cancel_event.set()
+
+    progress_dialog.connect("closed", _on_dialog_closed)
+
+    progress_box = Gtk.Box(
         orientation=Gtk.Orientation.VERTICAL, spacing=16
     )
-    spinner_box.set_valign(Gtk.Align.CENTER)
-    spinner_box.set_halign(Gtk.Align.CENTER)
+    progress_box.set_valign(Gtk.Align.CENTER)
+    progress_box.set_halign(Gtk.Align.CENTER)
+    progress_box.set_margin_start(24)
+    progress_box.set_margin_end(24)
 
     spinner = Adw.Spinner()
     spinner.set_size_request(48, 48)
-    spinner_box.append(spinner)
+    progress_box.append(spinner)
 
-    spinner_label = Gtk.Label(
+    title_label = Gtk.Label(
         label=_("Importing settings from backup…")
     )
-    spinner_label.add_css_class("title-4")
-    spinner_box.append(spinner_label)
+    title_label.add_css_class("title-4")
+    progress_box.append(title_label)
+
+    progress_bar = Gtk.ProgressBar()
+    progress_bar.set_show_text(True)
+    progress_bar.set_text("0%")
+    progress_bar.pulse()
+    progress_box.append(progress_bar)
+
+    app_label = Gtk.Label(label=_("Preparing…"))
+    app_label.add_css_class("dim-label")
+    app_label.set_ellipsize(3)  # Pango.EllipsizeMode.END
+    progress_box.append(app_label)
 
     toolbar = Adw.ToolbarView()
     toolbar.add_top_bar(Adw.HeaderBar())
-    toolbar.set_content(spinner_box)
-    spinner_dialog.set_child(toolbar)
-    spinner_dialog.present(parent)
+    toolbar.set_content(progress_box)
+    progress_dialog.set_child(toolbar)
+    progress_dialog.present(parent)
+
+    # Pulse bar while preparing
+    pulse_active = [True]
+
+    def _pulse() -> bool:
+        if pulse_active[0]:
+            progress_bar.pulse()
+            return True
+        return False
+
+    GLib.timeout_add(100, _pulse)
+
+    def _update_progress(current: int, total: int, app_name: str) -> None:
+        if cancel_event.is_set():
+            return
+        def _do_update() -> bool:
+            pulse_active[0] = False
+            fraction = min(current / total, 1.0) if total > 0 else 0
+            progress_bar.set_fraction(fraction)
+            pct = int(fraction * 100)
+            progress_bar.set_text(f"{pct}%")
+            if app_name:
+                app_label.set_label(app_name)
+            return False
+        GLib.idle_add(_do_update)
 
     def _worker() -> None:
-        result = import_backup(archive_path, selected_ids)
-        GLib.idle_add(_on_import_done, result, spinner_dialog, parent)
+        result = import_backup(
+            archive_path, selected_ids,
+            progress_callback=_update_progress,
+            cancel_event=cancel_event,
+        )
+        if not cancel_event.is_set():
+            GLib.idle_add(_on_import_done, result, progress_dialog, parent)
 
     thread = threading.Thread(target=_worker, daemon=True)
     thread.start()
@@ -555,22 +871,44 @@ def _execute_import(
 
 def _on_import_done(
     result: RestoreFromBackupResult,
-    spinner_dialog: Adw.Dialog,
+    progress_dialog: Adw.Dialog,
     parent: Adw.ApplicationWindow,
 ) -> bool:
-    spinner_dialog.close()
-
-    result_dialog = Adw.Dialog()
-    result_dialog.set_content_width(540)
-    result_dialog.set_content_height(400)
-
-    toolbar = Adw.ToolbarView()
-    toolbar.add_top_bar(Adw.HeaderBar())
+    progress_dialog.close()
 
     if result.success:
-        status = Adw.StatusPage()
-        status.set_icon_name("emblem-ok-symbolic")
-        status.set_title(_("Settings imported!"))
+        dialog = Adw.Dialog()
+        dialog.set_content_width(400)
+        dialog.set_content_height(-1)
+
+        box = Gtk.Box(orientation=Gtk.Orientation.VERTICAL, spacing=12)
+        box.set_margin_top(24)
+        box.set_margin_bottom(24)
+        box.set_margin_start(24)
+        box.set_margin_end(24)
+        box.set_halign(Gtk.Align.CENTER)
+        box.set_valign(Gtk.Align.CENTER)
+
+        # App icon with green check badge (upper-right)
+        overlay = Gtk.Overlay()
+        app_icon = Gtk.Image.new_from_icon_name("restore-settings")
+        app_icon.set_pixel_size(48)
+        overlay.set_child(app_icon)
+
+        badge = Gtk.Image.new_from_icon_name("emblem-ok-symbolic")
+        badge.set_pixel_size(16)
+        badge.add_css_class("success")
+        badge.set_halign(Gtk.Align.END)
+        badge.set_valign(Gtk.Align.START)
+        overlay.add_overlay(badge)
+
+        overlay.set_halign(Gtk.Align.CENTER)
+        box.append(overlay)
+
+        heading = Gtk.Label(label=_("Settings imported!"))
+        heading.add_css_class("title-3")
+        heading.set_halign(Gtk.Align.CENTER)
+        box.append(heading)
 
         desc_parts = [_("%d applications restored.") % len(result.restored_apps)]
         if result.restored_apps:
@@ -579,30 +917,33 @@ def _on_import_done(
             desc_parts.append(
                 "\n\n" + _("Skipped: %s") % ", ".join(result.skipped_apps)
             )
-        status.set_description("\n".join(desc_parts))
+
+        desc = Gtk.Label(label="\n".join(desc_parts))
+        desc.add_css_class("dim-label")
+        desc.set_wrap(True)
+        desc.set_halign(Gtk.Align.CENTER)
+        desc.set_justify(Gtk.Justification.CENTER)
+        box.append(desc)
 
         ok_btn = Gtk.Button(label=_("OK"))
         ok_btn.set_halign(Gtk.Align.CENTER)
         ok_btn.add_css_class("pill")
         ok_btn.add_css_class("suggested-action")
-        ok_btn.connect("clicked", lambda _b: result_dialog.close())
-        status.set_child(ok_btn)
-    else:
-        status = Adw.StatusPage()
-        status.set_icon_name("dialog-error-symbolic")
-        status.set_title(_("Import error"))
-        status.set_description(
-            _("An error occurred while importing settings:\n%s") % result.message
-        )
-        ok_btn = Gtk.Button(label=_("Close"))
-        ok_btn.set_halign(Gtk.Align.CENTER)
-        ok_btn.add_css_class("pill")
-        ok_btn.connect("clicked", lambda _b: result_dialog.close())
-        status.set_child(ok_btn)
+        ok_btn.set_margin_top(8)
+        ok_btn.connect("clicked", lambda _b: dialog.close())
+        box.append(ok_btn)
 
-    toolbar.set_content(status)
-    result_dialog.set_child(toolbar)
-    result_dialog.present(parent)
+        dialog.set_child(box)
+        dialog.present(parent)
+    elif result.message == "cancelled":
+        pass  # User cancelled — do nothing
+    else:
+        error_dialog = Adw.AlertDialog.new(
+            _("Import error"),
+            _("An error occurred while importing settings:\n%s") % result.message,
+        )
+        error_dialog.add_response("close", _("Close"))
+        error_dialog.present(parent)
 
     return GLib.SOURCE_REMOVE
 

@@ -8,21 +8,136 @@ import gi
 
 gi.require_version("Gtk", "4.0")
 gi.require_version("Adw", "1")
-from gi.repository import Adw, GLib, Gtk
+from gi.repository import Adw, Gdk, GLib, Gio, Gtk
 
-from utils import _, set_label
+from utils import _, ngettext
 from data.app_registry import AppEntry
+from backend.app_detector import get_localized_name
 from backend.reset_manager import (
     ResetMode,
     ResetResult,
     format_size,
-    get_config_size,
     get_running_pids,
     has_config,
     has_skel,
     kill_app,
     reset_app,
 )
+
+# ---------------------------------------------------------------------------
+# Custom CSS for the restore dialog
+# ---------------------------------------------------------------------------
+_RESTORE_CSS = """
+.restore-path-row {
+    min-height: 42px;
+}
+.restore-desc-card {
+    padding: 14px;
+    border-radius: 12px;
+}
+.restore-size-badge {
+    padding: 3px 10px;
+    border-radius: 99px;
+    font-size: 12px;
+    font-weight: 600;
+}
+.restore-empty-icon {
+    opacity: 0.4;
+}
+"""
+
+_css_loaded = False
+
+
+def _ensure_css() -> None:
+    """Load custom CSS once."""
+    global _css_loaded
+    if _css_loaded:
+        return
+    _css_loaded = True
+    provider = Gtk.CssProvider()
+    provider.load_from_string(_RESTORE_CSS)
+    Gtk.StyleContext.add_provider_for_display(
+        Gdk.Display.get_default(),
+        provider,
+        Gtk.STYLE_PROVIDER_PRIORITY_APPLICATION,
+    )
+
+
+def _get_mimetype_icon(path: str) -> str:
+    """Return the best symbolic icon name for a path based on its mimetype."""
+    import os
+
+    expanded = os.path.expanduser(path)
+
+    if os.path.isdir(expanded):
+        basename = os.path.basename(expanded.rstrip("/"))
+        folder_icons = {
+            ".config": "folder-templates-symbolic",
+            ".local": "folder-templates-symbolic",
+            ".cache": "folder-templates-symbolic",
+            ".mozilla": "folder-remote-symbolic",
+        }
+        return folder_icons.get(basename, "folder-symbolic")
+
+    if os.path.isfile(expanded):
+        content_type, _ = Gio.content_type_guess(expanded, None)
+        if content_type:
+            icon = Gio.content_type_get_symbolic_icon(content_type)
+            if icon:
+                names = icon.get_names()
+                if names:
+                    return names[0]
+
+    # Heuristic based on extension/name
+    lower = path.lower()
+    if lower.endswith((".conf", ".cfg", ".ini", ".toml", ".yaml", ".yml")):
+        return "text-x-generic-symbolic"
+    if lower.endswith((".json",)):
+        return "text-x-script-symbolic"
+    if lower.endswith((".xml",)):
+        return "text-xml-symbolic"
+    if lower.endswith((".db", ".sqlite")):
+        return "drive-harddisk-symbolic"
+    if "/." in path or path.startswith("~/."):
+        return "folder-templates-symbolic"
+
+    return "text-x-generic-symbolic"
+
+
+def _open_path_in_filemanager(path: str) -> None:
+    """Open a path in the default file manager, selecting the file if possible."""
+    import os
+    import subprocess
+
+    expanded = os.path.expanduser(path)
+
+    if os.path.isfile(expanded):
+        uri = Gio.File.new_for_path(expanded).get_uri()
+        try:
+            subprocess.Popen(
+                ["dbus-send", "--session", "--dest=org.freedesktop.FileManager1",
+                 "--type=method_call",
+                 "/org/freedesktop/FileManager1",
+                 "org.freedesktop.FileManager1.ShowItems",
+                 f"array:string:{uri}", "string:"],
+            )
+            return
+        except FileNotFoundError:
+            pass
+        expanded = os.path.dirname(expanded)
+
+    if os.path.isdir(expanded):
+        target = expanded
+    else:
+        parent_dir = os.path.dirname(expanded)
+        if os.path.isdir(parent_dir):
+            target = parent_dir
+        else:
+            return
+
+    uri = Gio.File.new_for_path(target).get_uri()
+    Gtk.show_uri(None, uri, Gdk.CURRENT_TIME)
 
 
 def show_restore_dialog(
@@ -31,32 +146,45 @@ def show_restore_dialog(
     on_complete: callable | None = None,
 ) -> None:
     """Present the restore options dialog for an application."""
+    import os
+    import glob
 
-    dialog = Adw.Dialog()
-    dialog.set_title(_("Restore Settings"))
-    dialog.set_content_width(540)
-    dialog.set_content_height(480)
+    _ensure_css()
 
+    config_exists = has_config(entry)
+    skel_exists = has_skel(entry)
+
+    dialog = Adw.Window()
+    dialog.set_default_size(500, 420)
+    dialog.set_modal(True)
+    dialog.set_transient_for(parent)
+
+    # ToolbarView with HeaderBar for close button (no title)
     toolbar_view = Adw.ToolbarView()
-
+    toolbar_view.set_top_bar_style(Adw.ToolbarStyle.FLAT)
+    toolbar_view.set_extend_content_to_top_edge(True)
     header = Adw.HeaderBar()
-    header.set_show_end_title_buttons(True)
+    header.set_show_title(False)
     toolbar_view.add_top_bar(header)
+
+    # Main scrollable area
+    scroll = Gtk.ScrolledWindow()
+    scroll.set_policy(Gtk.PolicyType.NEVER, Gtk.PolicyType.AUTOMATIC)
+    scroll.set_vexpand(True)
 
     content_box = Gtk.Box(
         orientation=Gtk.Orientation.VERTICAL,
-        spacing=24,
+        spacing=12,
     )
-    content_box.set_margin_top(12)
+    content_box.set_margin_top(40)
     content_box.set_margin_bottom(24)
     content_box.set_margin_start(24)
     content_box.set_margin_end(24)
 
-    # App info header
+    # ── App icon ──
     app_icon = Gtk.Image()
-    app_icon.set_pixel_size(64)
+    app_icon.set_pixel_size(48)
     if entry.icon.startswith("/"):
-        import os
         if os.path.isfile(entry.icon):
             app_icon.set_from_file(entry.icon)
         else:
@@ -64,100 +192,228 @@ def show_restore_dialog(
     else:
         app_icon.set_from_icon_name(entry.icon)
     app_icon.set_halign(Gtk.Align.CENTER)
-
-    app_name_label = Gtk.Label(label=entry.name)
-    app_name_label.add_css_class("title-1")
-    app_name_label.set_halign(Gtk.Align.CENTER)
-
     content_box.append(app_icon)
+
+    # ── App name ──
+    app_name_label = Gtk.Label(label=get_localized_name(entry))
+    app_name_label.add_css_class("title-2")
+    app_name_label.set_halign(Gtk.Align.CENTER)
     content_box.append(app_name_label)
 
-    # Config info
-    config_exists = has_config(entry)
-    skel_exists = has_skel(entry)
+    # ── Subtitle explanation ──
+    subtitle_label = Gtk.Label(
+        label=_("Choose how to restore the settings for this application.")
+    )
+    subtitle_label.add_css_class("dim-label")
+    subtitle_label.set_wrap(True)
+    subtitle_label.set_halign(Gtk.Align.CENTER)
+    subtitle_label.set_justify(Gtk.Justification.CENTER)
+    content_box.append(subtitle_label)
 
-    if config_exists:
-        size = get_config_size(entry)
-        paths_display = "\n".join(f"  • {p}" for p in entry.config_paths[:5])
-        if len(entry.config_paths) > 5:
-            paths_display += f"\n  … +{len(entry.config_paths) - 5}"
-        info_text = _("Settings size: %s") % format_size(size)
-        info_label = Gtk.Label(label=info_text)
-        info_label.add_css_class("dim-label")
-        info_label.set_halign(Gtk.Align.CENTER)
-        content_box.append(info_label)
+    # ── Paths section with individual sizes ──
+    if entry.config_paths:
+        # Calculate individual sizes and total
+        def _path_size(raw_path: str) -> int:
+            expanded = os.path.expanduser(raw_path)
+            targets = glob.glob(expanded) if ("*" in expanded or "?" in expanded) else [expanded]
+            total = 0
+            for target in targets:
+                if os.path.isdir(target):
+                    for dirpath, _dirnames, filenames in os.walk(target):
+                        for f in filenames:
+                            try:
+                                total += os.path.getsize(os.path.join(dirpath, f))
+                            except OSError:
+                                pass
+                elif os.path.isfile(target):
+                    try:
+                        total += os.path.getsize(target)
+                    except OSError:
+                        pass
+            return total
 
-    # Options group
-    group = Adw.PreferencesGroup()
-    group.set_title(_("Choose restore mode"))
-    set_label(group, _("Restore options"))
+        path_sizes = {p: _path_size(p) for p in entry.config_paths}
+        total_size = sum(path_sizes.values())
 
-    # Option 1: BigLinux default (from skel)
-    if skel_exists:
-        skel_row = Adw.ActionRow()
-        skel_row.set_title(_("Restore BigLinux defaults"))
-        skel_row.set_subtitle(
-            _("Restores BigLinux settings from /etc/skel")
-        )
-        skel_row.set_activatable(True)
-        set_label(skel_row, _("Restore BigLinux default settings for %s") % entry.name)
+        paths_group = Adw.PreferencesGroup()
+        paths_group.set_margin_top(4)
 
-        skel_icon = Gtk.Image.new_from_icon_name("biglinux-symbolic")
-        skel_icon.set_pixel_size(28)
-        skel_row.add_prefix(skel_icon)
+        # Expander row with path count and total size in subtitle
+        expander = Adw.ExpanderRow()
+        expander.set_title(_("Paths that will be replaced"))
+        count_text = ngettext("%d path", "%d paths", len(entry.config_paths)) % len(entry.config_paths)
+        expander.set_subtitle(f"{count_text} — {format_size(total_size)}")
 
-        arrow_skel = Gtk.Image.new_from_icon_name("go-next-symbolic")
-        skel_row.add_suffix(arrow_skel)
+        # Use add_prefix for consistent icon sizing with mode cards
+        expander_icon = Gtk.Image.new_from_icon_name("folder-symbolic")
+        expander_icon.set_pixel_size(24)
+        expander.add_prefix(expander_icon)
 
-        skel_row.connect(
-            "activated",
-            lambda _r: _confirm_reset(parent, dialog, entry, ResetMode.BIGLINUX_DEFAULT, on_complete),
-        )
-        group.add(skel_row)
+        for cfg_path in entry.config_paths:
+            expanded = os.path.expanduser(cfg_path)
+            row = Adw.ActionRow()
+            row.add_css_class("restore-path-row")
+            row.set_title(cfg_path)
+            row.set_title_lines(1)
 
-    # Option 2: Program default (remove dotfiles)
-    if config_exists or not skel_exists:
-        default_row = Adw.ActionRow()
-        default_row.set_title(_("Restore program defaults"))
-        default_row.set_subtitle(
-            _("Removes settings so the program recreates its defaults")
-        )
-        default_row.set_activatable(True)
-        set_label(default_row, _("Restore default settings for %s") % entry.name)
+            # Show individual size as subtitle
+            psize = path_sizes.get(cfg_path, 0)
+            row.set_subtitle(format_size(psize))
+            row.set_subtitle_lines(1)
 
-        default_icon = Gtk.Image.new_from_icon_name("restore-default-symbolic")
-        default_icon.set_pixel_size(28)
-        default_row.add_prefix(default_icon)
+            # Mimetype-aware icon
+            icon_name = _get_mimetype_icon(cfg_path)
+            prefix_icon = Gtk.Image.new_from_icon_name(icon_name)
+            prefix_icon.set_pixel_size(18)
+            row.add_prefix(prefix_icon)
 
-        arrow_default = Gtk.Image.new_from_icon_name("go-next-symbolic")
-        default_row.add_suffix(arrow_default)
+            # Open in file manager button
+            open_btn = Gtk.Button()
+            open_btn.set_icon_name("folder-open-symbolic")
+            open_btn.set_valign(Gtk.Align.CENTER)
+            open_btn.add_css_class("flat")
+            open_btn.add_css_class("circular")
+            open_btn.set_tooltip_text(_("Open in file manager"))
+            open_btn.connect("clicked", lambda _b, p=cfg_path: _open_path_in_filemanager(p))
+            row.add_suffix(open_btn)
 
-        default_row.connect(
-            "activated",
-            lambda _r: _confirm_reset(parent, dialog, entry, ResetMode.PROGRAM_DEFAULT, on_complete),
-        )
-        group.add(default_row)
+            expander.add_row(row)
 
-    content_box.append(group)
+        paths_group.add(expander)
+        content_box.append(paths_group)
 
-    # If no config and no skel — nothing to do
+    # ── No config found ──
     if not config_exists and not skel_exists:
-        empty_label = Gtk.Label()
-        empty_label.set_markup(
-            f'<span size="large">{_("No settings found for this application.")}</span>'
+        empty_box = Gtk.Box(
+            orientation=Gtk.Orientation.VERTICAL,
+            spacing=12,
         )
+        empty_box.set_valign(Gtk.Align.CENTER)
+        empty_box.set_halign(Gtk.Align.CENTER)
+        empty_box.set_margin_top(16)
+        empty_box.set_margin_bottom(16)
+
+        empty_icon = Gtk.Image.new_from_icon_name("folder-symbolic")
+        empty_icon.set_pixel_size(48)
+        empty_icon.add_css_class("restore-empty-icon")
+        empty_box.append(empty_icon)
+
+        empty_label = Gtk.Label(
+            label=_("No settings found for this application.")
+        )
+        empty_label.add_css_class("dim-label")
         empty_label.set_wrap(True)
         empty_label.set_halign(Gtk.Align.CENTER)
-        content_box.append(empty_label)
+        empty_box.append(empty_label)
 
-    toolbar_view.set_content(content_box)
-    dialog.set_child(toolbar_view)
-    dialog.present(parent)
+        content_box.append(empty_box)
+
+        close_btn = Gtk.Button(label=_("Close"))
+        close_btn.set_halign(Gtk.Align.CENTER)
+        close_btn.add_css_class("pill")
+        close_btn.connect("clicked", lambda _b: dialog.close())
+        content_box.append(close_btn)
+
+        scroll.set_child(content_box)
+        toolbar_view.set_content(scroll)
+        dialog.set_content(toolbar_view)
+        dialog.present()
+        return
+
+    # ── Mode cards with action buttons integrated ──
+    modes_box = Gtk.Box(
+        orientation=Gtk.Orientation.VERTICAL,
+        spacing=8,
+    )
+    modes_box.set_margin_top(4)
+
+    if skel_exists:
+        biglinux_card = Gtk.Box(
+            orientation=Gtk.Orientation.HORIZONTAL,
+            spacing=12,
+        )
+        biglinux_card.add_css_class("card")
+        biglinux_card.add_css_class("restore-desc-card")
+
+        bl_icon = Gtk.Image.new_from_icon_name("biglinux-symbolic")
+        bl_icon.set_pixel_size(24)
+        bl_icon.set_valign(Gtk.Align.CENTER)
+        biglinux_card.append(bl_icon)
+
+        bl_text_box = Gtk.Box(
+            orientation=Gtk.Orientation.VERTICAL,
+            spacing=2,
+        )
+        bl_text_box.set_hexpand(True)
+        bl_text_box.set_valign(Gtk.Align.CENTER)
+        bl_title = Gtk.Label(label=_("BigLinux defaults"))
+        bl_title.add_css_class("heading")
+        bl_title.set_xalign(0)
+        bl_text_box.append(bl_title)
+
+        biglinux_card.append(bl_text_box)
+
+        biglinux_btn = Gtk.Button(label=_("Restore"))
+        biglinux_btn.add_css_class("suggested-action")
+        biglinux_btn.add_css_class("pill")
+        biglinux_btn.set_valign(Gtk.Align.CENTER)
+        biglinux_btn.connect(
+            "clicked",
+            lambda _b: _confirm_reset(parent, dialog, entry, ResetMode.BIGLINUX_DEFAULT, on_complete),
+        )
+        biglinux_card.append(biglinux_btn)
+
+        modes_box.append(biglinux_card)
+
+    if config_exists or not skel_exists:
+        program_card = Gtk.Box(
+            orientation=Gtk.Orientation.HORIZONTAL,
+            spacing=12,
+        )
+        program_card.add_css_class("card")
+        program_card.add_css_class("restore-desc-card")
+
+        prog_icon = Gtk.Image.new_from_icon_name("restore-default-symbolic")
+        prog_icon.set_pixel_size(24)
+        prog_icon.set_valign(Gtk.Align.CENTER)
+        program_card.append(prog_icon)
+
+        prog_text_box = Gtk.Box(
+            orientation=Gtk.Orientation.VERTICAL,
+            spacing=2,
+        )
+        prog_text_box.set_hexpand(True)
+        prog_text_box.set_valign(Gtk.Align.CENTER)
+        prog_title = Gtk.Label(label=_("Program defaults"))
+        prog_title.add_css_class("heading")
+        prog_title.set_xalign(0)
+        prog_text_box.append(prog_title)
+
+        program_card.append(prog_text_box)
+
+        program_btn = Gtk.Button(label=_("Restore"))
+        program_btn.add_css_class("suggested-action")
+        program_btn.add_css_class("pill")
+        program_btn.set_valign(Gtk.Align.CENTER)
+        program_btn.connect(
+            "clicked",
+            lambda _b: _confirm_reset(parent, dialog, entry, ResetMode.PROGRAM_DEFAULT, on_complete),
+        )
+        program_card.append(program_btn)
+
+        modes_box.append(program_card)
+
+    content_box.append(modes_box)
+
+    scroll.set_child(content_box)
+    toolbar_view.set_content(scroll)
+    dialog.set_content(toolbar_view)
+    dialog.present()
 
 
 def _confirm_reset(
     parent: Adw.ApplicationWindow,
-    options_dialog: Adw.Dialog,
+    options_dialog: Adw.Window,
     entry: AppEntry,
     mode: ResetMode,
     on_complete: callable | None,
@@ -175,7 +431,7 @@ def _confirm_reset(
         _("All customizations for %s will be lost.\n\n"
           "Mode: %s\n\n"
           "You may need to restart the application to see the changes.")
-        % (entry.name, mode_label)
+        % (get_localized_name(entry), mode_label)
     )
     alert.set_close_response("cancel")
 
@@ -192,14 +448,14 @@ def _confirm_reset(
         mode,
         on_complete,
     )
-    alert.present(parent)
+    alert.present(options_dialog)
 
 
 def _on_confirm_response(
     alert: Adw.AlertDialog,
     response: str,
     parent: Adw.ApplicationWindow,
-    options_dialog: Adw.Dialog,
+    options_dialog: Adw.Window,
     entry: AppEntry,
     mode: ResetMode,
     on_complete: callable | None,
@@ -214,13 +470,13 @@ def _on_confirm_response(
         return
 
     # Close the options dialog and execute
-    options_dialog.close()
+    options_dialog.destroy()
     _execute_reset(parent, entry, mode, on_complete)
 
 
 def _show_running_dialog(
     parent: Adw.ApplicationWindow,
-    options_dialog: Adw.Dialog,
+    options_dialog: Adw.Window,
     entry: AppEntry,
     mode: ResetMode,
     on_complete: callable | None,
@@ -230,7 +486,7 @@ def _show_running_dialog(
     alert.set_heading(_("Application is running"))
     alert.set_body(
         _("%s is running and will be closed so that "
-          "the restore can be completed.") % entry.name
+          "the restore can be completed.") % get_localized_name(entry)
     )
 
     alert.add_response("cancel", _("Cancel"))
@@ -242,11 +498,11 @@ def _show_running_dialog(
         if resp != "close_and_restore":
             return
         kill_app(entry)
-        options_dialog.close()
+        options_dialog.destroy()
         _execute_reset(parent, entry, mode, on_complete)
 
     alert.connect("response", on_response)
-    alert.present(parent)
+    alert.present(options_dialog)
 
 
 def _execute_reset(
@@ -275,7 +531,7 @@ def _execute_reset(
     spinner_box.append(spinner)
 
     spinner_label = Gtk.Label(
-        label=_("Restoring settings for %s…") % entry.name
+        label=_("Restoring settings for %s…") % get_localized_name(entry)
     )
     spinner_label.add_css_class("title-4")
     spinner_box.append(spinner_label)
@@ -377,11 +633,11 @@ def _show_success_dialog(
         desc_text = _(
             "Settings for %s have been restored.\n"
             "You need to log out to complete the process."
-        ) % entry.name
+        ) % get_localized_name(entry)
     else:
         desc_text = _(
             "Settings for %s have been restored successfully."
-        ) % entry.name
+        ) % get_localized_name(entry)
 
     desc = Gtk.Label(label=desc_text)
     desc.add_css_class("dim-label")
@@ -427,7 +683,7 @@ def _show_error_dialog(
     dialog.set_heading(_("Restore error"))
     dialog.set_body(
         _("An error occurred while restoring settings for %s:\n%s")
-        % (entry.name, result.message)
+        % (get_localized_name(entry), result.message)
     )
     dialog.add_response("ok", _("Close"))
     dialog.set_close_response("ok")
