@@ -406,6 +406,7 @@ APP_REGISTRY: list[AppEntry] = [
         binary="/usr/bin/strawberry",
         category="multimedia",
         config_paths=["~/.config/strawberry"],
+        skel_paths=["/etc/skel/.config/strawberry"],
     ),
     AppEntry(
         app_id="audacious",
@@ -488,8 +489,15 @@ APP_REGISTRY: list[AppEntry] = [
         icon="gwenview",
         binary="/usr/bin/gwenview",
         category="graphics",
-        config_paths=["~/.local/share/gwenview", "~/.config/gwenviewrc"],
-        skel_paths=["/etc/skel/.config/gwenviewrc"],
+        config_paths=[
+            "~/.local/share/gwenview",
+            "~/.local/share/kxmlgui5/gwenview",
+            "~/.config/gwenviewrc"
+        ],
+        skel_paths=[
+            "/etc/skel/.config/gwenviewrc",
+            "/etc/skel/.local/share/kxmlgui5/gwenview"
+        ],
     ),
     AppEntry(
         app_id="ristretto",
@@ -571,6 +579,7 @@ APP_REGISTRY: list[AppEntry] = [
         binary="/usr/bin/spectacle",
         category="graphics",
         config_paths=["~/.config/spectaclerc"],
+        skel_paths=["/etc/skel/.config/spectaclerc"],
     ),
 
     # ── Office ────────────────────────────────────────────────────────────
@@ -589,8 +598,18 @@ APP_REGISTRY: list[AppEntry] = [
         icon="okular",
         binary="/usr/bin/okular",
         category="office",
-        config_paths=["~/.local/share/okular", "~/.config/okularrc", "~/.config/okularpartrc"],
-        skel_paths=["/etc/skel/.config/okularrc"],
+        config_paths=[
+            "~/.local/share/okular",
+            "~/.local/share/kxmlgui5/okular",
+            "~/.config/okularrc",
+            "~/.config/okularpartrc"
+        ],
+        skel_paths=[
+            "/etc/skel/.config/okularrc",
+            "/etc/skel/.config/okularpartrc",
+            "/etc/skel/.local/share/okular",
+            "/etc/skel/.local/share/kxmlgui5/okular"
+        ],
     ),
     AppEntry(
         app_id="evince",
@@ -667,7 +686,13 @@ APP_REGISTRY: list[AppEntry] = [
             "~/.config/katevirc",
             "~/.config/katesyntaxhighlightingrc",
         ],
-        skel_paths=["/etc/skel/.config/katerc"],
+        skel_paths=[
+            "/etc/skel/.config/katerc",
+            "/etc/skel/.config/kateschemarc",
+            "/etc/skel/.local/share/kate",
+            "/etc/skel/.local/share/kxmlgui5/kate",
+            "/etc/skel/.local/share/kxmlgui5/katepart",
+        ],
     ),
     AppEntry(
         app_id="vscode",
@@ -757,8 +782,16 @@ APP_REGISTRY: list[AppEntry] = [
         icon="konsole",
         binary="/usr/bin/konsole",
         category="terminals",
-        config_paths=["~/.config/konsolerc", "~/.local/share/konsole"],
-        skel_paths=["/etc/skel/.config/konsolerc", "/etc/skel/.local/share/konsole"],
+        config_paths=[
+            "~/.config/konsolerc",
+            "~/.local/share/konsole",
+            "~/.local/share/kxmlgui5/konsole"
+        ],
+        skel_paths=[
+            "/etc/skel/.config/konsolerc",
+            "/etc/skel/.local/share/konsole",
+            "/etc/skel/.local/share/kxmlgui5/konsole"
+        ],
     ),
     AppEntry(
         app_id="gnome-terminal",
@@ -890,7 +923,11 @@ APP_REGISTRY: list[AppEntry] = [
             "~/.local/share/kxmlgui5/dolphin",
             "~/.config/dolphinrc",
         ],
-        skel_paths=["/etc/skel/.config/dolphinrc", "/etc/skel/.local/share/kxmlgui5/dolphin"],
+        skel_paths=[
+            "/etc/skel/.config/dolphinrc",
+            "/etc/skel/.local/share/dolphin",
+            "/etc/skel/.local/share/kxmlgui5/dolphin"
+        ],
     ),
     AppEntry(
         app_id="nautilus",
@@ -1064,6 +1101,7 @@ APP_REGISTRY: list[AppEntry] = [
         binary="/usr/bin/htop",
         category="system",
         config_paths=["~/.config/htop"],
+        skel_paths=["/etc/skel/.config/htop"],
     ),
     AppEntry(
         app_id="btop",
