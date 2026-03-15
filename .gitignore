@@ -4,3 +4,4 @@ __pycache__/
 pkgbuild/src/
 pkgbuild/pkg/
 pkgbuild/*.pkg.tar*
+PLANNING.md

@@ -337,7 +337,7 @@ APP_REGISTRY: list[AppEntry] = [
         icon="com.obsproject.Studio",
         binary="/usr/bin/obs",
         category="multimedia",
-        config_paths=["~/.config/obs-studio"],
+        config_paths=["~/.config/obs-studio", "~/.config/obs-portable"],
     ),
     AppEntry(
         app_id="kdenlive",

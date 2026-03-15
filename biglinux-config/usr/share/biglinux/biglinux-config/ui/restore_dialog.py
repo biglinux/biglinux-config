@@ -241,7 +241,14 @@ def show_restore_dialog(
         # Expander row with path count and total size in subtitle
         expander = Adw.ExpanderRow()
         expander.set_title(_("Paths that will be replaced"))
-        count_text = ngettext("%d path", "%d paths", len(entry.config_paths)) % len(entry.config_paths)
+        n = len(entry.config_paths)
+        count_base = ngettext("%d path", "%d paths", n)
+        # Handle broken translations that might have "form1,form2" in a single msgstr
+        if "," in count_base and count_base.count("%d") > 1:
+            parts = count_base.split(",")
+            count_base = parts[0] if n == 1 else parts[-1]
+        
+        count_text = count_base % n
         expander.set_subtitle(f"{count_text} — {format_size(total_size)}")
 
         # Use add_prefix for consistent icon sizing with mode cards
