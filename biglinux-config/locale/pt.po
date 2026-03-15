@@ -14,6 +14,7 @@ msgstr ""
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "X-Generator: attranslate\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
 # 
 # File: biglinux-config/biglinux-config/usr/share/biglinux/biglinux-config/ui/welcome_dialog.py, line: 76
 msgid "Welcome to Restore Settings"
@@ -438,7 +439,8 @@ msgstr "Caminhos que serão substituídos"
 #, python-format
 msgid "%d path"
 msgid_plural "%d paths"
-msgstr[0] "%d caminho,%d caminhos"
+msgstr[0] "%d caminho"
+msgstr[1] "%d caminhos"
 # 
 # File: biglinux-config/biglinux-config/usr/share/biglinux/biglinux-config/ui/restore_dialog.py, line: 302
 msgid "No settings found for this application."
