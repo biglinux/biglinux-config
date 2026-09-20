@@ -38,7 +38,7 @@ from collections.abc import Callable
 from dataclasses import dataclass
 from enum import Enum
 
-from backend import paths
+from backend import dconf_manager, paths
 from data.app_registry import AppEntry
 
 logger = logging.getLogger("biglinux-config")
@@ -220,6 +220,36 @@ def _build_inventory(
     return records, app_roots, total_size
 
 
+_DCONF_PREFIX = ".biglinux-dconf"
+
+
+def _collect_dconf(entries: list[AppEntry]):
+    """Dump each entry's scoped dconf namespaces to archive members.
+
+    Returns ``(members, manifest)`` where *members* is a list of
+    ``(member_name, data_bytes)`` and *manifest* records app_id → namespace items.
+    """
+    members: list[tuple[str, bytes]] = []
+    manifest: list[dict] = []
+    if not dconf_manager.is_available():
+        return members, manifest
+    for entry in entries:
+        items = []
+        for idx, ns in enumerate(entry.dconf_paths):
+            if not dconf_manager.is_valid_namespace(ns):
+                continue
+            text = dconf_manager.dump(ns)
+            if not text.strip():
+                continue
+            member = f"{_DCONF_PREFIX}/{entry.app_id}/{idx}.ini"
+            members.append((member, text.encode("utf-8")))
+            items.append({"path": ns, "member": member})
+        if items:
+            manifest.append(
+                {"app_id": entry.app_id, "name": entry.name, "items": items})
+    return members, manifest
+
+
 def _system_metadata() -> dict:
     try:
         uname = os.uname()
@@ -275,6 +305,9 @@ def export_backup(
     try:
         records, app_roots, total_size = _build_inventory(entries, include_cache)
 
+        # dconf dumps (scoped namespaces) captured as extra archive members.
+        dconf_members, dconf_manifest = _collect_dconf(entries)
+
         manifest = {
             "format": BACKUP_FORMAT,
             "version": BACKUP_VERSION,
@@ -287,11 +320,12 @@ def export_backup(
                 {
                     "app_id": e.app_id,
                     "name": e.name,
-                    "roots": app_roots[e.app_id],
+                    "roots": app_roots.get(e.app_id, []),
                 }
                 for e in entries
-                if e.app_id in app_roots
+                if e.app_id in app_roots or e.app_id in {d["app_id"] for d in dconf_manifest}
             ],
+            "dconf": dconf_manifest,
         }
 
         checksums: dict[str, str] = {}
@@ -335,7 +369,14 @@ def export_backup(
                     if progress_callback:
                         progress_callback(done_bytes, total_size, rec.rel)
 
-                # 3) trailing checksums for verification.
+                # 3) dconf dumps (small text members), also checksummed.
+                for member_name, data in dconf_members:
+                    check_cancel()
+                    _add_bytes(tar, member_name, data)
+                    checksums[member_name] = hashlib.blake2b(
+                        data, digest_size=32).hexdigest()
+
+                # 4) trailing checksums for verification.
                 _add_bytes(tar, CHECKSUMS_NAME,
                            json.dumps(checksums).encode("utf-8"))
 
@@ -532,7 +573,12 @@ def import_backup(
         for root in app.get("roots", []):
             root_to_app[root.rstrip("/")] = app.get("name", app["app_id"])
     restore_roots = sorted(root_to_app, key=len, reverse=True)
-    if not restore_roots:
+    # A backup may carry only dconf settings (no files), so also consider those.
+    has_dconf = any(
+        selected_app_ids is None or s.get("app_id") in selected_app_ids
+        for s in manifest.get("dconf", [])
+    )
+    if not restore_roots and not has_dconf:
         return RestoreFromBackupResult(
             False, "Nothing selected to restore.", restored, skipped,
             ImportStatus.FAILED)
@@ -565,6 +611,7 @@ def import_backup(
 
         # -- phase 2: atomic swap ------------------------------------------- #
         applied: list[tuple[str, str, bool]] = []  # (live, aside, had_live)
+        dconf_applied: list[tuple[str, str]] = []  # (namespace, pre_dump)
         try:
             for root in sorted(root_to_app):  # roots are disjoint tops; order irrelevant
                 staged = os.path.join(staging, root)
@@ -582,7 +629,12 @@ def import_backup(
                 applied.append((live, aside, had_live))
                 os.makedirs(os.path.dirname(live) or home, exist_ok=True)
                 os.rename(staged, live)
+
+            # -- phase 2b: dconf load (scoped, reversible) ----------------- #
+            _apply_dconf(archive_path, manifest, selected_app_ids,
+                         dconf_applied, check_cancel)
         except BaseException:
+            _rollback_dconf(dconf_applied)
             _rollback(applied)
             raise
 
@@ -683,6 +735,69 @@ def _extract_to_staging(
                     progress_callback(min(done, total_size), total_size,
                                       _label_for(name, root_to_app))
             member = tar.next()
+
+
+def _apply_dconf(
+    archive_path: str,
+    manifest: dict,
+    selected_app_ids: set[str] | None,
+    dconf_applied: list[tuple[str, str]],
+    check_cancel: Callable[[], None],
+) -> None:
+    """Load the backup's dconf dumps for the selected apps (reversible).
+
+    Records each namespace's previous state in *dconf_applied* so a later failure
+    can restore it.  No-op when dconf is unavailable or the backup has none.
+    """
+    sections = manifest.get("dconf", [])
+    if not sections or not dconf_manager.is_available():
+        return
+    wanted = [
+        s for s in sections
+        if selected_app_ids is None or s.get("app_id") in selected_app_ids
+    ]
+    if not wanted:
+        return
+
+    needed = {item["member"] for s in wanted for item in s.get("items", [])}
+    with tarfile.open(archive_path, "r:gz") as tar:
+        checksums = _read_checksums(tar)
+    texts: dict[str, str] = {}
+    with tarfile.open(archive_path, "r:gz") as tar:
+        member = tar.next()
+        while member is not None:
+            if member.name in needed and member.isreg():
+                fh = tar.extractfile(member)
+                if fh is not None:
+                    data = fh.read()
+                    if member.name in checksums and hashlib.blake2b(
+                            data, digest_size=32).hexdigest() != checksums[member.name]:
+                        raise BackupError(f"Checksum mismatch for {member.name}")
+                    texts[member.name] = data.decode("utf-8")
+            member = tar.next()
+
+    for section in wanted:
+        for item in section.get("items", []):
+            check_cancel()
+            ns, member = item.get("path", ""), item.get("member", "")
+            text = texts.get(member)
+            if text is None or not dconf_manager.is_valid_namespace(ns):
+                continue
+            dconf_applied.append((ns, dconf_manager.dump(ns)))
+            if not dconf_manager.load(ns, text):
+                raise BackupError(f"Failed to load dconf namespace {ns}")
+
+
+def _rollback_dconf(dconf_applied: list[tuple[str, str]]) -> None:
+    """Restore dconf namespaces captured before an import."""
+    for ns, pre in reversed(dconf_applied):
+        try:
+            if pre.strip():
+                dconf_manager.load(ns, pre)
+            else:
+                dconf_manager.reset(ns)
+        except Exception as exc:  # noqa: BLE001
+            logger.error("dconf import rollback error for %s: %s", ns, exc)
 
 
 def _label_for(name: str, root_to_app: dict[str, str]) -> str:

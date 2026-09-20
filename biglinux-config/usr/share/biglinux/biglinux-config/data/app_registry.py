@@ -25,6 +25,9 @@ class AppEntry:
     is_de: bool = False  # desktop-environment full reset
     logout_required: bool = False  # needs session restart after reset
     sensitive: bool = False  # config may hold secrets (passwords, tokens, history)
+    # dconf/GSettings namespaces (each absolute, ending in '/', ≥2 segments).
+    # Backed up, restored and reset per-namespace — never the whole database.
+    dconf_paths: list[str] = field(default_factory=list)
 
 
 # Categories whose configuration inherently contains private data
@@ -1184,9 +1187,24 @@ APP_REGISTRY: list[AppEntry] = [
     ),
 
     # ── Customization ────────────────────────────────────────────────────
-    # NOTE: GNOME Tweaks was removed from the registry — it stores nothing in
-    # dotfiles (dconf only), so there was nothing to reset, back up or restore.
-    # dconf-based support would need a dedicated code path (see docs/03).
+    # GNOME Tweaks stores its settings in dconf (not dotfiles); handled via the
+    # scoped dconf_paths below.
+    AppEntry(
+        app_id="gnome-tweaks",
+        name="GNOME Tweaks",
+        icon="org.gnome.tweaks",
+        binary="/usr/bin/gnome-tweaks",
+        category="customization",
+        config_paths=[],
+        dconf_paths=[
+            "/org/gnome/desktop/interface/",
+            "/org/gnome/desktop/wm/preferences/",
+            "/org/gnome/desktop/peripherals/",
+            "/org/gnome/desktop/sound/",
+            "/org/gnome/desktop/input-sources/",
+            "/org/gnome/mutter/",
+        ],
+    ),
     AppEntry(
         app_id="kvantum",
         name="Kvantum Manager",
@@ -1307,6 +1325,11 @@ APP_REGISTRY: list[AppEntry] = [
             "~/.local/share/gnome-shell",
         ],
         skel_paths=["/etc/skel/.config/dconf"],
+        dconf_paths=[
+            "/org/gnome/shell/",
+            "/org/gnome/desktop/",
+            "/org/gnome/mutter/",
+        ],
         is_de=True,
         logout_required=True,
         process_name="gnome-shell",

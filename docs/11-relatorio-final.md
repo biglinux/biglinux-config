@@ -118,15 +118,20 @@ Round-trip LibreOffice-style validado. Ver docs/08 e docs/10.
    `AppEntry` + helper `is_sensitive` (browsers/communication + 7 apps explícitos);
    `Adw.Banner` no diálogo de export, ícone de aviso por linha e confirmação na
    exportação individual de app sensível. Ver docs/06.
-2. **Suporte a dconf/GSettings** — não implementado (gnome-tweaks, partes do GNOME).
-   - *Impacto*: médio para usuários GNOME.
-   - *Como resolver*: `dconf dump/load` por namespace específico, nunca global.
+2. ~~Suporte a dconf/GSettings~~ — **CONCLUÍDO**. `backend/dconf_manager.py`
+   (dump/load/reset por namespace, nunca a base inteira); campo `dconf_paths` no
+   `AppEntry`; integrado a export (membros `.biglinux-dconf/…` com checksum),
+   import (fase transacional com rollback) e reset (com rollback). gnome-tweaks
+   reintroduzido e de-gnome com namespaces `/org/gnome/{shell,desktop,mutter}/`.
+   8 testes usando namespace de rascunho isolado. Ver docs/03.
 3. **Criptografia de backup** — não implementada (evita dependência pesada/formato
    incompatível). Documentado como decisão consciente.
-4. **Acessibilidade** — `set_label` não aplicado aos novos botões Exportar/Importar/
-   Cancelar do reset; falta teste com Orca. Baixo esforço para completar.
-5. **PKGBUILD `procps-ng`** — não é mais necessário (kill via `/proc`+`os.kill`);
-   pode ser removido de `depends`. Mantido por ora (inócuo).
+4. **Acessibilidade** — botões de ação do modal são `Adw.ActionRow` (nome
+   acessível pelo título); botão ícone "abrir no gerenciador" recebeu `set_label`;
+   menu de favoritos acessível por teclado (Menu / Shift+F10). Pendente ainda:
+   teste com leitor de tela (Orca).
+5. ~~PKGBUILD `procps-ng`~~ — **CONCLUÍDO**. Removido de `depends` (kill via
+   `/proc`+`os.kill`); adicionado `dconf` em `optdepends`.
 6. **Testes de UI automatizados** — a UI foi validada por compile + import + smoke
    test + revisão; não há testes GTK dirigidos por evento.
 7. **Benchmark de 1 GB** — não executado (evitar uso excessivo de disco); a

@@ -10,7 +10,7 @@ gi.require_version("Gtk", "4.0")
 gi.require_version("Adw", "1")
 from gi.repository import Adw, Gdk, GLib, Gio, Gtk
 
-from utils import _, ngettext
+from utils import _, ngettext, set_label
 from data.app_registry import AppEntry
 from ui import backup_dialog
 from backend.app_detector import get_localized_name
@@ -323,6 +323,7 @@ def show_restore_dialog(
             open_btn.set_valign(Gtk.Align.CENTER)
             open_btn.add_css_class("flat")
             open_btn.set_tooltip_text(_("Open in file manager"))
+            set_label(open_btn, _("Open %s in file manager") % cfg_path)
             open_btn.connect("clicked",
                              lambda _b, p=cfg_path: _open_path_in_filemanager(p))
             row.add_suffix(open_btn)

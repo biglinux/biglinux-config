@@ -55,10 +55,23 @@ def test_skel_paths_are_under_skel_and_never_structural():
             )
 
 
-def test_no_entry_with_empty_config_and_no_skel():
+def test_no_entry_with_nothing_to_act_on():
     """An entry that can neither reset nor restore anything is dead weight."""
-    dead = [e.app_id for e in APP_REGISTRY if not e.config_paths and not e.skel_paths]
+    dead = [
+        e.app_id for e in APP_REGISTRY
+        if not e.config_paths and not e.skel_paths and not e.dconf_paths
+    ]
     assert dead == [], f"entries with nothing to act on: {dead}"
+
+
+def test_dconf_paths_are_valid_namespaces():
+    for e in APP_REGISTRY:
+        for ns in e.dconf_paths:
+            assert ns.startswith("/") and ns.endswith("/"), \
+                f"{e.app_id}: bad dconf namespace {ns}"
+            segments = [s for s in ns.split("/") if s]
+            assert len(segments) >= 2, \
+                f"{e.app_id}: dconf namespace too broad {ns}"
 
 
 def test_favorites_reference_real_ids():

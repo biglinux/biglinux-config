@@ -25,7 +25,7 @@ from dataclasses import dataclass, field
 from enum import Enum, auto
 from logging.handlers import RotatingFileHandler
 
-from backend import paths
+from backend import dconf_manager, paths
 from data.app_registry import AppEntry
 
 logger = logging.getLogger("biglinux-config")
@@ -213,7 +213,7 @@ def reset_app(
         return cancel_event is not None and cancel_event.is_set()
 
     # 0) optional safety backup ------------------------------------------------
-    if backup_first and entry.config_paths:
+    if backup_first and (entry.config_paths or entry.dconf_paths):
         backup_path = _safety_backup(entry)
         if backup_path == "":
             return ResetResult(
@@ -246,6 +246,7 @@ def reset_app(
                               f".biglinux-config-reset-{os.getpid()}-{int(time.time())}")
     moved: list[tuple[str, str]] = []   # (original, aside)
     created: list[str] = []             # dests written from skel
+    dconf_pre: dict[str, str] = {}      # namespace -> dump captured before reset
 
     try:
         os.makedirs(aside_root, exist_ok=True)
@@ -275,6 +276,18 @@ def reset_app(
             created.append(dest)
             restored.append(dest)
 
+        # 4) reset dconf namespaces (scoped) -----------------------------------
+        if entry.dconf_paths and dconf_manager.is_available():
+            for ns in entry.dconf_paths:
+                if not dconf_manager.is_valid_namespace(ns):
+                    logger.warning("Skipping unsafe dconf namespace: %s", ns)
+                    continue
+                if cancelled():
+                    raise _CancelReset()
+                dconf_pre[ns] = dconf_manager.dump(ns)  # for rollback
+                if dconf_manager.reset(ns):
+                    removed.append(f"dconf:{ns}")
+
         # success: discard the aside copies
         shutil.rmtree(aside_root, ignore_errors=True)
 
@@ -291,12 +304,14 @@ def reset_app(
 
     except _CancelReset:
         _reset_rollback(moved, created)
+        _dconf_rollback(dconf_pre)
         shutil.rmtree(aside_root, ignore_errors=True)
         logger.info("Reset %s cancelled and rolled back", entry.app_id)
         return ResetResult(False, "cancelled", entry.app_id, mode, [], [],
                            ResetStatus.CANCELLED, backup_path)
     except Exception as exc:  # noqa: BLE001
         _reset_rollback(moved, created)
+        _dconf_rollback(dconf_pre)
         shutil.rmtree(aside_root, ignore_errors=True)
         logger.error("Reset failed for %s: %s (rolled back)", entry.app_id, exc,
                      exc_info=True)
@@ -306,6 +321,18 @@ def reset_app(
 
 class _CancelReset(Exception):
     pass
+
+
+def _dconf_rollback(dconf_pre: dict[str, str]) -> None:
+    """Restore dconf namespaces captured before a reset."""
+    for ns, text in dconf_pre.items():
+        try:
+            if text.strip():
+                dconf_manager.load(ns, text)
+            else:
+                dconf_manager.reset(ns)
+        except Exception as exc:  # noqa: BLE001
+            logger.error("dconf rollback error for %s: %s", ns, exc)
 
 
 def _reset_rollback(moved: list[tuple[str, str]], created: list[str]) -> None:
@@ -387,8 +414,12 @@ def has_skel(entry: AppEntry) -> bool:
 
 
 def has_config(entry: AppEntry) -> bool:
-    """True if any config path currently exists on disk."""
-    return bool(_expand_targets(entry.config_paths))
+    """True if any config path exists on disk, or dconf holds user values."""
+    if _expand_targets(entry.config_paths):
+        return True
+    if entry.dconf_paths and dconf_manager.is_available():
+        return dconf_manager.has_content(entry.dconf_paths)
+    return False
 
 
 def format_size(size_bytes: int) -> str:

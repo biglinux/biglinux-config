@@ -66,8 +66,20 @@ com config/skel confiáveis: `strawberry`, `clementine`, `smplayer` (skel existe
 `corectrl`, `jamesdsp`, `fcitx5`. Não foram adicionados agora para manter o escopo
 seguro; recomendação registrada em docs/11.
 
-## dconf / GSettings
+## dconf / GSettings (implementado)
 
-`gnome-tweaks` e partes do GNOME dependem de dconf. Suporte exigiria
-`dconf dump/load` **por namespace específico** (nunca dump global destrutivo).
-Deixado como recomendação futura (docs/11), não implementado.
+Suporte via `backend/dconf_manager.py`, sempre **por namespace específico**
+(`is_valid_namespace` recusa `/` e raízes de um só segmento — nunca dump/reset da
+base inteira). Campo `dconf_paths` no `AppEntry`.
+
+- **Export**: `dconf dump <ns>` de cada namespace vira um membro
+  `.biglinux-dconf/<app_id>/<i>.ini` no `.tar.gz`, com checksum e registro no
+  manifesto (`dconf`).
+- **Import**: fase transacional após o swap de arquivos — captura o estado atual,
+  faz `dconf load`, e em falha reverte (arquivos **e** dconf).
+- **Reset**: `dconf reset -f <ns>` (program/BigLinux default), com rollback do
+  dump capturado.
+- Entradas: `gnome-tweaks` (namespaces do GNOME desktop/mutter) reintroduzido;
+  `de-gnome` com `/org/gnome/{shell,desktop,mutter}/`.
+- `has_config` passa a considerar conteúdo dconf, então esses apps aparecem como
+  restauráveis mesmo sem dotfiles.
