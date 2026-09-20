@@ -82,6 +82,21 @@ config, fica desabilitado.
 - Não se depende só de cor: ações destrutivas usam texto + `DESTRUCTIVE`
   appearance; ícones sempre acompanham rótulo textual.
 
+## Tela principal (grid)
+
+- **Busca incremental**: ao entrar no modo de busca os cards são populados **uma
+  vez**; cada tecla seguinte apenas re-filtra (`filter_by_text`) em vez de
+  reconstruir todos os cards. Antes cada tecla refazia o grid inteiro.
+- **Selo Nativo/Flatpak**: apps Flatpak ganham um emblema (`folder-flatpak`) no
+  canto inferior direito do ícone.
+- **Selo "Padrão BigLinux disponível"**: apps com skel válido (`has_skel`) ganham
+  um emblema da marca (accent) no canto superior direito — some automaticamente
+  quando não há skel (ex.: Chrome, mpv, Steam).
+- **Tooltip rico**: nome + origem (Nativo/Flatpak) + "Padrão BigLinux disponível".
+- **Hover amigável**: a barra de status mostra `Nome · Nativo/Flatpak · Padrão
+  BigLinux disponível` em vez dos caminhos crus de configuração.
+- Selos também expõem nome acessível (`set_label`).
+
 ## Internacionalização
 
 - Todas as novas strings passam por `_()`/`ngettext`. A geração de POT/PO/MO/JSON

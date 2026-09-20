@@ -11,7 +11,7 @@ gi.require_version("Gtk", "4.0")
 gi.require_version("Adw", "1")
 from gi.repository import Adw, Gdk, GLib, Gio, Gtk
 
-from utils import _, set_label
+from utils import _
 from data.app_registry import AppEntry, CATEGORIES
 from backend.app_detector import get_installed_apps, get_favorites
 from backend.flatpak_detector import get_installed_flatpaks
@@ -145,13 +145,19 @@ class BigConfigApp(Adw.Application):
 
     def on_search_changed(self, win: BigConfigWindow, text: str) -> None:
         if text.strip():
-            all_apps = self._installed_apps + self._flatpak_apps
-            win.grid.populate(all_apps)
+            # Populate the full app list only once when entering search mode;
+            # subsequent keystrokes just re-filter the existing cards instead of
+            # rebuilding every card (much cheaper as the user types).
+            if not getattr(self, "_search_mode", False):
+                win.grid.populate(self._installed_apps + self._flatpak_apps)
+                self._search_mode = True
             win.grid.filter_by_text(text)
-        else:
+        elif getattr(self, "_search_mode", False):
+            self._search_mode = False
             self._update_grid(win)
 
     def _update_grid(self, win: BigConfigWindow) -> None:
+        self._search_mode = False
         apps = self._apps_by_category.get(self._current_category, [])
         win.grid.populate(apps)
 

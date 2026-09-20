@@ -13,7 +13,11 @@ from gi.repository import Adw, Gdk, Gtk, Pango
 from utils import _, set_label
 from data.app_registry import AppEntry
 from backend.app_detector import get_localized_name
-from backend.reset_manager import has_config
+from backend.reset_manager import has_skel
+
+
+def _is_flatpak(entry: AppEntry) -> bool:
+    return entry.app_id.startswith("flatpak-") or entry.category == "flatpak"
 
 
 class AppGrid(Gtk.Box):
@@ -41,6 +45,15 @@ class AppGrid(Gtk.Box):
                 transform: scale(0.94);
                 transition: transform 0.15s ease;
                 background-color: alpha(currentColor, 0.15);
+            }
+            .card-badge {
+                background-color: @window_bg_color;
+                border-radius: 999px;
+                padding: 2px;
+                box-shadow: 0 0 0 1px alpha(@window_fg_color, 0.15);
+            }
+            .card-badge-biglinux {
+                color: @accent_color;
             }
         """)
         Gtk.StyleContext.add_provider_for_display(
@@ -140,6 +153,16 @@ class AppGrid(Gtk.Box):
         button.set_focus_on_click(True)
         button.connect("clicked", self._on_card_clicked, entry)
 
+        is_flatpak = _is_flatpak(entry)
+        skel_available = has_skel(entry)
+
+        # Rich tooltip (source + BigLinux-default hint).
+        kind = _("Flatpak application") if is_flatpak else _("Native application")
+        tip = f"{get_localized_name(entry)}\n{kind}"
+        if skel_available:
+            tip += "\n" + _("BigLinux default available")
+        button.set_tooltip_text(tip)
+
         # Hover → show description in status bar
         motion = Gtk.EventControllerMotion.new()
         motion.connect("enter", self._on_card_enter, entry)
@@ -152,9 +175,32 @@ class AppGrid(Gtk.Box):
         content.set_valign(Gtk.Align.START)
         button.set_child(content)
 
-        # Icon — 64px
+        # Icon — 64px, with corner badges (source + BigLinux default).
         icon = self._create_icon(entry.icon)
-        content.append(icon)
+        icon_holder = Gtk.Overlay()
+        icon_holder.set_halign(Gtk.Align.CENTER)
+        icon_holder.set_child(icon)
+
+        if is_flatpak:
+            fp_badge = Gtk.Image.new_from_icon_name("folder-flatpak")
+            fp_badge.set_pixel_size(18)
+            fp_badge.add_css_class("card-badge")
+            fp_badge.set_halign(Gtk.Align.END)
+            fp_badge.set_valign(Gtk.Align.END)
+            set_label(fp_badge, _("Flatpak application"))
+            icon_holder.add_overlay(fp_badge)
+
+        if skel_available:
+            bl_badge = Gtk.Image.new_from_icon_name("biglinux-symbolic")
+            bl_badge.set_pixel_size(16)
+            bl_badge.add_css_class("card-badge")
+            bl_badge.add_css_class("card-badge-biglinux")
+            bl_badge.set_halign(Gtk.Align.END)
+            bl_badge.set_valign(Gtk.Align.START)
+            set_label(bl_badge, _("BigLinux default available"))
+            icon_holder.add_overlay(bl_badge)
+
+        content.append(icon_holder)
 
         # Name label — ellipsize, wrap, centered
         name_label = Gtk.Label(label=get_localized_name(entry))
@@ -192,8 +238,11 @@ class AppGrid(Gtk.Box):
         entry: AppEntry,
     ) -> None:
         if self._on_app_hover:
-            paths = ", ".join(entry.config_paths[:3])
-            self._on_app_hover(paths)
+            kind = _("Flatpak") if _is_flatpak(entry) else _("Native")
+            parts = [get_localized_name(entry), kind]
+            if has_skel(entry):
+                parts.append(_("BigLinux default available"))
+            self._on_app_hover(" · ".join(parts))
 
     def _on_card_leave(self, _ctrl: Gtk.EventControllerMotion) -> None:
         if self._on_app_hover:
