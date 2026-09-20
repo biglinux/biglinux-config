@@ -28,6 +28,8 @@ class AppGrid(Gtk.Box):
 
         self._on_app_activated: callable | None = None
         self._on_app_hover: callable | None = None
+        self._favorite_provider: callable | None = None
+        self._on_toggle_favorite: callable | None = None
 
         # CSS for program-button style (same as BigControlCenter)
         css = Gtk.CssProvider()
@@ -103,6 +105,14 @@ class AppGrid(Gtk.Box):
     def set_on_app_hover(self, callback: callable) -> None:
         self._on_app_hover = callback
 
+    def set_favorite_provider(self, provider: callable) -> None:
+        """provider(entry) -> bool : whether the app is currently a favorite."""
+        self._favorite_provider = provider
+
+    def set_on_toggle_favorite(self, callback: callable) -> None:
+        """callback(entry) : toggle the app's favorite state."""
+        self._on_toggle_favorite = callback
+
     def populate(self, apps: list[AppEntry]) -> None:
         """Replace all cards with the given app list."""
         child = self._flowbox.get_first_child()
@@ -169,6 +179,21 @@ class AppGrid(Gtk.Box):
         motion.connect("leave", self._on_card_leave)
         button.add_controller(motion)
 
+        # Right-click → favorites context menu
+        secondary = Gtk.GestureClick.new()
+        secondary.set_button(Gdk.BUTTON_SECONDARY)
+        secondary.connect("pressed", self._on_card_secondary, button, entry)
+        button.add_controller(secondary)
+
+        # Long-press (touch) → same context menu
+        long_press = Gtk.GestureLongPress.new()
+        long_press.set_touch_only(True)
+        long_press.connect(
+            "pressed",
+            lambda _g, x, y: self._show_favorite_menu(button, entry, x, y),
+        )
+        button.add_controller(long_press)
+
         # Content: icon + name (vertical)
         content = Gtk.Box(orientation=Gtk.Orientation.VERTICAL, spacing=6)
         content.set_halign(Gtk.Align.CENTER)
@@ -229,6 +254,53 @@ class AppGrid(Gtk.Box):
     def _on_card_clicked(self, _button: Gtk.Button, entry: AppEntry) -> None:
         if self._on_app_activated:
             self._on_app_activated(entry)
+
+    def _on_card_secondary(
+        self,
+        gesture: Gtk.GestureClick,
+        _n_press: int,
+        x: float,
+        y: float,
+        button: Gtk.Button,
+        entry: AppEntry,
+    ) -> None:
+        gesture.set_state(Gtk.EventSequenceState.CLAIMED)
+        self._show_favorite_menu(button, entry, x, y)
+
+    def _show_favorite_menu(
+        self, button: Gtk.Button, entry: AppEntry, x: float, y: float
+    ) -> None:
+        """Show a small popover to add/remove the app from favorites."""
+        if self._on_toggle_favorite is None:
+            return
+        is_fav = bool(self._favorite_provider and self._favorite_provider(entry))
+
+        popover = Gtk.Popover()
+        popover.set_parent(button)
+        popover.set_has_arrow(True)
+        popover.set_pointing_to(Gdk.Rectangle(int(x), int(y), 1, 1))
+        popover.set_autohide(True)
+
+        item = Gtk.Button()
+        item.add_css_class("flat")
+        item.set_halign(Gtk.Align.FILL)
+        content = Gtk.Box(orientation=Gtk.Orientation.HORIZONTAL, spacing=8)
+        # Filled star = currently a favorite (click to remove); outline = add.
+        icon_name = "starred-symbolic" if is_fav else "non-starred-symbolic"
+        content.append(Gtk.Image.new_from_icon_name(icon_name))
+        label = _("Remove from favorites") if is_fav else _("Add to favorites")
+        content.append(Gtk.Label(label=label))
+        item.set_child(content)
+
+        def _activate(_b: Gtk.Button) -> None:
+            popover.popdown()
+            if self._on_toggle_favorite:
+                self._on_toggle_favorite(entry)
+
+        item.connect("clicked", _activate)
+        popover.set_child(item)
+        popover.connect("closed", lambda p: p.unparent())
+        popover.popup()
 
     def _on_card_enter(
         self,

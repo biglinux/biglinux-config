@@ -97,6 +97,19 @@ config, fica desabilitado.
   BigLinux disponível` em vez dos caminhos crus de configuração.
 - Selos também expõem nome acessível (`set_label`).
 
+## Favoritos editáveis
+
+- Menu de contexto por **botão direito** (e **long-press** em toque) sobre o card:
+  um `Gtk.Popover` com **"Adicionar aos favoritos"** (estrela vazada) ou
+  **"Remover dos favoritos"** (estrela cheia), conforme o estado atual.
+- Persistência em `~/.config/restore-settings/settings.json` via
+  `backend/user_prefs.py` (chaves `favorites-added` / `favorites-removed`),
+  com read-modify-write que preserva `show-welcome`.
+- A lista de Favoritos = **(auto-detectados ∪ adicionados) − removidos**. Assim o
+  usuário pode tanto fixar novos apps quanto ocultar favoritos automáticos.
+- Ao esvaziar os favoritos, a categoria sai da sidebar; ao adicionar o primeiro,
+  ela reaparece. O grid de Favoritos atualiza na hora.
+
 ## Internacionalização
 
 - Todas as novas strings passam por `_()`/`ngettext`. A geração de POT/PO/MO/JSON

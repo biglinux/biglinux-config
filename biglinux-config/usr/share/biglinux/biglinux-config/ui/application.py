@@ -14,6 +14,7 @@ from gi.repository import Adw, Gdk, GLib, Gio, Gtk
 from utils import _
 from data.app_registry import AppEntry, CATEGORIES
 from backend.app_detector import get_installed_apps, get_favorites
+from backend import user_prefs
 from backend.flatpak_detector import get_installed_flatpaks
 from ui.category_sidebar import CategorySidebar
 from ui.app_grid import AppGrid
@@ -120,8 +121,9 @@ class BigConfigApp(Adw.Application):
         for entry in all_apps:
             self._apps_by_category.setdefault(entry.category, []).append(entry)
 
-        favorites = get_favorites(all_apps)
-        self._apps_by_category["favorites"] = favorites
+        # Base set of auto-detected favorites (MIME defaults + static picks).
+        self._auto_fav_ids = {e.app_id for e in get_favorites(all_apps)}
+        self._rebuild_favorites(all_apps)
 
         for cat_info in CATEGORIES:
             cid = cat_info["id"]
@@ -137,6 +139,33 @@ class BigConfigApp(Adw.Application):
         win.set_loading(False)
 
         return GLib.SOURCE_REMOVE
+
+    def _rebuild_favorites(self, all_apps: list[AppEntry] | None = None) -> None:
+        """Recompute the favorites list = (auto ∪ user-added) − user-removed."""
+        if all_apps is None:
+            all_apps = self._installed_apps + self._flatpak_apps
+        fav_ids = user_prefs.resolve_favorite_ids(getattr(self, "_auto_fav_ids", set()))
+        self._fav_ids = {e.app_id for e in all_apps if e.app_id in fav_ids}
+        # Preserve auto order first, then user-added extras.
+        auto_order = [e for e in get_favorites(all_apps) if e.app_id in self._fav_ids]
+        seen = {e.app_id for e in auto_order}
+        extras = [e for e in all_apps
+                  if e.app_id in self._fav_ids and e.app_id not in seen]
+        self._apps_by_category["favorites"] = auto_order + extras
+
+    def is_favorite(self, entry: AppEntry) -> bool:
+        return entry.app_id in getattr(self, "_fav_ids", set())
+
+    def toggle_favorite(self, win: BigConfigWindow, entry: AppEntry) -> None:
+        if self.is_favorite(entry):
+            user_prefs.remove_favorite(entry.app_id)
+        else:
+            user_prefs.add_favorite(entry.app_id)
+        self._rebuild_favorites()
+        win.sidebar.set_category_visible(
+            "favorites", bool(self._apps_by_category.get("favorites")))
+        if self._current_category == "favorites" and not getattr(self, "_search_mode", False):
+            self._update_grid(win)
 
     def on_category_changed(self, win: BigConfigWindow, category_id: str) -> None:
         self._current_category = category_id
@@ -309,6 +338,10 @@ class BigConfigWindow(Adw.ApplicationWindow):
             lambda entry: app.on_app_activated(self, entry)
         )
         self.grid.set_on_app_hover(self._on_hover_info)
+        self.grid.set_favorite_provider(app.is_favorite)
+        self.grid.set_on_toggle_favorite(
+            lambda entry: app.toggle_favorite(self, entry)
+        )
         self._content_stack.add_named(self.grid, "grid")
         self._content_stack.set_visible_child_name("loading")
 
