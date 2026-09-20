@@ -136,18 +136,20 @@ def show_restore_dialog(
     scroll.set_vexpand(True)
 
     clamp = Adw.Clamp()
-    clamp.set_maximum_size(360)
-    clamp.set_tightening_threshold(360)
+    clamp.set_maximum_size(380)
+    clamp.set_tightening_threshold(380)
 
-    content_box = Gtk.Box(orientation=Gtk.Orientation.VERTICAL, spacing=20)
-    content_box.set_margin_top(8)
+    content_box = Gtk.Box(orientation=Gtk.Orientation.VERTICAL, spacing=18)
+    content_box.set_margin_top(4)
     content_box.set_margin_bottom(24)
     content_box.set_margin_start(12)
     content_box.set_margin_end(12)
 
     # ── Header block: icon + name + one-line summary ──
-    head_box = Gtk.Box(orientation=Gtk.Orientation.VERTICAL, spacing=8)
+    head_box = Gtk.Box(orientation=Gtk.Orientation.VERTICAL, spacing=6)
     head_box.set_halign(Gtk.Align.CENTER)
+    head_box.set_margin_top(8)
+    head_box.set_margin_bottom(2)
 
     app_icon = Gtk.Image()
     app_icon.set_pixel_size(72)
@@ -275,6 +277,8 @@ def show_restore_dialog(
     # ── Restore (destructive) ──
     restore_group = Adw.PreferencesGroup()
     restore_group.set_title(_("Restore defaults"))
+    restore_group.set_description(
+        _("These actions replace your current settings."))
 
     if skel_exists:
         restore_group.add(_action_row(
