@@ -1163,14 +1163,9 @@ APP_REGISTRY: list[AppEntry] = [
     ),
 
     # ── Customization ────────────────────────────────────────────────────
-    AppEntry(
-        app_id="gnome-tweaks",
-        name="GNOME Tweaks",
-        icon="org.gnome.tweaks",
-        binary="/usr/bin/gnome-tweaks",
-        category="customization",
-        config_paths=[],  # modifies dconf only
-    ),
+    # NOTE: GNOME Tweaks was removed from the registry — it stores nothing in
+    # dotfiles (dconf only), so there was nothing to reset, back up or restore.
+    # dconf-based support would need a dedicated code path (see docs/03).
     AppEntry(
         app_id="kvantum",
         name="Kvantum Manager",
@@ -1237,7 +1232,28 @@ APP_REGISTRY: list[AppEntry] = [
             "~/.local/share/konsole",
             "~/.local/share/dolphin",
         ],
-        skel_paths=["/etc/skel/.config", "/etc/skel/.local"],
+        # SAFETY: never point skel at ~/.config or ~/.local wholesale — that
+        # would wipe every other application's configuration.  List only the
+        # specific KDE files/dirs BigLinux ships in /etc/skel.
+        skel_paths=[
+            "/etc/skel/.config/plasmarc",
+            "/etc/skel/.config/plasmashellrc",
+            "/etc/skel/.config/kwinrc",
+            "/etc/skel/.config/kwinrulesrc",
+            "/etc/skel/.config/kdeglobals",
+            "/etc/skel/.config/kglobalshortcutsrc",
+            "/etc/skel/.config/kcminputrc",
+            "/etc/skel/.config/kscreenlockerrc",
+            "/etc/skel/.config/ksmserverrc",
+            "/etc/skel/.config/ksplashrc",
+            "/etc/skel/.config/kactivitymanagerdrc",
+            "/etc/skel/.config/baloofilerc",
+            "/etc/skel/.config/dolphinrc",
+            "/etc/skel/.config/konsolerc",
+            "/etc/skel/.local/share/kxmlgui5",
+            "/etc/skel/.local/share/konsole",
+            "/etc/skel/.local/share/dolphin",
+        ],
         is_de=True,
         logout_required=True,
         process_name="plasmashell",
