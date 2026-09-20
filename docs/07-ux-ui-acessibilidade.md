@@ -54,10 +54,15 @@ config, fica desabilitado.
 
 ## Cancelamento e progresso
 
-- Reset agora tem **botão Cancelar** real (event + rollback). Export/Import já
-  tinham cancelamento via fechar o diálogo; mantido.
-- Progresso de export/import é reportado em **bytes processados / bytes totais**
-  pelo backend.
+- Reset agora tem **botão Cancelar** real (event + rollback).
+- Export e Import compartilham **um único componente de progresso**
+  (`_build_progress_dialog`) com o mesmo idioma Adwaita: `Adw.Dialog` com header
+  plano + botão **Cancelar**, spinner, barra determinada e legenda do item atual.
+- A barra mostra **percentual + tamanhos reais** — ex.: `46% · 12,0 MB / 25,8 MB`
+  (progresso por bytes). Antes o export exibia contadores de bytes crus como
+  `5242881/104857600`; corrigido.
+- Fechar o diálogo também cancela (o `cancel_event` é honrado pelo backend, que
+  então reverte/limpa).
 
 ## Erros compreensíveis
 

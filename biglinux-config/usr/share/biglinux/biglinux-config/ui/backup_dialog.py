@@ -4,7 +4,6 @@ from __future__ import annotations
 
 import os
 import threading
-import time
 
 import gi
 
@@ -12,7 +11,7 @@ gi.require_version("Gtk", "4.0")
 gi.require_version("Adw", "1")
 from gi.repository import Adw, Gdk, Gio, GLib, Gtk
 
-from utils import _, set_label
+from utils import _, ngettext, set_label
 from data.app_registry import AppEntry
 from backend.backup_manager import (
     BackupResult,
@@ -199,14 +198,14 @@ def show_export_dialog(
             return
         active = select_all_check.get_active()
         _toggling[0] = True
-        for _, chk, _ in check_rows:
+        for _row, chk, _entry in check_rows:
             chk.set_active(active)
         _toggling[0] = False
 
     select_all_check.connect("toggled", _on_select_all_toggled)
 
     def _on_export_clicked(_btn: Gtk.Button) -> None:
-        selected = [entry for _, chk, entry in check_rows if chk.get_active()]
+        selected = [entry for _row, chk, entry in check_rows if chk.get_active()]
         if not selected:
             return
         full_dir = full_dir_row.get_active()
@@ -257,6 +256,97 @@ def _pick_save_location(
     file_dialog.save(parent, None, _on_save_response)
 
 
+def _build_progress_dialog(
+    parent: Adw.ApplicationWindow,
+    title_text: str,
+    cancel_event: threading.Event,
+):
+    """Create a consistent byte-based progress dialog.
+
+    Returns ``(dialog, update)`` where ``update(done, total, label)`` is safe to
+    call from a worker thread (it re-marshals to the main loop).  The dialog has a
+    real Cancel button in the header; closing it also cancels.
+    """
+    dialog = Adw.Dialog()
+    dialog.set_content_width(400)
+    dialog.set_content_height(-1)
+    dialog.connect("closed", lambda _d: cancel_event.set())
+
+    header = Adw.HeaderBar()
+    header.set_show_title(False)
+    cancel_btn = Gtk.Button(label=_("Cancel"))
+    cancel_btn.add_css_class("flat")
+    cancel_btn.connect("clicked", lambda _b: dialog.close())
+    header.pack_start(cancel_btn)
+
+    box = Gtk.Box(orientation=Gtk.Orientation.VERTICAL, spacing=16)
+    box.set_valign(Gtk.Align.CENTER)
+    box.set_margin_top(12)
+    box.set_margin_bottom(28)
+    box.set_margin_start(24)
+    box.set_margin_end(24)
+
+    spinner = Adw.Spinner()
+    spinner.set_size_request(40, 40)
+    spinner.set_halign(Gtk.Align.CENTER)
+    box.append(spinner)
+
+    title_label = Gtk.Label(label=title_text)
+    title_label.add_css_class("title-4")
+    title_label.set_wrap(True)
+    title_label.set_justify(Gtk.Justification.CENTER)
+    box.append(title_label)
+
+    progress_bar = Gtk.ProgressBar()
+    progress_bar.set_show_text(True)
+    progress_bar.set_text("0%")
+    progress_bar.pulse()
+    box.append(progress_bar)
+
+    sub_label = Gtk.Label(label=_("Preparing…"))
+    sub_label.add_css_class("dim-label")
+    sub_label.add_css_class("caption")
+    sub_label.set_ellipsize(2)  # Pango.EllipsizeMode.MIDDLE
+    box.append(sub_label)
+
+    toolbar = Adw.ToolbarView()
+    toolbar.set_top_bar_style(Adw.ToolbarStyle.FLAT)
+    toolbar.add_top_bar(header)
+    toolbar.set_content(box)
+    dialog.set_child(toolbar)
+    dialog.present(parent)
+
+    state = {"pulsing": True}
+
+    def _pulse() -> bool:
+        if state["pulsing"]:
+            progress_bar.pulse()
+            return True
+        return False
+
+    GLib.timeout_add(120, _pulse)
+
+    def update(done: int, total: int, label: str) -> None:
+        if cancel_event.is_set():
+            return
+
+        def _do() -> bool:
+            state["pulsing"] = False
+            frac = min(done / total, 1.0) if total > 0 else 0.0
+            progress_bar.set_fraction(frac)
+            if total > 0:
+                progress_bar.set_text(
+                    f"{int(frac * 100)}% · {format_size(done)} / {format_size(total)}"
+                )
+            if label:
+                sub_label.set_label(label)
+            return False
+
+        GLib.idle_add(_do)
+
+    return dialog, update
+
+
 def _execute_export(
     parent: Adw.ApplicationWindow,
     entries: list[AppEntry],
@@ -265,65 +355,17 @@ def _execute_export(
 ) -> None:
     """Run the export in a background thread with a progress dialog."""
     cancel_event = threading.Event()
-
-    progress_dialog = Adw.Dialog()
-    progress_dialog.set_title(_("Exporting…"))
-    progress_dialog.set_content_width(420)
-    progress_dialog.set_content_height(260)
-
-    def _on_dialog_closed(_dialog: Adw.Dialog) -> None:
-        cancel_event.set()
-
-    progress_dialog.connect("closed", _on_dialog_closed)
-
-    progress_box = Gtk.Box(
-        orientation=Gtk.Orientation.VERTICAL, spacing=16
-    )
-    progress_box.set_valign(Gtk.Align.CENTER)
-    progress_box.set_halign(Gtk.Align.CENTER)
-    progress_box.set_margin_start(24)
-    progress_box.set_margin_end(24)
-
-    spinner = Adw.Spinner()
-    spinner.set_size_request(48, 48)
-    progress_box.append(spinner)
-
-    title_label = Gtk.Label(
-        label=_("Exporting settings for %d applications…") % len(entries)
-    )
-    title_label.add_css_class("title-4")
-    progress_box.append(title_label)
-
-    progress_bar = Gtk.ProgressBar()
-    progress_bar.set_show_text(True)
-    progress_box.append(progress_bar)
-
-    app_label = Gtk.Label(label="")
-    app_label.add_css_class("dim-label")
-    app_label.set_ellipsize(3)  # Pango.EllipsizeMode.END
-    progress_box.append(app_label)
-
-    toolbar = Adw.ToolbarView()
-    toolbar.add_top_bar(Adw.HeaderBar())
-    toolbar.set_content(progress_box)
-    progress_dialog.set_child(toolbar)
-    progress_dialog.present(parent)
-
-    def _update_progress(current: int, total: int, app_name: str) -> None:
-        if cancel_event.is_set():
-            return
-        def _do_update() -> bool:
-            fraction = (current + 1) / total if total > 0 else 0
-            progress_bar.set_fraction(fraction)
-            progress_bar.set_text(f"{current + 1}/{total}")
-            app_label.set_label(app_name)
-            return False
-        GLib.idle_add(_do_update)
+    title = ngettext(
+        "Exporting settings for %d application…",
+        "Exporting settings for %d applications…",
+        len(entries),
+    ) % len(entries)
+    progress_dialog, update = _build_progress_dialog(parent, title, cancel_event)
 
     def _worker() -> None:
         result = export_backup(
             entries, archive_path, full_directory,
-            progress_callback=_update_progress,
+            progress_callback=update,
             cancel_event=cancel_event,
         )
         if not cancel_event.is_set():
@@ -787,81 +829,13 @@ def _execute_import(
 ) -> None:
     """Run the import in a background thread with a progress dialog."""
     cancel_event = threading.Event()
-
-    progress_dialog = Adw.Dialog()
-    progress_dialog.set_title(_("Importing…"))
-    progress_dialog.set_content_width(420)
-    progress_dialog.set_content_height(260)
-
-    def _on_dialog_closed(_dialog: Adw.Dialog) -> None:
-        cancel_event.set()
-
-    progress_dialog.connect("closed", _on_dialog_closed)
-
-    progress_box = Gtk.Box(
-        orientation=Gtk.Orientation.VERTICAL, spacing=16
-    )
-    progress_box.set_valign(Gtk.Align.CENTER)
-    progress_box.set_halign(Gtk.Align.CENTER)
-    progress_box.set_margin_start(24)
-    progress_box.set_margin_end(24)
-
-    spinner = Adw.Spinner()
-    spinner.set_size_request(48, 48)
-    progress_box.append(spinner)
-
-    title_label = Gtk.Label(
-        label=_("Importing settings from backup…")
-    )
-    title_label.add_css_class("title-4")
-    progress_box.append(title_label)
-
-    progress_bar = Gtk.ProgressBar()
-    progress_bar.set_show_text(True)
-    progress_bar.set_text("0%")
-    progress_bar.pulse()
-    progress_box.append(progress_bar)
-
-    app_label = Gtk.Label(label=_("Preparing…"))
-    app_label.add_css_class("dim-label")
-    app_label.set_ellipsize(3)  # Pango.EllipsizeMode.END
-    progress_box.append(app_label)
-
-    toolbar = Adw.ToolbarView()
-    toolbar.add_top_bar(Adw.HeaderBar())
-    toolbar.set_content(progress_box)
-    progress_dialog.set_child(toolbar)
-    progress_dialog.present(parent)
-
-    # Pulse bar while preparing
-    pulse_active = [True]
-
-    def _pulse() -> bool:
-        if pulse_active[0]:
-            progress_bar.pulse()
-            return True
-        return False
-
-    GLib.timeout_add(100, _pulse)
-
-    def _update_progress(current: int, total: int, app_name: str) -> None:
-        if cancel_event.is_set():
-            return
-        def _do_update() -> bool:
-            pulse_active[0] = False
-            fraction = min(current / total, 1.0) if total > 0 else 0
-            progress_bar.set_fraction(fraction)
-            pct = int(fraction * 100)
-            progress_bar.set_text(f"{pct}%")
-            if app_name:
-                app_label.set_label(app_name)
-            return False
-        GLib.idle_add(_do_update)
+    progress_dialog, update = _build_progress_dialog(
+        parent, _("Importing settings from backup…"), cancel_event)
 
     def _worker() -> None:
         result = import_backup(
             archive_path, selected_ids,
-            progress_callback=_update_progress,
+            progress_callback=update,
             cancel_event=cancel_event,
         )
         if not cancel_event.is_set():
