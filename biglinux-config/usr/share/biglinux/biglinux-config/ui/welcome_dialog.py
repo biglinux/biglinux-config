@@ -1,4 +1,4 @@
-"""Welcome dialog for Restore Settings — shows features on first launch."""
+"""Welcome dialog for Restore Settings."""
 
 from __future__ import annotations
 
@@ -12,47 +12,99 @@ gi.require_version("Gtk", "4.0")
 gi.require_version("Adw", "1")
 from gi.repository import Adw, GLib, Gtk
 
-from utils import _
+from utils import _, set_label
 
-_CONFIG_DIR = pathlib.Path(
-    os.environ.get("XDG_CONFIG_HOME", os.path.expanduser("~/.config"))
-) / "restore-settings"
-
+_CONFIG_DIR = (
+    pathlib.Path(os.environ.get("XDG_CONFIG_HOME", os.path.expanduser("~/.config")))
+    / "restore-settings"
+)
 _CONFIG_FILE = _CONFIG_DIR / "settings.json"
+
+
+WELCOME_FEATURES = (
+    (
+        "restore-default-symbolic",
+        _("Restore BigLinux Defaults"),
+        _(
+            "Restore the settings provided by BigLinux\n"
+            "without changing unrelated files"
+        ),
+    ),
+    (
+        "edit-undo-symbolic",
+        _("Restore Program Defaults"),
+        _("Remove custom settings so the app\ncan recreate its original defaults"),
+    ),
+    (
+        "document-save-symbolic",
+        _("Export Settings"),
+        _("Back up selected applications\nto a compressed .tar.gz archive"),
+    ),
+    (
+        "document-open-symbolic",
+        _("Import Settings"),
+        _("Restore selected applications from\na previously exported backup"),
+    ),
+    (
+        "folder-symbolic",
+        _("Full Directory Backup"),
+        _("Optionally include complete app folders\ninstead of only registered paths"),
+    ),
+    (
+        "folder-flatpak",
+        _("Native & Flatpak Apps"),
+        _("Manage settings for installed native\nand Flatpak applications together"),
+    ),
+    (
+        "system-search-symbolic",
+        _("Search & Favorites"),
+        _("Find supported applications quickly\nand keep a personal favorites list"),
+    ),
+    (
+        "preferences-system-symbolic",
+        _("Desktop Settings"),
+        _(
+            "Handle registered GSettings/dconf data\n"
+            "without touching unrelated preferences"
+        ),
+    ),
+)
 
 
 def _load_settings() -> dict:
     if _CONFIG_FILE.is_file():
         try:
-            return json.loads(_CONFIG_FILE.read_text())
+            data = json.loads(_CONFIG_FILE.read_text(encoding="utf-8"))
+            return data if isinstance(data, dict) else {}
         except (json.JSONDecodeError, OSError):
             pass
     return {}
 
 
 def _save_settings(data: dict) -> None:
-    _CONFIG_DIR.mkdir(parents=True, exist_ok=True)
-    _CONFIG_FILE.write_text(json.dumps(data, indent=2))
+    try:
+        _CONFIG_DIR.mkdir(parents=True, exist_ok=True)
+        _CONFIG_FILE.write_text(
+            json.dumps(data, indent=2, ensure_ascii=False), encoding="utf-8"
+        )
+    except OSError:
+        pass
 
 
 def should_show_welcome() -> bool:
-    return _load_settings().get("show-welcome", True)
+    return bool(_load_settings().get("show-welcome", True))
 
 
 class WelcomeDialog:
-    """Welcome dialog explaining Restore Settings features."""
+    """Welcome dialog explaining the main Restore Settings features."""
 
     def __init__(self, parent: Adw.ApplicationWindow) -> None:
         self._parent = parent
+        self._dialog: Adw.Dialog | None = None
         self._show_switch: Gtk.Switch | None = None
-        self._dialog = self._build()
+        self._build_ui()
 
-    def present(self) -> None:
-        self._dialog.present(self._parent)
-
-    # ── Build UI ─────────────────────────────────────────────────
-
-    def _build(self) -> Adw.Dialog:
+    def _build_ui(self) -> None:
         scrolled = Gtk.ScrolledWindow()
         scrolled.set_policy(Gtk.PolicyType.NEVER, Gtk.PolicyType.AUTOMATIC)
         scrolled.set_vexpand(True)
@@ -61,8 +113,8 @@ class WelcomeDialog:
         content.set_margin_start(20)
         content.set_margin_end(20)
         content.set_margin_top(20)
+        content.set_margin_bottom(12)
 
-        # ── Header ───────────────────────────────────────────────
         header = Gtk.Box(orientation=Gtk.Orientation.VERTICAL, spacing=12)
         header.set_halign(Gtk.Align.CENTER)
 
@@ -73,156 +125,134 @@ class WelcomeDialog:
         title = Gtk.Label()
         title.set_markup(
             "<span size='xx-large' weight='bold'>"
-            + _("Welcome to Restore Settings")
+            + GLib.markup_escape_text(_("Welcome to Restore Settings"))
             + "</span>"
         )
         header.append(title)
 
-        subtitle = Gtk.Label(
-            label=_(
-                "Easily restore, backup, and manage application settings on BigLinux."
+        subtitle = Gtk.Label()
+        subtitle.set_markup(
+            "<span size='large'>"
+            + GLib.markup_escape_text(
+                _("Restore, back up, and manage application settings on BigLinux")
             )
+            + "</span>"
         )
         subtitle.add_css_class("dim-label")
-        subtitle.set_wrap(True)
-        subtitle.set_justify(Gtk.Justification.CENTER)
         header.append(subtitle)
 
         content.append(header)
 
-        # ── Features (two columns) ──────────────────────────────
-        columns = Gtk.Box(orientation=Gtk.Orientation.HORIZONTAL, spacing=24)
-        columns.set_margin_top(18)
-        columns.set_halign(Gtk.Align.CENTER)
-        columns.set_hexpand(True)
+        features = Gtk.FlowBox()
+        features.set_selection_mode(Gtk.SelectionMode.NONE)
+        features.set_homogeneous(True)
+        features.set_min_children_per_line(1)
+        features.set_max_children_per_line(2)
+        features.set_row_spacing(2)
+        features.set_column_spacing(24)
+        features.set_margin_top(18)
+        features.set_halign(Gtk.Align.CENTER)
+        features.set_hexpand(True)
 
-        left = Gtk.Box(orientation=Gtk.Orientation.VERTICAL, spacing=12)
-        left.set_hexpand(True)
+        for feature in WELCOME_FEATURES:
+            features.insert(self._create_feature_box(*feature), -1)
 
-        left_features = [
-            (
-                "🔄 " + _("Restore BigLinux Defaults"),
+        content.append(features)
+
+        tip = Gtk.Label()
+        tip.set_markup(
+            "<span size='small'>"
+            + GLib.markup_escape_text(
                 _(
-                    "Reset any application to the BigLinux default\n"
-                    "settings with a single click using /etc/skel."
-                ),
-            ),
-            (
-                "📦 " + _("Export Settings"),
-                _(
-                    "Back up dotfiles for multiple applications\n"
-                    "into a single compressed .tar.gz archive."
-                ),
-            ),
-            (
-                "🔍 " + _("Search Across All Apps"),
-                _(
-                    "Quickly find any installed application\n"
-                    "using the integrated search in the header bar."
-                ),
-            ),
-        ]
-        for t, d in left_features:
-            left.append(self._feature_box(t, d))
-        columns.append(left)
+                    "Tip: Start typing to search; right-click an application "
+                    "to manage favorites"
+                )
+            )
+            + "</span>"
+        )
+        tip.add_css_class("dim-label")
+        tip.set_margin_top(12)
+        content.append(tip)
 
-        right = Gtk.Box(orientation=Gtk.Orientation.VERTICAL, spacing=12)
-        right.set_hexpand(True)
+        scrolled.set_child(content)
 
-        right_features = [
-            (
-                "📂 " + _("Import Settings"),
-                _(
-                    "Restore previously exported settings from\n"
-                    "a .tar.gz backup with per-application selection."
-                ),
-            ),
-            (
-                "🖥️ " + _("Flatpak Support"),
-                _(
-                    "View and manage Flatpak application\n"
-                    "settings alongside native packages."
-                ),
-            ),            (
-                "📋 " + _("Organized by Category"),
-                _(
-                    "Browse applications grouped by category:\n"
-                    "browsers, multimedia, office, system, and more."
-                ),
-            ),        ]
-        for t, d in right_features:
-            right.append(self._feature_box(t, d))
-        columns.append(right)
-
-        content.append(columns)
-
-        # ── Separator + show-on-startup switch ──────────────────
-        sep = Gtk.Separator(orientation=Gtk.Orientation.HORIZONTAL)
-        sep.set_margin_top(12)
-        content.append(sep)
-
-        switch_row = Gtk.Box(orientation=Gtk.Orientation.HORIZONTAL, spacing=12)
-        switch_row.set_margin_top(12)
-
-        switch_label = Gtk.Label(label=_("Show this dialog on startup"))
-        switch_label.set_xalign(0)
-        switch_label.set_hexpand(True)
-        switch_row.append(switch_label)
+        bottom_bar = Gtk.Box(orientation=Gtk.Orientation.HORIZONTAL, spacing=12)
+        bottom_bar.set_margin_start(20)
+        bottom_bar.set_margin_end(20)
+        bottom_bar.set_margin_top(12)
+        bottom_bar.set_margin_bottom(16)
 
         self._show_switch = Gtk.Switch()
         self._show_switch.set_valign(Gtk.Align.CENTER)
         self._show_switch.set_active(should_show_welcome())
-        switch_row.append(self._show_switch)
 
-        content.append(switch_row)
+        switch_label = Gtk.Label(label=_("Show dialog on startup"))
+        switch_label.set_xalign(0)
+        set_label(self._show_switch, switch_label.get_label())
 
-        # ── Close button ────────────────────────────────────────
-        btn_box = Gtk.Box(orientation=Gtk.Orientation.HORIZONTAL)
-        btn_box.set_margin_top(18)
-        btn_box.set_halign(Gtk.Align.CENTER)
+        switch_box = Gtk.Box(orientation=Gtk.Orientation.HORIZONTAL, spacing=8)
+        switch_box.append(self._show_switch)
+        switch_box.append(switch_label)
+        switch_box.set_hexpand(True)
+        bottom_bar.append(switch_box)
 
-        close_btn = Gtk.Button(label=_("Let's Start"))
-        close_btn.add_css_class("suggested-action")
-        close_btn.add_css_class("pill")
-        close_btn.set_size_request(150, -1)
-        close_btn.connect("clicked", self._on_close)
-        btn_box.append(close_btn)
+        start_button = Gtk.Button(label=_("Let's Start"))
+        start_button.add_css_class("suggested-action")
+        start_button.add_css_class("pill")
+        start_button.set_size_request(150, -1)
+        start_button.connect("clicked", self._on_close)
+        bottom_bar.append(start_button)
 
-        content.append(btn_box)
+        outer = Gtk.Box(orientation=Gtk.Orientation.VERTICAL)
+        outer.append(scrolled)
+        outer.append(Gtk.Separator(orientation=Gtk.Orientation.HORIZONTAL))
+        outer.append(bottom_bar)
 
-        scrolled.set_child(content)
+        handle = Gtk.WindowHandle()
+        handle.set_child(outer)
 
-        dialog = Adw.Dialog()
-        dialog.set_content_width(900)
-        dialog.set_content_height(650)
-        dialog.set_child(scrolled)
-        return dialog
+        self._dialog = Adw.Dialog()
+        self._dialog.set_content_width(900)
+        self._dialog.set_content_height(650)
+        self._dialog.set_child(handle)
 
-    # ── Helpers ──────────────────────────────────────────────────
+    def present(self) -> None:
+        if self._dialog and self._parent:
+            self._dialog.present(self._parent)
 
     @staticmethod
-    def _feature_box(title: str, description: str) -> Gtk.Box:
-        box = Gtk.Box(orientation=Gtk.Orientation.VERTICAL, spacing=4)
+    def _create_feature_box(icon_name: str, title: str, description: str) -> Gtk.Box:
+        row = Gtk.Box(orientation=Gtk.Orientation.HORIZONTAL, spacing=12)
 
-        t = Gtk.Label(label=title)
-        t.add_css_class("heading")
-        t.set_halign(Gtk.Align.START)
-        t.set_wrap(True)
-        box.append(t)
+        icon = Gtk.Image.new_from_icon_name(icon_name)
+        icon.set_pixel_size(32)
+        icon.set_valign(Gtk.Align.START)
+        icon.add_css_class("dim-label")
+        row.append(icon)
 
-        d = Gtk.Label(label=description)
-        d.set_halign(Gtk.Align.START)
-        d.set_wrap(True)
-        d.set_xalign(0)
-        d.add_css_class("dim-label")
-        d.set_max_width_chars(40)
-        box.append(d)
+        text_box = Gtk.Box(orientation=Gtk.Orientation.VERTICAL, spacing=4)
 
-        return box
+        title_label = Gtk.Label()
+        title_label.set_markup(f"<b>{GLib.markup_escape_text(title)}</b>")
+        title_label.set_halign(Gtk.Align.START)
+        title_label.set_wrap(True)
+        text_box.append(title_label)
 
-    def _on_close(self, _btn: Gtk.Button) -> None:
+        description_label = Gtk.Label(label=description)
+        description_label.set_halign(Gtk.Align.START)
+        description_label.set_wrap(True)
+        description_label.set_xalign(0)
+        description_label.add_css_class("dim-label")
+        description_label.set_max_width_chars(40)
+        text_box.append(description_label)
+
+        row.append(text_box)
+        return row
+
+    def _on_close(self, _button: Gtk.Button) -> None:
         if self._show_switch:
             settings = _load_settings()
             settings["show-welcome"] = self._show_switch.get_active()
             _save_settings(settings)
-        self._dialog.close()
+        if self._dialog:
+            self._dialog.close()

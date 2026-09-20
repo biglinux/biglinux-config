@@ -1,6 +1,6 @@
 """Reliable backup / restore of dotfiles via ``.tar.gz`` archives.
 
-Design goals (see docs/02 and docs/04):
+Design goals:
 
 * **Atomic export** — the archive is written to a ``.part`` file, flushed to
   disk and only then ``os.replace``-d over the final name, so a crash or a

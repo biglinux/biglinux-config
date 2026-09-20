@@ -6,8 +6,6 @@ import os
 import subprocess
 import time
 
-import pytest
-
 import backend.reset_manager as rm
 from backend.reset_manager import ResetMode, ResetStatus
 from data.app_registry import AppEntry
@@ -16,8 +14,13 @@ from conftest import make_tree
 
 def _entry(app_id="app", config=("~/.config/app",), skel=()):
     return AppEntry(
-        app_id=app_id, name=app_id.title(), icon="", binary="/bin/true",
-        category="system", config_paths=list(config), skel_paths=list(skel),
+        app_id=app_id,
+        name=app_id.title(),
+        icon="",
+        binary="/bin/true",
+        category="system",
+        config_paths=list(config),
+        skel_paths=list(skel),
     )
 
 
@@ -44,8 +47,9 @@ def test_biglinux_default_restores_skel(fake_home, fake_skel, monkeypatch):
     monkeypatch.setattr(rm, "SKEL_ROOT", str(fake_skel))
     make_tree(fake_skel / ".config", {"apprc": "SKEL"})
     make_tree(fake_home / ".config", {"apprc": "USER"})
-    entry = _entry(config=["~/.config/apprc"],
-                   skel=[str(fake_skel / ".config" / "apprc")])
+    entry = _entry(
+        config=["~/.config/apprc"], skel=[str(fake_skel / ".config" / "apprc")]
+    )
     res = rm.reset_app(entry, ResetMode.BIGLINUX_DEFAULT)
     assert res.status is ResetStatus.SUCCESS
     assert (fake_home / ".config" / "apprc").read_text() == "SKEL"
@@ -56,9 +60,10 @@ def test_biglinux_default_refuses_structural_skel(fake_home, fake_skel, monkeypa
     monkeypatch.setattr(rm, "SKEL_ROOT", str(fake_skel))
     make_tree(fake_skel / ".config", {"apprc": "SKEL"})
     make_tree(fake_home / ".config" / "firefox", {"prefs.js": "keepme"})
-    entry = _entry(config=["~/.config/apprc"],
-                   skel=[str(fake_skel / ".config")])  # structural dest ~/.config
-    res = rm.reset_app(entry, ResetMode.BIGLINUX_DEFAULT)
+    entry = _entry(
+        config=["~/.config/apprc"], skel=[str(fake_skel / ".config")]
+    )  # structural dest ~/.config
+    rm.reset_app(entry, ResetMode.BIGLINUX_DEFAULT)
     # Unrelated app config survives.
     assert (fake_home / ".config" / "firefox" / "prefs.js").read_text() == "keepme"
 
@@ -92,18 +97,22 @@ def test_reset_rollback_on_skel_failure(fake_home, fake_skel, monkeypatch):
     monkeypatch.setattr(rm, "SKEL_ROOT", str(fake_skel))
     make_tree(fake_skel / ".config", {"apprc": "SKEL"})
     make_tree(fake_home / ".config", {"apprc": "USER"})
-    entry = _entry(config=["~/.config/apprc"],
-                   skel=[str(fake_skel / ".config" / "apprc")])
+    entry = _entry(
+        config=["~/.config/apprc"], skel=[str(fake_skel / ".config" / "apprc")]
+    )
 
     def boom(*a, **k):
         raise OSError("copy failed")
+
     monkeypatch.setattr(rm.shutil, "copy2", boom)
 
     res = rm.reset_app(entry, ResetMode.BIGLINUX_DEFAULT)
     assert res.status is ResetStatus.ROLLED_BACK
     # Original user config restored intact.
     assert (fake_home / ".config" / "apprc").read_text() == "USER"
-    leftovers = [p for p in os.listdir(fake_home) if p.startswith(".biglinux-config-reset")]
+    leftovers = [
+        p for p in os.listdir(fake_home) if p.startswith(".biglinux-config-reset")
+    ]
     assert leftovers == []
 
 
@@ -118,6 +127,7 @@ def test_backup_first_creates_backup(fake_home, tmp_path, monkeypatch):
     assert res.backup_path and os.path.exists(res.backup_path)
     # And it is a valid, importable backup.
     import backend.backup_manager as bm
+
     assert bm.verify_backup(res.backup_path)[0] is True
 
 
@@ -128,8 +138,13 @@ def test_get_running_pids_and_kill(fake_home):
     sleeper = subprocess.Popen(["sleep", "30"])
     try:
         entry = AppEntry(
-            app_id="sleep", name="Sleep", icon="", binary="/usr/bin/sleep",
-            category="system", config_paths=[], process_name="sleep",
+            app_id="sleep",
+            name="Sleep",
+            icon="",
+            binary="/usr/bin/sleep",
+            category="system",
+            config_paths=[],
+            process_name="sleep",
         )
         time.sleep(0.2)
         pids = rm.get_running_pids(entry)
@@ -145,8 +160,12 @@ def test_get_running_pids_and_kill(fake_home):
 def test_get_running_pids_no_false_positive(fake_home):
     # A binary that is not running must yield no pids.
     entry = AppEntry(
-        app_id="nope", name="Nope", icon="",
+        app_id="nope",
+        name="Nope",
+        icon="",
         binary="/usr/bin/this-binary-does-not-exist-xyz",
-        category="system", config_paths=[], process_name="this-binary-xyz-nope",
+        category="system",
+        config_paths=[],
+        process_name="this-binary-xyz-nope",
     )
     assert rm.get_running_pids(entry) == []

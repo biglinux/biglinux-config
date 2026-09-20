@@ -197,10 +197,6 @@ def show_restore_dialog(
     if existing_paths:
         n = len(existing_paths)
         count_base = ngettext("%d item", "%d items", n)
-        # Guard against broken plural catalogs ("form1,form2" in one msgstr).
-        if "," in count_base and count_base.count("%d") > 1:
-            parts = count_base.split(",")
-            count_base = parts[0] if n == 1 else parts[-1]
         summary_text = f"{count_base % n} · {format_size(total_size)}"
     else:
         summary_text = _("No settings stored yet")

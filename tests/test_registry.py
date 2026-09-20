@@ -4,13 +4,14 @@ from __future__ import annotations
 
 import os
 
-import pytest
-
 from data.app_registry import (
-    APP_REGISTRY, CATEGORIES, CATEGORY_IDS, STATIC_FAVORITE_IDS,
-    SENSITIVE_CATEGORIES, is_sensitive,
+    APP_REGISTRY,
+    CATEGORIES,
+    CATEGORY_IDS,
+    STATIC_FAVORITE_IDS,
+    SENSITIVE_CATEGORIES,
+    is_sensitive,
 )
-from backend import paths
 
 
 def test_categories_unique_and_referenced():
@@ -47,7 +48,9 @@ def test_skel_paths_are_under_skel_and_never_structural():
     forbidden = {".config", ".local", ".local/share", ".cache", ".", ""}
     for e in APP_REGISTRY:
         for p in e.skel_paths:
-            assert p.startswith("/etc/skel"), f"{e.app_id}: skel not under /etc/skel: {p}"
+            assert p.startswith("/etc/skel"), (
+                f"{e.app_id}: skel not under /etc/skel: {p}"
+            )
             rel = os.path.relpath(p, "/etc/skel")
             assert rel not in forbidden, (
                 f"{e.app_id}: skel maps to structural dir ~/{rel} — would wipe "
@@ -58,7 +61,8 @@ def test_skel_paths_are_under_skel_and_never_structural():
 def test_no_entry_with_nothing_to_act_on():
     """An entry that can neither reset nor restore anything is dead weight."""
     dead = [
-        e.app_id for e in APP_REGISTRY
+        e.app_id
+        for e in APP_REGISTRY
         if not e.config_paths and not e.skel_paths and not e.dconf_paths
     ]
     assert dead == [], f"entries with nothing to act on: {dead}"
@@ -67,11 +71,11 @@ def test_no_entry_with_nothing_to_act_on():
 def test_dconf_paths_are_valid_namespaces():
     for e in APP_REGISTRY:
         for ns in e.dconf_paths:
-            assert ns.startswith("/") and ns.endswith("/"), \
+            assert ns.startswith("/") and ns.endswith("/"), (
                 f"{e.app_id}: bad dconf namespace {ns}"
+            )
             segments = [s for s in ns.split("/") if s]
-            assert len(segments) >= 2, \
-                f"{e.app_id}: dconf namespace too broad {ns}"
+            assert len(segments) >= 2, f"{e.app_id}: dconf namespace too broad {ns}"
 
 
 def test_favorites_reference_real_ids():
@@ -93,8 +97,15 @@ def test_sensitive_categories_are_flagged():
 
 def test_known_secret_apps_are_sensitive():
     by_id = {e.app_id: e for e in APP_REGISTRY}
-    for app_id in ("bash", "zsh", "keepassxc", "bitwarden", "rclone",
-                   "firefox", "discord"):
+    for app_id in (
+        "bash",
+        "zsh",
+        "keepassxc",
+        "bitwarden",
+        "rclone",
+        "firefox",
+        "discord",
+    ):
         if app_id in by_id:
             assert is_sensitive(by_id[app_id]), f"{app_id} should be sensitive"
 

@@ -1,9 +1,9 @@
-"""Reproduction tests for the original audit findings.
+"""Regression sentinels for the historical safety fixes.
 
 Each test encodes the *original defective* behaviour.  After the fixes landed
 they no longer reproduce, so they are marked ``xfail(strict=True)``: the suite
 stays green and any regression that reintroduces a bug would flip an xfail into
-an unexpected pass and fail CI.  See docs/00 and docs/11.
+an unexpected pass and fail CI.
 """
 
 from __future__ import annotations
@@ -18,7 +18,7 @@ import backend.reset_manager as rm
 from data.app_registry import AppEntry
 from conftest import make_tree
 
-_FIXED = pytest.mark.xfail(strict=True, reason="fixed — see docs/11-relatorio-final.md")
+_FIXED = pytest.mark.xfail(strict=True, reason="fixed regression sentinel")
 
 
 # P1 (full_directory was a no-op) is now covered positively by
@@ -33,8 +33,12 @@ _FIXED = pytest.mark.xfail(strict=True, reason="fixed — see docs/11-relatorio-
 def test_p2_manifest_is_last_member(fake_home, tmp_path):
     make_tree(fake_home / ".config" / "app", {"a.txt": "a"})
     entry = AppEntry(
-        app_id="app", name="App", icon="", binary="/bin/true",
-        category="system", config_paths=["~/.config/app"],
+        app_id="app",
+        name="App",
+        icon="",
+        binary="/bin/true",
+        category="system",
+        config_paths=["~/.config/app"],
     )
     arc = tmp_path / "b.tar.gz"
     bm.export_backup([entry], str(arc))
@@ -50,8 +54,12 @@ def test_p2_manifest_is_last_member(fake_home, tmp_path):
 def test_c4_export_not_atomic(fake_home, tmp_path, monkeypatch):
     make_tree(fake_home / ".config" / "app", {"a.txt": "a"})
     entry = AppEntry(
-        app_id="app", name="App", icon="", binary="/bin/true",
-        category="system", config_paths=["~/.config/app"],
+        app_id="app",
+        name="App",
+        icon="",
+        binary="/bin/true",
+        category="system",
+        config_paths=["~/.config/app"],
     )
     arc = tmp_path / "out.tar.gz"
     opened = {}
@@ -78,8 +86,12 @@ def test_c3_import_no_rollback(fake_home, tmp_path, monkeypatch):
     # Build an archive holding two files for one app.
     make_tree(fake_home / ".config" / "app", {"a.txt": "NEW-A", "b.txt": "NEW-B"})
     entry = AppEntry(
-        app_id="app", name="App", icon="", binary="/bin/true",
-        category="system", config_paths=["~/.config/app"],
+        app_id="app",
+        name="App",
+        icon="",
+        binary="/bin/true",
+        category="system",
+        config_paths=["~/.config/app"],
     )
     arc = tmp_path / "bak.tar.gz"
     bm.export_backup([entry], str(arc))
@@ -121,14 +133,19 @@ def test_c5_symlink_roundtrip_lost(fake_home, tmp_path):
     make_tree(appdir, {"real.txt": "data"})
     (appdir / "link.txt").symlink_to("real.txt")
     entry = AppEntry(
-        app_id="app", name="App", icon="", binary="/bin/true",
-        category="system", config_paths=["~/.config/app"],
+        app_id="app",
+        name="App",
+        icon="",
+        binary="/bin/true",
+        category="system",
+        config_paths=["~/.config/app"],
     )
     arc = tmp_path / "s.tar.gz"
     bm.export_backup([entry], str(arc), full_directory=True)
 
     # Wipe and re-import into a clean home.
     import shutil as _sh
+
     _sh.rmtree(appdir)
     bm.import_backup(str(arc))
 
@@ -154,9 +171,14 @@ def test_c1_biglinux_default_wipes_whole_config(fake_home, monkeypatch):
     make_tree(fake_home / ".config", {"plasmarc": "x"})
 
     entry = AppEntry(
-        app_id="de-kde", name="KDE", icon="", binary="/bin/true",
-        category="desktop_env", config_paths=["~/.config/plasmarc"],
-        skel_paths=["/etc/skel/.config"], is_de=True,
+        app_id="de-kde",
+        name="KDE",
+        icon="",
+        binary="/bin/true",
+        category="desktop_env",
+        config_paths=["~/.config/plasmarc"],
+        skel_paths=["/etc/skel/.config"],
+        is_de=True,
     )
     rm.reset_app(entry, rm.ResetMode.BIGLINUX_DEFAULT)
 

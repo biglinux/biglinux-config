@@ -8,8 +8,6 @@ import os
 import tarfile
 import threading
 
-import pytest
-
 import backend.backup_manager as bm
 from backend.backup_manager import ImportStatus
 from data.app_registry import AppEntry
@@ -18,8 +16,12 @@ from conftest import make_tree
 
 def _entry(app_id="app", paths=("~/.config/app",)):
     return AppEntry(
-        app_id=app_id, name=app_id.title(), icon="", binary="/bin/true",
-        category="system", config_paths=list(paths),
+        app_id=app_id,
+        name=app_id.title(),
+        icon="",
+        binary="/bin/true",
+        category="system",
+        config_paths=list(paths),
     )
 
 
@@ -34,11 +36,14 @@ def _export(entries, arc, **kw):
 # --------------------------------------------------------------------------- #
 def test_roundtrip_files_dirs_unicode_spaces_perms(fake_home, tmp_path):
     appdir = fake_home / ".config" / "app"
-    make_tree(appdir, {
-        "plain.txt": "hello",
-        "sub dir": {"a b.txt": "spaces", "ção.txt": "unicode"},
-        "empty": {},
-    })
+    make_tree(
+        appdir,
+        {
+            "plain.txt": "hello",
+            "sub dir": {"a b.txt": "spaces", "ção.txt": "unicode"},
+            "empty": {},
+        },
+    )
     (appdir / "script.sh").write_text("#!/bin/sh\n")
     os.chmod(appdir / "script.sh", 0o755)
 
@@ -47,6 +52,7 @@ def test_roundtrip_files_dirs_unicode_spaces_perms(fake_home, tmp_path):
 
     # capture then wipe
     import shutil
+
     shutil.rmtree(appdir)
     res = bm.import_backup(str(arc))
     assert res.status is ImportStatus.SUCCESS
@@ -65,6 +71,7 @@ def test_roundtrip_preserves_symlinks(fake_home, tmp_path):
     arc = tmp_path / "s.tar.gz"
     _export([_entry()], arc, full_directory=True)
     import shutil
+
     shutil.rmtree(appdir)
     assert bm.import_backup(str(arc)).status is ImportStatus.SUCCESS
     assert (appdir / "rel.link").is_symlink()
@@ -131,6 +138,7 @@ def test_export_failure_leaves_no_partial(fake_home, tmp_path, monkeypatch):
 
     def boom(*a, **k):
         raise OSError("disk error")
+
     monkeypatch.setattr(bm.tarfile, "open", boom)
     r = bm.export_backup([_entry()], str(arc))
     assert r.success is False
@@ -158,8 +166,6 @@ def test_verify_detects_checksum_tamper(fake_home, tmp_path):
     arc = tmp_path / "t.tar.gz"
     _export([_entry()], arc)
     # Rebuild archive with a tampered file body but original checksums member.
-    man = None
-    checks = None
     members = []
     with tarfile.open(arc, "r:gz") as t:
         for m in t.getmembers():
@@ -197,6 +203,7 @@ def test_import_rollback_on_failure(fake_home, tmp_path, monkeypatch):
         if calls["n"] == 2:
             raise OSError("swap failed")
         return real_rename(a, b)
+
     monkeypatch.setattr(bm.os, "rename", flaky_rename)
 
     res = bm.import_backup(str(arc))
@@ -206,7 +213,9 @@ def test_import_rollback_on_failure(fake_home, tmp_path, monkeypatch):
     assert (fake_home / ".config" / "app" / "a.txt").read_text() == "OLD-A"
     assert (fake_home / ".config" / "app" / "b.txt").read_text() == "OLD-B"
     # no staging litter
-    leftovers = [p for p in os.listdir(fake_home) if p.startswith(".biglinux-config-restore")]
+    leftovers = [
+        p for p in os.listdir(fake_home) if p.startswith(".biglinux-config-restore")
+    ]
     assert leftovers == []
 
 
@@ -230,6 +239,7 @@ def test_partial_selection(fake_home, tmp_path):
     arc = tmp_path / "multi.tar.gz"
     _export([e1, e2], arc)
     import shutil
+
     shutil.rmtree(fake_home / ".config" / "app1")
     shutil.rmtree(fake_home / ".config" / "app2")
     res = bm.import_backup(str(arc), selected_app_ids={"app1"})
@@ -245,13 +255,17 @@ def test_partial_selection(fake_home, tmp_path):
 def _make_manifest_archive(arc, members, roots):
     """Build an archive with a valid v2 manifest plus arbitrary members."""
     manifest = {
-        "format": bm.BACKUP_FORMAT, "version": 2, "created_at": "",
-        "total_size": 0, "file_count": len(members),
+        "format": bm.BACKUP_FORMAT,
+        "version": 2,
+        "created_at": "",
+        "total_size": 0,
+        "file_count": len(members),
         "applications": [{"app_id": "app", "name": "App", "roots": roots}],
     }
     with tarfile.open(arc, "w:gz") as t:
         data = json.dumps(manifest).encode()
-        ti = tarfile.TarInfo(bm.MANIFEST_NAME); ti.size = len(data)
+        ti = tarfile.TarInfo(bm.MANIFEST_NAME)
+        ti.size = len(data)
         t.addfile(ti, io.BytesIO(data))
         for name, body, kind, link in members:
             ti = tarfile.TarInfo(name)
@@ -278,8 +292,7 @@ def test_reject_path_traversal(fake_home, tmp_path):
 
 def test_reject_absolute_path(fake_home, tmp_path):
     arc = tmp_path / "abs.tar.gz"
-    _make_manifest_archive(
-        arc, [("/etc/evil2", b"x", "file", "")], roots=["/etc"])
+    _make_manifest_archive(arc, [("/etc/evil2", b"x", "file", "")], roots=["/etc"])
     res = bm.import_backup(str(arc))
     assert res.success is False
 
@@ -303,19 +316,23 @@ def test_reads_v1_archive(fake_home, tmp_path):
     # Build a legacy v1 archive: files then manifest LAST with apps/paths.
     make_tree(fake_home / ".config" / "app", {"a.txt": "v1data"})
     arc = tmp_path / "v1.tar.gz"
-    home = str(fake_home)
     with tarfile.open(arc, "w:gz") as t:
         t.add(str(fake_home / ".config" / "app"), arcname=".config/app")
-        man = {"version": 1, "timestamp": "2020", "apps": [
-            {"app_id": "app", "name": "App", "paths": [".config/app"]}]}
+        man = {
+            "version": 1,
+            "timestamp": "2020",
+            "apps": [{"app_id": "app", "name": "App", "paths": [".config/app"]}],
+        }
         data = json.dumps(man).encode()
-        ti = tarfile.TarInfo(bm.MANIFEST_NAME); ti.size = len(data)
+        ti = tarfile.TarInfo(bm.MANIFEST_NAME)
+        ti.size = len(data)
         t.addfile(ti, io.BytesIO(data))
     m = bm.read_backup_manifest(str(arc))
     assert m["version"] == 1
     assert m["applications"][0]["roots"] == [".config/app"]
 
     import shutil
+
     shutil.rmtree(fake_home / ".config" / "app")
     res = bm.import_backup(str(arc))
     assert res.status is ImportStatus.SUCCESS
@@ -351,6 +368,7 @@ def test_nested_roots_multi_app(fake_home, tmp_path):
     arc = tmp_path / "nested.tar.gz"
     _export([parent, child], arc)
     import shutil
+
     shutil.rmtree(fake_home / ".config" / "x")
     res = bm.import_backup(str(arc))
     assert res.status is ImportStatus.SUCCESS
@@ -364,11 +382,12 @@ def test_disk_space_guard(fake_home, tmp_path, monkeypatch):
     _export([_entry()], arc)
 
     real_manifest = bm.read_backup_manifest(str(arc))
-    inflated = {**real_manifest, "total_size": 10 ** 12}  # 1 TB
+    inflated = {**real_manifest, "total_size": 10**12}  # 1 TB
     monkeypatch.setattr(bm, "read_backup_manifest", lambda p: inflated)
 
     class FakeUsage:
         free = 1  # 1 byte free
+
     monkeypatch.setattr(bm.shutil, "disk_usage", lambda p: FakeUsage())
 
     res = bm.import_backup(str(arc))

@@ -8,7 +8,7 @@ license=('GPL')
 url="https://github.com/biglinux/$pkgname"
 source=("git+${url}.git")
 pkgdesc="Restore application settings to defaults — GTK4/Adwaita"
-depends=('python' 'python-gobject' 'gtk4' 'libadwaita')
+depends=('python' 'python-gobject' 'gtk4' 'libadwaita' 'xdg-utils')
 optdepends=('flatpak: Flatpak application settings support'
             'dconf: GNOME/GSettings configuration support')
 md5sums=(SKIP)

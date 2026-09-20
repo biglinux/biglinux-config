@@ -1,6 +1,6 @@
 """Reset application configuration to program- or BigLinux-defaults.
 
-Safety model (see docs/04):
+Safety model:
 
 * Every path is validated through :mod:`backend.paths`; nothing outside ``$HOME``
   is ever touched and *structural* directories (``~``, ``~/.config`` …) can never
