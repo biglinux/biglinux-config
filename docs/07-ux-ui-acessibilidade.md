@@ -99,9 +99,10 @@ config, fica desabilitado.
 
 ## Favoritos editáveis
 
-- Menu de contexto por **botão direito** (e **long-press** em toque) sobre o card:
-  um `Gtk.Popover` com **"Adicionar aos favoritos"** (estrela vazada) ou
-  **"Remover dos favoritos"** (estrela cheia), conforme o estado atual.
+- Menu de contexto por **botão direito**, **long-press** (toque) e **teclado**
+  (**Menu** ou **Shift+F10**) sobre o card em foco: um `Gtk.Popover` com
+  **"Adicionar aos favoritos"** (estrela vazada) ou **"Remover dos favoritos"**
+  (estrela cheia), conforme o estado atual. Cobre 100% de operação por teclado.
 - Persistência em `~/.config/restore-settings/settings.json` via
   `backend/user_prefs.py` (chaves `favorites-added` / `favorites-removed`),
   com read-modify-write que preserva `show-welcome`.

@@ -194,6 +194,11 @@ class AppGrid(Gtk.Box):
         )
         button.add_controller(long_press)
 
+        # Keyboard: Menu key or Shift+F10 → same context menu on the focused card
+        key = Gtk.EventControllerKey.new()
+        key.connect("key-pressed", self._on_card_key, button, entry)
+        button.add_controller(key)
+
         # Content: icon + name (vertical)
         content = Gtk.Box(orientation=Gtk.Orientation.VERTICAL, spacing=6)
         content.set_halign(Gtk.Align.CENTER)
@@ -266,6 +271,22 @@ class AppGrid(Gtk.Box):
     ) -> None:
         gesture.set_state(Gtk.EventSequenceState.CLAIMED)
         self._show_favorite_menu(button, entry, x, y)
+
+    def _on_card_key(
+        self,
+        _controller: Gtk.EventControllerKey,
+        keyval: int,
+        _keycode: int,
+        state: Gdk.ModifierType,
+        button: Gtk.Button,
+        entry: AppEntry,
+    ) -> bool:
+        shift = bool(state & Gdk.ModifierType.SHIFT_MASK)
+        if keyval == Gdk.KEY_Menu or (shift and keyval == Gdk.KEY_F10):
+            self._show_favorite_menu(
+                button, entry, button.get_width() / 2, button.get_height() / 2)
+            return True
+        return False
 
     def _show_favorite_menu(
         self, button: Gtk.Button, entry: AppEntry, x: float, y: float
