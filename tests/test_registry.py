@@ -1,0 +1,118 @@
+"""Static integrity checks for the application registry."""
+
+from __future__ import annotations
+
+import os
+
+from data.app_registry import (
+    APP_REGISTRY,
+    CATEGORIES,
+    CATEGORY_IDS,
+    STATIC_FAVORITE_IDS,
+    SENSITIVE_CATEGORIES,
+    is_sensitive,
+)
+
+
+def test_categories_unique_and_referenced():
+    ids = [c["id"] for c in CATEGORIES]
+    assert len(ids) == len(set(ids))
+    for c in CATEGORIES:
+        assert c["id"] and c["label"] and c["icon"]
+
+
+def test_app_ids_unique():
+    ids = [e.app_id for e in APP_REGISTRY]
+    assert len(ids) == len(set(ids)), "duplicate app_id in registry"
+
+
+def test_every_entry_is_well_formed():
+    for e in APP_REGISTRY:
+        assert e.app_id, "empty app_id"
+        assert e.name, f"{e.app_id}: empty name"
+        assert e.binary, f"{e.app_id}: empty binary"
+        assert e.category in CATEGORY_IDS, f"{e.app_id}: bad category {e.category}"
+        assert isinstance(e.config_paths, list)
+
+
+def test_config_paths_are_home_relative():
+    for e in APP_REGISTRY:
+        for p in e.config_paths:
+            assert p.startswith("~"), f"{e.app_id}: config path not under ~: {p}"
+            # No traversal in registered paths.
+            assert ".." not in p.split("/"), f"{e.app_id}: traversal in {p}"
+
+
+def test_skel_paths_are_under_skel_and_never_structural():
+    """Guards against the catastrophic ~/.config / ~/.local wipe."""
+    forbidden = {".config", ".local", ".local/share", ".cache", ".", ""}
+    for e in APP_REGISTRY:
+        for p in e.skel_paths:
+            assert p.startswith("/etc/skel"), (
+                f"{e.app_id}: skel not under /etc/skel: {p}"
+            )
+            rel = os.path.relpath(p, "/etc/skel")
+            assert rel not in forbidden, (
+                f"{e.app_id}: skel maps to structural dir ~/{rel} — would wipe "
+                f"unrelated app configs"
+            )
+
+
+def test_no_entry_with_nothing_to_act_on():
+    """An entry that can neither reset nor restore anything is dead weight."""
+    dead = [
+        e.app_id
+        for e in APP_REGISTRY
+        if not e.config_paths and not e.skel_paths and not e.dconf_paths
+    ]
+    assert dead == [], f"entries with nothing to act on: {dead}"
+
+
+def test_dconf_paths_are_valid_namespaces():
+    for e in APP_REGISTRY:
+        for ns in e.dconf_paths:
+            assert ns.startswith("/") and ns.endswith("/"), (
+                f"{e.app_id}: bad dconf namespace {ns}"
+            )
+            segments = [s for s in ns.split("/") if s]
+            assert len(segments) >= 2, f"{e.app_id}: dconf namespace too broad {ns}"
+
+
+def test_favorites_reference_real_ids():
+    all_ids = {e.app_id for e in APP_REGISTRY}
+    for fid in STATIC_FAVORITE_IDS:
+        assert fid in all_ids, f"favorite {fid} not in registry"
+
+
+def test_sensitive_flag_is_bool():
+    for e in APP_REGISTRY:
+        assert isinstance(e.sensitive, bool), f"{e.app_id}: sensitive not bool"
+
+
+def test_sensitive_categories_are_flagged():
+    for e in APP_REGISTRY:
+        if e.category in SENSITIVE_CATEGORIES:
+            assert is_sensitive(e), f"{e.app_id} in sensitive category but not flagged"
+
+
+def test_known_secret_apps_are_sensitive():
+    by_id = {e.app_id: e for e in APP_REGISTRY}
+    for app_id in (
+        "bash",
+        "zsh",
+        "keepassxc",
+        "bitwarden",
+        "rclone",
+        "firefox",
+        "discord",
+    ):
+        if app_id in by_id:
+            assert is_sensitive(by_id[app_id]), f"{app_id} should be sensitive"
+
+
+def test_non_sensitive_stays_non_sensitive():
+    by_id = {e.app_id: e for e in APP_REGISTRY}
+    # A plain media player config is not secret.
+    for app_id in ("vlc", "mpv", "htop"):
+        if app_id in by_id:
+            assert not is_sensitive(by_id[app_id]), f"{app_id} wrongly sensitive"

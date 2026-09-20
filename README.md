@@ -27,23 +27,17 @@ Built with modern GNOME HIG principles, it integrates seamlessly into any deskto
 
 ## Features
 
-- **Restore BigLinux Defaults** — Reset any application to BigLinux default settings using `/etc/skel` skeleton files with a single click.
-- **Restore Program Defaults** — Remove all custom settings so the application recreates its original default configuration from scratch.
-- **Export Settings** — Back up dotfiles for multiple applications into a single compressed `.tar.gz` archive.
-- **Import Settings** — Restore previously exported settings from a `.tar.gz` backup with per-application selection.
-- **Full Directory Backup** — Optionally copy entire configuration directories instead of individual files.
-- **Flatpak Support** — Automatically detect and manage Flatpak application settings alongside native packages.
-- **Search** — Quickly find any installed application using the integrated search bar in the header.
-- **Organized by Category** — Browse applications grouped into 15 categories: Favorites, Browsers, Communication, Multimedia, Graphics, Office, Development, Terminals, Shell, File Managers, Downloads, System, Gaming, Customization, and Desktop Environment.
-- **Welcome Dialog** — Onboarding dialog showing all features on first launch, with a "Show on startup" toggle.
-- **Internationalization** — Translated into 29 languages via gettext `.po` files.
-
-## Screenshots
-
-<!-- Add screenshots here -->
-<!-- ![Main Window](docs/screenshot-main.png) -->
-<!-- ![Restore Dialog](docs/screenshot-restore.png) -->
-<!-- ![Export Dialog](docs/screenshot-export.png) -->
+- **Restore BigLinux Defaults** — Restore supported files from `/etc/skel` without touching unrelated application settings.
+- **Restore Program Defaults** — Remove an application's custom settings so it can recreate its own defaults.
+- **Export Settings** — Back up selected applications to a single compressed `.tar.gz` archive, with integrity checks.
+- **Import Settings** — Restore selected applications from a backup using validation and rollback protection.
+- **Full Directory Backup** — Optionally include complete configuration directories, including otherwise excluded cache data.
+- **Flatpak Support** — Detect and manage Flatpak configuration and data alongside native packages.
+- **Desktop settings** — Back up and reset only the registered GSettings/dconf namespaces.
+- **Search and Favorites** — Find applications quickly and maintain a personal Favorites category.
+- **Organized by Category** — Browse applications grouped into 15 categories, from browsers and multimedia to system tools and desktop environments.
+- **Welcome Dialog** — Onboarding dialog showing the main workflows on first launch, with a "Show on startup" toggle.
+- **Internationalization** — Translation sources are maintained for 29 languages via gettext `.po` files.
 
 ## Requirements
 
@@ -67,7 +61,7 @@ sudo pacman -S biglinux-config
 ### From Source
 
 ```bash
-git clone https://github.com/biglinux/biglinux-config.git
+git clone https://github.com/ruscher/biglinux-config.git
 cd biglinux-config
 python3 biglinux-config/usr/share/biglinux/biglinux-config/main.py
 ```
@@ -87,8 +81,8 @@ biglinux-config/
 │   ├── locale/                      # Translation files (.po, .json, .pot)
 │   └── usr/
 │       ├── bin/
-│       │   ├── big-config           # System launcher script
-│       │   └── biglinux-config      # Alternative launcher
+│       │   ├── big-config           # Compatibility symlink
+│       │   └── biglinux-config      # System launcher script
 │       ├── share/
 │       │   ├── applications/
 │       │   │   └── big-config.desktop
@@ -182,13 +176,13 @@ The application uses gettext for internationalization. Translation files are loc
 
 ### Supported Languages
 
-Bulgarian, Czech, Danish, Dutch, English, Estonian, Finnish, French, German, Greek, Hebrew, Croatian, Hungarian, Icelandic, Italian, Japanese, Korean, Norwegian, Polish, Portuguese, Portuguese (Brazil), Romanian, Russian, Slovak, Swedish, Turkish, Ukrainian, Chinese.
+Bulgarian, Czech, Danish, Dutch, English, Estonian, Finnish, French, German, Greek, Hebrew, Croatian, Hungarian, Icelandic, Italian, Japanese, Korean, Norwegian, Polish, Portuguese, Portuguese (Brazil), Romanian, Russian, Slovak, Spanish, Swedish, Turkish, Ukrainian, Chinese.
 
 ### Adding a New Translation
 
-1. Copy the template: `cp locale/biglinux-config.pot locale/<lang>.po`
+1. Copy the template: `cp biglinux-config/locale/biglinux-config.pot biglinux-config/locale/<lang>.po`
 2. Edit the `.po` file with your translations.
-3. Compile: `msgfmt locale/<lang>.po -o usr/share/locale/<lang>/LC_MESSAGES/biglinux-config.mo`
+3. Compile: `msgfmt biglinux-config/locale/<lang>.po -o biglinux-config/usr/share/locale/<lang>/LC_MESSAGES/biglinux-config.mo`
 
 ## Contributing
 
@@ -220,6 +214,29 @@ This project is licensed under the **GNU General Public License v3.0** — see t
 
 ## Links
 
-- **Repository**: [github.com/biglinux/biglinux-config](https://github.com/biglinux/biglinux-config)
-- **Issues**: [github.com/biglinux/biglinux-config/issues](https://github.com/biglinux/biglinux-config/issues)
+- **Repository**: [github.com/ruscher/biglinux-config](https://github.com/ruscher/biglinux-config)
+- **Issues**: [github.com/ruscher/biglinux-config/issues](https://github.com/ruscher/biglinux-config/issues)
 - **BigLinux**: [biglinux.com.br](https://www.biglinux.com.br/)
+
+## Troubleshooting
+
+If the application does not detect an installed program, confirm that its
+executable is available in PATH and that the program is present in the
+registry. Flatpak support requires the flatpak command; desktop settings
+support requires dconf.
+
+For a failed backup or restore, keep the original archive and use the project
+[issue tracker](https://github.com/ruscher/biglinux-config/issues) to report
+the exact operation and error message. Do not delete a pre-reset backup under
+~/.local/state/biglinux-config/ until the issue is understood.
+
+## Testing
+
+Automated tests run against an isolated temporary `$HOME` (your real
+configuration is never touched):
+
+```bash
+python3 -m pytest tests/ -q
+```
+
+The application never reads the repository documentation at runtime.

@@ -4,7 +4,6 @@ from __future__ import annotations
 
 import os
 import threading
-import time
 
 import gi
 
@@ -12,16 +11,18 @@ gi.require_version("Gtk", "4.0")
 gi.require_version("Adw", "1")
 from gi.repository import Adw, Gdk, Gio, GLib, Gtk
 
-from utils import _, set_label
-from data.app_registry import AppEntry
+from utils import _, ngettext, set_label
+from data.app_registry import AppEntry, is_sensitive
 from backend.backup_manager import (
     BackupResult,
     RestoreFromBackupResult,
     export_backup,
+    get_app_backup_name,
     get_default_backup_name,
     import_backup,
     read_backup_manifest,
 )
+from backend.app_detector import get_localized_name
 from backend.reset_manager import format_size, get_config_size, has_config
 
 
@@ -67,11 +68,19 @@ def show_export_dialog(
     desc.add_css_class("dim-label")
     content_box.append(desc)
 
+    # Privacy warning banner (revealed when a sensitive app is selected).
+    privacy_banner = Adw.Banner()
+    privacy_banner.set_title(
+        _("This backup may contain private data (passwords, cookies, sessions). "
+          "Keep it in a safe place."))
+    privacy_banner.set_revealed(False)
+    content_box.append(privacy_banner)
+
     # Full directory checkbox
     full_dir_row = Adw.SwitchRow()
-    full_dir_row.set_title(_("Copy full directories"))
+    full_dir_row.set_title(_("Include cache files"))
     full_dir_row.set_subtitle(
-        _("Include all files in each config directory, not just the listed paths")
+        _("Also back up cache directories. Makes the archive larger; usually not needed")
     )
 
     options_group = Adw.PreferencesGroup()
@@ -176,9 +185,16 @@ def show_export_dialog(
             icon.set_pixel_size(32)
             row.add_prefix(icon)
 
+            if is_sensitive(app_entry):
+                warn = Gtk.Image.new_from_icon_name("dialog-warning-symbolic")
+                warn.add_css_class("warning")
+                warn.set_tooltip_text(_("May contain private data"))
+                row.add_suffix(warn)
+
             check = Gtk.CheckButton()
             check.set_active(True)
             set_label(check, _("Include %s") % app_entry.name)
+            check.connect("toggled", lambda _c: _update_privacy_banner())
             row.add_suffix(check)
             row.set_activatable_widget(check)
 
@@ -187,7 +203,15 @@ def show_export_dialog(
 
         select_all_check.set_visible(True)
         export_btn.set_sensitive(True)
+        _update_privacy_banner()
         return False
+
+    def _update_privacy_banner() -> None:
+        revealed = any(
+            is_sensitive(entry) for _row, chk, entry in check_rows
+            if chk.get_active()
+        )
+        privacy_banner.set_revealed(revealed)
 
     # Toggle all checkboxes when the header checkbox changes
     _toggling = [False]  # guard against recursive toggling
@@ -197,14 +221,15 @@ def show_export_dialog(
             return
         active = select_all_check.get_active()
         _toggling[0] = True
-        for _, chk, _ in check_rows:
+        for _row, chk, _entry in check_rows:
             chk.set_active(active)
         _toggling[0] = False
+        _update_privacy_banner()
 
     select_all_check.connect("toggled", _on_select_all_toggled)
 
     def _on_export_clicked(_btn: Gtk.Button) -> None:
-        selected = [entry for _, chk, entry in check_rows if chk.get_active()]
+        selected = [entry for _row, chk, entry in check_rows if chk.get_active()]
         if not selected:
             return
         full_dir = full_dir_row.get_active()
@@ -255,6 +280,97 @@ def _pick_save_location(
     file_dialog.save(parent, None, _on_save_response)
 
 
+def _build_progress_dialog(
+    parent: Adw.ApplicationWindow,
+    title_text: str,
+    cancel_event: threading.Event,
+):
+    """Create a consistent byte-based progress dialog.
+
+    Returns ``(dialog, update)`` where ``update(done, total, label)`` is safe to
+    call from a worker thread (it re-marshals to the main loop).  The dialog has a
+    real Cancel button in the header; closing it also cancels.
+    """
+    dialog = Adw.Dialog()
+    dialog.set_content_width(400)
+    dialog.set_content_height(-1)
+    dialog.connect("closed", lambda _d: cancel_event.set())
+
+    header = Adw.HeaderBar()
+    header.set_show_title(False)
+    cancel_btn = Gtk.Button(label=_("Cancel"))
+    cancel_btn.add_css_class("flat")
+    cancel_btn.connect("clicked", lambda _b: dialog.close())
+    header.pack_start(cancel_btn)
+
+    box = Gtk.Box(orientation=Gtk.Orientation.VERTICAL, spacing=16)
+    box.set_valign(Gtk.Align.CENTER)
+    box.set_margin_top(12)
+    box.set_margin_bottom(28)
+    box.set_margin_start(24)
+    box.set_margin_end(24)
+
+    spinner = Adw.Spinner()
+    spinner.set_size_request(40, 40)
+    spinner.set_halign(Gtk.Align.CENTER)
+    box.append(spinner)
+
+    title_label = Gtk.Label(label=title_text)
+    title_label.add_css_class("title-4")
+    title_label.set_wrap(True)
+    title_label.set_justify(Gtk.Justification.CENTER)
+    box.append(title_label)
+
+    progress_bar = Gtk.ProgressBar()
+    progress_bar.set_show_text(True)
+    progress_bar.set_text("0%")
+    progress_bar.pulse()
+    box.append(progress_bar)
+
+    sub_label = Gtk.Label(label=_("Preparing…"))
+    sub_label.add_css_class("dim-label")
+    sub_label.add_css_class("caption")
+    sub_label.set_ellipsize(2)  # Pango.EllipsizeMode.MIDDLE
+    box.append(sub_label)
+
+    toolbar = Adw.ToolbarView()
+    toolbar.set_top_bar_style(Adw.ToolbarStyle.FLAT)
+    toolbar.add_top_bar(header)
+    toolbar.set_content(box)
+    dialog.set_child(toolbar)
+    dialog.present(parent)
+
+    state = {"pulsing": True}
+
+    def _pulse() -> bool:
+        if state["pulsing"]:
+            progress_bar.pulse()
+            return True
+        return False
+
+    GLib.timeout_add(120, _pulse)
+
+    def update(done: int, total: int, label: str) -> None:
+        if cancel_event.is_set():
+            return
+
+        def _do() -> bool:
+            state["pulsing"] = False
+            frac = min(done / total, 1.0) if total > 0 else 0.0
+            progress_bar.set_fraction(frac)
+            if total > 0:
+                progress_bar.set_text(
+                    f"{int(frac * 100)}% · {format_size(done)} / {format_size(total)}"
+                )
+            if label:
+                sub_label.set_label(label)
+            return False
+
+        GLib.idle_add(_do)
+
+    return dialog, update
+
+
 def _execute_export(
     parent: Adw.ApplicationWindow,
     entries: list[AppEntry],
@@ -263,65 +379,17 @@ def _execute_export(
 ) -> None:
     """Run the export in a background thread with a progress dialog."""
     cancel_event = threading.Event()
-
-    progress_dialog = Adw.Dialog()
-    progress_dialog.set_title(_("Exporting…"))
-    progress_dialog.set_content_width(420)
-    progress_dialog.set_content_height(260)
-
-    def _on_dialog_closed(_dialog: Adw.Dialog) -> None:
-        cancel_event.set()
-
-    progress_dialog.connect("closed", _on_dialog_closed)
-
-    progress_box = Gtk.Box(
-        orientation=Gtk.Orientation.VERTICAL, spacing=16
-    )
-    progress_box.set_valign(Gtk.Align.CENTER)
-    progress_box.set_halign(Gtk.Align.CENTER)
-    progress_box.set_margin_start(24)
-    progress_box.set_margin_end(24)
-
-    spinner = Adw.Spinner()
-    spinner.set_size_request(48, 48)
-    progress_box.append(spinner)
-
-    title_label = Gtk.Label(
-        label=_("Exporting settings for %d applications…") % len(entries)
-    )
-    title_label.add_css_class("title-4")
-    progress_box.append(title_label)
-
-    progress_bar = Gtk.ProgressBar()
-    progress_bar.set_show_text(True)
-    progress_box.append(progress_bar)
-
-    app_label = Gtk.Label(label="")
-    app_label.add_css_class("dim-label")
-    app_label.set_ellipsize(3)  # Pango.EllipsizeMode.END
-    progress_box.append(app_label)
-
-    toolbar = Adw.ToolbarView()
-    toolbar.add_top_bar(Adw.HeaderBar())
-    toolbar.set_content(progress_box)
-    progress_dialog.set_child(toolbar)
-    progress_dialog.present(parent)
-
-    def _update_progress(current: int, total: int, app_name: str) -> None:
-        if cancel_event.is_set():
-            return
-        def _do_update() -> bool:
-            fraction = (current + 1) / total if total > 0 else 0
-            progress_bar.set_fraction(fraction)
-            progress_bar.set_text(f"{current + 1}/{total}")
-            app_label.set_label(app_name)
-            return False
-        GLib.idle_add(_do_update)
+    title = ngettext(
+        "Exporting settings for %d application…",
+        "Exporting settings for %d applications…",
+        len(entries),
+    ) % len(entries)
+    progress_dialog, update = _build_progress_dialog(parent, title, cancel_event)
 
     def _worker() -> None:
         result = export_backup(
             entries, archive_path, full_directory,
-            progress_callback=_update_progress,
+            progress_callback=update,
             cancel_event=cancel_event,
         )
         if not cancel_event.is_set():
@@ -785,81 +853,13 @@ def _execute_import(
 ) -> None:
     """Run the import in a background thread with a progress dialog."""
     cancel_event = threading.Event()
-
-    progress_dialog = Adw.Dialog()
-    progress_dialog.set_title(_("Importing…"))
-    progress_dialog.set_content_width(420)
-    progress_dialog.set_content_height(260)
-
-    def _on_dialog_closed(_dialog: Adw.Dialog) -> None:
-        cancel_event.set()
-
-    progress_dialog.connect("closed", _on_dialog_closed)
-
-    progress_box = Gtk.Box(
-        orientation=Gtk.Orientation.VERTICAL, spacing=16
-    )
-    progress_box.set_valign(Gtk.Align.CENTER)
-    progress_box.set_halign(Gtk.Align.CENTER)
-    progress_box.set_margin_start(24)
-    progress_box.set_margin_end(24)
-
-    spinner = Adw.Spinner()
-    spinner.set_size_request(48, 48)
-    progress_box.append(spinner)
-
-    title_label = Gtk.Label(
-        label=_("Importing settings from backup…")
-    )
-    title_label.add_css_class("title-4")
-    progress_box.append(title_label)
-
-    progress_bar = Gtk.ProgressBar()
-    progress_bar.set_show_text(True)
-    progress_bar.set_text("0%")
-    progress_bar.pulse()
-    progress_box.append(progress_bar)
-
-    app_label = Gtk.Label(label=_("Preparing…"))
-    app_label.add_css_class("dim-label")
-    app_label.set_ellipsize(3)  # Pango.EllipsizeMode.END
-    progress_box.append(app_label)
-
-    toolbar = Adw.ToolbarView()
-    toolbar.add_top_bar(Adw.HeaderBar())
-    toolbar.set_content(progress_box)
-    progress_dialog.set_child(toolbar)
-    progress_dialog.present(parent)
-
-    # Pulse bar while preparing
-    pulse_active = [True]
-
-    def _pulse() -> bool:
-        if pulse_active[0]:
-            progress_bar.pulse()
-            return True
-        return False
-
-    GLib.timeout_add(100, _pulse)
-
-    def _update_progress(current: int, total: int, app_name: str) -> None:
-        if cancel_event.is_set():
-            return
-        def _do_update() -> bool:
-            pulse_active[0] = False
-            fraction = min(current / total, 1.0) if total > 0 else 0
-            progress_bar.set_fraction(fraction)
-            pct = int(fraction * 100)
-            progress_bar.set_text(f"{pct}%")
-            if app_name:
-                app_label.set_label(app_name)
-            return False
-        GLib.idle_add(_do_update)
+    progress_dialog, update = _build_progress_dialog(
+        parent, _("Importing settings from backup…"), cancel_event)
 
     def _worker() -> None:
         result = import_backup(
             archive_path, selected_ids,
-            progress_callback=_update_progress,
+            progress_callback=update,
             cancel_event=cancel_event,
         )
         if not cancel_event.is_set():
@@ -956,3 +956,117 @@ def _show_import_error(parent: Adw.ApplicationWindow, message: str) -> None:
     alert.add_response("ok", _("OK"))
     alert.set_close_response("ok")
     alert.present(parent)
+
+
+# ---------------------------------------------------------------------------
+# Single-application export / import (used by the per-app modal)
+# ---------------------------------------------------------------------------
+def show_single_export(parent: Adw.ApplicationWindow, entry: AppEntry) -> None:
+    """Export just one application's configuration to a .tar.gz."""
+
+    def _open_chooser() -> None:
+        file_dialog = Gtk.FileDialog()
+        file_dialog.set_title(_("Export %s settings") % get_localized_name(entry))
+        file_dialog.set_initial_name(get_app_backup_name(entry.app_id))
+
+        docs_dir = GLib.get_user_special_dir(GLib.UserDirectory.DIRECTORY_DOCUMENTS)
+        if docs_dir:
+            file_dialog.set_initial_folder(Gio.File.new_for_path(docs_dir))
+
+        gz_filter = Gtk.FileFilter()
+        gz_filter.set_name(_("Compressed archives (*.tar.gz)"))
+        gz_filter.add_pattern("*.tar.gz")
+        filter_list = Gio.ListStore.new(Gtk.FileFilter)
+        filter_list.append(gz_filter)
+        file_dialog.set_filters(filter_list)
+        file_dialog.set_default_filter(gz_filter)
+
+        def _on_save_response(dialog_obj: Gtk.FileDialog, result: Gio.AsyncResult) -> None:
+            try:
+                gfile = dialog_obj.save_finish(result)
+            except GLib.Error:
+                return
+            path = gfile.get_path()
+            if not path:
+                return
+            if not path.endswith(".tar.gz"):
+                path += ".tar.gz"
+            _execute_export(parent, [entry], path, False)
+
+        file_dialog.save(parent, None, _on_save_response)
+
+    if is_sensitive(entry):
+        alert = Adw.AlertDialog()
+        alert.set_heading(_("This backup may contain private data"))
+        alert.set_body(
+            _("Settings for %s can include passwords, cookies or session tokens. "
+              "Store the backup file in a safe place.") % get_localized_name(entry))
+        alert.set_close_response("cancel")
+        alert.add_response("cancel", _("Cancel"))
+        alert.add_response("continue", _("Continue"))
+        alert.set_response_appearance("continue", Adw.ResponseAppearance.SUGGESTED)
+        alert.connect(
+            "response",
+            lambda _a, resp: _open_chooser() if resp == "continue" else None)
+        alert.present(parent)
+    else:
+        _open_chooser()
+
+
+def show_single_import(parent: Adw.ApplicationWindow, entry: AppEntry) -> None:
+    """Import one application's configuration, validating it matches the app."""
+    file_dialog = Gtk.FileDialog()
+    file_dialog.set_title(_("Import %s settings") % get_localized_name(entry))
+
+    gz_filter = Gtk.FileFilter()
+    gz_filter.set_name(_("BigLinux backups (*.tar.gz)"))
+    gz_filter.add_pattern("*.tar.gz")
+    filter_list = Gio.ListStore.new(Gtk.FileFilter)
+    filter_list.append(gz_filter)
+    file_dialog.set_filters(filter_list)
+    file_dialog.set_default_filter(gz_filter)
+
+    docs_dir = GLib.get_user_special_dir(GLib.UserDirectory.DIRECTORY_DOCUMENTS)
+    if docs_dir:
+        file_dialog.set_initial_folder(Gio.File.new_for_path(docs_dir))
+
+    def _on_open_response(dialog_obj: Gtk.FileDialog, result: Gio.AsyncResult) -> None:
+        try:
+            gfile = dialog_obj.open_finish(result)
+        except GLib.Error:
+            return
+        path = gfile.get_path()
+        if path:
+            _single_import_check(parent, path, entry)
+
+    file_dialog.open(parent, None, _on_open_response)
+
+
+def _single_import_check(
+    parent: Adw.ApplicationWindow, archive_path: str, entry: AppEntry
+) -> None:
+    """Validate that *archive_path* actually contains *entry* before importing."""
+
+    def _worker() -> None:
+        manifest = read_backup_manifest(archive_path)
+        GLib.idle_add(_done, manifest)
+
+    def _done(manifest) -> bool:
+        if manifest is None:
+            _show_import_error(
+                parent, _("This file is not a valid BigLinux backup."))
+            return GLib.SOURCE_REMOVE
+        ids = {a.get("app_id") for a in manifest.get("applications", [])}
+        if entry.app_id not in ids:
+            names = ", ".join(
+                a.get("name", "") for a in manifest.get("applications", [])
+            ) or "—"
+            _show_import_error(
+                parent,
+                _("This backup does not contain settings for %s.\n\n"
+                  "It contains: %s") % (get_localized_name(entry), names))
+            return GLib.SOURCE_REMOVE
+        _confirm_import(parent, archive_path, {entry.app_id})
+        return GLib.SOURCE_REMOVE
+
+    threading.Thread(target=_worker, daemon=True).start()

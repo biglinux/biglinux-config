@@ -24,6 +24,23 @@ class AppEntry:
     process_name: str = ""  # for pgrep; defaults to binary basename
     is_de: bool = False  # desktop-environment full reset
     logout_required: bool = False  # needs session restart after reset
+    sensitive: bool = False  # config may hold secrets (passwords, tokens, history)
+    # dconf/GSettings namespaces (each absolute, ending in '/', ≥2 segments).
+    # Backed up, restored and reset per-namespace — never the whole database.
+    dconf_paths: list[str] = field(default_factory=list)
+
+
+# Categories whose configuration inherently contains private data
+# (cookies, saved passwords, sessions, message history, …).
+SENSITIVE_CATEGORIES: frozenset[str] = frozenset({"browsers", "communication"})
+
+
+def is_sensitive(entry: "AppEntry") -> bool:
+    """True if a backup of *entry* may contain private/secret data.
+
+    Combines an explicit per-entry flag with inherently-sensitive categories.
+    """
+    return entry.sensitive or entry.category in SENSITIVE_CATEGORIES
 
 
 # ---------------------------------------------------------------------------
@@ -884,6 +901,7 @@ APP_REGISTRY: list[AppEntry] = [
         category="shell",
         config_paths=["~/.bashrc", "~/.bash_profile", "~/.bash_history", "~/.bash_logout"],
         skel_paths=["/etc/skel/.bashrc", "/etc/skel/.bash_profile"],
+        sensitive=True,  # shell history
     ),
     AppEntry(
         app_id="zsh",
@@ -893,6 +911,7 @@ APP_REGISTRY: list[AppEntry] = [
         category="shell",
         config_paths=["~/.zshrc", "~/.zsh_history", "~/.zshenv", "~/.zprofile"],
         skel_paths=["/etc/skel/.zshrc"],
+        sensitive=True,  # shell history
     ),
     AppEntry(
         app_id="fish",
@@ -901,6 +920,7 @@ APP_REGISTRY: list[AppEntry] = [
         binary="/usr/bin/fish",
         category="shell",
         config_paths=["~/.config/fish"],
+        sensitive=True,  # shell history
     ),
     AppEntry(
         app_id="starship",
@@ -1069,6 +1089,7 @@ APP_REGISTRY: list[AppEntry] = [
         binary="/usr/bin/keepassxc",
         category="system",
         config_paths=["~/.config/keepassxc"],
+        sensitive=True,  # password database settings / recent DBs
     ),
     AppEntry(
         app_id="bitwarden",
@@ -1077,6 +1098,7 @@ APP_REGISTRY: list[AppEntry] = [
         binary="/usr/bin/bitwarden",
         category="system",
         config_paths=["~/.config/Bitwarden"],
+        sensitive=True,  # vault session / tokens
     ),
     AppEntry(
         app_id="syncthing",
@@ -1085,6 +1107,7 @@ APP_REGISTRY: list[AppEntry] = [
         binary="/usr/bin/syncthing",
         category="system",
         config_paths=["~/.config/syncthing"],
+        sensitive=True,  # device keys / API key
     ),
     AppEntry(
         app_id="rclone",
@@ -1093,6 +1116,7 @@ APP_REGISTRY: list[AppEntry] = [
         binary="/usr/bin/rclone",
         category="system",
         config_paths=["~/.config/rclone"],
+        sensitive=True,  # remote credentials / tokens
     ),
     AppEntry(
         app_id="htop",
@@ -1163,13 +1187,23 @@ APP_REGISTRY: list[AppEntry] = [
     ),
 
     # ── Customization ────────────────────────────────────────────────────
+    # GNOME Tweaks stores its settings in dconf (not dotfiles); handled via the
+    # scoped dconf_paths below.
     AppEntry(
         app_id="gnome-tweaks",
         name="GNOME Tweaks",
         icon="org.gnome.tweaks",
         binary="/usr/bin/gnome-tweaks",
         category="customization",
-        config_paths=[],  # modifies dconf only
+        config_paths=[],
+        dconf_paths=[
+            "/org/gnome/desktop/interface/",
+            "/org/gnome/desktop/wm/preferences/",
+            "/org/gnome/desktop/peripherals/",
+            "/org/gnome/desktop/sound/",
+            "/org/gnome/desktop/input-sources/",
+            "/org/gnome/mutter/",
+        ],
     ),
     AppEntry(
         app_id="kvantum",
@@ -1237,7 +1271,28 @@ APP_REGISTRY: list[AppEntry] = [
             "~/.local/share/konsole",
             "~/.local/share/dolphin",
         ],
-        skel_paths=["/etc/skel/.config", "/etc/skel/.local"],
+        # SAFETY: never point skel at ~/.config or ~/.local wholesale — that
+        # would wipe every other application's configuration.  List only the
+        # specific KDE files/dirs BigLinux ships in /etc/skel.
+        skel_paths=[
+            "/etc/skel/.config/plasmarc",
+            "/etc/skel/.config/plasmashellrc",
+            "/etc/skel/.config/kwinrc",
+            "/etc/skel/.config/kwinrulesrc",
+            "/etc/skel/.config/kdeglobals",
+            "/etc/skel/.config/kglobalshortcutsrc",
+            "/etc/skel/.config/kcminputrc",
+            "/etc/skel/.config/kscreenlockerrc",
+            "/etc/skel/.config/ksmserverrc",
+            "/etc/skel/.config/ksplashrc",
+            "/etc/skel/.config/kactivitymanagerdrc",
+            "/etc/skel/.config/baloofilerc",
+            "/etc/skel/.config/dolphinrc",
+            "/etc/skel/.config/konsolerc",
+            "/etc/skel/.local/share/kxmlgui5",
+            "/etc/skel/.local/share/konsole",
+            "/etc/skel/.local/share/dolphin",
+        ],
         is_de=True,
         logout_required=True,
         process_name="plasmashell",
@@ -1270,6 +1325,11 @@ APP_REGISTRY: list[AppEntry] = [
             "~/.local/share/gnome-shell",
         ],
         skel_paths=["/etc/skel/.config/dconf"],
+        dconf_paths=[
+            "/org/gnome/shell/",
+            "/org/gnome/desktop/",
+            "/org/gnome/mutter/",
+        ],
         is_de=True,
         logout_required=True,
         process_name="gnome-shell",
