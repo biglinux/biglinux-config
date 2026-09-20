@@ -2,29 +2,49 @@
 
 > Documento de desenvolvimento. Não é necessário em runtime.
 
-## Modal do aplicativo — nova hierarquia
+## Modal do aplicativo — redesenho Adwaita moderno
 
-Ao clicar num app, o modal agora separa claramente ações **não destrutivas** de
-**destrutivas** (Etapa 8 da missão):
+O modal antigo empilhava rótulos soltos ("Backup"/"Restore"), *cards* grandes com
+um botão "Restore" repetido em cada linha e a lista de paths expandida — o que
+gerava rolagem vertical e hierarquia confusa. O redesenho usa o idioma Adwaita
+padrão e compacto:
 
 ```
-[ícone] Nome do app
-Escolha como restaurar as configurações…
+        ( ícone 72 )
+         Nome do app
+        N itens · 18,6 MB
 
-Paths que serão substituídos  (expander: N paths — tamanho)
-
-Backup
-[ Exportar… ]   [ Importar… ]
-
-Restaurar
-[ Padrão do BigLinux ]   (só se houver skel válido)
-[ Padrão do programa ]
+╭─ Backup ────────────────────────────╮
+│ 💾  Exportar configurações…       › │  Adw.ActionRow (ativável)
+│ 📂  Importar configurações…       › │
+╰─────────────────────────────────────╯
+╭─ Restaurar padrões ─────────────────╮
+│ ◆  Padrão do BigLinux             › │  (só se skel válido)
+│ ↺  Padrão do programa             › │  (ícone em vermelho — destrutivo)
+╰─────────────────────────────────────╯
+╭─────────────────────────────────────╮
+│ ▸ Arquivos afetados   N itens · … │   Adw.ExpanderRow (recolhido)
+╰─────────────────────────────────────╯
 ```
 
-- **Exportar…** salva a config do app num `.tar.gz` (desabilitado se não há config).
-- **Importar…** valida que o backup contém aquele app antes de restaurar; avisa se
-  o arquivo for de outro programa ou inválido.
-- Botões de Restaurar mantêm confirmação destrutiva.
+Princípios aplicados:
+- **`Adw.PreferencesGroup`** com título para cada seção (Backup / Restaurar) — sem
+  rótulos soltos nem CSS custom (as classes `.restore-*` foram removidas).
+- **`Adw.ActionRow` ativável** com ícone + título + subtítulo + chevron
+  (`go-next-symbolic`): cada ação vira uma linha limpa e autoexplicativa. O
+  subtítulo esclarece o efeito de cada modo (o que o antigo *card* não fazia).
+- **`Adw.Clamp`** (máx. 360 px) centraliza o conteúdo e dá largura confortável.
+- Lista de paths recolhida por padrão num **`Adw.ExpanderRow`** — deixou de ser a
+  causa da rolagem.
+- `Adw.ScrolledWindow` com `propagate_natural_height` + `max_content_height`: a
+  janela ajusta-se ao conteúdo (sem espaço morto) e só rola em telas pequenas.
+- Estado vazio com **`Adw.StatusPage`**.
+- Ação destrutiva (Padrão do programa) sinalizada por ícone com classe `error`
+  (vermelho) **e** texto — nunca só por cor.
+
+Comportamento preservado: Exportar (desabilitado se não há config), Importar
+(valida que o backup contém o app), e Restaurar (confirmação destrutiva com opção
+de backup prévio).
 
 ## Backup antes de restaurar
 
