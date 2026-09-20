@@ -12,10 +12,12 @@ from gi.repository import Adw, Gdk, GLib, Gio, Gtk
 
 from utils import _, ngettext
 from data.app_registry import AppEntry
+from ui import backup_dialog
 from backend.app_detector import get_localized_name
 from backend.reset_manager import (
     ResetMode,
     ResetResult,
+    ResetStatus,
     format_size,
     get_running_pids,
     has_config,
@@ -327,6 +329,45 @@ def show_restore_dialog(
         dialog.present()
         return
 
+    # ── Backup section (non-destructive) ──
+    backup_heading = Gtk.Label(label=_("Backup"))
+    backup_heading.add_css_class("heading")
+    backup_heading.add_css_class("dim-label")
+    backup_heading.set_xalign(0)
+    backup_heading.set_margin_top(8)
+    content_box.append(backup_heading)
+
+    backup_btn_box = Gtk.Box(orientation=Gtk.Orientation.HORIZONTAL, spacing=8)
+    backup_btn_box.set_homogeneous(True)
+
+    export_btn = Gtk.Button(label=_("Export…"))
+    export_btn.add_css_class("pill")
+    export_btn.set_sensitive(config_exists)
+    if not config_exists:
+        export_btn.set_tooltip_text(_("No settings to export yet"))
+    export_btn.connect(
+        "clicked",
+        lambda _b: backup_dialog.show_single_export(parent, entry),
+    )
+    backup_btn_box.append(export_btn)
+
+    import_btn = Gtk.Button(label=_("Import…"))
+    import_btn.add_css_class("pill")
+    import_btn.connect(
+        "clicked",
+        lambda _b: backup_dialog.show_single_import(parent, entry),
+    )
+    backup_btn_box.append(import_btn)
+    content_box.append(backup_btn_box)
+
+    # ── Restore section (destructive) ──
+    restore_heading = Gtk.Label(label=_("Restore"))
+    restore_heading.add_css_class("heading")
+    restore_heading.add_css_class("dim-label")
+    restore_heading.set_xalign(0)
+    restore_heading.set_margin_top(12)
+    content_box.append(restore_heading)
+
     # ── Mode cards with action buttons integrated ──
     modes_box = Gtk.Box(
         orientation=Gtk.Orientation.VERTICAL,
@@ -442,43 +483,36 @@ def _confirm_reset(
     )
     alert.set_close_response("cancel")
 
+    # Offer a safety backup of the current configuration first (recommended).
+    backup_check = Gtk.CheckButton(
+        label=_("Create a backup of the current settings before restoring")
+    )
+    backup_check.set_active(True)
+    backup_check.set_margin_top(6)
+    if not has_config(entry):
+        # Nothing to back up.
+        backup_check.set_active(False)
+        backup_check.set_sensitive(False)
+    alert.set_extra_child(backup_check)
+
     alert.add_response("cancel", _("Cancel"))
     alert.add_response("restore", _("Restore"))
     alert.set_response_appearance("restore", Adw.ResponseAppearance.DESTRUCTIVE)
 
-    alert.connect(
-        "response",
-        _on_confirm_response,
-        parent,
-        options_dialog,
-        entry,
-        mode,
-        on_complete,
-    )
+    def on_response(_alert: Adw.AlertDialog, response: str) -> None:
+        if response != "restore":
+            return
+        backup_first = backup_check.get_active()
+        pids = get_running_pids(entry)
+        if pids:
+            _show_running_dialog(parent, options_dialog, entry, mode,
+                                 on_complete, backup_first)
+            return
+        options_dialog.destroy()
+        _execute_reset(parent, entry, mode, on_complete, backup_first)
+
+    alert.connect("response", on_response)
     alert.present(options_dialog)
-
-
-def _on_confirm_response(
-    alert: Adw.AlertDialog,
-    response: str,
-    parent: Adw.ApplicationWindow,
-    options_dialog: Adw.Window,
-    entry: AppEntry,
-    mode: ResetMode,
-    on_complete: callable | None,
-) -> None:
-    if response != "restore":
-        return
-
-    # Check if app is running
-    pids = get_running_pids(entry)
-    if pids:
-        _show_running_dialog(parent, options_dialog, entry, mode, on_complete)
-        return
-
-    # Close the options dialog and execute
-    options_dialog.destroy()
-    _execute_reset(parent, entry, mode, on_complete)
 
 
 def _show_running_dialog(
@@ -487,6 +521,7 @@ def _show_running_dialog(
     entry: AppEntry,
     mode: ResetMode,
     on_complete: callable | None,
+    backup_first: bool = False,
 ) -> None:
     """Warn that the app is running and offer to close it."""
     alert = Adw.AlertDialog()
@@ -506,7 +541,7 @@ def _show_running_dialog(
             return
         kill_app(entry)
         options_dialog.destroy()
-        _execute_reset(parent, entry, mode, on_complete)
+        _execute_reset(parent, entry, mode, on_complete, backup_first)
 
     alert.connect("response", on_response)
     alert.present(options_dialog)
@@ -517,14 +552,17 @@ def _execute_reset(
     entry: AppEntry,
     mode: ResetMode,
     on_complete: callable | None,
+    backup_first: bool = False,
 ) -> None:
     """Run the reset in a background thread, then show results."""
+
+    cancel_event = threading.Event()
 
     # Show a spinner dialog
     spinner_dialog = Adw.Dialog()
     spinner_dialog.set_title(_("Restoring…"))
     spinner_dialog.set_content_width(420)
-    spinner_dialog.set_content_height(220)
+    spinner_dialog.set_content_height(240)
 
     spinner_box = Gtk.Box(
         orientation=Gtk.Orientation.VERTICAL,
@@ -532,16 +570,30 @@ def _execute_reset(
     )
     spinner_box.set_valign(Gtk.Align.CENTER)
     spinner_box.set_halign(Gtk.Align.CENTER)
+    spinner_box.set_margin_start(24)
+    spinner_box.set_margin_end(24)
 
     spinner = Adw.Spinner()
     spinner.set_size_request(48, 48)
     spinner_box.append(spinner)
 
-    spinner_label = Gtk.Label(
-        label=_("Restoring settings for %s…") % get_localized_name(entry)
-    )
+    label_text = (
+        _("Backing up, then restoring settings for %s…")
+        if backup_first else _("Restoring settings for %s…")
+    ) % get_localized_name(entry)
+    spinner_label = Gtk.Label(label=label_text)
     spinner_label.add_css_class("title-4")
+    spinner_label.set_wrap(True)
+    spinner_label.set_justify(Gtk.Justification.CENTER)
     spinner_box.append(spinner_label)
+
+    cancel_btn = Gtk.Button(label=_("Cancel"))
+    cancel_btn.set_halign(Gtk.Align.CENTER)
+    cancel_btn.connect("clicked", lambda _b: cancel_event.set())
+    spinner_box.append(cancel_btn)
+
+    # Closing the dialog also cancels the worker.
+    spinner_dialog.connect("closed", lambda _d: cancel_event.set())
 
     toolbar = Adw.ToolbarView()
     toolbar.add_top_bar(Adw.HeaderBar())
@@ -550,7 +602,8 @@ def _execute_reset(
     spinner_dialog.present(parent)
 
     def _worker() -> None:
-        result = reset_app(entry, mode)
+        result = reset_app(entry, mode, backup_first=backup_first,
+                           cancel_event=cancel_event)
         GLib.idle_add(_on_reset_done, result, spinner_dialog, parent, entry, on_complete)
 
     thread = threading.Thread(target=_worker, daemon=True)
@@ -569,6 +622,9 @@ def _on_reset_done(
 
     if result.success:
         _show_success_dialog(parent, entry, result)
+    elif result.status is ResetStatus.CANCELLED:
+        # User cancelled — nothing was changed (rolled back). Stay silent.
+        pass
     else:
         _show_error_dialog(parent, entry, result)
 
@@ -652,6 +708,21 @@ def _show_success_dialog(
     desc.set_halign(Gtk.Align.CENTER)
     desc.set_justify(Gtk.Justification.CENTER)
     box.append(desc)
+
+    # Safety-backup note (if one was created before the reset).
+    if getattr(result, "backup_path", ""):
+        backup_note = Gtk.Label(
+            label=_("A backup of your previous settings was saved to:\n%s")
+            % result.backup_path
+        )
+        backup_note.add_css_class("dim-label")
+        backup_note.add_css_class("caption")
+        backup_note.set_wrap(True)
+        backup_note.set_wrap_mode(Gtk.WrapMode.WORD_CHAR)
+        backup_note.set_halign(Gtk.Align.CENTER)
+        backup_note.set_justify(Gtk.Justification.CENTER)
+        backup_note.set_selectable(True)
+        box.append(backup_note)
 
     # Buttons
     btn_box = Gtk.Box(orientation=Gtk.Orientation.HORIZONTAL, spacing=8)

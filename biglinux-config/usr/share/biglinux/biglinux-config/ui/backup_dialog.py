@@ -18,10 +18,12 @@ from backend.backup_manager import (
     BackupResult,
     RestoreFromBackupResult,
     export_backup,
+    get_app_backup_name,
     get_default_backup_name,
     import_backup,
     read_backup_manifest,
 )
+from backend.app_detector import get_localized_name
 from backend.reset_manager import format_size, get_config_size, has_config
 
 
@@ -69,9 +71,9 @@ def show_export_dialog(
 
     # Full directory checkbox
     full_dir_row = Adw.SwitchRow()
-    full_dir_row.set_title(_("Copy full directories"))
+    full_dir_row.set_title(_("Include cache files"))
     full_dir_row.set_subtitle(
-        _("Include all files in each config directory, not just the listed paths")
+        _("Also back up cache directories. Makes the archive larger; usually not needed")
     )
 
     options_group = Adw.PreferencesGroup()
@@ -956,3 +958,98 @@ def _show_import_error(parent: Adw.ApplicationWindow, message: str) -> None:
     alert.add_response("ok", _("OK"))
     alert.set_close_response("ok")
     alert.present(parent)
+
+
+# ---------------------------------------------------------------------------
+# Single-application export / import (used by the per-app modal)
+# ---------------------------------------------------------------------------
+def show_single_export(parent: Adw.ApplicationWindow, entry: AppEntry) -> None:
+    """Export just one application's configuration to a .tar.gz."""
+    file_dialog = Gtk.FileDialog()
+    file_dialog.set_title(_("Export %s settings") % get_localized_name(entry))
+    file_dialog.set_initial_name(get_app_backup_name(entry.app_id))
+
+    docs_dir = GLib.get_user_special_dir(GLib.UserDirectory.DIRECTORY_DOCUMENTS)
+    if docs_dir:
+        file_dialog.set_initial_folder(Gio.File.new_for_path(docs_dir))
+
+    gz_filter = Gtk.FileFilter()
+    gz_filter.set_name(_("Compressed archives (*.tar.gz)"))
+    gz_filter.add_pattern("*.tar.gz")
+    filter_list = Gio.ListStore.new(Gtk.FileFilter)
+    filter_list.append(gz_filter)
+    file_dialog.set_filters(filter_list)
+    file_dialog.set_default_filter(gz_filter)
+
+    def _on_save_response(dialog_obj: Gtk.FileDialog, result: Gio.AsyncResult) -> None:
+        try:
+            gfile = dialog_obj.save_finish(result)
+        except GLib.Error:
+            return
+        path = gfile.get_path()
+        if not path:
+            return
+        if not path.endswith(".tar.gz"):
+            path += ".tar.gz"
+        _execute_export(parent, [entry], path, False)
+
+    file_dialog.save(parent, None, _on_save_response)
+
+
+def show_single_import(parent: Adw.ApplicationWindow, entry: AppEntry) -> None:
+    """Import one application's configuration, validating it matches the app."""
+    file_dialog = Gtk.FileDialog()
+    file_dialog.set_title(_("Import %s settings") % get_localized_name(entry))
+
+    gz_filter = Gtk.FileFilter()
+    gz_filter.set_name(_("BigLinux backups (*.tar.gz)"))
+    gz_filter.add_pattern("*.tar.gz")
+    filter_list = Gio.ListStore.new(Gtk.FileFilter)
+    filter_list.append(gz_filter)
+    file_dialog.set_filters(filter_list)
+    file_dialog.set_default_filter(gz_filter)
+
+    docs_dir = GLib.get_user_special_dir(GLib.UserDirectory.DIRECTORY_DOCUMENTS)
+    if docs_dir:
+        file_dialog.set_initial_folder(Gio.File.new_for_path(docs_dir))
+
+    def _on_open_response(dialog_obj: Gtk.FileDialog, result: Gio.AsyncResult) -> None:
+        try:
+            gfile = dialog_obj.open_finish(result)
+        except GLib.Error:
+            return
+        path = gfile.get_path()
+        if path:
+            _single_import_check(parent, path, entry)
+
+    file_dialog.open(parent, None, _on_open_response)
+
+
+def _single_import_check(
+    parent: Adw.ApplicationWindow, archive_path: str, entry: AppEntry
+) -> None:
+    """Validate that *archive_path* actually contains *entry* before importing."""
+
+    def _worker() -> None:
+        manifest = read_backup_manifest(archive_path)
+        GLib.idle_add(_done, manifest)
+
+    def _done(manifest) -> bool:
+        if manifest is None:
+            _show_import_error(
+                parent, _("This file is not a valid BigLinux backup."))
+            return GLib.SOURCE_REMOVE
+        ids = {a.get("app_id") for a in manifest.get("applications", [])}
+        if entry.app_id not in ids:
+            names = ", ".join(
+                a.get("name", "") for a in manifest.get("applications", [])
+            ) or "—"
+            _show_import_error(
+                parent,
+                _("This backup does not contain settings for %s.\n\n"
+                  "It contains: %s") % (get_localized_name(entry), names))
+            return GLib.SOURCE_REMOVE
+        _confirm_import(parent, archive_path, {entry.app_id})
+        return GLib.SOURCE_REMOVE
+
+    threading.Thread(target=_worker, daemon=True).start()
