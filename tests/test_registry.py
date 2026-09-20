@@ -8,6 +8,7 @@ import pytest
 
 from data.app_registry import (
     APP_REGISTRY, CATEGORIES, CATEGORY_IDS, STATIC_FAVORITE_IDS,
+    SENSITIVE_CATEGORIES, is_sensitive,
 )
 from backend import paths
 
@@ -64,3 +65,30 @@ def test_favorites_reference_real_ids():
     all_ids = {e.app_id for e in APP_REGISTRY}
     for fid in STATIC_FAVORITE_IDS:
         assert fid in all_ids, f"favorite {fid} not in registry"
+
+
+def test_sensitive_flag_is_bool():
+    for e in APP_REGISTRY:
+        assert isinstance(e.sensitive, bool), f"{e.app_id}: sensitive not bool"
+
+
+def test_sensitive_categories_are_flagged():
+    for e in APP_REGISTRY:
+        if e.category in SENSITIVE_CATEGORIES:
+            assert is_sensitive(e), f"{e.app_id} in sensitive category but not flagged"
+
+
+def test_known_secret_apps_are_sensitive():
+    by_id = {e.app_id: e for e in APP_REGISTRY}
+    for app_id in ("bash", "zsh", "keepassxc", "bitwarden", "rclone",
+                   "firefox", "discord"):
+        if app_id in by_id:
+            assert is_sensitive(by_id[app_id]), f"{app_id} should be sensitive"
+
+
+def test_non_sensitive_stays_non_sensitive():
+    by_id = {e.app_id: e for e in APP_REGISTRY}
+    # A plain media player config is not secret.
+    for app_id in ("vlc", "mpv", "htop"):
+        if app_id in by_id:
+            assert not is_sensitive(by_id[app_id]), f"{app_id} wrongly sensitive"

@@ -39,11 +39,18 @@ final antes da validação completa. Falha ⇒ nada aplicado (ou rollback total)
 
 ## Privacidade
 
-- Dados sensíveis por natureza (Firefox `~/.mozilla`, `~/.bash_history`,
-  `~/.zsh_history`, perfis de navegadores) podem entrar no backup. Recomendação
-  (docs/11): exibir aviso "este backup pode conter informações privadas; guarde-o
-  em local seguro" no diálogo de export. Cache é excluído por padrão, o que já
-  reduz vazamento incidental.
+- `AppEntry.sensitive` (novo) marca apps cuja configuração pode conter segredos.
+  `is_sensitive(entry)` combina o flag com categorias inerentemente sensíveis
+  (`browsers`, `communication`). 30 apps são sensíveis (14 navegadores + 9
+  comunicação + 7 explícitos: bash, zsh, fish, keepassxc, bitwarden, syncthing,
+  rclone).
+- **Aviso no export (implementado)**: o diálogo de exportação mostra um
+  `Adw.Banner` — *"This backup may contain private data (passwords, cookies,
+  sessions). Keep it in a safe place."* — sempre que um app sensível está
+  selecionado (atualiza conforme a seleção). Linhas de apps sensíveis exibem um
+  ícone de aviso. A exportação individual de um app sensível pede confirmação
+  antes de escolher o destino.
+- Cache é excluído por padrão, reduzindo vazamento incidental.
 - **Logs nunca registram** conteúdo de arquivo, senha, token, cookie ou segredo —
   apenas caminhos, contagens, tamanhos e resultado.
 

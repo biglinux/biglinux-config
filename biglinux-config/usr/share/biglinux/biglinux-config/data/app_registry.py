@@ -24,6 +24,20 @@ class AppEntry:
     process_name: str = ""  # for pgrep; defaults to binary basename
     is_de: bool = False  # desktop-environment full reset
     logout_required: bool = False  # needs session restart after reset
+    sensitive: bool = False  # config may hold secrets (passwords, tokens, history)
+
+
+# Categories whose configuration inherently contains private data
+# (cookies, saved passwords, sessions, message history, …).
+SENSITIVE_CATEGORIES: frozenset[str] = frozenset({"browsers", "communication"})
+
+
+def is_sensitive(entry: "AppEntry") -> bool:
+    """True if a backup of *entry* may contain private/secret data.
+
+    Combines an explicit per-entry flag with inherently-sensitive categories.
+    """
+    return entry.sensitive or entry.category in SENSITIVE_CATEGORIES
 
 
 # ---------------------------------------------------------------------------
@@ -884,6 +898,7 @@ APP_REGISTRY: list[AppEntry] = [
         category="shell",
         config_paths=["~/.bashrc", "~/.bash_profile", "~/.bash_history", "~/.bash_logout"],
         skel_paths=["/etc/skel/.bashrc", "/etc/skel/.bash_profile"],
+        sensitive=True,  # shell history
     ),
     AppEntry(
         app_id="zsh",
@@ -893,6 +908,7 @@ APP_REGISTRY: list[AppEntry] = [
         category="shell",
         config_paths=["~/.zshrc", "~/.zsh_history", "~/.zshenv", "~/.zprofile"],
         skel_paths=["/etc/skel/.zshrc"],
+        sensitive=True,  # shell history
     ),
     AppEntry(
         app_id="fish",
@@ -901,6 +917,7 @@ APP_REGISTRY: list[AppEntry] = [
         binary="/usr/bin/fish",
         category="shell",
         config_paths=["~/.config/fish"],
+        sensitive=True,  # shell history
     ),
     AppEntry(
         app_id="starship",
@@ -1069,6 +1086,7 @@ APP_REGISTRY: list[AppEntry] = [
         binary="/usr/bin/keepassxc",
         category="system",
         config_paths=["~/.config/keepassxc"],
+        sensitive=True,  # password database settings / recent DBs
     ),
     AppEntry(
         app_id="bitwarden",
@@ -1077,6 +1095,7 @@ APP_REGISTRY: list[AppEntry] = [
         binary="/usr/bin/bitwarden",
         category="system",
         config_paths=["~/.config/Bitwarden"],
+        sensitive=True,  # vault session / tokens
     ),
     AppEntry(
         app_id="syncthing",
@@ -1085,6 +1104,7 @@ APP_REGISTRY: list[AppEntry] = [
         binary="/usr/bin/syncthing",
         category="system",
         config_paths=["~/.config/syncthing"],
+        sensitive=True,  # device keys / API key
     ),
     AppEntry(
         app_id="rclone",
@@ -1093,6 +1113,7 @@ APP_REGISTRY: list[AppEntry] = [
         binary="/usr/bin/rclone",
         category="system",
         config_paths=["~/.config/rclone"],
+        sensitive=True,  # remote credentials / tokens
     ),
     AppEntry(
         app_id="htop",

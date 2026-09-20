@@ -114,10 +114,10 @@ Round-trip LibreOffice-style validado. Ver docs/08 e docs/10.
 
 ## Pendências (honestas)
 
-1. **Aviso de privacidade no export** — recomendado, ainda não exibido.
-   - *Impacto*: baixo (cache já excluído; segredos podem entrar em `~/.mozilla` etc.).
-   - *Como resolver*: adicionar `Adw.Banner`/label no diálogo de export para apps
-     marcados como sensíveis (exigiria campo `sensitive` no `AppEntry`).
+1. ~~Aviso de privacidade no export~~ — **CONCLUÍDO**. Campo `sensitive` no
+   `AppEntry` + helper `is_sensitive` (browsers/communication + 7 apps explícitos);
+   `Adw.Banner` no diálogo de export, ícone de aviso por linha e confirmação na
+   exportação individual de app sensível. Ver docs/06.
 2. **Suporte a dconf/GSettings** — não implementado (gnome-tweaks, partes do GNOME).
    - *Impacto*: médio para usuários GNOME.
    - *Como resolver*: `dconf dump/load` por namespace específico, nunca global.

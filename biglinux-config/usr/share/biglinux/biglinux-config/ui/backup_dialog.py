@@ -12,7 +12,7 @@ gi.require_version("Adw", "1")
 from gi.repository import Adw, Gdk, Gio, GLib, Gtk
 
 from utils import _, ngettext, set_label
-from data.app_registry import AppEntry
+from data.app_registry import AppEntry, is_sensitive
 from backend.backup_manager import (
     BackupResult,
     RestoreFromBackupResult,
@@ -67,6 +67,14 @@ def show_export_dialog(
     desc.set_xalign(0)
     desc.add_css_class("dim-label")
     content_box.append(desc)
+
+    # Privacy warning banner (revealed when a sensitive app is selected).
+    privacy_banner = Adw.Banner()
+    privacy_banner.set_title(
+        _("This backup may contain private data (passwords, cookies, sessions). "
+          "Keep it in a safe place."))
+    privacy_banner.set_revealed(False)
+    content_box.append(privacy_banner)
 
     # Full directory checkbox
     full_dir_row = Adw.SwitchRow()
@@ -177,9 +185,16 @@ def show_export_dialog(
             icon.set_pixel_size(32)
             row.add_prefix(icon)
 
+            if is_sensitive(app_entry):
+                warn = Gtk.Image.new_from_icon_name("dialog-warning-symbolic")
+                warn.add_css_class("warning")
+                warn.set_tooltip_text(_("May contain private data"))
+                row.add_suffix(warn)
+
             check = Gtk.CheckButton()
             check.set_active(True)
             set_label(check, _("Include %s") % app_entry.name)
+            check.connect("toggled", lambda _c: _update_privacy_banner())
             row.add_suffix(check)
             row.set_activatable_widget(check)
 
@@ -188,7 +203,15 @@ def show_export_dialog(
 
         select_all_check.set_visible(True)
         export_btn.set_sensitive(True)
+        _update_privacy_banner()
         return False
+
+    def _update_privacy_banner() -> None:
+        revealed = any(
+            is_sensitive(entry) for _row, chk, entry in check_rows
+            if chk.get_active()
+        )
+        privacy_banner.set_revealed(revealed)
 
     # Toggle all checkboxes when the header checkbox changes
     _toggling = [False]  # guard against recursive toggling
@@ -201,6 +224,7 @@ def show_export_dialog(
         for _row, chk, _entry in check_rows:
             chk.set_active(active)
         _toggling[0] = False
+        _update_privacy_banner()
 
     select_all_check.connect("toggled", _on_select_all_toggled)
 
@@ -939,35 +963,54 @@ def _show_import_error(parent: Adw.ApplicationWindow, message: str) -> None:
 # ---------------------------------------------------------------------------
 def show_single_export(parent: Adw.ApplicationWindow, entry: AppEntry) -> None:
     """Export just one application's configuration to a .tar.gz."""
-    file_dialog = Gtk.FileDialog()
-    file_dialog.set_title(_("Export %s settings") % get_localized_name(entry))
-    file_dialog.set_initial_name(get_app_backup_name(entry.app_id))
 
-    docs_dir = GLib.get_user_special_dir(GLib.UserDirectory.DIRECTORY_DOCUMENTS)
-    if docs_dir:
-        file_dialog.set_initial_folder(Gio.File.new_for_path(docs_dir))
+    def _open_chooser() -> None:
+        file_dialog = Gtk.FileDialog()
+        file_dialog.set_title(_("Export %s settings") % get_localized_name(entry))
+        file_dialog.set_initial_name(get_app_backup_name(entry.app_id))
 
-    gz_filter = Gtk.FileFilter()
-    gz_filter.set_name(_("Compressed archives (*.tar.gz)"))
-    gz_filter.add_pattern("*.tar.gz")
-    filter_list = Gio.ListStore.new(Gtk.FileFilter)
-    filter_list.append(gz_filter)
-    file_dialog.set_filters(filter_list)
-    file_dialog.set_default_filter(gz_filter)
+        docs_dir = GLib.get_user_special_dir(GLib.UserDirectory.DIRECTORY_DOCUMENTS)
+        if docs_dir:
+            file_dialog.set_initial_folder(Gio.File.new_for_path(docs_dir))
 
-    def _on_save_response(dialog_obj: Gtk.FileDialog, result: Gio.AsyncResult) -> None:
-        try:
-            gfile = dialog_obj.save_finish(result)
-        except GLib.Error:
-            return
-        path = gfile.get_path()
-        if not path:
-            return
-        if not path.endswith(".tar.gz"):
-            path += ".tar.gz"
-        _execute_export(parent, [entry], path, False)
+        gz_filter = Gtk.FileFilter()
+        gz_filter.set_name(_("Compressed archives (*.tar.gz)"))
+        gz_filter.add_pattern("*.tar.gz")
+        filter_list = Gio.ListStore.new(Gtk.FileFilter)
+        filter_list.append(gz_filter)
+        file_dialog.set_filters(filter_list)
+        file_dialog.set_default_filter(gz_filter)
 
-    file_dialog.save(parent, None, _on_save_response)
+        def _on_save_response(dialog_obj: Gtk.FileDialog, result: Gio.AsyncResult) -> None:
+            try:
+                gfile = dialog_obj.save_finish(result)
+            except GLib.Error:
+                return
+            path = gfile.get_path()
+            if not path:
+                return
+            if not path.endswith(".tar.gz"):
+                path += ".tar.gz"
+            _execute_export(parent, [entry], path, False)
+
+        file_dialog.save(parent, None, _on_save_response)
+
+    if is_sensitive(entry):
+        alert = Adw.AlertDialog()
+        alert.set_heading(_("This backup may contain private data"))
+        alert.set_body(
+            _("Settings for %s can include passwords, cookies or session tokens. "
+              "Store the backup file in a safe place.") % get_localized_name(entry))
+        alert.set_close_response("cancel")
+        alert.add_response("cancel", _("Cancel"))
+        alert.add_response("continue", _("Continue"))
+        alert.set_response_appearance("continue", Adw.ResponseAppearance.SUGGESTED)
+        alert.connect(
+            "response",
+            lambda _a, resp: _open_chooser() if resp == "continue" else None)
+        alert.present(parent)
+    else:
+        _open_chooser()
 
 
 def show_single_import(parent: Adw.ApplicationWindow, entry: AppEntry) -> None:
