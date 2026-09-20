@@ -13,7 +13,7 @@
   <img src="https://img.shields.io/badge/GTK-4-green.svg" alt="GTK4">
   <img src="https://img.shields.io/badge/libadwaita-1.x-purple.svg" alt="libadwaita">
   <img src="https://img.shields.io/badge/Python-3.10+-yellow.svg" alt="Python">
-  <img src="https://img.shields.io/badge/apps-136-orange.svg" alt="136 apps">
+  <img src="https://img.shields.io/badge/apps-135-orange.svg" alt="135 apps">
   <img src="https://img.shields.io/badge/languages-29-lightgrey.svg" alt="29 languages">
 </p>
 
@@ -21,7 +21,7 @@
 
 ## Overview
 
-**Restore Settings** is a native GTK4/libadwaita application for [BigLinux](https://www.biglinux.com.br/) that lets you reset, restore, export, and import application configuration files. With 136 preconfigured applications across 15 categories, it covers browsers, multimedia, development tools, terminals, desktop environments, Flatpak apps, and much more.
+**Restore Settings** is a native GTK4/libadwaita application for [BigLinux](https://www.biglinux.com.br/) that lets you reset, restore, export, and import application configuration files. With 135 preconfigured applications across 15 categories, it covers browsers, multimedia, development tools, terminals, desktop environments, Flatpak apps, and much more.
 
 Built with modern GNOME HIG principles, it integrates seamlessly into any desktop environment running GTK4.
 
@@ -100,7 +100,7 @@ biglinux-config/
 │       │   │   │   ├── flatpak_detector.py   # Detect installed Flatpak apps
 │       │   │   │   └── reset_manager.py      # Reset configs (skel / delete)
 │       │   │   ├── data/
-│       │   │   │   └── app_registry.py       # 136 app entries + categories
+│       │   │   │   └── app_registry.py       # 135 app entries + categories
 │       │   │   ├── img/                      # Custom SVG icons
 │       │   │   ├── ui/
 │       │   │   │   ├── application.py        # Main window + Adw.Application
@@ -130,7 +130,7 @@ biglinux-config/
 │   UI Layer  │  Backend     │  Data                  │
 ├─────────────┼──────────────┼────────────────────────┤
 │ application │ app_detector │ app_registry            │
-│ app_grid    │ flatpak_det. │ (136 AppEntry objects)  │
+│ app_grid    │ flatpak_det. │ (135 AppEntry objects)  │
 │ sidebar     │ reset_manager│                         │
 │ dialogs     │ backup_mgr   │                         │
 └─────────────┴──────────────┴────────────────────────┘
@@ -138,7 +138,7 @@ biglinux-config/
 
 - **UI Layer** — GTK4 + libadwaita widgets. Split view with category sidebar and app grid. Dialogs for restore, export/import, about, and welcome.
 - **Backend** — Detects installed applications, manages config reset via `/etc/skel` or deletion, and handles `.tar.gz` backup export/import.
-- **Data** — Single-source-of-truth registry of 136 applications with their config paths, skel paths, icons, categories, and detection binaries.
+- **Data** — Single-source-of-truth registry of 135 applications with their config paths, skel paths, icons, categories, and detection binaries.
 
 ## How It Works
 
@@ -223,3 +223,16 @@ This project is licensed under the **GNU General Public License v3.0** — see t
 - **Repository**: [github.com/biglinux/biglinux-config](https://github.com/biglinux/biglinux-config)
 - **Issues**: [github.com/biglinux/biglinux-config/issues](https://github.com/biglinux/biglinux-config/issues)
 - **BigLinux**: [biglinux.com.br](https://www.biglinux.com.br/)
+
+## Testing
+
+Automated tests run against an isolated temporary `$HOME` (your real
+configuration is never touched):
+
+```bash
+python3 -m pytest tests/ -q
+```
+
+Development notes, the full audit, security model, performance benchmarks and the
+final report live under [`docs/`](docs/). These are documentation only — the
+application never reads them at runtime.
