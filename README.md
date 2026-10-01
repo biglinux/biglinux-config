@@ -1,7 +1,7 @@
 # Restore Settings (biglinux-config)
 
 <p align="center">
-  <img src="biglinux-config/usr/share/pixmaps/restore-settings.svg" alt="Restore Settings" width="128">
+  <img src="biglinux-config/usr/share/icons/hicolor/scalable/apps/restore-settings.svg" alt="Restore Settings" width="128">
 </p>
 
 <p align="center">
@@ -85,7 +85,7 @@ biglinux-config/
 │       │   └── biglinux-config      # System launcher script
 │       ├── share/
 │       │   ├── applications/
-│       │   │   └── big-config.desktop
+│       │   │   └── com.biglinux.config.desktop
 │       │   ├── biglinux/biglinux-config/
 │       │   │   ├── main.py          # Application entry point
 │       │   │   ├── backend/
@@ -107,7 +107,7 @@ biglinux-config/
 │       │   │   └── utils/
 │       │   │       └── __init__.py           # i18n helper (_)
 │       │   ├── locale/                       # Compiled translations (.mo, .json)
-│       │   └── pixmaps/                      # Application icons (.svg, .png)
+│       │   └── icons/hicolor/scalable/apps/  # Application icon (.svg)
 ├── pkgbuild/
 │   └── PKGBUILD                              # Arch/BigLinux package build script
 ├── LICENSE                                   # GPL-3.0
