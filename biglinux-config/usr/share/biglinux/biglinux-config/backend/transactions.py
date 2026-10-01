@@ -34,7 +34,7 @@ def fsync_directory(directory: str) -> None:
 
 
 def atomic_json(destination: str | Path, data: dict) -> None:
-    """Private temp file, fsync, atomic replacement, then directory fsync."""
+    """Private temp file and atomic replacement; program state is not synced."""
     destination = os.fspath(destination)
     parent = os.path.dirname(destination) or "."
     os.makedirs(parent, mode=0o700, exist_ok=True)
@@ -42,10 +42,7 @@ def atomic_json(destination: str | Path, data: dict) -> None:
     try:
         with os.fdopen(fd, "w", encoding="utf-8") as out:
             json.dump(data, out, ensure_ascii=False, indent=2)
-            out.flush()
-            os.fsync(out.fileno())
         os.replace(temporary, destination)
-        fsync_directory(parent)
     finally:
         if os.path.lexists(temporary):
             os.unlink(temporary)

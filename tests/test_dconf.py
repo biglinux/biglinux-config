@@ -15,6 +15,7 @@ import backend.reset_manager as rm
 import backend.backup_manager as bm
 from backend.backup_manager import ImportStatus
 from data.app_registry import AppEntry
+from conftest import register
 
 pytestmark = pytest.mark.skipif(
     os.environ.get("BIGLINUX_TEST_DCONF") != "1" or not dc.is_available(),
@@ -30,10 +31,10 @@ def scratch_ns():
 
 
 def _entry(ns, app_id="x"):
-    return AppEntry(
+    return register(AppEntry(
         app_id=app_id, name=app_id.title(), icon="", binary="/bin/true",
         category="customization", config_paths=[], dconf_paths=[ns],
-    )
+    ))
 
 
 # --------------------------------------------------------------------------- #

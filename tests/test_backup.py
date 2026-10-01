@@ -11,18 +11,18 @@ import threading
 import backend.backup_manager as bm
 from backend.backup_manager import ImportStatus
 from data.app_registry import AppEntry
-from conftest import make_tree
+from conftest import make_tree, register
 
 
 def _entry(app_id="app", paths=("~/.config/app",)):
-    return AppEntry(
+    return register(AppEntry(
         app_id=app_id,
         name=app_id.title(),
         icon="",
         binary="/bin/true",
         category="system",
         config_paths=list(paths),
-    )
+    ))
 
 
 def _export(entries, arc, **kw):

@@ -21,6 +21,26 @@ if str(APP_ROOT) not in sys.path:
     sys.path.insert(0, str(APP_ROOT))
 
 
+@pytest.fixture(autouse=True)
+def test_registry(monkeypatch):
+    """Per-test copy of the app registry; ``register`` adds synthetic apps
+    so imports accept their roots like those of real registered apps."""
+    from backend import backup_manager
+    from data.app_registry import APP_REGISTRY, AppEntry
+
+    registry = list(APP_REGISTRY) + [AppEntry(
+        app_id="app", name="App", icon="", binary="/bin/true",
+        category="system", config_paths=["~/.config/app"])]
+    monkeypatch.setattr(backup_manager, "APP_REGISTRY", registry, raising=False)
+    return registry
+
+
+def register(entry):
+    from backend import backup_manager
+    backup_manager.APP_REGISTRY.insert(0, entry)
+    return entry
+
+
 @pytest.fixture()
 def fake_home(tmp_path, monkeypatch):
     """Provide an isolated $HOME and chdir-safe environment.

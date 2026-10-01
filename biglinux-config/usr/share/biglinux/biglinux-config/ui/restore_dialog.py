@@ -634,9 +634,14 @@ def _logout_session() -> None:
 
     desktop = os.environ.get("XDG_CURRENT_DESKTOP", "").upper()
 
+    if "KDE" in desktop or "PLASMA" in desktop:
+        # Direct D-Bus call: stock Plasma 6 ships qdbus6, not qdbus.
+        Gio.bus_get_sync(Gio.BusType.SESSION).call(
+            "org.kde.Shutdown", "/Shutdown", "org.kde.Shutdown", "logout",
+            None, None, Gio.DBusCallFlags.NONE, -1, None, None)
+        return
+
     logout_commands = {
-        "KDE": ["qdbus", "org.kde.ksmserver", "/KSMServer", "logout", "1", "0", "2"],
-        "PLASMA": ["qdbus", "org.kde.ksmserver", "/KSMServer", "logout", "1", "0", "2"],
         "GNOME": ["gnome-session-quit", "--no-prompt"],
         "XFCE": ["xfce4-session-logout", "--logout"],
         "X-CINNAMON": ["cinnamon-session-quit", "--logout", "--no-prompt"],

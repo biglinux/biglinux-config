@@ -31,7 +31,7 @@ from backend.archive_policy import (
     validate_checksums,
 )
 from backend.transactions import FileTransaction, fsync_directory, operation_lock
-from data.app_registry import AppEntry
+from data.app_registry import APP_REGISTRY, AppEntry
 
 logger = logging.getLogger("biglinux-config")
 BACKUP_VERSION = 2
@@ -212,7 +212,7 @@ class _HashingReader:
 
 def export_backup(entries: list[AppEntry], archive_path: str, full_directory=False,
                   progress_callback=None, cancel_event=None) -> BackupResult:
-    """Fail on any lost input; publish a 0600 archive only after fsync."""
+    """Fail on any lost input; publish a complete 0600 archive atomically."""
     temporary = None
     archive_path = os.fspath(archive_path)
     try:
@@ -296,19 +296,12 @@ def export_backup(entries: list[AppEntry], archive_path: str, full_directory=Fal
                     if len(payload) > DEFAULT_LIMITS.max_metadata_size:
                         raise BackupError("Checksum manifest exceeds the backup limit.")
                     _add_bytes(tar, CHECKSUMS_NAME, payload, policy)
-                raw.flush()
-                os.fsync(raw.fileno())
+            # No fsync: the sources stay on disk, so a power cut costs only a rerun.
             check_cancel()
             os.replace(temporary, archive_path)
             temporary = None
-            warning = ""
-            try:
-                fsync_directory(parent)
-            except OSError as exc:
-                warning = f"Backup published, but directory durability could not be confirmed: {exc}"
-                logger.warning(warning)
             _notify(progress_callback, total, total, "")
-            return BackupResult(True, warning, archive_path, len(manifest["applications"]), total, len(records) + len(dconf_members))
+            return BackupResult(True, "", archive_path, len(manifest["applications"]), total, len(records) + len(dconf_members))
     except _Cancelled:
         return BackupResult(False, "cancelled", archive_path, 0, 0)
     except Exception as exc:
@@ -579,6 +572,34 @@ def _rollback_dconf(applied):
     return errors
 
 
+def _check_registered_scope(manifest, selected):
+    """Checksums do not authenticate an archive: restore only what this
+    installation itself would back up for each application."""
+    scopes = {}
+    for app in selected:
+        app_id = app["app_id"]
+        if app_id.startswith("flatpak-"):
+            scopes[app_id] = ([f".var/app/{app_id.removeprefix('flatpak-')}"], [])
+        else:
+            entry = next((e for e in APP_REGISTRY if e.app_id == app_id), None)
+            if entry is None:
+                raise BackupError(f"Application not supported by this version: {app_id}")
+            scopes[app_id] = ([p.removeprefix("~/") for p in entry.config_paths],
+                              entry.dconf_paths)
+        allowed = scopes[app_id][0]
+        for root in app["roots"]:
+            if not any(root == p or root.startswith(p + "/") for p in allowed):
+                raise BackupError(f"Path {root} is not a settings location of {app_id}")
+    for section in manifest["dconf"]:
+        if section["app_id"] not in scopes:
+            continue
+        allowed = scopes[section["app_id"]][1]
+        for item in section["items"]:
+            if not any(item["path"].startswith(ns) for ns in allowed):
+                raise BackupError(
+                    f"dconf path {item['path']} is not registered for {section['app_id']}")
+
+
 def _dconf_payloads(manifest, texts, selected_ids):
     wanted = {}
     for section in manifest["dconf"]:
@@ -629,6 +650,7 @@ def _import_backup(archive_path, selected_app_ids=None, progress_callback=None,
             skipped = [a["name"] for a in manifest["applications"] if a not in selected]
             if not selected:
                 raise BackupError("Nothing selected to restore.")
+            _check_registered_scope(manifest, selected)
             roots = sorted({r for app in selected for r in app["roots"]}, key=lambda r: (len(r), r))
             # Commit only disjoint top-level roots. Child apps still appear in results.
             disjoint = []

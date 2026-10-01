@@ -240,3 +240,29 @@ def test_conflicting_dconf_dumps_fail_before_any_live_replacement(fake_home, tmp
     assert result.status is bm.ImportStatus.FAILED
     assert (fake_home / ".config/app/a").read_text() == "ORIGINAL"
     assert not list(fake_home.glob(".biglinux-config-restore-*"))
+
+
+def test_import_refuses_roots_outside_registered_app_paths(fake_home, tmp_path):
+    # A validly checksummed backup claiming "app" owns ~/Documents and autostart.
+    make_tree(fake_home / "Documents", {"readme.txt": "attacker"})
+    make_tree(fake_home / ".config/autostart", {"x.desktop": "[Desktop Entry]\nExec=id\n"})
+    arc = tmp_path / "crafted.tar.gz"
+    crafted = bm.AppEntry(app_id="app", name="App", icon="", binary="/bin/true",
+                          category="system", config_paths=["~/Documents", "~/.config/autostart"])
+    assert bm.export_backup([crafted], str(arc)).success
+    shutil.rmtree(fake_home / "Documents")
+    shutil.rmtree(fake_home / ".config/autostart")
+    make_tree(fake_home / "Documents", {"thesis.odt": "years of work"})
+
+    result = bm.import_backup(str(arc))
+
+    assert not result.success
+    assert (fake_home / "Documents/thesis.odt").read_text() == "years of work"
+    assert not (fake_home / ".config/autostart").exists()
+
+
+def test_import_refuses_dconf_paths_outside_registered_namespaces():
+    manifest = {"dconf": [{"app_id": "app", "items": [
+        {"path": "/org/gnome/settings-daemon/plugins/media-keys/", "member": "m"}]}]}
+    with pytest.raises(bm.BackupError):
+        bm._check_registered_scope(manifest, [{"app_id": "app", "roots": []}])
