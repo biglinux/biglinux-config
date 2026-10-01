@@ -9,6 +9,7 @@ performed — that would wipe unrelated GNOME settings.
 from __future__ import annotations
 
 import logging
+import re
 import shutil
 import subprocess
 
@@ -28,10 +29,10 @@ def is_valid_namespace(path: str) -> bool:
     Rejects ``/`` and single-segment roots so a reset can never wipe the whole
     database or a broad top-level tree.
     """
-    if not path.startswith("/") or not path.endswith("/"):
+    if not isinstance(path, str) or len(path) > 4096:
         return False
-    segments = [s for s in path.split("/") if s]
-    return len(segments) >= 2
+    return re.fullmatch(r"/(?:[A-Za-z0-9_-]+/){2,}", path) is not None
+
 
 
 def dump(path: str) -> str:
