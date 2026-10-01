@@ -161,3 +161,24 @@ def test_data_heavy_registry_roots_are_not_reset_wholesale(app_id):
 
 def test_no_raw_dconf_database_in_registry_templates():
     assert all(not source.endswith("/.config/dconf") for app in APP_REGISTRY for source in app.skel_paths)
+
+
+def test_operation_lock_blocks_an_independent_process(fake_home):
+    import os
+    import subprocess
+    import sys
+    from conftest import APP_ROOT
+    from backend.transactions import operation_lock
+    code = """from backend.transactions import operation_lock, OperationBusy
+try:
+    with operation_lock():
+        raise SystemExit(2)
+except OperationBusy:
+    print('operation busy')
+"""
+    environment = dict(os.environ, PYTHONPATH=str(APP_ROOT))
+    with operation_lock():
+        result = subprocess.run([sys.executable, "-c", code], env=environment,
+                                capture_output=True, text=True, timeout=5)
+    assert result.returncode == 0, result.stderr
+    assert "operation busy" in result.stdout

@@ -91,3 +91,11 @@ def test_member_limits_are_enforced():
 def test_invalid_checksums(value):
     with pytest.raises(BackupError):
         validate_checksums(value)
+
+
+@pytest.mark.parametrize("app_id", [[], {}, 1, None])
+def test_dconf_section_ids_require_strings(fake_home, app_id):
+    data = manifest()
+    data["dconf"] = [{"app_id": app_id, "items": []}]
+    with pytest.raises(BackupError):
+        normalise_manifest(data)

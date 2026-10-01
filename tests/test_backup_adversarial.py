@@ -213,3 +213,30 @@ def test_chained_extended_headers_have_one_cumulative_budget(tmp_path):
     with pytest.raises(BackupError, match="Cumulative tar header"):
         with bm._reader(io.BytesIO(gzip.compress(content)), limits=limits) as archive:
             list(bm._members(archive))
+
+
+def test_conflicting_dconf_dumps_fail_before_any_live_replacement(fake_home, tmp_path, monkeypatch):
+    make_tree(fake_home / ".config/app", {"a": "ORIGINAL"})
+    arc = tmp_path / "conflict.tar.gz"
+    dconf_members = [".biglinux-dconf/app/0.ini", ".biglinux-dconf/other/0.ini"]
+    manifest = {"format": bm.BACKUP_FORMAT, "version": 2,
+                "applications": [{"app_id": "app", "name": "App", "roots": [".config/app"]},
+                                 {"app_id": "other", "name": "Other", "roots": []}],
+                "dconf": [{"app_id": app_id, "items": [{"path": "/org/example/", "member": member}]}
+                          for app_id, member in zip(("app", "other"), dconf_members)]}
+    payloads = {".config/app/a": b"NEW", dconf_members[0]: b"[/]\nkey='a'\n",
+                dconf_members[1]: b"[/]\nkey='b'\n"}
+    with tarfile.open(arc, "w:gz") as tar:
+        bm._add_bytes(tar, bm.MANIFEST_NAME, json.dumps(manifest).encode())
+        for name, body in payloads.items():
+            bm._add_bytes(tar, name, body)
+        bm._add_bytes(tar, bm.CHECKSUMS_NAME, json.dumps({name: hashlib.blake2b(body, digest_size=32).hexdigest()
+                                                       for name, body in payloads.items()}).encode())
+    monkeypatch.setattr(bm.dconf_manager, "is_available", lambda: True)
+    monkeypatch.setattr(bm.dconf_manager, "dump_strict", lambda *_: pytest.fail("unexpected live dconf access"))
+    valid, reason = bm.verify_backup(str(arc))
+    assert not valid and "Conflicting dumps" in reason
+    result = bm.import_backup(str(arc))
+    assert result.status is bm.ImportStatus.FAILED
+    assert (fake_home / ".config/app/a").read_text() == "ORIGINAL"
+    assert not list(fake_home.glob(".biglinux-config-restore-*"))

@@ -1,16 +1,10 @@
-"""Centralised, exhaustively-tested path safety helpers.
+"""Shared HOME, XDG and archive path validation.
 
-Every module that reads, writes, removes or extracts files under the user's
-home directory must route its path validation through here.  The rules are:
-
-* ``~`` and ``~user`` are expanded.
-* the *real* path (symlinks resolved) must stay inside the real ``$HOME``.
-* a small set of "structural" directories (``~``, ``~/.config`` …) may never be
-  the direct target of a destructive operation — deleting or overwriting them
-  wholesale would take unrelated applications down with it.
-
-The functions never raise for an invalid path; they return ``None`` (or a bool)
-so callers can skip-and-log instead of crashing a batch operation.
+Destructive destinations are lexical paths inside HOME. Parent symlinks are
+rejected; a leaf symlink is moved/removed itself, never followed. HOME, shared
+structural directories and the raw dconf database cannot be replaced wholesale.
+Callers must handle rejection explicitly instead of silently reporting success.
+Archive names have separate canonical POSIX and portable-link checks.
 """
 
 from __future__ import annotations

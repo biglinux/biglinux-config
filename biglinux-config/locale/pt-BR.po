@@ -682,3 +682,76 @@ msgstr "Mostrar diálogo ao iniciar"
 #: biglinux-config/usr/share/biglinux/biglinux-config/ui/welcome_dialog.py:202
 msgid "Let's Start"
 msgstr ""
+
+#. Safety and lifecycle messages added during the code review.
+#, python-format
+msgid "All customizations for %s will be lost.\n\nMode: %s\n\nSave your work and close the application first. Detection cannot identify every launcher or script."
+msgstr "Todas as personalizações de %s serão perdidas.\n\nModo: %s\n\nSalve seu trabalho e feche o aplicativo antes de continuar. A detecção não identifica todos os inicializadores ou scripts."
+
+#. Safety and lifecycle messages added during the code review.
+msgid "Cancelling safely; keeping recovery data…"
+msgstr "Cancelando com segurança; preservando os dados de recuperação…"
+
+#. Safety and lifecycle messages added during the code review.
+msgid "Cancelling…"
+msgstr "Cancelando…"
+
+#. Safety and lifecycle messages added during the code review.
+msgid "Close this desktop session before restoring its settings. The session will not be terminated automatically."
+msgstr "Encerre esta sessão do ambiente de trabalho antes de restaurar suas configurações. A sessão não será encerrada automaticamente."
+
+#. Safety and lifecycle messages added during the code review.
+#, python-format
+msgid "Could not load applications: %s"
+msgstr "Não foi possível carregar os aplicativos: %s"
+
+#. Safety and lifecycle messages added during the code review.
+msgid "Could not save preferences"
+msgstr "Não foi possível salvar as preferências"
+
+#. Safety and lifecycle messages added during the code review.
+#, python-format
+msgid "Could not save preferences: %s"
+msgstr "Não foi possível salvar as preferências: %s"
+
+#. Safety and lifecycle messages added during the code review.
+#, python-format
+msgid "Could not scan applications: %s"
+msgstr "Não foi possível verificar os aplicativos: %s"
+
+#. Safety and lifecycle messages added during the code review.
+#, python-format
+msgid "Existing settings for %d selected applications will be overwritten.\n\nClose those applications first and create a backup of the current settings. Import only backups you trust: integrity checks do not authenticate the sender."
+msgstr "As configurações existentes dos %d aplicativos selecionados serão substituídas.\n\nFeche esses aplicativos e faça uma cópia das configurações atuais antes de continuar. Importe somente backups de confiança: a verificação de integridade não comprova a identidade de quem os criou."
+
+#. Safety and lifecycle messages added during the code review.
+msgid "Legacy backup: no checksums are available to verify file contents."
+msgstr "Backup antigo: não há somas de verificação para conferir o conteúdo dos arquivos."
+
+#. Safety and lifecycle messages added during the code review.
+msgid "Operation failed"
+msgstr "A operação falhou"
+
+#. Safety and lifecycle messages added during the code review.
+msgid "Optionally include cache files\ninside registered application folders"
+msgstr "Inclua também os arquivos de cache\nnas pastas cadastradas dos aplicativos"
+
+#. Safety and lifecycle messages added during the code review.
+msgid "Reading application settings…"
+msgstr "Lendo as configurações do aplicativo…"
+
+#. Safety and lifecycle messages added during the code review.
+msgid "Select the applications whose settings you want to export. Close these applications before exporting. A .tar.gz archive will be created with the dotfiles."
+msgstr "Selecione os aplicativos cujas configurações deseja exportar. Feche esses aplicativos antes de exportar. Será criado um arquivo .tar.gz com os arquivos de configuração."
+
+#. Safety and lifecycle messages added during the code review.
+msgid "The application did not close safely. Close it manually and try again."
+msgstr "O aplicativo não foi encerrado com segurança. Feche-o manualmente e tente novamente."
+
+#. Safety and lifecycle messages added during the code review.
+msgid "The application is still running. Nothing was reset."
+msgstr "O aplicativo ainda está em execução. Nenhuma configuração foi redefinida."
+
+#. Safety and lifecycle messages added during the code review.
+msgid "These actions replace only the registered reset paths; backup data may cover additional folders."
+msgstr "Estas ações alteram somente os caminhos cadastrados para redefinição; o backup pode incluir outras pastas."

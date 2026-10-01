@@ -1,7 +1,7 @@
 """dconf (GSettings) support — reset and backup round-trip.
 
-Uses a throwaway scratch namespace so the real user database is never touched
-beyond that namespace, which is reset before and after each test.
+Opt-in only: tools/check-dconf.sh starts a separate session bus with isolated
+HOME/XDG directories BEFORE service activation, then uses a scratch namespace.
 """
 
 from __future__ import annotations

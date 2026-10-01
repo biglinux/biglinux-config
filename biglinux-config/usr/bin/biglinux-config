@@ -6,4 +6,4 @@ set -euo pipefail
 
 APP_DIR="/usr/share/biglinux/biglinux-config"
 
-exec python3 "${APP_DIR}/main.py" "$@"
+exec /usr/bin/python3 -I "${APP_DIR}/main.py" "$@"

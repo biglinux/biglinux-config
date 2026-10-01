@@ -108,9 +108,10 @@ def normalise_manifest(raw) -> dict:
     sections = raw.get("dconf", [])
     if not isinstance(sections, list) or len(sections) > 4096:
         raise BackupError("Invalid dconf sections.")
-    seen_members, seen_namespaces, seen_apps = set(), set(), set()
+    seen_members, seen_apps = set(), set()
     for section in sections:
-        if not isinstance(section, dict) or section.get("app_id") not in ids:
+        if (not isinstance(section, dict) or not isinstance(section.get("app_id"), str)
+                or section["app_id"] not in ids):
             raise BackupError("Orphan dconf section.")
         app_id = section["app_id"]
         if app_id in seen_apps:
@@ -132,7 +133,6 @@ def normalise_manifest(raw) -> dict:
             # Shared namespaces are allowed across apps, but contradictory dumps
             # of the same namespace are rejected by the importer before mutation.
             seen_members.add(member)
-            seen_namespaces.add(ns)
     for app in apps:
         if not app["roots"] and app["app_id"] not in seen_apps:
             raise BackupError(f"Application contains no restorable data: {app['app_id']}")

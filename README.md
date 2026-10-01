@@ -12,7 +12,7 @@
   <a href="LICENSE"><img src="https://img.shields.io/badge/license-GPL--3.0-blue.svg" alt="License"></a>
   <img src="https://img.shields.io/badge/GTK-4-green.svg" alt="GTK4">
   <img src="https://img.shields.io/badge/libadwaita-1.x-purple.svg" alt="libadwaita">
-  <img src="https://img.shields.io/badge/Python-3.10+-yellow.svg" alt="Python">
+  <img src="https://img.shields.io/badge/Python-3.12+-yellow.svg" alt="Python">
   <img src="https://img.shields.io/badge/apps-136-orange.svg" alt="136 apps">
   <img src="https://img.shields.io/badge/languages-29-lightgrey.svg" alt="29 languages">
 </p>
@@ -43,10 +43,10 @@ Built with modern GNOME HIG principles, it integrates seamlessly into any deskto
 
 | Dependency | Minimum Version |
 |---|---|
-| Python | 3.10+ |
-| GTK | 4.x |
-| libadwaita | 1.x |
-| PyGObject | 3.42+ |
+| Python | 3.12+ |
+| GTK | 4.12+ (application API minimum) |
+| libadwaita | 1.6+ |
+| PyGObject | Gtk 4.0 and Adw 1 introspection available |
 | Flatpak | (optional, for Flatpak app detection) |
 
 ## Installation
@@ -68,10 +68,18 @@ python3 biglinux-config/usr/share/biglinux/biglinux-config/main.py
 
 ### Building the Package (makepkg)
 
+To package the **current checkout including local patches**, without refetching
+unpatched upstream sources:
+
 ```bash
-cd pkgbuild
-makepkg -si
+python3 tools/prepare-local-package.py
+cd build/local-package
+makepkg
 ```
+
+Build as a normal user. Install the resulting package separately after testing.
+The ordinary `pkgbuild/PKGBUILD` remains a VCS recipe following its configured
+upstream, not automatically your local checkout.
 
 ## Project Structure
 
@@ -141,7 +149,7 @@ biglinux-config/
 1. Select an application from the grid.
 2. Choose between:
    - **Restore BigLinux Defaults** — Copies preconfigured files from `/etc/skel` to your home directory.
-   - **Restore Program Defaults** — Deletes all custom configuration files so the application recreates its defaults.
+   - **Restore Program Defaults** — Removes only registered reset paths so the application recreates defaults; backup paths may be broader.
 3. If the application is currently running, you will be prompted to close it first.
 4. A success/error dialog confirms the operation result.
 
@@ -150,25 +158,26 @@ biglinux-config/
 1. Open **Menu → Export settings…**
 2. Select which installed applications to include in the backup.
 3. Choose a destination file (`.tar.gz`).
-4. The archive will contain all selected dotfiles and configuration directories.
+4. The archive contains the selected registered roots, subject to the documented cache policy, portable-link policy and resource limits. Close the apps first.
 
 ### Importing Settings
 
 1. Open **Menu → Import settings…**
 2. Select a previously exported `.tar.gz` file.
 3. Choose which applications to restore from the backup.
-4. Files are extracted to the appropriate locations under `$HOME`.
+4. The archive is validated, selected files are staged privately, and live paths are replaced with rollback support. Import only trusted backups; integrity is not authenticity.
 
 ## Configuration
 
 User preferences are stored at:
 
 ```
-~/.config/restore-settings/settings.json
+${XDG_CONFIG_HOME:-~/.config}/restore-settings/settings.json
 ```
 
 Currently stores:
 - `show-welcome` — Whether to display the welcome dialog on startup (default: `true`).
+- `favorites-added` / `favorites-removed` — User overrides to detected favorites.
 
 ## Translation
 
@@ -232,11 +241,16 @@ the exact operation and error message. Do not delete a pre-reset backup under
 
 ## Testing
 
-Automated tests run against an isolated temporary `$HOME` (your real
-configuration is never touched):
+Use the isolation scripts, not your normal desktop bus/profile:
 
 ```bash
-python3 -m pytest tests/ -q
+bash tools/check.sh           # unit tests and Python syntax; dconf tests skipped
+bash tools/check-dconf.sh     # real dconf with a new isolated D-Bus session
 ```
+
+See [Safety, compatibility and release checks](docs/SAFETY.md) before importing,
+resetting or packaging. In particular, this patch set is **not a full-home backup
+system**, does not authenticate archives, and has a pending native GTK release
+gate. The tests of the worker dispatcher use a fake GLib queue, not real widgets.
 
 The application never reads the repository documentation at runtime.

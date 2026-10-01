@@ -621,7 +621,7 @@ def _import_backup(archive_path, selected_app_ids=None, progress_callback=None,
         with open(archive_path, "rb") as source:
             check_cancel = lambda: _cancel(cancel_event)
             check_cancel()
-            manifest = read_backup_manifest(source, limits=limits)
+            manifest = read_backup_manifest(source, limits=limits, cancel_event=cancel_event)
             if manifest is None:
                 raise BackupError("Invalid backup: no valid manifest found.")
             selected = [app for app in manifest["applications"]

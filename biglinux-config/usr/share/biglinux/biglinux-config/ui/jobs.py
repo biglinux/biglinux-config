@@ -51,7 +51,7 @@ def run_job(parent, work: Callable, done: Callable, *, cancel_event=None, failed
                 application._pending_jobs -= 1
                 action = application.lookup_action("quit")
                 if application._pending_jobs == 0 and action is not None:
-                    action.set_enabled(application._quit_was_enabled)
+                    action.set_enabled(getattr(application, "_quit_was_enabled", True))
                 application.release()
         return GLib.SOURCE_REMOVE
 
