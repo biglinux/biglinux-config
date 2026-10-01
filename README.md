@@ -68,18 +68,13 @@ python3 biglinux-config/usr/share/biglinux/biglinux-config/main.py
 
 ### Building the Package (makepkg)
 
-To package the **current checkout including local patches**, without refetching
-unpatched upstream sources:
-
 ```bash
-python3 tools/prepare-local-package.py
-cd build/local-package
-makepkg
+cd pkgbuild
+makepkg -si
 ```
 
-Build as a normal user. Install the resulting package separately after testing.
-The ordinary `pkgbuild/PKGBUILD` remains a VCS recipe following its configured
-upstream, not automatically your local checkout.
+`pkgbuild/PKGBUILD` fetches the repository from git, so commit or push local
+changes before building.
 
 ## Project Structure
 

@@ -95,13 +95,7 @@ trusts the installed application files. The original upstream URLs/authors are
 retained; the repository URLs in metadata and PKGBUILD differ and require
 maintainer confirmation before a release. No upstream release tag is invented.
 
-The VCS PKGBUILD fetches its configured upstream. To package this **local patched
-checkout**, run `python3 tools/prepare-local-package.py`, then `cd build/local-package`
-and `makepkg` as a normal user. The generated recipe uses a deterministic local
-source archive and an actual SHA-256 checksum; it does not refetch upstream.
-Build compiles gettext catalogs, package excludes bytecode/caches, and check runs
-the isolated unit suite. `gettext`, `python-pytest` and normal makepkg tools must
-be installed separately. No package is automatically installed by these scripts.
+The VCS PKGBUILD fetches its configured upstream, not a local uncommitted checkout.
 
 The review updates 17 new safety/UI strings in pt_BR and rebuilds pt_BR/en
 catalogs. Existing translations, plural rules and linguistic quality across all
