@@ -10,17 +10,9 @@ from gi.repository import Adw, Gtk
 
 from utils import _
 
-APP_NAME = "Restore Settings"
-APP_VERSION = "1.0.0"
-APP_ICON = "restore-settings"
-APP_DEVELOPER = "BigLinux Team"
-APP_WEBSITE = "https://github.com/ruscher/biglinux-config"
-APP_ISSUE_URL = f"{APP_WEBSITE}/issues"
-APP_SUPPORT_URL = f"{APP_WEBSITE}#troubleshooting"
-
-APP_AUTHORS = (
-    "Bruno Gonçalves <bigbruno@gmail.com>",
-    "Rafael Ruscher <rruscher@gmail.com>",
+from ui.metadata import (
+    APP_NAME, APP_VERSION, APP_ICON, APP_DEVELOPER, APP_WEBSITE,
+    APP_ISSUE_URL, APP_SUPPORT_URL, APP_AUTHORS,
 )
 
 

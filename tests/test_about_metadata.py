@@ -1,12 +1,12 @@
 """Tests for the user-facing application metadata."""
 
-from ui.about_dialog import (
+from ui.metadata import (
     APP_AUTHORS,
     APP_ISSUE_URL,
     APP_SUPPORT_URL,
     APP_WEBSITE,
 )
-from ui.welcome_dialog import WELCOME_FEATURES
+from ui.metadata import WELCOME_FEATURES
 
 
 def test_about_links_use_the_project_repository():

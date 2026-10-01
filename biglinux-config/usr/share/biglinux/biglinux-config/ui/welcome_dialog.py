@@ -2,9 +2,6 @@
 
 from __future__ import annotations
 
-import json
-import os
-import pathlib
 
 import gi
 
@@ -14,85 +11,12 @@ from gi.repository import Adw, GLib, Gtk
 
 from utils import _, set_label
 
-_CONFIG_DIR = (
-    pathlib.Path(os.environ.get("XDG_CONFIG_HOME", os.path.expanduser("~/.config")))
-    / "restore-settings"
-)
-_CONFIG_FILE = _CONFIG_DIR / "settings.json"
-
-
-WELCOME_FEATURES = (
-    (
-        "restore-default-symbolic",
-        _("Restore BigLinux Defaults"),
-        _(
-            "Restore the settings provided by BigLinux\n"
-            "without changing unrelated files"
-        ),
-    ),
-    (
-        "edit-undo-symbolic",
-        _("Restore Program Defaults"),
-        _("Remove custom settings so the app\ncan recreate its original defaults"),
-    ),
-    (
-        "document-save-symbolic",
-        _("Export Settings"),
-        _("Back up selected applications\nto a compressed .tar.gz archive"),
-    ),
-    (
-        "document-open-symbolic",
-        _("Import Settings"),
-        _("Restore selected applications from\na previously exported backup"),
-    ),
-    (
-        "folder-symbolic",
-        _("Full Directory Backup"),
-        _("Optionally include complete app folders\ninstead of only registered paths"),
-    ),
-    (
-        "folder-flatpak",
-        _("Native & Flatpak Apps"),
-        _("Manage settings for installed native\nand Flatpak applications together"),
-    ),
-    (
-        "system-search-symbolic",
-        _("Search & Favorites"),
-        _("Find supported applications quickly\nand keep a personal favorites list"),
-    ),
-    (
-        "preferences-system-symbolic",
-        _("Desktop Settings"),
-        _(
-            "Handle registered GSettings/dconf data\n"
-            "without touching unrelated preferences"
-        ),
-    ),
-)
-
-
-def _load_settings() -> dict:
-    if _CONFIG_FILE.is_file():
-        try:
-            data = json.loads(_CONFIG_FILE.read_text(encoding="utf-8"))
-            return data if isinstance(data, dict) else {}
-        except (json.JSONDecodeError, OSError):
-            pass
-    return {}
-
-
-def _save_settings(data: dict) -> None:
-    try:
-        _CONFIG_DIR.mkdir(parents=True, exist_ok=True)
-        _CONFIG_FILE.write_text(
-            json.dumps(data, indent=2, ensure_ascii=False), encoding="utf-8"
-        )
-    except OSError:
-        pass
+from backend import user_prefs
+from ui.metadata import WELCOME_FEATURES
 
 
 def should_show_welcome() -> bool:
-    return bool(_load_settings().get("show-welcome", True))
+    return user_prefs.get_show_welcome()
 
 
 class WelcomeDialog:
@@ -123,6 +47,8 @@ class WelcomeDialog:
         header.append(icon)
 
         title = Gtk.Label()
+        title.set_wrap(True)
+        title.set_justify(Gtk.Justification.CENTER)
         title.set_markup(
             "<span size='xx-large' weight='bold'>"
             + GLib.markup_escape_text(_("Welcome to Restore Settings"))
@@ -131,6 +57,8 @@ class WelcomeDialog:
         header.append(title)
 
         subtitle = Gtk.Label()
+        subtitle.set_wrap(True)
+        subtitle.set_justify(Gtk.Justification.CENTER)
         subtitle.set_markup(
             "<span size='large'>"
             + GLib.markup_escape_text(
@@ -160,6 +88,8 @@ class WelcomeDialog:
         content.append(features)
 
         tip = Gtk.Label()
+        tip.set_wrap(True)
+        tip.set_justify(Gtk.Justification.CENTER)
         tip.set_markup(
             "<span size='small'>"
             + GLib.markup_escape_text(
@@ -185,6 +115,7 @@ class WelcomeDialog:
         self._show_switch = Gtk.Switch()
         self._show_switch.set_valign(Gtk.Align.CENTER)
         self._show_switch.set_active(should_show_welcome())
+        self._show_switch.connect("notify::active", lambda *_: self._persist_welcome_choice())
 
         switch_label = Gtk.Label(label=_("Show dialog on startup"))
         switch_label.set_xalign(0)
@@ -251,8 +182,14 @@ class WelcomeDialog:
 
     def _on_close(self, _button: Gtk.Button) -> None:
         if self._show_switch:
-            settings = _load_settings()
-            settings["show-welcome"] = self._show_switch.get_active()
-            _save_settings(settings)
+            self._persist_welcome_choice()
         if self._dialog:
             self._dialog.close()
+
+    def _persist_welcome_choice(self) -> None:
+        try:
+            user_prefs.set_show_welcome(self._show_switch.get_active())
+        except OSError as exc:
+            alert = Adw.AlertDialog.new(_("Could not save preferences"), str(exc))
+            alert.add_response("close", _("Close"))
+            alert.present(self._parent)

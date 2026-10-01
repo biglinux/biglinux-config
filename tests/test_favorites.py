@@ -8,8 +8,7 @@ import backend.user_prefs as up
 
 
 def _isolate(tmp_path, monkeypatch):
-    monkeypatch.setattr(up, "_CONFIG_DIR", tmp_path)
-    monkeypatch.setattr(up, "_CONFIG_FILE", tmp_path / "settings.json")
+    monkeypatch.setattr(up, "_path", lambda: tmp_path / "settings.json")
 
 
 def test_add_and_resolve(tmp_path, monkeypatch):
