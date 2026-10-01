@@ -16,6 +16,71 @@ msgstr ""
 "Plural-Forms: nplurals=INTEGER; plural=EXPRESSION;\n"
 
 #
+# File: biglinux-config/biglinux-config/usr/share/biglinux/biglinux-config/ui/about_dialog.py, line: 41
+msgid ""
+"Restore, back up, and manage application settings on BigLinux.\n"
+"\n"
+"Restore Settings detects supported native and Flatpak applications, restores "
+"either BigLinux defaults or the application's own defaults, and exports or "
+"imports selected settings using compressed backups with integrity checks and "
+"rollback protection."
+msgstr ""
+"Restore, back up, and manage application settings on BigLinux.\n"
+"\n"
+"Restore Settings detects supported native and Flatpak applications, restores "
+"either BigLinux defaults or the application's own defaults, and exports or "
+"imports selected settings using compressed backups with integrity checks and "
+"rollback protection."
+
+#
+# File: biglinux-config/biglinux-config/usr/share/biglinux/biglinux-config/ui/app_grid.py, line: 70
+msgid "No applications found"
+msgstr "No applications found"
+
+#
+# File: biglinux-config/biglinux-config/usr/share/biglinux/biglinux-config/ui/app_grid.py, line: 72
+msgid "Try another category or search term"
+msgstr "Try another category or search term"
+
+#
+# File: biglinux-config/biglinux-config/usr/share/biglinux/biglinux-config/ui/app_grid.py, line: 170
+# File: biglinux-config/biglinux-config/usr/share/biglinux/biglinux-config/ui/app_grid.py, line: 220
+msgid "Flatpak application"
+msgstr "Flatpak application"
+
+#
+# File: biglinux-config/biglinux-config/usr/share/biglinux/biglinux-config/ui/app_grid.py, line: 170
+msgid "Native application"
+msgstr "Native application"
+
+#
+# File: biglinux-config/biglinux-config/usr/share/biglinux/biglinux-config/ui/app_grid.py, line: 173
+# File: biglinux-config/biglinux-config/usr/share/biglinux/biglinux-config/ui/app_grid.py, line: 230
+# File: biglinux-config/biglinux-config/usr/share/biglinux/biglinux-config/ui/app_grid.py, line: 337
+msgid "BigLinux default available"
+msgstr "BigLinux default available"
+
+#
+# File: biglinux-config/biglinux-config/usr/share/biglinux/biglinux-config/ui/app_grid.py, line: 312
+msgid "Remove from favorites"
+msgstr "Remove from favorites"
+
+#
+# File: biglinux-config/biglinux-config/usr/share/biglinux/biglinux-config/ui/app_grid.py, line: 312
+msgid "Add to favorites"
+msgstr "Add to favorites"
+
+#
+# File: biglinux-config/biglinux-config/usr/share/biglinux/biglinux-config/ui/app_grid.py, line: 334
+msgid "Flatpak"
+msgstr "Flatpak"
+
+#
+# File: biglinux-config/biglinux-config/usr/share/biglinux/biglinux-config/ui/app_grid.py, line: 334
+msgid "Native"
+msgstr "Native"
+
+#
 # #-#-#-#-#  biglinux-config.pot (biglinux-config)  #-#-#-#-#
 #
 # File: biglinux-config/biglinux-config/usr/share/biglinux/biglinux-config/ui/backup_dialog.py, line: 40
@@ -405,150 +470,61 @@ msgstr ""
 "It contains: %s"
 
 #
-# File: biglinux-config/biglinux-config/usr/share/biglinux/biglinux-config/ui/welcome_dialog.py, line: 27
-msgid "Restore BigLinux Defaults"
-msgstr "Restore BigLinux Defaults"
+# File: biglinux-config/biglinux-config/usr/share/biglinux/biglinux-config/ui/application.py, line: 202
+# File: biglinux-config/biglinux-config/usr/share/biglinux/biglinux-config/ui/application.py, line: 253
+msgid "Restore Settings"
+msgstr "Restore Settings"
 
 #
-# File: biglinux-config/biglinux-config/usr/share/biglinux/biglinux-config/ui/welcome_dialog.py, line: 29
-msgid ""
-"Restore the settings provided by BigLinux\n"
-"without changing unrelated files"
-msgstr ""
-"Restore the settings provided by BigLinux\n"
-"without changing unrelated files"
+# File: biglinux-config/biglinux-config/usr/share/biglinux/biglinux-config/ui/application.py, line: 244
+msgid "About Restore Settings"
+msgstr "About Restore Settings"
 
 #
-# File: biglinux-config/biglinux-config/usr/share/biglinux/biglinux-config/ui/welcome_dialog.py, line: 35
-msgid "Restore Program Defaults"
-msgstr "Restore Program Defaults"
+# File: biglinux-config/biglinux-config/usr/share/biglinux/biglinux-config/ui/application.py, line: 263
+msgid "Categories"
+msgstr "Categories"
 
 #
-# File: biglinux-config/biglinux-config/usr/share/biglinux/biglinux-config/ui/welcome_dialog.py, line: 36
-msgid ""
-"Remove custom settings so the app\n"
-"can recreate its original defaults"
-msgstr ""
-"Remove custom settings so the app\n"
-"can recreate its original defaults"
+# File: biglinux-config/biglinux-config/usr/share/biglinux/biglinux-config/ui/application.py, line: 272
+msgid "Search..."
+msgstr "Search..."
 
 #
-# File: biglinux-config/biglinux-config/usr/share/biglinux/biglinux-config/ui/welcome_dialog.py, line: 41
-msgid ""
-"Back up selected applications\n"
-"to a compressed .tar.gz archive"
-msgstr ""
-"Back up selected applications\n"
-"to a compressed .tar.gz archive"
+# #-#-#-#-#  biglinux-config.pot (biglinux-config)  #-#-#-#-#
+#
+# File: biglinux-config/biglinux-config/usr/share/biglinux/biglinux-config/ui/application.py, line: 284
+# File: biglinux-config/biglinux-config/usr/share/biglinux/biglinux-config/ui/restore_dialog.py, line: 259
+msgid "Export settings…"
+msgstr "Export settings…"
 
 #
-# File: biglinux-config/biglinux-config/usr/share/biglinux/biglinux-config/ui/welcome_dialog.py, line: 46
-msgid ""
-"Restore selected applications from\n"
-"a previously exported backup"
-msgstr ""
-"Restore selected applications from\n"
-"a previously exported backup"
+# #-#-#-#-#  biglinux-config.pot (biglinux-config)  #-#-#-#-#
+#
+# File: biglinux-config/biglinux-config/usr/share/biglinux/biglinux-config/ui/application.py, line: 285
+# File: biglinux-config/biglinux-config/usr/share/biglinux/biglinux-config/ui/restore_dialog.py, line: 267
+msgid "Import settings…"
+msgstr "Import settings…"
 
 #
-# File: biglinux-config/biglinux-config/usr/share/biglinux/biglinux-config/ui/welcome_dialog.py, line: 50
-msgid "Full Directory Backup"
-msgstr "Full Directory Backup"
+# File: biglinux-config/biglinux-config/usr/share/biglinux/biglinux-config/ui/application.py, line: 289
+msgid "Welcome"
+msgstr "Welcome"
 
 #
-# File: biglinux-config/biglinux-config/usr/share/biglinux/biglinux-config/ui/welcome_dialog.py, line: 51
-msgid ""
-"Optionally include complete app folders\n"
-"instead of only registered paths"
-msgstr ""
-"Optionally include complete app folders\n"
-"instead of only registered paths"
+# File: biglinux-config/biglinux-config/usr/share/biglinux/biglinux-config/ui/application.py, line: 290
+msgid "About"
+msgstr "About"
 
 #
-# File: biglinux-config/biglinux-config/usr/share/biglinux/biglinux-config/ui/welcome_dialog.py, line: 55
-msgid "Native & Flatpak Apps"
-msgstr "Native & Flatpak Apps"
+# File: biglinux-config/biglinux-config/usr/share/biglinux/biglinux-config/ui/application.py, line: 296
+msgid "Menu"
+msgstr "Menu"
 
 #
-# File: biglinux-config/biglinux-config/usr/share/biglinux/biglinux-config/ui/welcome_dialog.py, line: 56
-msgid ""
-"Manage settings for installed native\n"
-"and Flatpak applications together"
-msgstr ""
-"Manage settings for installed native\n"
-"and Flatpak applications together"
-
-#
-# File: biglinux-config/biglinux-config/usr/share/biglinux/biglinux-config/ui/welcome_dialog.py, line: 60
-msgid "Search & Favorites"
-msgstr "Search & Favorites"
-
-#
-# File: biglinux-config/biglinux-config/usr/share/biglinux/biglinux-config/ui/welcome_dialog.py, line: 61
-msgid ""
-"Find supported applications quickly\n"
-"and keep a personal favorites list"
-msgstr ""
-"Find supported applications quickly\n"
-"and keep a personal favorites list"
-
-#
-# File: biglinux-config/biglinux-config/usr/share/biglinux/biglinux-config/ui/welcome_dialog.py, line: 65
-msgid "Desktop Settings"
-msgstr "Desktop Settings"
-
-#
-# File: biglinux-config/biglinux-config/usr/share/biglinux/biglinux-config/ui/welcome_dialog.py, line: 67
-msgid ""
-"Handle registered GSettings/dconf data\n"
-"without touching unrelated preferences"
-msgstr ""
-"Handle registered GSettings/dconf data\n"
-"without touching unrelated preferences"
-
-#
-# File: biglinux-config/biglinux-config/usr/share/biglinux/biglinux-config/ui/welcome_dialog.py, line: 128
-msgid "Welcome to Restore Settings"
-msgstr "Welcome to Restore Settings"
-
-#
-# File: biglinux-config/biglinux-config/usr/share/biglinux/biglinux-config/ui/welcome_dialog.py, line: 137
-msgid "Restore, back up, and manage application settings on BigLinux"
-msgstr "Restore, back up, and manage application settings on BigLinux"
-
-#
-# File: biglinux-config/biglinux-config/usr/share/biglinux/biglinux-config/ui/welcome_dialog.py, line: 167
-msgid ""
-"Tip: Start typing to search; right-click an application to manage favorites"
-msgstr ""
-"Tip: Start typing to search; right-click an application to manage favorites"
-
-#
-# File: biglinux-config/biglinux-config/usr/share/biglinux/biglinux-config/ui/welcome_dialog.py, line: 189
-msgid "Show dialog on startup"
-msgstr "Show dialog on startup"
-
-#
-# File: biglinux-config/biglinux-config/usr/share/biglinux/biglinux-config/ui/welcome_dialog.py, line: 199
-msgid "Let's Start"
-msgstr "Let's Start"
-
-#
-# File: biglinux-config/biglinux-config/usr/share/biglinux/biglinux-config/ui/about_dialog.py, line: 41
-msgid ""
-"Restore, back up, and manage application settings on BigLinux.\n"
-"\n"
-"Restore Settings detects supported native and Flatpak applications, restores "
-"either BigLinux defaults or the application's own defaults, and exports or "
-"imports selected settings using compressed backups with integrity checks and "
-"rollback protection."
-msgstr ""
-"Restore, back up, and manage application settings on BigLinux.\n"
-"\n"
-"Restore Settings detects supported native and Flatpak applications, restores "
-"either BigLinux defaults or the application's own defaults, and exports or "
-"imports selected settings using compressed backups with integrity checks and "
-"rollback protection."
+# File: biglinux-config/biglinux-config/usr/share/biglinux/biglinux-config/ui/application.py, line: 329
+msgid "Loading applications…"
+msgstr "Loading applications…"
 
 #
 # File: biglinux-config/biglinux-config/usr/share/biglinux/biglinux-config/ui/restore_dialog.py, line: 199
@@ -579,14 +555,6 @@ msgid "Backup"
 msgstr "Backup"
 
 #
-# #-#-#-#-#  biglinux-config.pot (biglinux-config)  #-#-#-#-#
-#
-# File: biglinux-config/biglinux-config/usr/share/biglinux/biglinux-config/ui/restore_dialog.py, line: 259
-# File: biglinux-config/biglinux-config/usr/share/biglinux/biglinux-config/ui/application.py, line: 284
-msgid "Export settings…"
-msgstr "Export settings…"
-
-#
 # File: biglinux-config/biglinux-config/usr/share/biglinux/biglinux-config/ui/restore_dialog.py, line: 260
 msgid "Save this application's settings to a file"
 msgstr "Save this application's settings to a file"
@@ -595,14 +563,6 @@ msgstr "Save this application's settings to a file"
 # File: biglinux-config/biglinux-config/usr/share/biglinux/biglinux-config/ui/restore_dialog.py, line: 261
 msgid "No settings to export yet"
 msgstr "No settings to export yet"
-
-#
-# #-#-#-#-#  biglinux-config.pot (biglinux-config)  #-#-#-#-#
-#
-# File: biglinux-config/biglinux-config/usr/share/biglinux/biglinux-config/ui/restore_dialog.py, line: 267
-# File: biglinux-config/biglinux-config/usr/share/biglinux/biglinux-config/ui/application.py, line: 285
-msgid "Import settings…"
-msgstr "Import settings…"
 
 #
 # File: biglinux-config/biglinux-config/usr/share/biglinux/biglinux-config/ui/restore_dialog.py, line: 268
@@ -772,90 +732,130 @@ msgstr ""
 "%s"
 
 #
-# File: biglinux-config/biglinux-config/usr/share/biglinux/biglinux-config/ui/app_grid.py, line: 70
-msgid "No applications found"
-msgstr "No applications found"
+# File: biglinux-config/biglinux-config/usr/share/biglinux/biglinux-config/ui/welcome_dialog.py, line: 27
+msgid "Restore BigLinux Defaults"
+msgstr "Restore BigLinux Defaults"
 
 #
-# File: biglinux-config/biglinux-config/usr/share/biglinux/biglinux-config/ui/app_grid.py, line: 72
-msgid "Try another category or search term"
-msgstr "Try another category or search term"
+# File: biglinux-config/biglinux-config/usr/share/biglinux/biglinux-config/ui/welcome_dialog.py, line: 29
+msgid ""
+"Restore the settings provided by BigLinux\n"
+"without changing unrelated files"
+msgstr ""
+"Restore the settings provided by BigLinux\n"
+"without changing unrelated files"
 
 #
-# File: biglinux-config/biglinux-config/usr/share/biglinux/biglinux-config/ui/app_grid.py, line: 170
-# File: biglinux-config/biglinux-config/usr/share/biglinux/biglinux-config/ui/app_grid.py, line: 220
-msgid "Flatpak application"
-msgstr "Flatpak application"
+# File: biglinux-config/biglinux-config/usr/share/biglinux/biglinux-config/ui/welcome_dialog.py, line: 35
+msgid "Restore Program Defaults"
+msgstr "Restore Program Defaults"
 
 #
-# File: biglinux-config/biglinux-config/usr/share/biglinux/biglinux-config/ui/app_grid.py, line: 170
-msgid "Native application"
-msgstr "Native application"
+# File: biglinux-config/biglinux-config/usr/share/biglinux/biglinux-config/ui/welcome_dialog.py, line: 36
+msgid ""
+"Remove custom settings so the app\n"
+"can recreate its original defaults"
+msgstr ""
+"Remove custom settings so the app\n"
+"can recreate its original defaults"
 
 #
-# File: biglinux-config/biglinux-config/usr/share/biglinux/biglinux-config/ui/app_grid.py, line: 173
-# File: biglinux-config/biglinux-config/usr/share/biglinux/biglinux-config/ui/app_grid.py, line: 230
-# File: biglinux-config/biglinux-config/usr/share/biglinux/biglinux-config/ui/app_grid.py, line: 337
-msgid "BigLinux default available"
-msgstr "BigLinux default available"
+# File: biglinux-config/biglinux-config/usr/share/biglinux/biglinux-config/ui/welcome_dialog.py, line: 41
+msgid ""
+"Back up selected applications\n"
+"to a compressed .tar.gz archive"
+msgstr ""
+"Back up selected applications\n"
+"to a compressed .tar.gz archive"
 
 #
-# File: biglinux-config/biglinux-config/usr/share/biglinux/biglinux-config/ui/app_grid.py, line: 312
-msgid "Remove from favorites"
-msgstr "Remove from favorites"
+# File: biglinux-config/biglinux-config/usr/share/biglinux/biglinux-config/ui/welcome_dialog.py, line: 46
+msgid ""
+"Restore selected applications from\n"
+"a previously exported backup"
+msgstr ""
+"Restore selected applications from\n"
+"a previously exported backup"
 
 #
-# File: biglinux-config/biglinux-config/usr/share/biglinux/biglinux-config/ui/app_grid.py, line: 312
-msgid "Add to favorites"
-msgstr "Add to favorites"
+# File: biglinux-config/biglinux-config/usr/share/biglinux/biglinux-config/ui/welcome_dialog.py, line: 50
+msgid "Full Directory Backup"
+msgstr "Full Directory Backup"
 
 #
-# File: biglinux-config/biglinux-config/usr/share/biglinux/biglinux-config/ui/app_grid.py, line: 334
-msgid "Flatpak"
-msgstr "Flatpak"
+# File: biglinux-config/biglinux-config/usr/share/biglinux/biglinux-config/ui/welcome_dialog.py, line: 51
+msgid ""
+"Optionally include complete app folders\n"
+"instead of only registered paths"
+msgstr ""
+"Optionally include complete app folders\n"
+"instead of only registered paths"
 
 #
-# File: biglinux-config/biglinux-config/usr/share/biglinux/biglinux-config/ui/app_grid.py, line: 334
-msgid "Native"
-msgstr "Native"
+# File: biglinux-config/biglinux-config/usr/share/biglinux/biglinux-config/ui/welcome_dialog.py, line: 55
+msgid "Native & Flatpak Apps"
+msgstr "Native & Flatpak Apps"
 
 #
-# File: biglinux-config/biglinux-config/usr/share/biglinux/biglinux-config/ui/application.py, line: 202
-# File: biglinux-config/biglinux-config/usr/share/biglinux/biglinux-config/ui/application.py, line: 253
-msgid "Restore Settings"
-msgstr "Restore Settings"
+# File: biglinux-config/biglinux-config/usr/share/biglinux/biglinux-config/ui/welcome_dialog.py, line: 56
+msgid ""
+"Manage settings for installed native\n"
+"and Flatpak applications together"
+msgstr ""
+"Manage settings for installed native\n"
+"and Flatpak applications together"
 
 #
-# File: biglinux-config/biglinux-config/usr/share/biglinux/biglinux-config/ui/application.py, line: 244
-msgid "About Restore Settings"
-msgstr "About Restore Settings"
+# File: biglinux-config/biglinux-config/usr/share/biglinux/biglinux-config/ui/welcome_dialog.py, line: 60
+msgid "Search & Favorites"
+msgstr "Search & Favorites"
 
 #
-# File: biglinux-config/biglinux-config/usr/share/biglinux/biglinux-config/ui/application.py, line: 263
-msgid "Categories"
-msgstr "Categories"
+# File: biglinux-config/biglinux-config/usr/share/biglinux/biglinux-config/ui/welcome_dialog.py, line: 61
+msgid ""
+"Find supported applications quickly\n"
+"and keep a personal favorites list"
+msgstr ""
+"Find supported applications quickly\n"
+"and keep a personal favorites list"
 
 #
-# File: biglinux-config/biglinux-config/usr/share/biglinux/biglinux-config/ui/application.py, line: 272
-msgid "Search..."
-msgstr "Search..."
+# File: biglinux-config/biglinux-config/usr/share/biglinux/biglinux-config/ui/welcome_dialog.py, line: 65
+msgid "Desktop Settings"
+msgstr "Desktop Settings"
 
 #
-# File: biglinux-config/biglinux-config/usr/share/biglinux/biglinux-config/ui/application.py, line: 289
-msgid "Welcome"
-msgstr "Welcome"
+# File: biglinux-config/biglinux-config/usr/share/biglinux/biglinux-config/ui/welcome_dialog.py, line: 67
+msgid ""
+"Handle registered GSettings/dconf data\n"
+"without touching unrelated preferences"
+msgstr ""
+"Handle registered GSettings/dconf data\n"
+"without touching unrelated preferences"
 
 #
-# File: biglinux-config/biglinux-config/usr/share/biglinux/biglinux-config/ui/application.py, line: 290
-msgid "About"
-msgstr "About"
+# File: biglinux-config/biglinux-config/usr/share/biglinux/biglinux-config/ui/welcome_dialog.py, line: 128
+msgid "Welcome to Restore Settings"
+msgstr "Welcome to Restore Settings"
 
 #
-# File: biglinux-config/biglinux-config/usr/share/biglinux/biglinux-config/ui/application.py, line: 296
-msgid "Menu"
-msgstr "Menu"
+# File: biglinux-config/biglinux-config/usr/share/biglinux/biglinux-config/ui/welcome_dialog.py, line: 137
+msgid "Restore, back up, and manage application settings on BigLinux"
+msgstr "Restore, back up, and manage application settings on BigLinux"
 
 #
-# File: biglinux-config/biglinux-config/usr/share/biglinux/biglinux-config/ui/application.py, line: 329
-msgid "Loading applications…"
-msgstr "Loading applications…"
+# File: biglinux-config/biglinux-config/usr/share/biglinux/biglinux-config/ui/welcome_dialog.py, line: 167
+msgid ""
+"Tip: Start typing to search; right-click an application to manage favorites"
+msgstr ""
+"Tip: Start typing to search; right-click an application to manage favorites"
+
+#
+# File: biglinux-config/biglinux-config/usr/share/biglinux/biglinux-config/ui/welcome_dialog.py, line: 189
+msgid "Show dialog on startup"
+msgstr "Show dialog on startup"
+
+#
+# File: biglinux-config/biglinux-config/usr/share/biglinux/biglinux-config/ui/welcome_dialog.py, line: 199
+msgid "Let's Start"
+msgstr "Let's Start"
