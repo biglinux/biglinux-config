@@ -1,29 +1,12 @@
-"""Reliable backup / restore of dotfiles via ``.tar.gz`` archives.
+"""Private, fail-closed configuration backups with verified staging and rollback.
 
-Design goals:
-
-* **Atomic export** — the archive is written to a ``.part`` file, flushed to
-  disk and only then ``os.replace``-d over the final name, so a crash or a
-  cancel can never corrupt an existing backup.
-* **Manifest first** — metadata lives in the *first* archive member, so reading
-  it back is O(1) instead of scanning the whole stream.
-* **Integrity** — every regular file is hashed (BLAKE2b) while it is streamed
-  into the archive; the digests are stored in a trailing member and re-checked
-  on import.
-* **Transactional import** — the archive is expanded into a staging directory on
-  the *same filesystem* as ``$HOME``, verified, and then swapped into place with
-  atomic ``rename``s.  Any failure rolls everything back; the previous
-  configuration is never left half-overwritten.
-* **Untrusted input** — member names are sanitised (``tarfile`` data filter +
-  our own checks); nothing is ever written outside the staging directory or,
-  after validation, outside ``$HOME``.
-
-The public signatures are backward-compatible with the previous version; new
-behaviour is opt-in through added keyword arguments.
+Version 2 hashes every regular payload; version 1 remains structurally readable
+but has no integrity guarantee. Neither format authenticates its author. Live
+applications must be closed: this is not an application/database snapshot API.
 """
-
 from __future__ import annotations
 
+import gzip
 import hashlib
 import io
 import json
@@ -31,43 +14,41 @@ import logging
 import os
 import shutil
 import stat
+import sys
 import tarfile
+import tempfile
 import threading
 import time
 from collections.abc import Callable
+from contextlib import contextmanager
 from dataclasses import dataclass
 from enum import Enum
 
 from backend import dconf_manager, paths
+from backend.archive_policy import (
+    BACKUP_FORMAT, CHECKSUMS_NAME, DEFAULT_LIMITS, DCONF_PREFIX, MANIFEST_NAME,
+    ArchiveLimits, BackupError, MemberPolicy, normalise_manifest, read_json,
+    validate_checksums,
+)
+from backend.transactions import FileTransaction, fsync_directory, operation_lock
 from data.app_registry import AppEntry
 
 logger = logging.getLogger("biglinux-config")
-
-MANIFEST_NAME = "biglinux-backup-manifest.json"
-CHECKSUMS_NAME = "biglinux-backup-checksums.json"
-BACKUP_FORMAT = "biglinux-config-backup"
 BACKUP_VERSION = 2
 SUPPORTED_VERSIONS = (1, 2)
-
-# Directory names considered volatile cache; excluded unless include_cache=True.
+_HASH_CHUNK = 1024 * 1024
+_DCONF_PREFIX = DCONF_PREFIX
 CACHE_COMPONENTS = frozenset({
     "Cache", "cache", "Cache_Data", "CachedData", "Code Cache", "GPUCache",
-    "ShaderCache", "Service Worker", "Crash Reports", "Crashpad", "GrShaderCache",
-    "DawnCache", "component_crx_cache", "blob_storage",
+    "ShaderCache", "Crash Reports", "Crashpad", "GrShaderCache", "DawnCache",
+    "component_crx_cache",
 })
-
-_HASH_CHUNK = 1024 * 1024  # 1 MiB
-
-
+# Service Worker/blob_storage can hold persistent offline data; not caches.
 ProgressCallback = Callable[[int, int, str], None]
 
 
-class BackupError(Exception):
-    """Raised for recoverable backup/restore problems with a friendly message."""
-
-
 class _Cancelled(Exception):
-    """Raised internally when the user cancels an operation."""
+    pass
 
 
 class ImportStatus(Enum):
@@ -75,6 +56,7 @@ class ImportStatus(Enum):
     FAILED = "failed"
     CANCELLED = "cancelled"
     ROLLED_BACK = "rolled_back"
+    RECOVERY_REQUIRED = "recovery_required"
 
 
 @dataclass
@@ -94,15 +76,14 @@ class RestoreFromBackupResult:
     restored_apps: list[str]
     skipped_apps: list[str]
     status: ImportStatus = ImportStatus.FAILED
+    recovery_path: str = ""
 
 
 @dataclass
 class _FileRecord:
-    """One inventory entry gathered during the export pre-walk."""
-
     fullpath: str
     rel: str
-    kind: str  # "file" | "dir" | "link"
+    kind: str
     size: int
     mode: int
     mtime: int
@@ -110,753 +91,588 @@ class _FileRecord:
     app_id: str = ""
 
 
-# --------------------------------------------------------------------------- #
-# Helpers
-# --------------------------------------------------------------------------- #
-class _HashingReader:
-    """Wrap a file object, updating a hash as ``tarfile`` reads it.
-
-    Lets us archive a file and compute its digest in a *single* read pass.
-    """
-
-    def __init__(self, fileobj, hasher):
-        self._f = fileobj
-        self._h = hasher
-
-    def read(self, size: int = -1) -> bytes:
-        data = self._f.read(size)
-        if data:
-            self._h.update(data)
-        return data
+def _cancel(event) -> None:
+    if event is not None and event.is_set():
+        raise _Cancelled()
 
 
-def _iter_entry_paths(top: str):
-    """Yield every path under *top* (parents before children).
-
-    Symlinks are yielded but never traversed.  Special files (device nodes,
-    FIFOs, sockets) are yielded too; the caller decides to skip them.
-    """
-    yield top
-    if os.path.islink(top):
-        return
-    if os.path.isdir(top):
+def _notify(callback, done, total, label):
+    """Presentation errors must never corrupt or roll back a committed backup."""
+    if callback:
         try:
-            names = sorted(os.listdir(top))
-        except OSError as exc:
-            logger.warning("Cannot list %s: %s", top, exc)
-            return
-        for name in names:
-            yield from _iter_entry_paths(os.path.join(top, name))
+            callback(done, total, label)
+        except Exception:
+            logger.exception("Progress callback failed")
+
+
+def _iter_entry_paths(top: str, include_cache=True, check_cancel=lambda: None):
+    """Iterative scandir walk; prune cache subtrees BEFORE listing their files."""
+    pending = [top]
+    while pending:
+        check_cancel()
+        path = pending.pop()
+        if not include_cache and _is_cache_path(os.path.relpath(path, paths.home())):
+            continue
+        yield path
+        if not os.path.islink(path) and os.path.isdir(path):
+            with os.scandir(path) as entries:
+                pending.extend(sorted((item.path for item in entries), reverse=True))
 
 
 def _is_cache_path(rel: str) -> bool:
-    parts = rel.split("/")
-    return any(part in CACHE_COMPONENTS for part in parts)
+    return any(component in CACHE_COMPONENTS for component in rel.split("/"))
 
 
-def _classify(st: os.stat_result) -> str | None:
-    mode = st.st_mode
-    if stat.S_ISLNK(mode):
-        return "link"
-    if stat.S_ISDIR(mode):
-        return "dir"
-    if stat.S_ISREG(mode):
-        return "file"
-    return None  # fifo / socket / device -> skip
-
-
-def _build_inventory(
-    entries: list[AppEntry], include_cache: bool
-) -> tuple[list[_FileRecord], dict[str, list[str]], int]:
-    """Walk the selected config paths once and return the export inventory.
-
-    Returns ``(records, app_roots, total_size)`` where *app_roots* maps
-    ``app_id`` -> list of top-level archive-relative roots for that app.
-    """
-    home = paths.home()
-    records: list[_FileRecord] = []
-    app_roots: dict[str, list[str]] = {}
+def _build_inventory(entries, include_cache, check_cancel=lambda: None):
+    records, app_roots, seen = [], {}, set()
     total_size = 0
-    seen_rel: set[str] = set()
-
     for entry in entries:
-        roots: list[str] = []
-        for raw_path in entry.config_paths:
-            real = paths.resolve_under_home(raw_path)
+        roots = []
+        for target in paths.expand_targets(entry.config_paths):
+            check_cancel()
+            real = paths.safe_removable(target)
             if real is None:
-                logger.warning("Skipping path outside HOME: %s", raw_path)
+                raise BackupError(f"Unsafe configuration path: {target}")
+            rel_root = os.path.relpath(real, paths.home())
+            if not include_cache and _is_cache_path(rel_root):
                 continue
-            if not os.path.exists(real) and not os.path.islink(real):
-                continue
-            root_rel = os.path.relpath(real, home)
-            roots.append(root_rel)
-
-            for full in _iter_entry_paths(real):
-                rel = os.path.relpath(full, home)
-                if rel in seen_rel:
+            roots.append(rel_root)
+            for full in _iter_entry_paths(real, include_cache, check_cancel):
+                rel = os.path.relpath(full, paths.home())
+                if rel in seen:
                     continue
-                if not include_cache and _is_cache_path(rel):
-                    continue
-                try:
-                    st = os.lstat(full)
-                except OSError as exc:
-                    logger.warning("Cannot stat %s: %s", full, exc)
-                    continue
-                kind = _classify(st)
-                if kind is None:
-                    logger.info("Skipping special file: %s", full)
-                    continue
-                link_target = os.readlink(full) if kind == "link" else ""
-                size = st.st_size if kind == "file" else 0
+                info = os.lstat(full)  # no silent omission of vanished/unreadable data
+                if stat.S_ISREG(info.st_mode):
+                    kind, size, link = "file", info.st_size, ""
+                elif stat.S_ISDIR(info.st_mode):
+                    kind, size, link = "dir", 0, ""
+                elif stat.S_ISLNK(info.st_mode):
+                    kind, size, link = "link", 0, os.readlink(full)
+                    if not _symlink_is_safe(link, rel):
+                        raise BackupError(f"Unsafe symlink (close the application first): {rel}")
+                else:
+                    raise BackupError(f"Unsupported special file (close the application first): {rel}")
+                if paths.archive_name(rel) is None:
+                    raise BackupError(f"Unsupported filename: {rel!r}")
+                seen.add(rel)
                 total_size += size
-                seen_rel.add(rel)
-                records.append(_FileRecord(
-                    fullpath=full, rel=rel, kind=kind, size=size,
-                    mode=stat.S_IMODE(st.st_mode), mtime=int(st.st_mtime),
-                    link_target=link_target, app_id=entry.app_id,
-                ))
+                records.append(_FileRecord(full, rel, kind, size,
+                    stat.S_IMODE(info.st_mode), int(info.st_mtime), link, entry.app_id))
         if roots:
             app_roots[entry.app_id] = roots
     return records, app_roots, total_size
 
 
-_DCONF_PREFIX = ".biglinux-dconf"
-
-
-def _collect_dconf(entries: list[AppEntry]):
-    """Dump each entry's scoped dconf namespaces to archive members.
-
-    Returns ``(members, manifest)`` where *members* is a list of
-    ``(member_name, data_bytes)`` and *manifest* records app_id → namespace items.
-    """
-    members: list[tuple[str, bytes]] = []
-    manifest: list[dict] = []
-    if not dconf_manager.is_available():
-        return members, manifest
+def _collect_dconf(entries, check_cancel=lambda: None):
+    members, sections = [], []
+    cached = {}
     for entry in entries:
         items = []
-        for idx, ns in enumerate(entry.dconf_paths):
-            if not dconf_manager.is_valid_namespace(ns):
-                continue
-            text = dconf_manager.dump(ns)
-            if not text.strip():
-                continue
-            member = f"{_DCONF_PREFIX}/{entry.app_id}/{idx}.ini"
-            members.append((member, text.encode("utf-8")))
-            items.append({"path": ns, "member": member})
+        for index, namespace in enumerate(entry.dconf_paths):
+            check_cancel()
+            if namespace not in cached:
+                cached[namespace] = dconf_manager.dump_strict(namespace)
+            data = cached[namespace].encode("utf-8")
+            if len(data) > DEFAULT_LIMITS.max_dconf_size:
+                raise BackupError(f"dconf namespace exceeds the backup limit: {namespace}")
+            member = f"{DCONF_PREFIX}/{entry.app_id}/{index}.ini"
+            members.append((member, data))  # empty dumps also describe a valid state
+            items.append({"path": namespace, "member": member})
         if items:
-            manifest.append(
-                {"app_id": entry.app_id, "name": entry.name, "items": items})
-    return members, manifest
+            sections.append({"app_id": entry.app_id, "name": entry.name, "items": items})
+    return members, sections
 
 
-def _system_metadata() -> dict:
-    try:
-        uname = os.uname()
-    except OSError:
-        uname = None
+def _system_metadata():
     distro = ""
     try:
-        with open("/etc/os-release", encoding="utf-8") as fh:
-            for line in fh:
+        with open("/etc/os-release", encoding="utf-8") as src:
+            for line in src:
                 if line.startswith("PRETTY_NAME="):
                     distro = line.split("=", 1)[1].strip().strip('"')
                     break
     except OSError:
         pass
-    return {
-        "hostname": uname.nodename if uname else "",
-        "username": os.environ.get("USER", ""),
-        "desktop": os.environ.get("XDG_CURRENT_DESKTOP", ""),
-        "distribution": distro,
-    }
+    return {"hostname": os.uname().nodename, "username": os.environ.get("USER", ""),
+            "desktop": os.environ.get("XDG_CURRENT_DESKTOP", ""), "distribution": distro}
 
 
-# --------------------------------------------------------------------------- #
-# Export
-# --------------------------------------------------------------------------- #
-def export_backup(
-    entries: list[AppEntry],
-    archive_path: str,
-    full_directory: bool = False,
-    progress_callback: ProgressCallback | None = None,
-    cancel_event: threading.Event | None = None,
-) -> BackupResult:
-    """Create a ``.tar.gz`` archive with the selected apps' configuration.
+class _HashingReader:
+    def __init__(self, source, hasher, check_cancel, progress):
+        self.source, self.hasher = source, hasher
+        self.check_cancel, self.progress = check_cancel, progress
 
-    Args:
-        entries: apps to back up.
-        archive_path: destination ``.tar.gz`` path (written atomically).
-        full_directory: when ``True`` include volatile *cache* content too;
-            when ``False`` (default) cache directories are skipped, producing a
-            smaller, cleaner backup.  (This flag now has a real, tested effect —
-            previously both modes produced identical archives.)
-        progress_callback: ``callable(done_bytes, total_bytes, current_label)``.
-        cancel_event: set it to abort; the partial ``.part`` file is removed and
-            any pre-existing backup at *archive_path* is left untouched.
-    """
-    include_cache = full_directory
-    part_path = archive_path + ".part"
+    def read(self, size=-1):
+        self.check_cancel()
+        data = self.source.read(size)
+        self.hasher.update(data)
+        self.progress(len(data))
+        return data
 
-    def check_cancel() -> None:
-        if cancel_event is not None and cancel_event.is_set():
-            raise _Cancelled()
 
+def export_backup(entries: list[AppEntry], archive_path: str, full_directory=False,
+                  progress_callback=None, cancel_event=None) -> BackupResult:
+    """Fail on any lost input; publish a 0600 archive only after fsync."""
+    temporary = None
+    archive_path = os.fspath(archive_path)
     try:
-        records, app_roots, total_size = _build_inventory(entries, include_cache)
-
-        # dconf dumps (scoped namespaces) captured as extra archive members.
-        dconf_members, dconf_manifest = _collect_dconf(entries)
-
-        manifest = {
-            "format": BACKUP_FORMAT,
-            "version": BACKUP_VERSION,
-            "created_at": time.strftime("%Y-%m-%dT%H:%M:%S%z"),
-            "full_directory": include_cache,
-            "total_size": total_size,
-            "file_count": len(records),
-            **_system_metadata(),
-            "applications": [
-                {
-                    "app_id": e.app_id,
-                    "name": e.name,
-                    "roots": app_roots.get(e.app_id, []),
-                }
-                for e in entries
-                if e.app_id in app_roots or e.app_id in {d["app_id"] for d in dconf_manifest}
-            ],
-            "dconf": dconf_manifest,
-        }
-
-        checksums: dict[str, str] = {}
-        done_bytes = 0
-
-        # Make sure the destination directory exists.
-        parent = os.path.dirname(part_path) or "."
-        os.makedirs(parent, exist_ok=True)
-
-        with open(part_path, "wb") as raw:
-            with tarfile.open(fileobj=raw, mode="w:gz") as tar:
-                # 1) manifest FIRST — cheap to read back.
-                _add_bytes(tar, MANIFEST_NAME,
-                           json.dumps(manifest, indent=2).encode("utf-8"))
-
-                # 2) the files, hashed while streamed.
-                current_label = ""
-                for rec in records:
-                    check_cancel()
-                    if rec.app_id != current_label:
-                        current_label = rec.app_id
-                    # Files may vanish or become unreadable between the pre-walk
-                    # and now — skip them individually instead of failing the
-                    # whole backup.
-                    try:
-                        info = tar.gettarinfo(name=rec.fullpath, arcname=rec.rel)
-                        if info is None:
-                            continue
-                        if rec.kind == "file":
-                            hasher = hashlib.blake2b(digest_size=32)
-                            with open(rec.fullpath, "rb") as fh:
-                                tar.addfile(info, _HashingReader(fh, hasher))
-                            checksums[rec.rel] = hasher.hexdigest()
-                            done_bytes += rec.size
-                        else:
+        with operation_lock():
+            check_cancel = lambda: _cancel(cancel_event)
+            check_cancel()
+            if len({e.app_id for e in entries}) != len(entries):
+                raise BackupError("Duplicate applications in export.")
+            records, roots, total = _build_inventory(entries, full_directory, check_cancel)
+            dconf_members, dconf_sections = _collect_dconf(entries, check_cancel)
+            total += sum(len(data) for _, data in dconf_members)
+            dconf_ids = {s["app_id"] for s in dconf_sections}
+            manifest = normalise_manifest({
+                "format": BACKUP_FORMAT, "version": BACKUP_VERSION,
+                "created_at": time.strftime("%Y-%m-%dT%H:%M:%S%z"),
+                "full_directory": bool(full_directory), "total_size": total,
+                "file_count": len(records) + len(dconf_members), **_system_metadata(),
+                "applications": [{"app_id": e.app_id, "name": e.name,
+                                  "roots": roots.get(e.app_id, [])}
+                                 for e in entries if e.app_id in roots or e.app_id in dconf_ids],
+                "dconf": dconf_sections,
+            })
+            # Publishing inside a selected root creates recursive/self backups.
+            for app_roots in roots.values():
+                for root in app_roots:
+                    if paths.is_within(os.path.join(paths.home(), root), archive_path):
+                        raise BackupError("Choose a backup destination outside the selected application folders.")
+            parent = os.path.dirname(os.path.abspath(archive_path))
+            os.makedirs(parent, exist_ok=True)
+            fd, temporary = tempfile.mkstemp(prefix=".biglinux-backup-", suffix=".part", dir=parent)
+            checksums, done = {}, 0
+            policy = MemberPolicy()
+            with os.fdopen(fd, "wb") as raw:
+                with tarfile.open(fileobj=raw, mode="w:gz", compresslevel=6) as tar:
+                    _add_bytes(tar, MANIFEST_NAME, json.dumps(manifest).encode("utf-8"), policy)
+                    for rec in records:
+                        check_cancel()
+                        if paths.safe_removable(rec.fullpath) != rec.fullpath:
+                            raise BackupError(f"Source path changed during backup: {rec.rel}")
+                        info = tarfile.TarInfo(rec.rel)
+                        info.mode, info.mtime = rec.mode & 0o777, rec.mtime
+                        if rec.kind == "dir":
+                            if not stat.S_ISDIR(os.lstat(rec.fullpath).st_mode):
+                                raise BackupError(f"Source type changed: {rec.rel}")
+                            info.type = tarfile.DIRTYPE
+                            policy.check(info)
                             tar.addfile(info)
-                    except (OSError, tarfile.TarError) as exc:
-                        logger.warning("Skipping %s during export: %s",
-                                       rec.fullpath, exc)
-                        continue
-                    if progress_callback:
-                        progress_callback(done_bytes, total_size, rec.rel)
-
-                # 3) dconf dumps (small text members), also checksummed.
-                for member_name, data in dconf_members:
-                    check_cancel()
-                    _add_bytes(tar, member_name, data)
-                    checksums[member_name] = hashlib.blake2b(
-                        data, digest_size=32).hexdigest()
-
-                # 4) trailing checksums for verification.
-                _add_bytes(tar, CHECKSUMS_NAME,
-                           json.dumps(checksums).encode("utf-8"))
-
-            # Flush the OS buffers before the atomic rename.
-            raw.flush()
-            os.fsync(raw.fileno())
-
-        os.replace(part_path, archive_path)
-
-        app_count = len(manifest["applications"])
-        logger.info(
-            "Backup created: %s (%d apps, %d files, %d bytes)",
-            archive_path, app_count, len(records), total_size,
-        )
-        if progress_callback:
-            progress_callback(total_size, total_size, "")
-        return BackupResult(
-            success=True, message="", archive_path=archive_path,
-            app_count=app_count, total_size=total_size, file_count=len(records),
-        )
-
+                        elif rec.kind == "link":
+                            if not os.path.islink(rec.fullpath) or os.readlink(rec.fullpath) != rec.link_target:
+                                raise BackupError(f"Source symlink changed: {rec.rel}")
+                            info.type, info.linkname = tarfile.SYMTYPE, rec.link_target
+                            policy.check(info)
+                            tar.addfile(info)
+                        else:
+                            # O_NONBLOCK prevents a raced FIFO from hanging open().
+                            source_fd = os.open(rec.fullpath, os.O_RDONLY | os.O_NOFOLLOW | os.O_NONBLOCK)
+                            with os.fdopen(source_fd, "rb") as src:
+                                before = os.fstat(src.fileno())
+                                if not stat.S_ISREG(before.st_mode) or before.st_size != rec.size:
+                                    raise BackupError(f"Source changed during backup: {rec.rel}")
+                                info.size = before.st_size
+                                info.mode = stat.S_IMODE(before.st_mode) & 0o777
+                                policy.check(info)
+                                hasher = hashlib.blake2b(digest_size=32)
+                                def advance(count):
+                                    nonlocal done
+                                    done += count
+                                    _notify(progress_callback, done, total, rec.rel)
+                                tar.addfile(info, _HashingReader(src, hasher, check_cancel, advance))
+                                after = os.fstat(src.fileno())
+                                if (before.st_size, before.st_mtime_ns, before.st_ctime_ns) != (after.st_size, after.st_mtime_ns, after.st_ctime_ns):
+                                    raise BackupError(f"Source changed during backup: {rec.rel}")
+                                checksums[rec.rel] = hasher.hexdigest()
+                        _notify(progress_callback, done, total, rec.rel)
+                    for member, data in dconf_members:
+                        check_cancel()
+                        _add_bytes(tar, member, data, policy)
+                        checksums[member] = hashlib.blake2b(data, digest_size=32).hexdigest()
+                        done += len(data)
+                    payload = json.dumps(checksums).encode("utf-8")
+                    if len(payload) > DEFAULT_LIMITS.max_metadata_size:
+                        raise BackupError("Checksum manifest exceeds the backup limit.")
+                    _add_bytes(tar, CHECKSUMS_NAME, payload, policy)
+                raw.flush()
+                os.fsync(raw.fileno())
+            check_cancel()
+            os.replace(temporary, archive_path)
+            temporary = None
+            warning = ""
+            try:
+                fsync_directory(parent)
+            except OSError as exc:
+                warning = f"Backup published, but directory durability could not be confirmed: {exc}"
+                logger.warning(warning)
+            _notify(progress_callback, total, total, "")
+            return BackupResult(True, warning, archive_path, len(manifest["applications"]), total, len(records) + len(dconf_members))
     except _Cancelled:
-        logger.info("Export cancelled by user")
-        _quiet_unlink(part_path)
         return BackupResult(False, "cancelled", archive_path, 0, 0)
-    except Exception as exc:  # noqa: BLE001 - reported to the user, logged fully
-        logger.error("Backup failed: %s", exc, exc_info=True)
-        _quiet_unlink(part_path)
+    except Exception as exc:
+        logger.exception("Backup failed")
         return BackupResult(False, str(exc), archive_path, 0, 0)
+    finally:
+        if temporary is not None:
+            _quiet_unlink(temporary)
 
 
-def _add_bytes(tar: tarfile.TarFile, name: str, data: bytes) -> None:
-    info = tarfile.TarInfo(name=name)
-    info.size = len(data)
-    info.mtime = int(time.time())
-    info.mode = 0o600
+def _add_bytes(tar, name, data, policy=None):
+    if name in (MANIFEST_NAME, CHECKSUMS_NAME) and len(data) > DEFAULT_LIMITS.max_metadata_size:
+        raise BackupError("Backup metadata exceeds the resource limit.")
+    info = tarfile.TarInfo(name)
+    info.size, info.mode, info.mtime = len(data), 0o600, int(time.time())
+    if policy is not None:
+        policy.check(info)
     tar.addfile(info, io.BytesIO(data))
 
 
-def _quiet_unlink(path: str) -> None:
+def _quiet_unlink(path):
     try:
         os.unlink(path)
-    except OSError:
+    except FileNotFoundError:
         pass
 
 
-# --------------------------------------------------------------------------- #
-# Reading / verification
-# --------------------------------------------------------------------------- #
-def read_backup_manifest(archive_path: str) -> dict | None:
-    """Return the manifest dict, normalised to the v2 shape, or ``None``.
+class _BoundedReader:
+    """Sequential gzip reader limiting parser allocations and decompressed bytes.
 
-    Handles both the current format (manifest first) and legacy v1 archives
-    (manifest last, ``apps``/``paths`` keys).
+    TarInfo extended headers are read by tarfile BEFORE MemberPolicy sees them.
+    Bounding each read prevents a forged PAX/GNU header from allocating gigabytes.
+    Forward seeks are implemented in small reads so cancellation and byte limits
+    also apply to skipped files in manifest-last archives.
     """
+    def __init__(self, source, limits, check_cancel):
+        self.source, self.limits, self.check_cancel = source, limits, check_cancel
+        self.position = 0
+        self.budget = limits.max_total_size + limits.max_members * 4096
+
+    def read(self, size=-1):
+        self.check_cancel()
+        if size < 0 or size > self.limits.max_metadata_size + 512:
+            raise BackupError("Oversized tar parser read (extended header).")
+        if self.position + size > self.budget:
+            raise BackupError("Decompressed archive limit exceeded.")
+        data = self.source.read(size)
+        self.position += len(data)
+        return data
+
+    def tell(self):
+        return self.position
+
+    def seek(self, offset, whence=0):
+        if whence != 0 or offset < self.position:
+            raise BackupError("Non-sequential archive access is not supported.")
+        while self.position < offset:
+            chunk = self.read(min(_HASH_CHUNK, offset - self.position))
+            if not chunk:
+                raise BackupError("Truncated archive.")
+        return self.position
+
+
+@contextmanager
+def _reader(source, *, limits=DEFAULT_LIMITS, check_cancel=lambda: None, complete=False):
+    """Pinned source, bounded reads; a full scan also checks the gzip trailer."""
+    owned = not hasattr(source, "read")
+    src = open(source, "rb") if owned else source
     try:
-        with tarfile.open(archive_path, "r:gz") as tar:
-            member = tar.next()
-            while member is not None:
-                if member.name == MANIFEST_NAME:
-                    fh = tar.extractfile(member)
-                    if fh is None:
-                        return None
-                    raw = json.loads(fh.read().decode("utf-8"))
-                    return _normalise_manifest(raw)
-                member = tar.next()
-    except (tarfile.TarError, json.JSONDecodeError, OSError, EOFError) as exc:
-        logger.warning("Cannot read manifest from %s: %s", archive_path, exc)
+        src.seek(0)
+        kwargs = {"stream": True} if sys.version_info >= (3, 13) else {}
+        with gzip.GzipFile(fileobj=src, mode="rb") as compressed:
+            bounded = _BoundedReader(compressed, limits, check_cancel)
+            with tarfile.open(fileobj=bounded, mode="r:", **kwargs) as tar:
+                yield tar
+            if complete:
+                while True:
+                    remainder = bounded.read(_HASH_CHUNK)
+                    if not remainder:
+                        break
+                    if remainder.strip(b"\0"):
+                        raise BackupError("Unexpected data after the tar end marker.")
+    finally:
+        if owned:
+            src.close()
+
+
+def read_backup_manifest(archive_path, *, limits=DEFAULT_LIMITS, cancel_event=None):
+    """Read bounded metadata, including legacy manifest-last archives."""
+    try:
+        policy = MemberPolicy(limits)
+        with _reader(archive_path, limits=limits, check_cancel=lambda: _cancel(cancel_event)) as tar:
+            for member in tar:
+                _cancel(cancel_event)
+                name = policy.check(member)
+                if name == MANIFEST_NAME:
+                    return normalise_manifest(read_json(tar, member, limits.max_metadata_size))
+    except _Cancelled:
+        raise
+    except (OSError, tarfile.TarError, ValueError, TypeError, EOFError, RecursionError, BackupError) as exc:
+        logger.warning("Cannot read backup manifest: %s", exc)
     return None
 
 
-def _normalise_manifest(raw: dict) -> dict:
-    """Bring a v1 manifest up to the v2 shape used by the rest of the code."""
-    version = raw.get("version", 1)
-    if version >= 2 and "applications" in raw:
-        return raw
-    # v1: {"version":1,"apps":[{"app_id","name","paths":[...]}], ...}
-    apps = []
-    for app in raw.get("apps", []):
-        apps.append({
-            "app_id": app.get("app_id", ""),
-            "name": app.get("name", ""),
-            "roots": app.get("paths", []),
-        })
-    return {
-        "format": BACKUP_FORMAT,
-        "version": version,
-        "created_at": raw.get("timestamp", ""),
-        "full_directory": raw.get("full_directory", False),
-        "total_size": raw.get("total_size", 0),
-        "file_count": raw.get("file_count", 0),
-        "hostname": raw.get("hostname", ""),
-        "username": raw.get("username", ""),
-        "desktop": raw.get("desktop", ""),
-        "distribution": raw.get("distribution", ""),
-        "applications": apps,
-    }
+# Kept for callers/tests using the previous helper name.
+_normalise_manifest = normalise_manifest
 
 
-def _read_checksums(tar: tarfile.TarFile) -> dict[str, str]:
-    """Best-effort read of the trailing checksums member (v2 only)."""
-    try:
-        member = tar.getmember(CHECKSUMS_NAME)
-    except KeyError:
-        return {}
-    fh = tar.extractfile(member)
-    if fh is None:
-        return {}
-    try:
-        return json.loads(fh.read().decode("utf-8"))
-    except json.JSONDecodeError:
-        return {}
+def _matches_root(name, roots):
+    return any(name == root or name.startswith(root + "/") for root in roots)
 
 
-def verify_backup(archive_path: str) -> tuple[bool, str]:
-    """Verify structural and (v2) checksum integrity without extracting.
-
-    Returns ``(ok, message)``.
-    """
-    manifest = read_backup_manifest(archive_path)
-    if manifest is None:
-        return False, "No valid manifest found."
-    if manifest.get("version") not in SUPPORTED_VERSIONS:
-        return False, f"Unsupported backup version: {manifest.get('version')}"
-    try:
-        with tarfile.open(archive_path, "r:gz") as tar:
-            checksums = _read_checksums(tar)
-        with tarfile.open(archive_path, "r:gz") as tar:
-            member = tar.next()
-            checked = 0
-            while member is not None:
-                if member.name in (MANIFEST_NAME, CHECKSUMS_NAME):
-                    member = tar.next()
-                    continue
-                if member.isreg() and member.name in checksums:
-                    fh = tar.extractfile(member)
-                    if fh is None:
-                        return False, f"Cannot read {member.name}"
-                    hasher = hashlib.blake2b(digest_size=32)
-                    for chunk in iter(lambda: fh.read(_HASH_CHUNK), b""):
-                        hasher.update(chunk)
-                    if hasher.hexdigest() != checksums[member.name]:
-                        return False, f"Checksum mismatch: {member.name}"
-                    checked += 1
-                member = tar.next()
-    except (tarfile.TarError, OSError, EOFError) as exc:
-        return False, f"Archive is corrupted: {exc}"
-    return True, ""
-
-
-# --------------------------------------------------------------------------- #
-# Import (transactional)
-# --------------------------------------------------------------------------- #
-def import_backup(
-    archive_path: str,
-    selected_app_ids: set[str] | None = None,
-    progress_callback: ProgressCallback | None = None,
-    cancel_event: threading.Event | None = None,
-) -> RestoreFromBackupResult:
-    """Restore configuration from a backup, transactionally.
-
-    The archive is expanded into a hidden staging directory beside ``$HOME`` (same
-    filesystem), each member is sanitised and — for v2 archives — checksum-verified,
-    and only then are the live paths swapped in with atomic renames.  Any error or
-    cancellation rolls the home directory back to its previous state.
-    """
-    home = paths.home()
-    restored: list[str] = []
-    skipped: list[str] = []
-
-    def check_cancel() -> None:
-        if cancel_event is not None and cancel_event.is_set():
-            raise _Cancelled()
-
-    manifest = read_backup_manifest(archive_path)
-    if manifest is None:
-        return RestoreFromBackupResult(
-            False, "Invalid backup: no manifest found.", [], [],
-            ImportStatus.FAILED)
-    if manifest.get("version") not in SUPPORTED_VERSIONS:
-        return RestoreFromBackupResult(
-            False, f"Unsupported backup version: {manifest.get('version')}.",
-            [], [], ImportStatus.FAILED)
-
-    # Resolve which top-level roots to restore.
-    apps = manifest.get("applications", [])
-    root_to_app: dict[str, str] = {}
-    apps_to_restore: list[dict] = []
-    for app in apps:
-        if selected_app_ids is not None and app["app_id"] not in selected_app_ids:
-            skipped.append(app.get("name", app["app_id"]))
-            continue
-        apps_to_restore.append(app)
-        for root in app.get("roots", []):
-            root_to_app[root.rstrip("/")] = app.get("name", app["app_id"])
-    restore_roots = sorted(root_to_app, key=len, reverse=True)
-    # A backup may carry only dconf settings (no files), so also consider those.
-    has_dconf = any(
-        selected_app_ids is None or s.get("app_id") in selected_app_ids
-        for s in manifest.get("dconf", [])
-    )
-    if not restore_roots and not has_dconf:
-        return RestoreFromBackupResult(
-            False, "Nothing selected to restore.", restored, skipped,
-            ImportStatus.FAILED)
-
-    # Disk-space guard: need room for the staging copy plus a safety margin.
-    needed = int(manifest.get("total_size", 0) * 1.15) + 16 * 1024 * 1024
-    try:
-        free = shutil.disk_usage(home).free
-        if free < needed:
-            return RestoreFromBackupResult(
-                False,
-                f"Not enough free space: need ~{format_size(needed)}, "
-                f"have {format_size(free)}.",
-                restored, skipped, ImportStatus.FAILED)
-    except OSError:
-        pass
-
-    staging = os.path.join(home, f".biglinux-config-restore-{os.getpid()}-{int(time.time())}")
-    backup_aside = staging + "-old"
-    total_size = max(1, int(manifest.get("total_size", 0)))
-
-    try:
-        os.makedirs(staging, exist_ok=True)
-        os.makedirs(backup_aside, exist_ok=True)
-
-        # -- phase 1: extract + verify into staging ------------------------- #
-        _extract_to_staging(
-            archive_path, staging, restore_roots, total_size,
-            root_to_app, progress_callback, check_cancel)
-
-        # -- phase 2: atomic swap ------------------------------------------- #
-        applied: list[tuple[str, str, bool]] = []  # (live, aside, had_live)
-        dconf_applied: list[tuple[str, str]] = []  # (namespace, pre_dump)
-        try:
-            for root in sorted(root_to_app):  # roots are disjoint tops; order irrelevant
-                staged = os.path.join(staging, root)
-                if not os.path.lexists(staged):
-                    continue
-                check_cancel()
-                live = os.path.join(home, root)
-                aside = os.path.join(backup_aside, root)
-                os.makedirs(os.path.dirname(aside) or backup_aside, exist_ok=True)
-                had_live = os.path.lexists(live)
-                if had_live:
-                    os.rename(live, aside)
-                # Record BEFORE placing the staged copy so a failure of the next
-                # rename is still rolled back (the live path was already moved).
-                applied.append((live, aside, had_live))
-                os.makedirs(os.path.dirname(live) or home, exist_ok=True)
-                os.rename(staged, live)
-
-            # -- phase 2b: dconf load (scoped, reversible) ----------------- #
-            _apply_dconf(archive_path, manifest, selected_app_ids,
-                         dconf_applied, check_cancel)
-        except BaseException:
-            _rollback_dconf(dconf_applied)
-            _rollback(applied)
-            raise
-
-        # success: drop the aside copies and staging
-        shutil.rmtree(backup_aside, ignore_errors=True)
-        shutil.rmtree(staging, ignore_errors=True)
-
-        for app in apps_to_restore:
-            restored.append(app.get("name", app["app_id"]))
-        if progress_callback:
-            progress_callback(total_size, total_size, "")
-        logger.info("Backup imported: %s (restored=%s skipped=%s)",
-                    archive_path, restored, skipped)
-        return RestoreFromBackupResult(
-            True, "", restored, skipped, ImportStatus.SUCCESS)
-
-    except _Cancelled:
-        logger.info("Import cancelled by user")
-        shutil.rmtree(staging, ignore_errors=True)
-        shutil.rmtree(backup_aside, ignore_errors=True)
-        return RestoreFromBackupResult(
-            False, "cancelled", restored, skipped, ImportStatus.CANCELLED)
-    except Exception as exc:  # noqa: BLE001
-        logger.error("Import failed: %s", exc, exc_info=True)
-        shutil.rmtree(staging, ignore_errors=True)
-        shutil.rmtree(backup_aside, ignore_errors=True)
-        # We only ever leave here after a full rollback (or before any swap).
-        return RestoreFromBackupResult(
-            False, str(exc), [], skipped, ImportStatus.ROLLED_BACK)
-
-
-def _matches_root(name: str, roots: list[str]) -> bool:
-    for root in roots:
-        if name == root or name.startswith(root + "/"):
-            return True
-    return False
-
-
-def _extract_to_staging(
-    archive_path: str,
-    staging: str,
-    restore_roots: list[str],
-    total_size: int,
-    root_to_app: dict[str, str],
-    progress_callback: ProgressCallback | None,
-    check_cancel: Callable[[], None],
-) -> None:
-    """Expand selected members into *staging*, sanitising and verifying each."""
-    done = 0
-    with tarfile.open(archive_path, "r:gz") as tar:
-        checksums = _read_checksums(tar)
-    # Re-open for a clean streaming pass (checksums read closed the first).
-    with tarfile.open(archive_path, "r:gz") as tar:
-        member = tar.next()
-        while member is not None:
+def _scan_archive(source, manifest, *, staging=None, restore_roots=(), selected_ids=None,
+                  progress_callback=None, check_cancel=lambda: None, limits=DEFAULT_LIMITS):
+    """One payload pass: validate every member, hash all files, stage only selection."""
+    policy = MemberPolicy(limits)
+    actual, expected = {}, None
+    all_roots = [r for a in manifest["applications"] for r in a["roots"]]
+    dconf_names = {i["member"] for s in manifest["dconf"] for i in s["items"]}
+    wanted_dconf = {i["member"] for s in manifest["dconf"]
+                   if selected_ids is None or s["app_id"] in selected_ids for i in s["items"]}
+    texts, directories, seen_manifest, done = {}, [], False, 0
+    with _reader(source, limits=limits, check_cancel=check_cancel, complete=True) as tar:
+        for member in tar:
             check_cancel()
-            name = member.name
-            if name in (MANIFEST_NAME, CHECKSUMS_NAME):
-                member = tar.next()
+            name = policy.check(member)
+            if name == MANIFEST_NAME:
+                current = normalise_manifest(read_json(tar, member, limits.max_metadata_size))
+                if current != manifest:
+                    raise BackupError("Backup manifest changed during import.")
+                seen_manifest = True
                 continue
-            if not _matches_root(name, restore_roots):
-                member = tar.next()
+            if name == CHECKSUMS_NAME:
+                expected = validate_checksums(read_json(tar, member, limits.max_metadata_size))
                 continue
-
-            target = paths.safe_extract_target(name, staging)
-            if target is None:
-                raise BackupError(f"Unsafe path in archive: {name}")
-            if not (member.isfile() or member.isdir() or member.issym()):
-                logger.info("Skipping unsupported member type: %s", name)
-                member = tar.next()
-                continue
-
+            if not _matches_root(name, all_roots) and name not in dconf_names:
+                raise BackupError(f"Unclaimed archive member: {name}")
+            if name in dconf_names and (not member.isreg() or member.size > limits.max_dconf_size):
+                raise BackupError(f"Invalid/oversized dconf dump: {name}")
+            if member.issym() and not _symlink_is_safe(member.linkname, name):
+                raise BackupError(f"Unsafe symlink at the live destination: {name}")
+            selected = staging is not None and _matches_root(name, restore_roots)
+            target = paths.safe_extract_target(name, staging) if selected else None
+            filtered = None
+            if selected:
+                if target is None:
+                    raise BackupError(f"Unsafe staged destination: {name}")
+                filtered = tarfile.data_filter(member, staging)
+                if filtered is None:
+                    raise BackupError(f"Rejected archive member: {name}")
             if member.isdir():
-                os.makedirs(target, exist_ok=True)
-            elif member.issym():
-                # Reject links that would escape HOME once placed live.
-                if not _symlink_is_safe(member.linkname, name):
-                    raise BackupError(f"Unsafe symlink in archive: {name} -> {member.linkname}")
-                os.makedirs(os.path.dirname(target), exist_ok=True)
-                if os.path.lexists(target):
-                    os.unlink(target)
-                os.symlink(member.linkname, target)
-            else:  # regular file
-                os.makedirs(os.path.dirname(target), exist_ok=True)
-                src = tar.extractfile(member)
-                if src is None:
-                    raise BackupError(f"Cannot read member: {name}")
-                hasher = hashlib.blake2b(digest_size=32)
-                with open(target, "wb") as dst:
-                    for chunk in iter(lambda: src.read(_HASH_CHUNK), b""):
-                        hasher.update(chunk)
-                        dst.write(chunk)
-                if name in checksums and hasher.hexdigest() != checksums[name]:
-                    raise BackupError(f"Checksum mismatch for {name}")
-                os.chmod(target, member.mode & 0o7777)
-                done += member.size
-                if progress_callback:
-                    progress_callback(min(done, total_size), total_size,
-                                      _label_for(name, root_to_app))
-            member = tar.next()
-
-
-def _apply_dconf(
-    archive_path: str,
-    manifest: dict,
-    selected_app_ids: set[str] | None,
-    dconf_applied: list[tuple[str, str]],
-    check_cancel: Callable[[], None],
-) -> None:
-    """Load the backup's dconf dumps for the selected apps (reversible).
-
-    Records each namespace's previous state in *dconf_applied* so a later failure
-    can restore it.  No-op when dconf is unavailable or the backup has none.
-    """
-    sections = manifest.get("dconf", [])
-    if not sections or not dconf_manager.is_available():
-        return
-    wanted = [
-        s for s in sections
-        if selected_app_ids is None or s.get("app_id") in selected_app_ids
-    ]
-    if not wanted:
-        return
-
-    needed = {item["member"] for s in wanted for item in s.get("items", [])}
-    with tarfile.open(archive_path, "r:gz") as tar:
-        checksums = _read_checksums(tar)
-    texts: dict[str, str] = {}
-    with tarfile.open(archive_path, "r:gz") as tar:
-        member = tar.next()
-        while member is not None:
-            if member.name in needed and member.isreg():
-                fh = tar.extractfile(member)
-                if fh is not None:
-                    data = fh.read()
-                    if member.name in checksums and hashlib.blake2b(
-                            data, digest_size=32).hexdigest() != checksums[member.name]:
-                        raise BackupError(f"Checksum mismatch for {member.name}")
-                    texts[member.name] = data.decode("utf-8")
-            member = tar.next()
-
-    for section in wanted:
-        for item in section.get("items", []):
-            check_cancel()
-            ns, member = item.get("path", ""), item.get("member", "")
-            text = texts.get(member)
-            if text is None or not dconf_manager.is_valid_namespace(ns):
+                if selected:
+                    os.makedirs(target, mode=0o700, exist_ok=True)
+                    directories.append((target, member.mode, member.mtime))
                 continue
-            dconf_applied.append((ns, dconf_manager.dump(ns)))
-            if not dconf_manager.load(ns, text):
-                raise BackupError(f"Failed to load dconf namespace {ns}")
+            if member.issym():
+                if selected:
+                    os.makedirs(os.path.dirname(target), mode=0o700, exist_ok=True)
+                    os.symlink(member.linkname, target)
+                continue
+            digest = hashlib.blake2b(digest_size=32)
+            capture = io.BytesIO() if name in wanted_dconf else None
+            output = None
+            try:
+                if selected:
+                    os.makedirs(os.path.dirname(target), mode=0o700, exist_ok=True)
+                    fd = os.open(target, os.O_CREAT | os.O_EXCL | os.O_WRONLY | os.O_NOFOLLOW, 0o600)
+                    output = os.fdopen(fd, "wb")
+                with tar.extractfile(member) as src:
+                    while True:
+                        check_cancel()
+                        chunk = src.read(_HASH_CHUNK)
+                        if not chunk:
+                            break
+                        digest.update(chunk)
+                        if output:
+                            output.write(chunk)
+                        if capture is not None:
+                            capture.write(chunk)
+                        done += len(chunk)
+                        _notify(progress_callback, done, max(manifest["total_size"], done), name)
+                if output:
+                    output.flush()
+                    os.fchmod(output.fileno(), filtered.mode if filtered.mode is not None else 0o600)
+                    os.fsync(output.fileno())
+                actual[name] = digest.hexdigest()
+                if capture is not None:
+                    texts[name] = capture.getvalue().decode("utf-8")
+            finally:
+                if output:
+                    output.close()
+            if selected:
+                os.utime(target, (member.mtime, member.mtime), follow_symlinks=False)
+    if not seen_manifest:
+        raise BackupError("Manifest missing from archive.")
+    if manifest["version"] == 2:
+        if expected is None or expected.keys() != actual.keys():
+            raise BackupError("Missing or incomplete checksum manifest.")
+        for name, digest in actual.items():
+            if expected[name] != digest:
+                raise BackupError(f"Checksum mismatch: {name}")
+    if not dconf_names.issubset(actual):
+        raise BackupError("A declared dconf dump is missing.")
+    for root in all_roots:
+        if root not in policy.names and root not in policy.parents:
+            raise BackupError(f"Declared application root is missing: {root}")
+    # Directory modes are applied last, after writing all children. Never widen
+    # a private profile to 0755 or retain setuid/setgid/sticky bits.
+    for target, mode, mtime in sorted(directories, key=lambda item: len(item[0]), reverse=True):
+        os.chmod(target, (mode & 0o755) | 0o700)
+        os.utime(target, (mtime, mtime), follow_symlinks=False)
+        fsync_directory(target)
+    return texts
 
 
-def _rollback_dconf(dconf_applied: list[tuple[str, str]]) -> None:
-    """Restore dconf namespaces captured before an import."""
-    for ns, pre in reversed(dconf_applied):
+def verify_backup(archive_path, *, limits=DEFAULT_LIMITS):
+    try:
+        with open(archive_path, "rb") as source:
+            manifest = read_backup_manifest(source, limits=limits)
+            if manifest is None:
+                return False, "No valid manifest found."
+            _scan_archive(source, manifest, limits=limits)
+        return True, "" if manifest["version"] == 2 else "Legacy backup: no checksums available."
+    except Exception as exc:
+        return False, str(exc)
+
+
+def _rollback_dconf(applied):
+    errors = []
+    for namespace, previous in reversed(applied):
+        # dconf load MERGES; reset is necessary to remove imported-only keys.
         try:
-            if pre.strip():
-                dconf_manager.load(ns, pre)
-            else:
-                dconf_manager.reset(ns)
-        except Exception as exc:  # noqa: BLE001
-            logger.error("dconf import rollback error for %s: %s", ns, exc)
+            if not dconf_manager.reset(namespace) or (previous.strip() and not dconf_manager.load(namespace, previous)):
+                errors.append(f"Could not restore dconf namespace {namespace}")
+        except Exception as exc:
+            errors.append(f"Could not restore dconf namespace {namespace}: {exc}")
+    return errors
 
 
-def _label_for(name: str, root_to_app: dict[str, str]) -> str:
-    for root, app in root_to_app.items():
-        if name == root or name.startswith(root + "/"):
-            return app
-    return ""
+def _apply_dconf(manifest, texts, selected_ids, transaction, check_cancel):
+    wanted = {}
+    for section in manifest["dconf"]:
+        if selected_ids is not None and section["app_id"] not in selected_ids:
+            continue
+        for item in section["items"]:
+            ns, member = item["path"], item["member"]
+            text = texts[member]
+            if ns in wanted and wanted[ns] != text:
+                raise BackupError(f"Conflicting dumps for dconf namespace {ns}")
+            wanted[ns] = text
+    for ns, text in wanted.items():
+        check_cancel()
+        transaction.dconf.append((ns, dconf_manager.dump_strict(ns)))
+        transaction.write_journal()
+        if not dconf_manager.reset(ns) or (text.strip() and not dconf_manager.load(ns, text)):
+            raise BackupError(f"Failed to replace dconf namespace {ns}")
 
 
-def _symlink_is_safe(linkname: str, member_name: str) -> bool:
-    """A symlink is safe if, placed at its member location under HOME, it does
-    not resolve outside HOME."""
-    home = paths.home()
-    if os.path.isabs(linkname):
-        resolved = os.path.realpath(linkname)
-    else:
-        member_dir = os.path.dirname(os.path.join(home, member_name))
-        resolved = os.path.realpath(os.path.join(member_dir, linkname))
-    return resolved == home or resolved.startswith(home + os.sep)
+def import_backup(archive_path, selected_app_ids=None, progress_callback=None,
+                  cancel_event=None, *, limits=DEFAULT_LIMITS):
+    try:
+        with operation_lock():
+            return _import_backup(archive_path, selected_app_ids, progress_callback,
+                                  cancel_event, limits=limits)
+    except Exception as exc:
+        return RestoreFromBackupResult(False, str(exc), [], [], ImportStatus.FAILED)
 
 
-def _rollback(applied: list[tuple[str, str, bool]]) -> None:
-    """Undo a partial swap: for each applied root, remove the newly-placed live
-    entry and move the saved-aside copy back."""
-    for live, aside, had_live in reversed(applied):
-        try:
-            if os.path.lexists(live):
-                if os.path.isdir(live) and not os.path.islink(live):
-                    shutil.rmtree(live, ignore_errors=True)
-                else:
-                    os.unlink(live)
-            if had_live and os.path.lexists(aside):
-                os.makedirs(os.path.dirname(live) or "/", exist_ok=True)
-                os.rename(aside, live)
-        except OSError as exc:
-            logger.error("Rollback error for %s: %s", live, exc)
+def _import_backup(archive_path, selected_app_ids=None, progress_callback=None,
+                  cancel_event=None, *, limits=DEFAULT_LIMITS):
+    """Validate everything before live writes; retain originals if rollback fails."""
+    transaction, skipped = None, []
+    try:
+        with open(archive_path, "rb") as source:
+            check_cancel = lambda: _cancel(cancel_event)
+            check_cancel()
+            manifest = read_backup_manifest(source, limits=limits)
+            if manifest is None:
+                raise BackupError("Invalid backup: no valid manifest found.")
+            selected = [app for app in manifest["applications"]
+                        if selected_app_ids is None or app["app_id"] in selected_app_ids]
+            skipped = [a["name"] for a in manifest["applications"] if a not in selected]
+            if not selected:
+                raise BackupError("Nothing selected to restore.")
+            roots = sorted({r for app in selected for r in app["roots"]}, key=lambda r: (len(r), r))
+            # Commit only disjoint top-level roots. Child apps still appear in results.
+            disjoint = []
+            for root in roots:
+                if not _matches_root(root, disjoint):
+                    disjoint.append(root)
+            ids = {a["app_id"] for a in selected}
+            if any(s["app_id"] in ids for s in manifest["dconf"]) and not dconf_manager.is_available():
+                raise BackupError("dconf is required to restore the selected settings.")
+            free = shutil.disk_usage(paths.home()).free
+            needed = manifest["total_size"] + 16 * 1024**2
+            if free < needed:
+                raise BackupError(f"Not enough free space: need {format_size(needed)}, have {format_size(free)}.")
+            # Enforce observed bytes too; metadata is untrusted and can understate size.
+            from dataclasses import replace
+            scan_limits = replace(limits, max_total_size=min(limits.max_total_size, max(0, free - 16 * 1024**2)))
+            transaction = FileTransaction(".biglinux-config-restore-")
+            texts = _scan_archive(source, manifest, staging=transaction.staging,
+                restore_roots=disjoint, selected_ids=ids, progress_callback=progress_callback,
+                check_cancel=check_cancel, limits=scan_limits)
+            for root in disjoint:
+                check_cancel()
+                staged = os.path.join(transaction.staging, root)
+                if not os.path.lexists(staged):
+                    raise BackupError(f"Selected root was not staged: {root}")
+                transaction.replace(os.path.join(paths.home(), root), staged)
+            _apply_dconf(manifest, texts, ids, transaction, check_cancel)
+            check_cancel()
+            # Commit is complete. Cleanup failure cannot trigger rollback after
+            # some originals have already been deleted.
+            warning = ""
+            try:
+                transaction.cleanup()
+            except OSError as exc:
+                warning = f"Settings restored, but temporary files remain at {transaction.directory}: {exc}"
+                logger.warning(warning)
+            _notify(progress_callback, manifest["total_size"], manifest["total_size"], "")
+            return RestoreFromBackupResult(True, warning, [a["name"] for a in selected], skipped, ImportStatus.SUCCESS)
+    except Exception as exc:
+        cancelled = isinstance(exc, _Cancelled)
+        errors = []
+        changed = transaction is not None and bool(transaction.records or transaction.dconf)
+        if transaction:
+            errors.extend(_rollback_dconf(transaction.dconf))
+            errors.extend(transaction.rollback_files())
+            if not errors:
+                try:
+                    transaction.cleanup()
+                except OSError as cleanup_error:
+                    errors.append(str(cleanup_error))
+        if errors:
+            message = (f"{exc}. Automatic recovery incomplete. Keep {transaction.directory}. "
+                       + "; ".join(errors))
+            logger.error(message)
+            return RestoreFromBackupResult(False, message, [], skipped,
+                ImportStatus.RECOVERY_REQUIRED, transaction.directory)
+        status = ImportStatus.CANCELLED if cancelled else (ImportStatus.ROLLED_BACK if changed else ImportStatus.FAILED)
+        message = "cancelled" if cancelled else str(exc)
+        logger.warning("Import did not complete: %s", message)
+        return RestoreFromBackupResult(False, message, [], skipped, status)
 
 
-# --------------------------------------------------------------------------- #
-# Names
-# --------------------------------------------------------------------------- #
-def get_default_backup_name() -> str:
-    """Default filename for a multi-app backup."""
-    ts = time.strftime("%Y%m%d_%H%M%S")
-    return f"big-restore-dotfiles-{ts}.tar.gz"
+def _symlink_is_safe(linkname, member_name):
+    if not paths.safe_link(linkname, member_name):
+        return False
+    target = os.path.realpath(os.path.join(paths.home(), os.path.dirname(member_name), linkname))
+    return target.startswith(paths.home() + os.sep)
 
 
-def get_app_backup_name(app_id: str) -> str:
-    """Default filename for a single-application backup."""
-    safe = app_id.replace("/", "_").replace("flatpak-", "")
-    ts = time.strftime("%Y%m%d_%H%M%S")
-    return f"biglinux-config-{safe}-{ts}.tar.gz"
+def get_default_backup_name():
+    return f"big-restore-dotfiles-{time.strftime('%Y%m%d_%H%M%S')}-{time.time_ns() % 1_000_000_000:09d}.tar.gz"
 
 
-def format_size(size_bytes: int) -> str:
-    if size_bytes < 1024:
-        return f"{size_bytes} B"
-    if size_bytes < 1024 * 1024:
-        return f"{size_bytes / 1024:.1f} KB"
-    if size_bytes < 1024 * 1024 * 1024:
-        return f"{size_bytes / (1024 * 1024):.1f} MB"
-    return f"{size_bytes / (1024 * 1024 * 1024):.1f} GB"
+def get_app_backup_name(app_id):
+    safe = "".join(c if c.isalnum() or c in "._-" else "_" for c in app_id).removeprefix("flatpak-")
+    return f"biglinux-config-{safe}-{time.strftime('%Y%m%d_%H%M%S')}-{time.time_ns() % 1_000_000_000:09d}.tar.gz"
+
+
+def format_size(size_bytes):
+    for unit in ("B", "KiB", "MiB", "GiB"):
+        if size_bytes < 1024 or unit == "GiB":
+            return f"{size_bytes} B" if unit == "B" else f"{size_bytes:.1f} {unit}"
+        size_bytes /= 1024

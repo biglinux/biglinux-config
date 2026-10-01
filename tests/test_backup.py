@@ -339,7 +339,7 @@ def test_reads_v1_archive(fake_home, tmp_path):
     assert (fake_home / ".config" / "app" / "a.txt").read_text() == "v1data"
 
 
-def test_file_disappearing_mid_export_is_skipped(fake_home, tmp_path):
+def test_file_disappearing_mid_export_fails_closed(fake_home, tmp_path):
     appdir = fake_home / ".config" / "app"
     make_tree(appdir, {"a.txt": "a", "b.txt": "b"})
     arc = tmp_path / "vanish.tar.gz"
@@ -353,11 +353,8 @@ def test_file_disappearing_mid_export_is_skipped(fake_home, tmp_path):
                 pass
 
     r = bm.export_backup([_entry()], str(arc), progress_callback=cb)
-    assert r.success  # whole backup does not fail for one vanished file
-    with tarfile.open(arc, "r:gz") as t:
-        names = {m.name for m in t.getmembers()}
-    assert ".config/app/a.txt" in names
-    assert ".config/app/b.txt" not in names
+    assert not r.success  # incomplete backups must never enable a destructive reset
+    assert not arc.exists()
 
 
 def test_nested_roots_multi_app(fake_home, tmp_path):

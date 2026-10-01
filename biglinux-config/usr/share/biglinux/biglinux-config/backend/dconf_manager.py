@@ -35,21 +35,32 @@ def is_valid_namespace(path: str) -> bool:
 
 
 
-def dump(path: str) -> str:
-    """Return the INI dump of *path*'s subtree, or '' on error/empty."""
+class DconfError(RuntimeError):
+    """A failed dump must never be mistaken for an empty namespace."""
+
+
+def dump_strict(path: str) -> str:
+    """Capture a namespace or raise before any destructive operation."""
     if not is_valid_namespace(path):
-        logger.warning("Refusing dconf dump of unsafe namespace: %s", path)
-        return ""
+        raise DconfError(f"Unsafe dconf namespace: {path!r}")
     try:
         result = subprocess.run(
-            ["dconf", "dump", path],
-            capture_output=True, text=True, timeout=_TIMEOUT,
+            ["dconf", "dump", path], capture_output=True, text=True, timeout=_TIMEOUT,
         )
-        if result.returncode == 0:
-            return result.stdout
-    except (FileNotFoundError, subprocess.TimeoutExpired) as exc:
-        logger.warning("dconf dump failed for %s: %s", path, exc)
-    return ""
+    except (OSError, subprocess.TimeoutExpired) as exc:
+        raise DconfError(f"Cannot read dconf namespace {path}: {exc}") from exc
+    if result.returncode != 0:
+        raise DconfError(f"Cannot read dconf namespace {path}: {result.stderr.strip()}")
+    return result.stdout
+
+
+def dump(path: str) -> str:
+    """Best-effort UI query. Mutating workflows MUST use dump_strict instead."""
+    try:
+        return dump_strict(path)
+    except DconfError as exc:
+        logger.warning("%s", exc)
+        return ""
 
 
 def load(path: str, text: str) -> bool:
@@ -65,7 +76,7 @@ def load(path: str, text: str) -> bool:
         if result.returncode == 0:
             return True
         logger.error("dconf load failed for %s: %s", path, result.stderr.strip())
-    except (FileNotFoundError, subprocess.TimeoutExpired) as exc:
+    except (OSError, subprocess.TimeoutExpired) as exc:
         logger.error("dconf load error for %s: %s", path, exc)
     return False
 
@@ -83,7 +94,7 @@ def reset(path: str) -> bool:
         if result.returncode == 0:
             return True
         logger.error("dconf reset failed for %s: %s", path, result.stderr.strip())
-    except (FileNotFoundError, subprocess.TimeoutExpired) as exc:
+    except (OSError, subprocess.TimeoutExpired) as exc:
         logger.error("dconf reset error for %s: %s", path, exc)
     return False
 
