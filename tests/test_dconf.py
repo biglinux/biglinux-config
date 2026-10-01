@@ -17,7 +17,8 @@ from backend.backup_manager import ImportStatus
 from data.app_registry import AppEntry
 
 pytestmark = pytest.mark.skipif(
-    not dc.is_available(), reason="dconf CLI not available")
+    os.environ.get("BIGLINUX_TEST_DCONF") != "1" or not dc.is_available(),
+    reason="run tools/check-dconf.sh for an isolated dconf session")
 
 
 @pytest.fixture()
@@ -84,11 +85,12 @@ def test_backup_roundtrip_dconf(tmp_path, scratch_ns):
     assert bm.export_backup([entry], str(arc)).success
 
     # mutate to B, then import the backup back
-    dc.load(scratch_ns, "[/]\nmode='B'\n")
+    dc.load(scratch_ns, "[/]\nmode='B'\nnewkey='must disappear'\n")
     assert "'B'" in dc.dump(scratch_ns)
     res = bm.import_backup(str(arc))
     assert res.status is ImportStatus.SUCCESS, res.message
     assert "'A'" in dc.dump(scratch_ns)
+    assert "newkey" not in dc.dump(scratch_ns)
 
 
 def test_dconf_recorded_in_manifest(tmp_path, scratch_ns):

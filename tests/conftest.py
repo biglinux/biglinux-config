@@ -31,6 +31,9 @@ def fake_home(tmp_path, monkeypatch):
     home = tmp_path / "home"
     home.mkdir()
     monkeypatch.setenv("HOME", str(home))
+    for name, suffix in (("XDG_CONFIG_HOME", ".config"), ("XDG_DATA_HOME", ".local/share"),
+                         ("XDG_STATE_HOME", ".local/state"), ("XDG_CACHE_HOME", ".cache")):
+        monkeypatch.setenv(name, str(home / suffix))
     # os.path.expanduser honours $HOME on POSIX, but be explicit and robust.
     real_expanduser = os.path.expanduser
 

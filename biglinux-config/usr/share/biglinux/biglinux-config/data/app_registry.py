@@ -21,13 +21,20 @@ class AppEntry:
     category: str  # must match a CATEGORIES key
     config_paths: list[str]  # paths relative to $HOME (~ prefix)
     skel_paths: list[str] = field(default_factory=list)  # /etc/skel/ sources
-    process_name: str = ""  # for pgrep; defaults to binary basename
+    process_name: str = ""  # display/legacy metadata; never used as a kill fallback
     is_de: bool = False  # desktop-environment full reset
     logout_required: bool = False  # needs session restart after reset
     sensitive: bool = False  # config may hold secrets (passwords, tokens, history)
     # dconf/GSettings namespaces (each absolute, ending in '/', ≥2 segments).
     # Backed up, restored and reset per-namespace — never the whole database.
     dconf_paths: list[str] = field(default_factory=list)
+    # None: same as backup roots. []: backup-only (no validated reset paths).
+    reset_paths: list[str] | None = None
+
+
+def get_reset_paths(entry: AppEntry) -> list[str]:
+    """Reset settings only when backup roots also contain personal app data."""
+    return entry.config_paths if entry.reset_paths is None else entry.reset_paths
 
 
 # Categories whose configuration inherently contains private data
@@ -1073,6 +1080,7 @@ APP_REGISTRY: list[AppEntry] = [
         binary="/usr/bin/gnome-boxes",
         category="system",
         config_paths=["~/.config/gnome-boxes", "~/.local/share/gnome-boxes"],
+        reset_paths=["~/.config/gnome-boxes"],
     ),
     AppEntry(
         app_id="virt-manager",
@@ -1144,6 +1152,7 @@ APP_REGISTRY: list[AppEntry] = [
         binary="/usr/bin/steam",
         category="gaming",
         config_paths=["~/.steam", "~/.local/share/Steam"],
+        reset_paths=["~/.local/share/Steam/config"],
     ),
     AppEntry(
         app_id="lutris",
@@ -1168,6 +1177,7 @@ APP_REGISTRY: list[AppEntry] = [
         binary="/usr/bin/bottles",
         category="gaming",
         config_paths=["~/.local/share/bottles"],
+        reset_paths=[],  # Bottles/prefixes are user environments, not disposable settings.
     ),
     AppEntry(
         app_id="mangohud",
@@ -1324,7 +1334,7 @@ APP_REGISTRY: list[AppEntry] = [
             "~/.config/gnome-shell",
             "~/.local/share/gnome-shell",
         ],
-        skel_paths=["/etc/skel/.config/dconf"],
+        skel_paths=[],  # Never overwrite the shared dconf database; use scoped namespaces.
         dconf_paths=[
             "/org/gnome/shell/",
             "/org/gnome/desktop/",

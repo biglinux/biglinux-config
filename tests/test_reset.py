@@ -4,6 +4,7 @@ from __future__ import annotations
 
 import os
 import subprocess
+import shutil
 import time
 
 import backend.reset_manager as rm
@@ -107,8 +108,8 @@ def test_reset_rollback_on_skel_failure(fake_home, fake_skel, monkeypatch):
     monkeypatch.setattr(rm.shutil, "copy2", boom)
 
     res = rm.reset_app(entry, ResetMode.BIGLINUX_DEFAULT)
-    assert res.status is ResetStatus.ROLLED_BACK
-    # Original user config restored intact.
+    assert res.status is ResetStatus.FAILED
+    # Failed staging never touched the original user config.
     assert (fake_home / ".config" / "apprc").read_text() == "USER"
     leftovers = [
         p for p in os.listdir(fake_home) if p.startswith(".biglinux-config-reset")
@@ -134,14 +135,16 @@ def test_backup_first_creates_backup(fake_home, tmp_path, monkeypatch):
 # --------------------------------------------------------------------------- #
 # Precise process matching (uses our own child process)
 # --------------------------------------------------------------------------- #
-def test_get_running_pids_and_kill(fake_home):
-    sleeper = subprocess.Popen(["sleep", "30"])
+def test_get_running_pids_and_kill(fake_home, tmp_path):
+    executable = tmp_path / "private-sleeper"
+    shutil.copy2(shutil.which("sleep"), executable)
+    sleeper = subprocess.Popen([str(executable), "30"])
     try:
         entry = AppEntry(
             app_id="sleep",
             name="Sleep",
             icon="",
-            binary="/usr/bin/sleep",
+            binary=str(executable),
             category="system",
             config_paths=[],
             process_name="sleep",
@@ -155,6 +158,7 @@ def test_get_running_pids_and_kill(fake_home):
     finally:
         if sleeper.poll() is None:
             sleeper.kill()
+        sleeper.wait(timeout=2)
 
 
 def test_get_running_pids_no_false_positive(fake_home):

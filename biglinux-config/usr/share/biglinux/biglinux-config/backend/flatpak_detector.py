@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 import os
+import re
 import subprocess
 
 from data.app_registry import AppEntry
@@ -20,7 +21,7 @@ def get_installed_flatpaks() -> list[AppEntry]:
             text=True,
             timeout=10,
         )
-    except (FileNotFoundError, subprocess.TimeoutExpired):
+    except (OSError, subprocess.TimeoutExpired):
         return []
 
     if result.returncode != 0:
@@ -34,7 +35,7 @@ def get_installed_flatpaks() -> list[AppEntry]:
         if len(parts) < 2:
             continue
         app_id, name = parts[0].strip(), parts[1].strip()
-        if not app_id or app_id in seen:
+        if not re.fullmatch(r"[A-Za-z0-9_][A-Za-z0-9_.-]+", app_id) or app_id in seen:
             continue
         seen.add(app_id)
 
@@ -63,6 +64,8 @@ def get_installed_flatpaks() -> list[AppEntry]:
             category="flatpak",
             config_paths=config_paths,
             process_name=app_id,
+            sensitive=True,  # Dynamic app data may include credentials/documents.
+            reset_paths=[os.path.join(base, "config")],  # Keep data/ and installed environments.
         ))
 
     return apps
