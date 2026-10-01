@@ -2,6 +2,8 @@
 
 from __future__ import annotations
 
+from collections.abc import Callable
+
 import gi
 
 gi.require_version("Gtk", "4.0")
@@ -34,7 +36,7 @@ class CategorySidebar(Gtk.Box):
 
         # CSS for active-category highlight
         css = Gtk.CssProvider()
-        css.load_from_data(b"""
+        css.load_from_string("""
             .active-category {
                 background-color: alpha(currentColor, 0.1);
                 border-radius: 6px;
@@ -64,11 +66,11 @@ class CategorySidebar(Gtk.Box):
 
         self._rows: dict[str, CategoryRow] = {}
         self._active_id: str | None = None
-        self._on_category_changed: callable | None = None
+        self._on_category_changed: Callable | None = None
 
         self._build_rows()
 
-    def set_on_category_changed(self, callback: callable) -> None:
+    def set_on_category_changed(self, callback: Callable) -> None:
         self._on_category_changed = callback
 
     def _build_rows(self) -> None:

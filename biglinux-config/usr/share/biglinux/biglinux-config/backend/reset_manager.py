@@ -328,14 +328,18 @@ def _safety_backup(entry: AppEntry, cancel_event=None) -> str:
     return ""
 
 
-def get_config_size(entry: AppEntry) -> int:
+def get_config_size(entry: AppEntry, *, cancel_event=None) -> int:
     """Total size in bytes of the existing config paths."""
     total = 0
     for target in _expand_targets(entry.config_paths):
+        if cancel_event is not None and cancel_event.is_set():
+            return total
         if os.path.islink(target):
             continue
         if os.path.isdir(target):
             for dirpath, _dirs, files in os.walk(target):
+                if cancel_event is not None and cancel_event.is_set():
+                    return total
                 for f in files:
                     try:
                         total += os.path.getsize(os.path.join(dirpath, f))

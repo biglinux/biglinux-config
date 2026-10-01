@@ -2,16 +2,20 @@
 
 from __future__ import annotations
 
+from collections.abc import Callable
+
 import threading
 
 import gi
 
 gi.require_version("Gtk", "4.0")
 gi.require_version("Adw", "1")
-from gi.repository import Adw, Gdk, GLib, Gio, Gtk
+from gi.repository import Adw, Gdk, GLib, Gio, Gtk, Pango
 
 from utils import _, ngettext, set_label
-from data.app_registry import AppEntry
+from data.app_registry import AppEntry, get_reset_paths
+from backend import paths
+from ui.jobs import run_job
 from ui import backup_dialog
 from backend.app_detector import get_localized_name
 from backend.reset_manager import (
@@ -20,6 +24,7 @@ from backend.reset_manager import (
     ResetStatus,
     format_size,
     get_running_pids,
+    get_config_size,
     has_config,
     has_skel,
     kill_app,
@@ -105,16 +110,42 @@ def _open_path_in_filemanager(path: str) -> None:
 def show_restore_dialog(
     parent: Adw.ApplicationWindow,
     entry: AppEntry,
-    on_complete: callable | None = None,
+    on_complete: Callable | None = None,
 ) -> None:
-    """Present the restore options dialog for an application."""
-    import os
-    import glob
+    """Prepare sizes and settings in a worker, not while GTK processes input."""
+    from dataclasses import replace
+    cancel = threading.Event()
+    loading, _update = backup_dialog._build_progress_dialog(parent, _("Reading application settings…"), cancel)
 
-    config_exists = has_config(entry)
-    skel_exists = has_skel(entry)
+    def inspect():
+        targets = paths.expand_targets(get_reset_paths(entry))
+        sizes = {}
+        for target in targets:
+            if cancel.is_set():
+                return None
+            sizes[target] = get_config_size(replace(entry, config_paths=[target]), cancel_event=cancel)
+        return has_config(entry), has_config(entry, for_reset=True), has_skel(entry), sizes
+
+    def done(snapshot):
+        loading.force_close()
+        if snapshot is not None and not cancel.is_set():
+            _present_restore_options(parent, entry, on_complete, snapshot)
+
+    def failed(error):
+        loading.force_close()
+        _show_error_dialog(parent, entry, ResetResult(False, str(error), entry.app_id, ResetMode.PROGRAM_DEFAULT))
+
+    run_job(parent, inspect, done, cancel_event=cancel, failed=failed)
+
+
+def _present_restore_options(parent, entry, on_complete, snapshot):
+    import os
+    config_exists, reset_exists, skel_exists, path_sizes = snapshot
+    existing_paths = list(path_sizes)
+    total_size = sum(path_sizes.values())
 
     dialog = Adw.Window()
+    dialog._backup_available = config_exists
     dialog.set_default_size(420, 560)
     dialog.set_modal(True)
     dialog.set_transient_for(parent)
@@ -170,30 +201,6 @@ def show_restore_dialog(
     app_name_label.set_wrap(True)
     head_box.append(app_name_label)
 
-    # Compute path sizes once (used by summary and the details expander).
-    def _path_size(raw_path: str) -> int:
-        expanded = os.path.expanduser(raw_path)
-        targets = glob.glob(expanded) if ("*" in expanded or "?" in expanded) else [expanded]
-        total = 0
-        for target in targets:
-            if os.path.isdir(target) and not os.path.islink(target):
-                for dirpath, _dirnames, filenames in os.walk(target):
-                    for f in filenames:
-                        try:
-                            total += os.path.getsize(os.path.join(dirpath, f))
-                        except OSError:
-                            pass
-            elif os.path.isfile(target):
-                try:
-                    total += os.path.getsize(target)
-                except OSError:
-                    pass
-        return total
-
-    existing_paths = [p for p in entry.config_paths if os.path.lexists(os.path.expanduser(p))]
-    path_sizes = {p: _path_size(p) for p in existing_paths}
-    total_size = sum(path_sizes.values())
-
     if existing_paths:
         n = len(existing_paths)
         count_base = ngettext("%d item", "%d items", n)
@@ -234,6 +241,7 @@ def show_restore_dialog(
     def _action_row(icon_name, title, subtitle, on_activate,
                     sensitive=True, accent=None):
         row = Adw.ActionRow()
+        row.set_use_markup(False)
         row.set_title(title)
         if subtitle:
             row.set_subtitle(subtitle)
@@ -274,7 +282,7 @@ def show_restore_dialog(
     restore_group = Adw.PreferencesGroup()
     restore_group.set_title(_("Restore defaults"))
     restore_group.set_description(
-        _("These actions replace your current settings."))
+        _("These actions replace only the registered reset paths; backup data may cover additional folders."))
 
     if skel_exists:
         restore_group.add(_action_row(
@@ -285,7 +293,7 @@ def show_restore_dialog(
                                    ResetMode.BIGLINUX_DEFAULT, on_complete),
         ))
 
-    if config_exists or not skel_exists:
+    if reset_exists or not skel_exists:
         restore_group.add(_action_row(
             "restore-default-symbolic",
             _("Program defaults"),
@@ -293,6 +301,7 @@ def show_restore_dialog(
             lambda: _confirm_reset(parent, dialog, entry,
                                    ResetMode.PROGRAM_DEFAULT, on_complete),
             accent="error",
+            sensitive=reset_exists,
         ))
     content_box.append(restore_group)
 
@@ -307,6 +316,7 @@ def show_restore_dialog(
 
         for cfg_path in existing_paths:
             row = Adw.ActionRow()
+            row.set_use_markup(False)
             row.add_css_class("property")
             row.set_title(cfg_path)
             row.set_title_lines(1)
@@ -340,7 +350,7 @@ def _confirm_reset(
     options_dialog: Adw.Window,
     entry: AppEntry,
     mode: ResetMode,
-    on_complete: callable | None,
+    on_complete: Callable | None,
 ) -> None:
     """Show a destructive AlertDialog before proceeding."""
 
@@ -354,7 +364,7 @@ def _confirm_reset(
     alert.set_body(
         _("All customizations for %s will be lost.\n\n"
           "Mode: %s\n\n"
-          "You may need to restart the application to see the changes.")
+          "Save your work and close the application first. Detection cannot identify every launcher or script.")
         % (get_localized_name(entry), mode_label)
     )
     alert.set_close_response("cancel")
@@ -365,7 +375,7 @@ def _confirm_reset(
     )
     backup_check.set_active(True)
     backup_check.set_margin_top(6)
-    if not has_config(entry):
+    if not getattr(options_dialog, "_backup_available", True):
         # Nothing to back up.
         backup_check.set_active(False)
         backup_check.set_sensitive(False)
@@ -379,13 +389,13 @@ def _confirm_reset(
         if response != "restore":
             return
         backup_first = backup_check.get_active()
-        pids = get_running_pids(entry)
-        if pids:
-            _show_running_dialog(parent, options_dialog, entry, mode,
-                                 on_complete, backup_first)
-            return
-        options_dialog.destroy()
-        _execute_reset(parent, entry, mode, on_complete, backup_first)
+        def checked(pids):
+            if pids:
+                _show_running_dialog(parent, options_dialog, entry, mode, on_complete, backup_first)
+            else:
+                options_dialog.destroy()
+                _execute_reset(parent, entry, mode, on_complete, backup_first)
+        run_job(parent, lambda: get_running_pids(entry), checked)
 
     alert.connect("response", on_response)
     alert.present(options_dialog)
@@ -396,7 +406,7 @@ def _show_running_dialog(
     options_dialog: Adw.Window,
     entry: AppEntry,
     mode: ResetMode,
-    on_complete: callable | None,
+    on_complete: Callable | None,
     backup_first: bool = False,
 ) -> None:
     """Warn that the app is running and offer to close it."""
@@ -408,6 +418,11 @@ def _show_running_dialog(
     )
 
     alert.add_response("cancel", _("Cancel"))
+    if entry.is_de:
+        alert.set_body(_("Close this desktop session before restoring its settings. The session will not be terminated automatically."))
+        alert.set_close_response("cancel")
+        alert.present(options_dialog)
+        return
     alert.add_response("close_and_restore", _("Close and restore"))
     alert.set_response_appearance("close_and_restore", Adw.ResponseAppearance.DESTRUCTIVE)
     alert.set_close_response("cancel")
@@ -415,9 +430,8 @@ def _show_running_dialog(
     def on_response(_alert: Adw.AlertDialog, resp: str) -> None:
         if resp != "close_and_restore":
             return
-        kill_app(entry)
         options_dialog.destroy()
-        _execute_reset(parent, entry, mode, on_complete, backup_first)
+        _execute_reset(parent, entry, mode, on_complete, backup_first, close_running=True)
 
     alert.connect("response", on_response)
     alert.present(options_dialog)
@@ -427,63 +441,30 @@ def _execute_reset(
     parent: Adw.ApplicationWindow,
     entry: AppEntry,
     mode: ResetMode,
-    on_complete: callable | None,
+    on_complete: Callable | None,
     backup_first: bool = False,
+    *, close_running: bool = False,
 ) -> None:
-    """Run the reset in a background thread, then show results."""
-
     cancel_event = threading.Event()
+    title = (_("Backing up, then restoring settings for %s…")
+             if backup_first else _("Restoring settings for %s…")) % get_localized_name(entry)
+    spinner_dialog, _update = backup_dialog._build_progress_dialog(parent, title, cancel_event)
 
-    # Show a spinner dialog
-    spinner_dialog = Adw.Dialog()
-    spinner_dialog.set_title(_("Restoring…"))
-    spinner_dialog.set_content_width(420)
-    spinner_dialog.set_content_height(240)
+    def work():
+        if cancel_event.is_set():
+            return ResetResult(False, "cancelled", entry.app_id, mode, status=ResetStatus.CANCELLED)
+        if close_running and not kill_app(entry):
+            return ResetResult(False, _("The application did not close safely. Close it manually and try again."), entry.app_id, mode)
+        # Recheck even after the first confirmation; never reset a known live app.
+        if get_running_pids(entry):
+            return ResetResult(False, _("The application is still running. Nothing was reset."), entry.app_id, mode)
+        return reset_app(entry, mode, backup_first=backup_first, cancel_event=cancel_event)
 
-    spinner_box = Gtk.Box(
-        orientation=Gtk.Orientation.VERTICAL,
-        spacing=16,
-    )
-    spinner_box.set_valign(Gtk.Align.CENTER)
-    spinner_box.set_halign(Gtk.Align.CENTER)
-    spinner_box.set_margin_start(24)
-    spinner_box.set_margin_end(24)
-
-    spinner = Adw.Spinner()
-    spinner.set_size_request(48, 48)
-    spinner_box.append(spinner)
-
-    label_text = (
-        _("Backing up, then restoring settings for %s…")
-        if backup_first else _("Restoring settings for %s…")
-    ) % get_localized_name(entry)
-    spinner_label = Gtk.Label(label=label_text)
-    spinner_label.add_css_class("title-4")
-    spinner_label.set_wrap(True)
-    spinner_label.set_justify(Gtk.Justification.CENTER)
-    spinner_box.append(spinner_label)
-
-    cancel_btn = Gtk.Button(label=_("Cancel"))
-    cancel_btn.set_halign(Gtk.Align.CENTER)
-    cancel_btn.connect("clicked", lambda _b: cancel_event.set())
-    spinner_box.append(cancel_btn)
-
-    # Closing the dialog also cancels the worker.
-    spinner_dialog.connect("closed", lambda _d: cancel_event.set())
-
-    toolbar = Adw.ToolbarView()
-    toolbar.add_top_bar(Adw.HeaderBar())
-    toolbar.set_content(spinner_box)
-    spinner_dialog.set_child(toolbar)
-    spinner_dialog.present(parent)
-
-    def _worker() -> None:
-        result = reset_app(entry, mode, backup_first=backup_first,
-                           cancel_event=cancel_event)
-        GLib.idle_add(_on_reset_done, result, spinner_dialog, parent, entry, on_complete)
-
-    thread = threading.Thread(target=_worker, daemon=True)
-    thread.start()
+    run_job(parent, work,
+            lambda result: _on_reset_done(result, spinner_dialog, parent, entry, on_complete),
+            cancel_event=cancel_event,
+            failed=lambda error: _on_reset_done(ResetResult(False, str(error), entry.app_id, mode),
+                                                 spinner_dialog, parent, entry, on_complete))
 
 
 def _on_reset_done(
@@ -491,10 +472,10 @@ def _on_reset_done(
     spinner_dialog: Adw.Dialog,
     parent: Adw.ApplicationWindow,
     entry: AppEntry,
-    on_complete: callable | None,
+    on_complete: Callable | None,
 ) -> bool:
     """Called on the main thread after reset completes."""
-    spinner_dialog.close()
+    spinner_dialog.force_close()
 
     if result.success:
         _show_success_dialog(parent, entry, result)
@@ -578,6 +559,8 @@ def _show_success_dialog(
             "Settings for %s have been restored successfully."
         ) % get_localized_name(entry)
 
+    if result.message:
+        desc_text += "\n\n" + result.message
     desc = Gtk.Label(label=desc_text)
     desc.add_css_class("dim-label")
     desc.set_wrap(True)
@@ -594,7 +577,7 @@ def _show_success_dialog(
         backup_note.add_css_class("dim-label")
         backup_note.add_css_class("caption")
         backup_note.set_wrap(True)
-        backup_note.set_wrap_mode(Gtk.WrapMode.WORD_CHAR)
+        backup_note.set_wrap_mode(Pango.WrapMode.WORD_CHAR)
         backup_note.set_halign(Gtk.Align.CENTER)
         backup_note.set_justify(Gtk.Justification.CENTER)
         backup_note.set_selectable(True)

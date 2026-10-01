@@ -2,6 +2,8 @@
 
 from __future__ import annotations
 
+from collections.abc import Callable
+
 import os
 
 import gi
@@ -26,14 +28,14 @@ class AppGrid(Gtk.Box):
     def __init__(self) -> None:
         super().__init__(orientation=Gtk.Orientation.VERTICAL)
 
-        self._on_app_activated: callable | None = None
-        self._on_app_hover: callable | None = None
-        self._favorite_provider: callable | None = None
-        self._on_toggle_favorite: callable | None = None
+        self._on_app_activated: Callable | None = None
+        self._on_app_hover: Callable | None = None
+        self._favorite_provider: Callable | None = None
+        self._on_toggle_favorite: Callable | None = None
 
         # CSS for program-button style (same as BigControlCenter)
         css = Gtk.CssProvider()
-        css.load_from_data(b"""
+        css.load_from_string("""
             .program-button {
                 background: none;
                 padding: 8px;
@@ -99,17 +101,17 @@ class AppGrid(Gtk.Box):
 
         self._cards: list[tuple[Gtk.FlowBoxChild, AppEntry]] = []
 
-    def set_on_app_activated(self, callback: callable) -> None:
+    def set_on_app_activated(self, callback: Callable) -> None:
         self._on_app_activated = callback
 
-    def set_on_app_hover(self, callback: callable) -> None:
+    def set_on_app_hover(self, callback: Callable) -> None:
         self._on_app_hover = callback
 
-    def set_favorite_provider(self, provider: callable) -> None:
+    def set_favorite_provider(self, provider: Callable) -> None:
         """provider(entry) -> bool : whether the app is currently a favorite."""
         self._favorite_provider = provider
 
-    def set_on_toggle_favorite(self, callback: callable) -> None:
+    def set_on_toggle_favorite(self, callback: Callable) -> None:
         """callback(entry) : toggle the app's favorite state."""
         self._on_toggle_favorite = callback
 
@@ -299,7 +301,9 @@ class AppGrid(Gtk.Box):
         popover = Gtk.Popover()
         popover.set_parent(button)
         popover.set_has_arrow(True)
-        popover.set_pointing_to(Gdk.Rectangle(int(x), int(y), 1, 1))
+        rectangle = Gdk.Rectangle()
+        rectangle.x, rectangle.y, rectangle.width, rectangle.height = int(x), int(y), 1, 1
+        popover.set_pointing_to(rectangle)
         popover.set_autohide(True)
 
         item = Gtk.Button()

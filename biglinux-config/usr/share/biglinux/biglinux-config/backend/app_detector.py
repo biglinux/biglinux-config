@@ -3,12 +3,17 @@
 from __future__ import annotations
 
 import os
-import subprocess
 import shutil
 
 import gi
 gi.require_version("Gio", "2.0")
 from gi.repository import Gio
+try:
+    gi.require_version("GioUnix", "2.0")
+    from gi.repository import GioUnix
+    DesktopAppInfo = GioUnix.DesktopAppInfo
+except (ValueError, ImportError):  # Older GLib exposes the same type in Gio.
+    DesktopAppInfo = Gio.DesktopAppInfo
 
 from data.app_registry import (
     APP_REGISTRY,
@@ -19,19 +24,19 @@ from data.app_registry import (
 
 # Cache for localized names looked up from .desktop files
 _name_cache: dict[str, str] = {}
-_desktop_map: dict[str, Gio.DesktopAppInfo] | None = None
+_desktop_map: dict[str, DesktopAppInfo] | None = None
 
 
-def _build_desktop_map() -> dict[str, Gio.DesktopAppInfo]:
+def _build_desktop_map() -> dict[str, DesktopAppInfo]:
     """Build a map from desktop ID components and binary basenames.
 
     Two-pass to ensure desktop ID components take priority over executable basenames.
     """
     all_infos = [
         ai for ai in Gio.AppInfo.get_all()
-        if isinstance(ai, Gio.DesktopAppInfo)
+        if isinstance(ai, DesktopAppInfo)
     ]
-    result: dict[str, Gio.DesktopAppInfo] = {}
+    result: dict[str, DesktopAppInfo] = {}
 
     # Pass 1: index by desktop ID stem and last component (higher priority)
     for app_info in all_infos:
@@ -74,7 +79,7 @@ def get_localized_name(entry: AppEntry) -> str:
     # Try direct desktop ID
     for candidate in (f"{real_id}.desktop", f"{real_id}-startcenter.desktop"):
         try:
-            info = Gio.DesktopAppInfo.new(candidate)
+            info = DesktopAppInfo.new(candidate)
             if info:
                 break
         except TypeError:
@@ -112,17 +117,9 @@ def get_installed_apps() -> list[AppEntry]:
 
 
 def _get_default_desktop_id(mime_type: str) -> str | None:
-    """Return the .desktop filename for the system default handler of *mime_type*."""
-    try:
-        result = subprocess.run(
-            ["xdg-mime", "query", "default", mime_type],
-            capture_output=True, text=True, timeout=5,
-        )
-        if result.returncode == 0 and result.stdout.strip():
-            return result.stdout.strip()
-    except (FileNotFoundError, subprocess.TimeoutExpired):
-        pass
-    return None
+    """Use GIO association lookup; caller runs in the discovery worker."""
+    info = Gio.AppInfo.get_default_for_type(mime_type, False)
+    return info.get_id() if info is not None else None
 
 
 def _desktop_id_to_app_id(desktop_id: str) -> str:

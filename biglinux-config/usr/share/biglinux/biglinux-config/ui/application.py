@@ -3,7 +3,6 @@
 from __future__ import annotations
 
 import pathlib
-import threading
 
 import gi
 
@@ -13,8 +12,9 @@ from gi.repository import Adw, Gdk, GLib, Gio, Gtk
 
 from utils import _
 from data.app_registry import AppEntry, CATEGORIES
-from backend.app_detector import get_installed_apps, get_favorites
+from backend.app_detector import get_installed_apps, get_favorites, get_localized_name
 from backend import user_prefs
+from ui.jobs import run_job
 from backend.flatpak_detector import get_installed_flatpaks
 from ui.category_sidebar import CategorySidebar
 from ui.app_grid import AppGrid
@@ -35,6 +35,13 @@ class BigConfigApp(Adw.Application):
         )
         GLib.set_prgname(application_id)
 
+        self._installed_apps: list[AppEntry] = []
+        self._flatpak_apps: list[AppEntry] = []
+        self._apps_by_category: dict[str, list[AppEntry]] = {}
+        self._current_category: str = "favorites"
+
+    def do_startup(self) -> None:
+        Adw.Application.do_startup(self)
         # Register custom icon directories so app icons are found
         icon_theme = Gtk.IconTheme.get_for_display(Gdk.Display.get_default())
         app_dir = pathlib.Path(__file__).resolve().parents[1]
@@ -43,10 +50,8 @@ class BigConfigApp(Adw.Application):
         share_dir = app_dir.parents[1]  # .../usr/share/
         icon_theme.add_search_path(str(share_dir / "pixmaps"))
 
-        self._installed_apps: list[AppEntry] = []
-        self._flatpak_apps: list[AppEntry] = []
-        self._apps_by_category: dict[str, list[AppEntry]] = {}
-        self._current_category: str = "favorites"
+        from backend.reset_manager import setup_logger
+        setup_logger()
 
     def do_activate(self) -> None:
         win = self.props.active_window
@@ -100,18 +105,25 @@ class BigConfigApp(Adw.Application):
         return GLib.SOURCE_REMOVE
 
     def _load_apps_async(self, win: BigConfigWindow) -> None:
-        def _worker() -> None:
+        def work():
             installed = get_installed_apps()
             flatpaks = get_installed_flatpaks()
-            GLib.idle_add(self._on_apps_loaded, win, installed, flatpaks)
+            for entry in installed + flatpaks:
+                get_localized_name(entry)
+            return installed, flatpaks, get_favorites(installed + flatpaks)
 
-        threading.Thread(target=_worker, daemon=True).start()
+        def failed(error):
+            win.set_loading(False)
+            win.set_status_message(_("Could not load applications: %s") % error)
+
+        run_job(win, work, lambda result: self._on_apps_loaded(win, *result), failed=failed)
 
     def _on_apps_loaded(
         self,
         win: BigConfigWindow,
         installed: list[AppEntry],
         flatpaks: list[AppEntry],
+        auto_favorites: list[AppEntry],
     ) -> bool:
         self._installed_apps = installed
         self._flatpak_apps = flatpaks
@@ -122,13 +134,14 @@ class BigConfigApp(Adw.Application):
             self._apps_by_category.setdefault(entry.category, []).append(entry)
 
         # Base set of auto-detected favorites (MIME defaults + static picks).
-        self._auto_fav_ids = {e.app_id for e in get_favorites(all_apps)}
+        self._auto_favorites = auto_favorites
+        self._auto_fav_ids = {e.app_id for e in auto_favorites}
         self._rebuild_favorites(all_apps)
 
         for cat_info in CATEGORIES:
             cid = cat_info["id"]
             win.sidebar.set_category_visible(
-                cid, bool(self._apps_by_category.get(cid))
+                cid, cid == "favorites" or bool(self._apps_by_category.get(cid))
             )
 
         win.sidebar.set_category_visible("flatpak", len(self._flatpak_apps) > 0)
@@ -147,7 +160,7 @@ class BigConfigApp(Adw.Application):
         fav_ids = user_prefs.resolve_favorite_ids(getattr(self, "_auto_fav_ids", set()))
         self._fav_ids = {e.app_id for e in all_apps if e.app_id in fav_ids}
         # Preserve auto order first, then user-added extras.
-        auto_order = [e for e in get_favorites(all_apps) if e.app_id in self._fav_ids]
+        auto_order = [e for e in getattr(self, "_auto_favorites", []) if e.app_id in self._fav_ids]
         seen = {e.app_id for e in auto_order}
         extras = [e for e in all_apps
                   if e.app_id in self._fav_ids and e.app_id not in seen]
@@ -157,13 +170,17 @@ class BigConfigApp(Adw.Application):
         return entry.app_id in getattr(self, "_fav_ids", set())
 
     def toggle_favorite(self, win: BigConfigWindow, entry: AppEntry) -> None:
-        if self.is_favorite(entry):
-            user_prefs.remove_favorite(entry.app_id)
-        else:
-            user_prefs.add_favorite(entry.app_id)
+        try:
+            if self.is_favorite(entry):
+                user_prefs.remove_favorite(entry.app_id)
+            else:
+                user_prefs.add_favorite(entry.app_id)
+        except OSError as exc:
+            win.set_status_message(_("Could not save preferences: %s") % exc)
+            return
         self._rebuild_favorites()
         win.sidebar.set_category_visible(
-            "favorites", bool(self._apps_by_category.get("favorites")))
+            "favorites", True)
         if self._current_category == "favorites" and not getattr(self, "_search_mode", False):
             self._update_grid(win)
 
@@ -210,7 +227,7 @@ class BigConfigWindow(Adw.ApplicationWindow):
         self._build_ui(app)
 
     def _load_css(self) -> None:
-        self._css_provider.load_from_data(b"""
+        self._css_provider.load_from_string("""
             .status-bar {
                 border-top: 1px solid @borders;
                 padding: 6px 10px;
@@ -234,6 +251,9 @@ class BigConfigWindow(Adw.ApplicationWindow):
         # NavigationSplitView
         self._split_view = Adw.NavigationSplitView()
         toast_overlay.set_child(self._split_view)
+        breakpoint = Adw.Breakpoint.new(Adw.BreakpointCondition.parse("max-width: 600sp"))
+        breakpoint.add_setter(self._split_view, "collapsed", True)
+        self.add_breakpoint(breakpoint)
 
         # ── Sidebar ──────────────────────────────────────────────
         sidebar_toolbar = Adw.ToolbarView()
@@ -393,6 +413,12 @@ class BigConfigWindow(Adw.ApplicationWindow):
         _keycode: int,
         state: Gdk.ModifierType,
     ) -> bool:
+        # Let editable widgets handle selection, IME, Backspace and modifiers.
+        if isinstance(self.get_focus(), Gtk.Editable) or state & (
+            Gdk.ModifierType.CONTROL_MASK | Gdk.ModifierType.ALT_MASK | Gdk.ModifierType.SUPER_MASK
+        ):
+            return False
+
         # Backspace → remove char from search
         if keyval == Gdk.KEY_BackSpace:
             text = self.search_entry.get_text()
