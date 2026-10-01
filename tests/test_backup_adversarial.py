@@ -189,3 +189,27 @@ def test_archive_inside_selected_folder_is_rejected(fake_home):
     arc = fake_home / ".config/app/backup.tar.gz"
     assert not bm.export_backup([_entry()], str(arc)).success
     assert not arc.exists()
+
+
+def test_chained_extended_headers_have_one_cumulative_budget(tmp_path):
+    import gzip
+    import io
+    from dataclasses import replace
+    from backend.archive_policy import DEFAULT_LIMITS, BackupError
+    # A legal PAX comment large enough that several successive headers exceed
+    # the parser budget, while each individual read stays below it.
+    value = "x" * 900
+    field = " comment=" + value + "\n"
+    length = len(field) + len(str(len(field)))
+    while len(str(length) + field) != length:
+        length = len(str(length) + field)
+    payload = (str(length) + field).encode()
+    header = tarfile.TarInfo("extended")
+    header.type, header.size = tarfile.XHDTYPE, len(payload)
+    encoded = header.tobuf() + payload + b"\0" * (-len(payload) % 512)
+    regular = tarfile.TarInfo("file")
+    content = encoded * 4 + regular.tobuf() + b"\0" * 10240
+    limits = replace(DEFAULT_LIMITS, max_metadata_size=2048)
+    with pytest.raises(BackupError, match="Cumulative tar header"):
+        with bm._reader(io.BytesIO(gzip.compress(content)), limits=limits) as archive:
+            list(bm._members(archive))

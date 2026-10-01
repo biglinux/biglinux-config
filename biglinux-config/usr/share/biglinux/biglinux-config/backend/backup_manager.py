@@ -347,6 +347,8 @@ class _BoundedReader:
     def __init__(self, source, limits, check_cancel):
         self.source, self.limits, self.check_cancel = source, limits, check_cancel
         self.position = 0
+        self.parsing_header = True  # TarFile reads the first member in its constructor.
+        self.header_bytes = 0
         self.budget = limits.max_total_size + limits.max_members * 4096
 
     def read(self, size=-1):
@@ -355,6 +357,10 @@ class _BoundedReader:
             raise BackupError("Oversized tar parser read (extended header).")
         if self.position + size > self.budget:
             raise BackupError("Decompressed archive limit exceeded.")
+        if self.parsing_header:
+            self.header_bytes += size
+            if self.header_bytes > self.limits.max_metadata_size + 512:
+                raise BackupError("Cumulative tar header budget exceeded.")
         data = self.source.read(size)
         self.position += len(data)
         return data
@@ -365,10 +371,15 @@ class _BoundedReader:
     def seek(self, offset, whence=0):
         if whence != 0 or offset < self.position:
             raise BackupError("Non-sequential archive access is not supported.")
-        while self.position < offset:
-            chunk = self.read(min(_HASH_CHUNK, offset - self.position))
-            if not chunk:
-                raise BackupError("Truncated archive.")
+        parsing = self.parsing_header
+        self.parsing_header = False  # Skipped payload uses small buffers, not header allocations.
+        try:
+            while self.position < offset:
+                chunk = self.read(min(_HASH_CHUNK, offset - self.position))
+                if not chunk:
+                    raise BackupError("Truncated archive.")
+        finally:
+            self.parsing_header = parsing
         return self.position
 
 
@@ -383,7 +394,10 @@ def _reader(source, *, limits=DEFAULT_LIMITS, check_cancel=lambda: None, complet
         with gzip.GzipFile(fileobj=src, mode="rb") as compressed:
             bounded = _BoundedReader(compressed, limits, check_cancel)
             with tarfile.open(fileobj=bounded, mode="r:", **kwargs) as tar:
+                # Application-owned attribute; no private tarfile API is used.
+                tar.biglinux_reader = bounded
                 yield tar
+            bounded.parsing_header = False
             if complete:
                 while True:
                     remainder = bounded.read(_HASH_CHUNK)
@@ -396,12 +410,28 @@ def _reader(source, *, limits=DEFAULT_LIMITS, check_cancel=lambda: None, complet
             src.close()
 
 
+def _members(tar):
+    """Bound a whole chain of PAX/GNU headers, not just each individual read."""
+    iterator = iter(tar)
+    reader = tar.biglinux_reader
+    while True:
+        reader.header_bytes = 0
+        reader.parsing_header = True
+        try:
+            member = next(iterator)
+        except StopIteration:
+            return
+        finally:
+            reader.parsing_header = False
+        yield member
+
+
 def read_backup_manifest(archive_path, *, limits=DEFAULT_LIMITS, cancel_event=None):
     """Read bounded metadata, including legacy manifest-last archives."""
     try:
         policy = MemberPolicy(limits)
         with _reader(archive_path, limits=limits, check_cancel=lambda: _cancel(cancel_event)) as tar:
-            for member in tar:
+            for member in _members(tar):
                 _cancel(cancel_event)
                 name = policy.check(member)
                 if name == MANIFEST_NAME:
@@ -432,7 +462,7 @@ def _scan_archive(source, manifest, *, staging=None, restore_roots=(), selected_
                    if selected_ids is None or s["app_id"] in selected_ids for i in s["items"]}
     texts, directories, seen_manifest, done = {}, [], False, 0
     with _reader(source, limits=limits, check_cancel=check_cancel, complete=True) as tar:
-        for member in tar:
+        for member in _members(tar):
             check_cancel()
             name = policy.check(member)
             if name == MANIFEST_NAME:
@@ -530,7 +560,8 @@ def verify_backup(archive_path, *, limits=DEFAULT_LIMITS):
             manifest = read_backup_manifest(source, limits=limits)
             if manifest is None:
                 return False, "No valid manifest found."
-            _scan_archive(source, manifest, limits=limits)
+            texts = _scan_archive(source, manifest, limits=limits)
+            _dconf_payloads(manifest, texts, None)
         return True, "" if manifest["version"] == 2 else "Legacy backup: no checksums available."
     except Exception as exc:
         return False, str(exc)
@@ -548,7 +579,7 @@ def _rollback_dconf(applied):
     return errors
 
 
-def _apply_dconf(manifest, texts, selected_ids, transaction, check_cancel):
+def _dconf_payloads(manifest, texts, selected_ids):
     wanted = {}
     for section in manifest["dconf"]:
         if selected_ids is not None and section["app_id"] not in selected_ids:
@@ -559,6 +590,11 @@ def _apply_dconf(manifest, texts, selected_ids, transaction, check_cancel):
             if ns in wanted and wanted[ns] != text:
                 raise BackupError(f"Conflicting dumps for dconf namespace {ns}")
             wanted[ns] = text
+    return wanted
+
+
+def _apply_dconf(manifest, texts, selected_ids, transaction, check_cancel):
+    wanted = _dconf_payloads(manifest, texts, selected_ids)
     for ns, text in wanted.items():
         check_cancel()
         transaction.dconf.append((ns, dconf_manager.dump_strict(ns)))
@@ -613,6 +649,7 @@ def _import_backup(archive_path, selected_app_ids=None, progress_callback=None,
             texts = _scan_archive(source, manifest, staging=transaction.staging,
                 restore_roots=disjoint, selected_ids=ids, progress_callback=progress_callback,
                 check_cancel=check_cancel, limits=scan_limits)
+            _dconf_payloads(manifest, texts, ids)  # Conflicts fail BEFORE the first live rename.
             for root in disjoint:
                 check_cancel()
                 staged = os.path.join(transaction.staging, root)
