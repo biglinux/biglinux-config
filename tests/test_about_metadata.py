@@ -27,7 +27,7 @@ def test_welcome_covers_the_core_workflows():
         "restore-default-symbolic",
         "document-save-symbolic",
         "document-open-symbolic",
-        "folder-flatpak",
+        "folder-flatpak-symbolic",
         "system-search-symbolic",
         "preferences-system-symbolic",
     } <= icons

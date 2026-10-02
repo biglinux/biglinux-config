@@ -592,6 +592,7 @@ def _show_success_dialog(
         close_btn = Gtk.Button(label=_("Close"))
         close_btn.connect("clicked", lambda _b: dialog.close())
         btn_box.append(close_btn)
+        focus_btn = close_btn
 
         logout_btn = Gtk.Button(label=_("Log out"))
         logout_btn.add_css_class("destructive-action")
@@ -603,10 +604,13 @@ def _show_success_dialog(
         ok_btn.add_css_class("pill")
         ok_btn.connect("clicked", lambda _b: dialog.close())
         btn_box.append(ok_btn)
+        focus_btn = ok_btn
 
     box.append(btn_box)
     dialog.set_child(box)
     dialog.present(parent)
+    # Otherwise the selectable backup path takes focus and shows fully selected.
+    dialog.set_focus(focus_btn)
 
 
 def _show_error_dialog(

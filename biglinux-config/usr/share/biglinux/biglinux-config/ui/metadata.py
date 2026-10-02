@@ -45,7 +45,7 @@ WELCOME_FEATURES = (
         _("Optionally include cache files\ninside registered application folders"),
     ),
     (
-        "folder-flatpak",
+        "folder-flatpak-symbolic",
         _("Native & Flatpak Apps"),
         _("Manage settings for installed native\nand Flatpak applications together"),
     ),

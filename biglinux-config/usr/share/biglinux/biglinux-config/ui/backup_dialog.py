@@ -4,6 +4,7 @@ from __future__ import annotations
 
 import os
 import threading
+from datetime import datetime
 
 import gi
 
@@ -678,6 +679,10 @@ def _on_manifest_ready(
     info_box.append(info_icon)
 
     ts = manifest.get("created_at", "?")
+    try:  # Locale date instead of the raw ISO 8601 stored in the manifest.
+        ts = datetime.strptime(ts, "%Y-%m-%dT%H:%M:%S%z").astimezone().strftime("%c")
+    except ValueError:
+        pass
     hostname = manifest.get("hostname", "?")
     full_dir = manifest.get("full_directory", False)
 
@@ -694,7 +699,7 @@ def _on_manifest_ready(
     info_details.append(info_host)
 
     info_full = Gtk.Label(
-        label=_("Full directories: %s") % (_("Yes") if full_dir else _("No"))
+        label=_("Cache files included: %s") % (_("Yes") if full_dir else _("No"))
     )
     info_full.add_css_class("dim-label")
     info_full.set_xalign(0)

@@ -214,7 +214,7 @@ class AppGrid(Gtk.Box):
         icon_holder.set_child(icon)
 
         if is_flatpak:
-            fp_badge = Gtk.Image.new_from_icon_name("folder-flatpak")
+            fp_badge = Gtk.Image.new_from_icon_name("folder-flatpak-symbolic")
             fp_badge.set_pixel_size(18)
             fp_badge.add_css_class("card-badge")
             fp_badge.set_halign(Gtk.Align.END)

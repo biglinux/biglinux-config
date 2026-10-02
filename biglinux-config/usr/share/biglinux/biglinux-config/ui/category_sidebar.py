@@ -61,7 +61,7 @@ class CategorySidebar(Gtk.Box):
 
         # Categories including Flatpak pseudo-category
         self._all_categories = list(CATEGORIES) + [
-            {"id": "flatpak", "label": "Flatpak", "icon": "folder-flatpak"},
+            {"id": "flatpak", "label": "Flatpak", "icon": "folder-flatpak-symbolic"},
         ]
 
         self._rows: dict[str, CategoryRow] = {}
@@ -95,7 +95,7 @@ class CategorySidebar(Gtk.Box):
         icon.set_margin_end(8)
         box.append(icon)
 
-        label = Gtk.Label(label=_(cat["label"]))
+        label = Gtk.Label(label=cat["label"])
         label.set_halign(Gtk.Align.START)
         label.set_hexpand(True)
         label.set_wrap(True)

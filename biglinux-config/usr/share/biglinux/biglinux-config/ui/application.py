@@ -46,9 +46,6 @@ class BigConfigApp(Adw.Application):
         icon_theme = Gtk.IconTheme.get_for_display(Gdk.Display.get_default())
         app_dir = pathlib.Path(__file__).resolve().parents[1]
         icon_theme.add_search_path(str(app_dir / "img"))
-        # pixmaps lives under .../usr/share/pixmaps (2 levels up from app_dir)
-        share_dir = app_dir.parents[1]  # .../usr/share/
-        icon_theme.add_search_path(str(share_dir / "pixmaps"))
 
         from backend.reset_manager import setup_logger
         setup_logger()

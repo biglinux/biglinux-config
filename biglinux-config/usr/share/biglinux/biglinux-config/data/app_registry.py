@@ -9,6 +9,8 @@ from __future__ import annotations
 
 from dataclasses import dataclass, field
 
+from utils import _
+
 
 @dataclass(frozen=True, slots=True)
 class AppEntry:
@@ -54,21 +56,21 @@ def is_sensitive(entry: "AppEntry") -> bool:
 # Categories — id, translatable label, icon-name
 # ---------------------------------------------------------------------------
 CATEGORIES: list[dict[str, str]] = [
-    {"id": "favorites", "label": "Favorites", "icon": "view-app-grid-symbolic"},
-    {"id": "browsers", "label": "Browsers", "icon": "web-browser-symbolic"},
-    {"id": "communication", "label": "Communication", "icon": "mail-send-symbolic"},
-    {"id": "multimedia", "label": "Multimedia", "icon": "applications-multimedia-symbolic"},
-    {"id": "graphics", "label": "Graphics", "icon": "applications-graphics-symbolic"},
-    {"id": "office", "label": "Office", "icon": "x-office-document-symbolic"},
-    {"id": "development", "label": "Development", "icon": "project-development"},
-    {"id": "terminals", "label": "Terminals", "icon": "utilities-terminal-symbolic"},
-    {"id": "shell", "label": "Shell", "icon": "format-text-code"},
-    {"id": "filemanagers", "label": "File Managers", "icon": "system-file-manager-symbolic"},
-    {"id": "downloads", "label": "Downloads", "icon": "folder-download-symbolic"},
-    {"id": "system", "label": "System", "icon": "emblem-system-symbolic"},
-    {"id": "gaming", "label": "Gaming", "icon": "applications-games-symbolic"},
-    {"id": "customization", "label": "Customization", "icon": "kdenlive-custom-effect"},
-    {"id": "desktop_env", "label": "Desktop Environment", "icon": "user-desktop-symbolic"},
+    {"id": "favorites", "label": _("Favorites"), "icon": "view-app-grid-symbolic"},
+    {"id": "browsers", "label": _("Browsers"), "icon": "web-browser-symbolic"},
+    {"id": "communication", "label": _("Communication"), "icon": "mail-send-symbolic"},
+    {"id": "multimedia", "label": _("Multimedia"), "icon": "applications-multimedia-symbolic"},
+    {"id": "graphics", "label": _("Graphics"), "icon": "applications-graphics-symbolic"},
+    {"id": "office", "label": _("Office"), "icon": "x-office-document-symbolic"},
+    {"id": "development", "label": _("Development"), "icon": "project-development"},
+    {"id": "terminals", "label": _("Terminals"), "icon": "utilities-terminal-symbolic"},
+    {"id": "shell", "label": _("Shell"), "icon": "format-text-code"},
+    {"id": "filemanagers", "label": _("File Managers"), "icon": "system-file-manager-symbolic"},
+    {"id": "downloads", "label": _("Downloads"), "icon": "folder-download-symbolic"},
+    {"id": "system", "label": _("System"), "icon": "emblem-system-symbolic"},
+    {"id": "gaming", "label": _("Gaming"), "icon": "applications-games-symbolic"},
+    {"id": "customization", "label": _("Customization"), "icon": "kdenlive-custom-effect"},
+    {"id": "desktop_env", "label": _("Desktop Environment"), "icon": "user-desktop-symbolic"},
 ]
 
 # Lookup helper
