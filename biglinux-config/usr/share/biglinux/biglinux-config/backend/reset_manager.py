@@ -19,7 +19,8 @@ from enum import Enum, auto
 from logging.handlers import RotatingFileHandler
 
 from backend import dconf_manager, paths
-from backend.transactions import FileTransaction, operation_lock
+from backend.transactions import FileTransaction, operation_lock, recovery_message
+from i18n import _
 from data.app_registry import AppEntry, get_reset_paths
 
 logger = logging.getLogger("biglinux-config")
@@ -107,7 +108,7 @@ def get_running_pids(entry: AppEntry) -> list[int]:
         result = subprocess.run(["flatpak", "ps", "--columns=application,pid"],
                                 capture_output=True, text=True, timeout=10)
         if result.returncode:
-            raise RuntimeError("Could not check running Flatpak applications.")
+            raise RuntimeError(_("Could not check whether the Flatpak application is running."))
         pids = []
         for line in result.stdout.splitlines():
             fields = line.split()
@@ -246,10 +247,10 @@ def _reset_app(entry, mode, backup_first, cancel_event):
             raise ValueError("Unknown reset mode.")
         plan = _skel_plan(entry) if mode is ResetMode.BIGLINUX_DEFAULT else []
         if mode is ResetMode.BIGLINUX_DEFAULT and not plan:
-            raise RuntimeError("No safe BigLinux template is available. Nothing was reset.")
+            raise RuntimeError(_("No BigLinux default settings are available for this application. Nothing was reset."))
         targets = paths.expand_targets(get_reset_paths(entry)) if mode is ResetMode.PROGRAM_DEFAULT else [dst for _, dst in plan]
         if any(paths.safe_removable(target) != target for target in targets):
-            raise RuntimeError("An unsafe configuration path was refused. Nothing was reset.")
+            raise RuntimeError(_("A settings path is outside your home folder or protected. Nothing was reset."))
         namespaces = []
         for ns in sorted(set(entry.dconf_paths), key=len):
             if not dconf_manager.is_valid_namespace(ns):
@@ -263,7 +264,7 @@ def _reset_app(entry, mode, backup_first, cancel_event):
             backup_path = _safety_backup(entry, cancel_event)
             check_cancel()
             if not backup_path:
-                raise RuntimeError("Could not create a safety backup before resetting.")
+                raise RuntimeError(_("Could not create a safety backup. Nothing was reset."))
         transaction = FileTransaction(".biglinux-config-reset-")
         for source, destination in plan:
             staged = os.path.join(transaction.staging, os.path.relpath(destination, paths.home()))
@@ -281,7 +282,7 @@ def _reset_app(entry, mode, backup_first, cancel_event):
             transaction.dconf.append((ns, previous[ns]))
             transaction.write_journal()
             if not dconf_manager.reset(ns):
-                raise RuntimeError(f"Could not reset dconf namespace {ns}")
+                raise RuntimeError(_("Could not reset the desktop settings in %s.") % ns)
             removed.append(f"dconf:{ns}")
         check_cancel()
         warning = ""
@@ -304,7 +305,7 @@ def _reset_app(entry, mode, backup_first, cancel_event):
                 except OSError as cleanup_error:
                     errors.append(str(cleanup_error))
         if errors:
-            message = f"{exc}. Automatic recovery incomplete. Keep {transaction.directory}. " + "; ".join(errors)
+            message = recovery_message(str(exc), transaction.directory, errors)
             logger.error(message)
             return ResetResult(False, message, entry.app_id, mode, status=ResetStatus.RECOVERY_REQUIRED,
                                backup_path=backup_path, recovery_path=transaction.directory)
@@ -377,13 +378,3 @@ def has_config(entry: AppEntry, *, for_reset: bool = False) -> bool:
     if entry.dconf_paths and dconf_manager.is_available():
         return dconf_manager.has_content(entry.dconf_paths)
     return False
-
-
-def format_size(size_bytes: int) -> str:
-    if size_bytes < 1024:
-        return f"{size_bytes} B"
-    if size_bytes < 1024 * 1024:
-        return f"{size_bytes / 1024:.1f} KB"
-    if size_bytes < 1024 * 1024 * 1024:
-        return f"{size_bytes / (1024 * 1024):.1f} MB"
-    return f"{size_bytes / (1024 * 1024 * 1024):.1f} GB"

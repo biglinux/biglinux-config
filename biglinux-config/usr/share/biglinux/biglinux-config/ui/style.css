@@ -1,0 +1,51 @@
+/* BigLinux Config — every application style, loaded once at startup. */
+
+.status-bar {
+    border-top: 1px solid @borders;
+    padding: 6px 10px;
+}
+
+.background-as-view-bg-color {
+    background-color: var(--view-bg-color);
+}
+
+/* Category sidebar */
+.active-category {
+    background-color: alpha(currentColor, 0.1);
+    border-radius: 6px;
+}
+
+/* App grid: same program-button style as BigControlCenter */
+.program-button {
+    background: none;
+    padding: 8px;
+    font-weight: inherit;
+    min-width: 150px;
+}
+
+.program-button:hover {
+    background: alpha(currentColor, 0.08);
+}
+
+.program-button:active {
+    transform: scale(0.94);
+    transition: transform 0.15s ease;
+    background-color: alpha(currentColor, 0.15);
+}
+
+.card-badge {
+    background-color: @window_bg_color;
+    border-radius: 999px;
+    padding: 2px;
+    box-shadow: 0 0 0 1px alpha(@window_fg_color, 0.15);
+}
+
+.card-badge-biglinux {
+    color: @accent_color;
+}
+
+/* Warning card in the import dialog */
+.import-warning-card {
+    background-color: alpha(@warning_color, 0.12);
+    border: 1px solid alpha(@warning_color, 0.3);
+}

@@ -10,19 +10,26 @@ import gi
 
 gi.require_version("Gtk", "4.0")
 gi.require_version("Adw", "1")
-from gi.repository import Adw, Gdk, GLib, Gio, Gtk, Pango
+from gi.repository import Adw, GLib, Gio, Gtk
 
-from utils import _, ngettext, set_label
+from i18n import _, ngettext
+from ui import set_label
 from data.app_registry import AppEntry, get_reset_paths
 from backend import paths
 from ui.jobs import run_job
-from ui import backup_dialog
+from ui.export_dialog import show_single_export
+from ui.import_dialog import show_single_import
+from ui.operation_dialogs import (
+    build_progress_dialog,
+    open_in_file_manager,
+    show_error_dialog,
+    show_result_dialog,
+)
 from backend.app_detector import get_localized_name
 from backend.reset_manager import (
     ResetMode,
     ResetResult,
     ResetStatus,
-    format_size,
     get_running_pids,
     get_config_size,
     has_config,
@@ -72,41 +79,6 @@ def _get_mimetype_icon(path: str) -> str:
     return "text-x-generic-symbolic"
 
 
-def _open_path_in_filemanager(path: str) -> None:
-    """Open a path in the default file manager, selecting the file if possible."""
-    import os
-    import subprocess
-
-    expanded = os.path.expanduser(path)
-
-    if os.path.isfile(expanded):
-        uri = Gio.File.new_for_path(expanded).get_uri()
-        try:
-            subprocess.Popen(
-                ["dbus-send", "--session", "--dest=org.freedesktop.FileManager1",
-                 "--type=method_call",
-                 "/org/freedesktop/FileManager1",
-                 "org.freedesktop.FileManager1.ShowItems",
-                 f"array:string:{uri}", "string:"],
-            )
-            return
-        except FileNotFoundError:
-            pass
-        expanded = os.path.dirname(expanded)
-
-    if os.path.isdir(expanded):
-        target = expanded
-    else:
-        parent_dir = os.path.dirname(expanded)
-        if os.path.isdir(parent_dir):
-            target = parent_dir
-        else:
-            return
-
-    uri = Gio.File.new_for_path(target).get_uri()
-    Gtk.show_uri(None, uri, Gdk.CURRENT_TIME)
-
-
 def show_restore_dialog(
     parent: Adw.ApplicationWindow,
     entry: AppEntry,
@@ -115,7 +87,7 @@ def show_restore_dialog(
     """Prepare sizes and settings in a worker, not while GTK processes input."""
     from dataclasses import replace
     cancel = threading.Event()
-    loading, _update = backup_dialog._build_progress_dialog(parent, _("Reading application settings…"), cancel)
+    loading, _update = build_progress_dialog(parent, _("Reading application settings…"), cancel)
 
     def inspect():
         targets = paths.expand_targets(get_reset_paths(entry))
@@ -204,7 +176,7 @@ def _present_restore_options(parent, entry, on_complete, snapshot):
     if existing_paths:
         n = len(existing_paths)
         count_base = ngettext("%d item", "%d items", n)
-        summary_text = f"{count_base % n} · {format_size(total_size)}"
+        summary_text = f"{count_base % n} · {GLib.format_size(total_size)}"
     else:
         summary_text = _("No settings stored yet")
 
@@ -267,14 +239,14 @@ def _present_restore_options(parent, entry, on_complete, snapshot):
         _("Export settings…"),
         _("Save this application's settings to a file")
         if config_exists else _("No settings to export yet"),
-        lambda: backup_dialog.show_single_export(parent, entry),
+        lambda: show_single_export(parent, entry),
         sensitive=config_exists,
     ))
     backup_group.add(_action_row(
         "document-open-symbolic",
         _("Import settings…"),
         _("Restore settings from a backup file"),
-        lambda: backup_dialog.show_single_import(parent, entry),
+        lambda: show_single_import(parent, entry),
     ))
     content_box.append(backup_group)
 
@@ -320,7 +292,7 @@ def _present_restore_options(parent, entry, on_complete, snapshot):
             row.add_css_class("property")
             row.set_title(cfg_path)
             row.set_title_lines(1)
-            row.set_subtitle(format_size(path_sizes.get(cfg_path, 0)))
+            row.set_subtitle(GLib.format_size(path_sizes.get(cfg_path, 0)))
             row.set_subtitle_lines(1)
             prefix_icon = Gtk.Image.new_from_icon_name(_get_mimetype_icon(cfg_path))
             row.add_prefix(prefix_icon)
@@ -331,7 +303,7 @@ def _present_restore_options(parent, entry, on_complete, snapshot):
             open_btn.set_tooltip_text(_("Open in file manager"))
             set_label(open_btn, _("Open %s in file manager") % cfg_path)
             open_btn.connect("clicked",
-                             lambda _b, p=cfg_path: _open_path_in_filemanager(p))
+                             lambda _b, p=cfg_path: open_in_file_manager(parent, p))
             row.add_suffix(open_btn)
             expander.add_row(row)
 
@@ -451,7 +423,7 @@ def _execute_reset(
     cancel_event = threading.Event()
     title = (_("Backing up, then restoring settings for %s…")
              if backup_first else _("Restoring settings for %s…")) % get_localized_name(entry)
-    spinner_dialog, _update = backup_dialog._build_progress_dialog(parent, title, cancel_event)
+    spinner_dialog, _update = build_progress_dialog(parent, title, cancel_event)
 
     def work():
         if cancel_event.is_set():
@@ -494,126 +466,25 @@ def _on_reset_done(
     return GLib.SOURCE_REMOVE
 
 
-def _build_app_icon_with_badge(entry: AppEntry) -> Gtk.Overlay:
-    """Build the app icon (48px) with a small check badge in the upper-right."""
-    import os
-
-    overlay = Gtk.Overlay()
-
-    # Main app icon
-    if entry.icon.startswith("/") and os.path.isfile(entry.icon):
-        app_icon = Gtk.Image.new_from_file(entry.icon)
-    elif entry.icon:
-        app_icon = Gtk.Image.new_from_icon_name(entry.icon)
-    else:
-        app_icon = Gtk.Image.new_from_icon_name("application-x-executable")
-    app_icon.set_pixel_size(48)
-    overlay.set_child(app_icon)
-
-    # Small check badge (16px) upper-right
-    badge = Gtk.Image.new_from_icon_name("emblem-ok-symbolic")
-    badge.set_pixel_size(16)
-    badge.add_css_class("success")
-    badge.set_halign(Gtk.Align.END)
-    badge.set_valign(Gtk.Align.START)
-    overlay.add_overlay(badge)
-
-    return overlay
-
-
 def _show_success_dialog(
     parent: Adw.ApplicationWindow,
     entry: AppEntry,
     result: ResetResult,
 ) -> None:
-    """Show a compact success dialog with the app icon + check badge above text."""
-
-    dialog = Adw.Dialog()
-    dialog.set_content_width(360)
-    dialog.set_content_height(-1)
-
-    box = Gtk.Box(orientation=Gtk.Orientation.VERTICAL, spacing=12)
-    box.set_margin_top(24)
-    box.set_margin_bottom(24)
-    box.set_margin_start(24)
-    box.set_margin_end(24)
-    box.set_halign(Gtk.Align.CENTER)
-    box.set_valign(Gtk.Align.CENTER)
-
-    # App icon with check badge — above text
-    icon_widget = _build_app_icon_with_badge(entry)
-    icon_widget.set_halign(Gtk.Align.CENTER)
-    box.append(icon_widget)
-
-    # Heading
-    heading = Gtk.Label(label=_("Settings restored"))
-    heading.add_css_class("title-3")
-    heading.set_halign(Gtk.Align.CENTER)
-    box.append(heading)
-
-    # Description
+    name = get_localized_name(entry)
     if entry.logout_required:
-        desc_text = _(
-            "Settings for %s have been restored.\n"
-            "You need to log out to complete the process."
-        ) % get_localized_name(entry)
+        body = _("Settings for %s have been restored.\n"
+                 "You need to log out to complete the process.") % name
+        buttons = [(_("Close"), "", None), (_("Log out"), "destructive-action", _logout_session)]
     else:
-        desc_text = _(
-            "Settings for %s have been restored successfully."
-        ) % get_localized_name(entry)
-
+        body = _("Settings for %s have been restored successfully.") % name
+        buttons = None
     if result.message:
-        desc_text += "\n\n" + result.message
-    desc = Gtk.Label(label=desc_text)
-    desc.add_css_class("dim-label")
-    desc.set_wrap(True)
-    desc.set_halign(Gtk.Align.CENTER)
-    desc.set_justify(Gtk.Justification.CENTER)
-    box.append(desc)
-
-    # Safety-backup note (if one was created before the reset).
-    if getattr(result, "backup_path", ""):
-        backup_note = Gtk.Label(
-            label=_("A backup of your previous settings was saved to:\n%s")
-            % result.backup_path
-        )
-        backup_note.add_css_class("dim-label")
-        backup_note.add_css_class("caption")
-        backup_note.set_wrap(True)
-        backup_note.set_wrap_mode(Pango.WrapMode.WORD_CHAR)
-        backup_note.set_halign(Gtk.Align.CENTER)
-        backup_note.set_justify(Gtk.Justification.CENTER)
-        backup_note.set_selectable(True)
-        box.append(backup_note)
-
-    # Buttons
-    btn_box = Gtk.Box(orientation=Gtk.Orientation.HORIZONTAL, spacing=8)
-    btn_box.set_halign(Gtk.Align.CENTER)
-    btn_box.set_margin_top(8)
-
-    if entry.logout_required:
-        close_btn = Gtk.Button(label=_("Close"))
-        close_btn.connect("clicked", lambda _b: dialog.close())
-        btn_box.append(close_btn)
-        focus_btn = close_btn
-
-        logout_btn = Gtk.Button(label=_("Log out"))
-        logout_btn.add_css_class("destructive-action")
-        logout_btn.connect("clicked", lambda _b: _logout_session())
-        btn_box.append(logout_btn)
-    else:
-        ok_btn = Gtk.Button(label=_("OK"))
-        ok_btn.add_css_class("suggested-action")
-        ok_btn.add_css_class("pill")
-        ok_btn.connect("clicked", lambda _b: dialog.close())
-        btn_box.append(ok_btn)
-        focus_btn = ok_btn
-
-    box.append(btn_box)
-    dialog.set_child(box)
-    dialog.present(parent)
-    # Otherwise the selectable backup path takes focus and shows fully selected.
-    dialog.set_focus(focus_btn)
+        body += "\n\n" + result.message
+    if result.backup_path:
+        body += "\n\n" + _("A backup of your previous settings was saved.")
+    show_result_dialog(parent, entry.icon, _("Settings restored"), body,
+                       file_path=result.backup_path, buttons=buttons)
 
 
 def _show_error_dialog(
@@ -621,17 +492,9 @@ def _show_error_dialog(
     entry: AppEntry,
     result: ResetResult,
 ) -> None:
-    """Show a compact error dialog."""
-
-    dialog = Adw.AlertDialog()
-    dialog.set_heading(_("Restore error"))
-    dialog.set_body(
-        _("An error occurred while restoring settings for %s:\n%s")
-        % (get_localized_name(entry), result.message)
-    )
-    dialog.add_response("ok", _("Close"))
-    dialog.set_close_response("ok")
-    dialog.present(parent)
+    show_error_dialog(parent, _("Restore error"),
+                      _("An error occurred while restoring settings for %s:\n%s")
+                      % (get_localized_name(entry), result.message))
 
 
 def _logout_session() -> None:

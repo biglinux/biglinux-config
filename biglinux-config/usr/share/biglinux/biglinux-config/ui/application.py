@@ -10,7 +10,7 @@ gi.require_version("Gtk", "4.0")
 gi.require_version("Adw", "1")
 from gi.repository import Adw, Gdk, GLib, Gio, Gtk
 
-from utils import _
+from i18n import _
 from data.app_registry import AppEntry, CATEGORIES
 from backend.app_detector import get_installed_apps, get_favorites, get_localized_name
 from backend import user_prefs
@@ -20,7 +20,8 @@ from ui.category_sidebar import CategorySidebar
 from ui.app_grid import AppGrid
 from ui.restore_dialog import show_restore_dialog
 from ui.about_dialog import show_about_dialog
-from ui.backup_dialog import show_export_dialog, show_import_dialog
+from ui.export_dialog import show_export_dialog
+from ui.import_dialog import show_import_dialog
 from ui.welcome_dialog import WelcomeDialog, should_show_welcome
 
 
@@ -46,6 +47,10 @@ class BigConfigApp(Adw.Application):
         icon_theme = Gtk.IconTheme.get_for_display(Gdk.Display.get_default())
         app_dir = pathlib.Path(__file__).resolve().parents[1]
         icon_theme.add_search_path(str(app_dir / "img"))
+        css = Gtk.CssProvider()
+        css.load_from_path(str(app_dir / "ui" / "style.css"))
+        Gtk.StyleContext.add_provider_for_display(
+            Gdk.Display.get_default(), css, Gtk.STYLE_PROVIDER_PRIORITY_APPLICATION)
 
         from backend.reset_manager import setup_logger
         setup_logger()
@@ -217,27 +222,8 @@ class BigConfigWindow(Adw.ApplicationWindow):
         self.set_default_size(1100, 620)
         self.set_size_request(360, 400)
 
-        self._css_provider = Gtk.CssProvider()
-        self._load_css()
-
         app: BigConfigApp = self.get_application()
         self._build_ui(app)
-
-    def _load_css(self) -> None:
-        self._css_provider.load_from_string("""
-            .status-bar {
-                border-top: 1px solid @borders;
-                padding: 6px 10px;
-            }
-            .background-as-view-bg-color {
-                background-color: var(--view-bg-color);
-            }
-        """)
-        Gtk.StyleContext.add_provider_for_display(
-            Gdk.Display.get_default(),
-            self._css_provider,
-            Gtk.STYLE_PROVIDER_PRIORITY_APPLICATION,
-        )
 
     def _build_ui(self, app: BigConfigApp) -> None:
         # Toast overlay as root (background color)

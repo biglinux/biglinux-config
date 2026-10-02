@@ -41,7 +41,7 @@ def run_job(parent, work: Callable, done: Callable, *, cancel_event=None, failed
                 failed(error)
             else:
                 from gi.repository import Adw
-                from utils import _
+                from i18n import _
                 alert = Adw.AlertDialog.new(_("Operation failed"), str(error))
                 alert.add_response("close", _("Close"))
                 alert.present(parent)

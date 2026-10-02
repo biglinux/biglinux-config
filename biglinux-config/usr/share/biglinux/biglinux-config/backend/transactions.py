@@ -16,9 +16,17 @@ from contextlib import contextmanager
 from pathlib import Path
 
 from backend import paths
+from i18n import _
 
 _gate = threading.RLock()
 _local = threading.local()
+
+
+def recovery_message(error: str, directory: str, details: list[str]) -> str:
+    """Failure text when rollback could not finish: where the originals are."""
+    return (error + "\n\n"
+            + _("Automatic recovery did not finish. Your previous files are kept in %s.") % directory
+            + "\n\n" + _("Details: %s") % "; ".join(details))
 
 
 class OperationBusy(RuntimeError):
@@ -52,7 +60,7 @@ def atomic_json(destination: str | Path, data: dict) -> None:
 def operation_lock():
     """Non-blocking process/thread lock; nested safety exports are reentrant."""
     if not _gate.acquire(blocking=False):
-        raise OperationBusy("Another settings operation is already running.")
+        raise OperationBusy(_("Another backup, import or restore is already running. Wait for it to finish."))
     fd = None
     try:
         depth = getattr(_local, "depth", 0)
@@ -67,7 +75,7 @@ def operation_lock():
             try:
                 fcntl.flock(fd, fcntl.LOCK_EX | fcntl.LOCK_NB)
             except BlockingIOError as exc:
-                raise OperationBusy("Another settings operation is already running.") from exc
+                raise OperationBusy(_("Another backup, import or restore is already running. Wait for it to finish.")) from exc
         _local.depth = depth + 1
         try:
             yield

@@ -12,7 +12,8 @@ gi.require_version("Gtk", "4.0")
 gi.require_version("Adw", "1")
 from gi.repository import Adw, Gdk, Gtk, Pango
 
-from utils import _, set_label
+from i18n import _
+from ui import set_label
 from data.app_registry import AppEntry
 from backend.app_detector import get_localized_name
 from backend.reset_manager import has_skel
@@ -32,39 +33,6 @@ class AppGrid(Gtk.Box):
         self._on_app_hover: Callable | None = None
         self._favorite_provider: Callable | None = None
         self._on_toggle_favorite: Callable | None = None
-
-        # CSS for program-button style (same as BigControlCenter)
-        css = Gtk.CssProvider()
-        css.load_from_string("""
-            .program-button {
-                background: none;
-                padding: 8px;
-                font-weight: inherit;
-                min-width: 150px;
-            }
-            .program-button:hover {
-                background: alpha(currentColor, 0.08);
-            }
-            .program-button:active {
-                transform: scale(0.94);
-                transition: transform 0.15s ease;
-                background-color: alpha(currentColor, 0.15);
-            }
-            .card-badge {
-                background-color: @window_bg_color;
-                border-radius: 999px;
-                padding: 2px;
-                box-shadow: 0 0 0 1px alpha(@window_fg_color, 0.15);
-            }
-            .card-badge-biglinux {
-                color: @accent_color;
-            }
-        """)
-        Gtk.StyleContext.add_provider_for_display(
-            Gdk.Display.get_default(),
-            css,
-            Gtk.STYLE_PROVIDER_PRIORITY_APPLICATION,
-        )
 
         # Empty state
         self._status_page = Adw.StatusPage()

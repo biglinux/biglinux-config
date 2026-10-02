@@ -9,7 +9,8 @@ gi.require_version("Gtk", "4.0")
 gi.require_version("Adw", "1")
 from gi.repository import Adw, GLib, Gtk
 
-from utils import _, set_label
+from i18n import _
+from ui import set_label
 
 from backend import user_prefs
 from ui.metadata import WELCOME_FEATURES

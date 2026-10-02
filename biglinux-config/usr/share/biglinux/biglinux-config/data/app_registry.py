@@ -9,7 +9,7 @@ from __future__ import annotations
 
 from dataclasses import dataclass, field
 
-from utils import _
+from i18n import _
 
 
 @dataclass(frozen=True, slots=True)

@@ -81,39 +81,50 @@ changes before building.
 ```
 biglinux-config/
 ├── biglinux-config/
-│   ├── locale/                      # Translation files (.po, .json, .pot)
+│   ├── locale/                      # Translation sources (.po, .pot), updated by CI
 │   └── usr/
 │       ├── bin/
 │       │   ├── big-config           # Compatibility symlink
 │       │   └── biglinux-config      # System launcher script
-│       ├── share/
-│       │   ├── applications/
-│       │   │   └── com.biglinux.config.desktop
-│       │   ├── biglinux/biglinux-config/
-│       │   │   ├── main.py          # Application entry point
-│       │   │   ├── backend/
-│       │   │   │   ├── app_detector.py       # Detect installed native apps
-│       │   │   │   ├── backup_manager.py     # Export/import .tar.gz backups
-│       │   │   │   ├── flatpak_detector.py   # Detect installed Flatpak apps
-│       │   │   │   └── reset_manager.py      # Reset configs (skel / delete)
-│       │   │   ├── data/
-│       │   │   │   └── app_registry.py       # 136 app entries + categories
-│       │   │   ├── img/                      # Custom SVG icons
-│       │   │   ├── ui/
-│       │   │   │   ├── application.py        # Main window + Adw.Application
-│       │   │   │   ├── app_grid.py           # FlowBox grid of app buttons
-│       │   │   │   ├── category_sidebar.py   # Category sidebar navigation
-│       │   │   │   ├── restore_dialog.py     # Restore confirmation dialogs
-│       │   │   │   ├── backup_dialog.py      # Export/import dialogs
-│       │   │   │   ├── about_dialog.py       # About dialog
-│       │   │   │   └── welcome_dialog.py     # Welcome/onboarding dialog
-│       │   │   └── utils/
-│       │   │       └── __init__.py           # i18n helper (_)
-│       │   ├── locale/                       # Compiled translations (.mo, .json)
-│       │   └── icons/hicolor/scalable/apps/  # Application icon (.svg)
+│       └── share/
+│           ├── applications/
+│           │   ├── com.biglinux.config.desktop  # Menu entry; matches the Wayland app_id
+│           │   └── biglinux-config.desktop      # Hidden entry for BigLinux Control Center
+│           ├── biglinux/biglinux-config/
+│           │   ├── main.py          # Application entry point
+│           │   ├── i18n.py          # gettext lookup (_ and ngettext)
+│           │   ├── backend/
+│           │   │   ├── app_detector.py       # Detect installed native apps
+│           │   │   ├── archive_policy.py     # Backup format and archive validation
+│           │   │   ├── backup_manager.py     # Export/import .tar.gz backups
+│           │   │   ├── dconf_manager.py      # Scoped GSettings/dconf access
+│           │   │   ├── flatpak_detector.py   # Detect installed Flatpak apps
+│           │   │   ├── paths.py              # Home-confined path checks
+│           │   │   ├── reset_manager.py      # Reset configs (skel / delete)
+│           │   │   ├── transactions.py       # Staging, rollback and recovery
+│           │   │   └── user_prefs.py         # Favorites and welcome preference
+│           │   ├── data/
+│           │   │   └── app_registry.py       # 136 app entries + categories
+│           │   ├── img/                      # Custom SVG icons
+│           │   └── ui/
+│           │       ├── application.py        # Main window + Adw.Application
+│           │       ├── app_grid.py           # FlowBox grid of app buttons
+│           │       ├── category_sidebar.py   # Category sidebar navigation
+│           │       ├── restore_dialog.py     # Per-app dialog and reset flow
+│           │       ├── export_dialog.py      # Export flow
+│           │       ├── import_dialog.py      # Import flow
+│           │       ├── operation_dialogs.py  # Progress, result and file dialogs
+│           │       ├── jobs.py               # Worker threads tied to the app
+│           │       ├── style.css             # All application styles
+│           │       ├── about_dialog.py       # About dialog
+│           │       └── welcome_dialog.py     # Welcome/onboarding dialog
+│           ├── icons/hicolor/scalable/apps/  # Application icon (.svg)
+│           ├── locale/                       # Compiled translations (.mo)
+│           └── metainfo/                     # AppStream metadata
 ├── pkgbuild/
 │   └── PKGBUILD                              # Arch/BigLinux package build script
-├── LICENSE                                   # GPL-3.0
+├── tests/                                    # pytest suite (tools/check.sh)
+├── LICENSE                                   # GPL-3.0-or-later
 └── README.md
 ```
 

@@ -17,23 +17,41 @@ import stat
 import sys
 import tarfile
 import tempfile
-import threading
 import time
+import zlib
 from collections.abc import Callable
 from contextlib import contextmanager
 from dataclasses import dataclass
 from enum import Enum
 
+from gi.repository import GLib
+
 from backend import dconf_manager, paths
 from backend.archive_policy import (
     BACKUP_FORMAT, CHECKSUMS_NAME, DEFAULT_LIMITS, DCONF_PREFIX, MANIFEST_NAME,
-    ArchiveLimits, BackupError, MemberPolicy, normalise_manifest, read_json,
+    BackupError, DamagedBackup, MemberPolicy, normalise_manifest, read_json,
     validate_checksums,
 )
-from backend.transactions import FileTransaction, fsync_directory, operation_lock
+from backend.transactions import (
+    FileTransaction, fsync_directory, operation_lock, recovery_message,
+)
 from data.app_registry import APP_REGISTRY, AppEntry
+from i18n import _
 
 logger = logging.getLogger("biglinux-config")
+
+
+def _changed(rel):
+    return _("%s changed while the backup was being made. Close the application "
+             "and try again.") % ("~/" + rel)
+
+
+def _describe(exc):
+    """User-facing text for an import failure."""
+    if isinstance(exc, (DamagedBackup, tarfile.TarError, EOFError, gzip.BadGzipFile, zlib.error)):
+        return (_("This file is damaged, incomplete or was not created by Restore Settings.")
+                + "\n\n" + _("Details: %s") % exc)
+    return str(exc)
 BACKUP_VERSION = 2
 SUPPORTED_VERSIONS = (1, 2)
 _HASH_CHUNK = 1024 * 1024
@@ -149,11 +167,11 @@ def _build_inventory(entries, include_cache, check_cancel=lambda: None):
                 elif stat.S_ISLNK(info.st_mode):
                     kind, size, link = "link", 0, os.readlink(full)
                     if not _symlink_is_safe(link, rel):
-                        raise BackupError(f"Unsafe symlink (close the application first): {rel}")
+                        raise BackupError(_("Could not save %s. Close the application and try again.") % rel)
                 else:
-                    raise BackupError(f"Unsupported special file (close the application first): {rel}")
+                    raise BackupError(_("Could not save %s. Close the application and try again.") % rel)
                 if paths.archive_name(rel) is None:
-                    raise BackupError(f"Unsupported filename: {rel!r}")
+                    raise BackupError(_("The file name %r cannot be stored in a backup.") % rel)
                 seen.add(rel)
                 total_size += size
                 records.append(_FileRecord(full, rel, kind, size,
@@ -239,7 +257,7 @@ def export_backup(entries: list[AppEntry], archive_path: str, full_directory=Fal
             for app_roots in roots.values():
                 for root in app_roots:
                     if paths.is_within(os.path.join(paths.home(), root), archive_path):
-                        raise BackupError("Choose a backup destination outside the selected application folders.")
+                        raise BackupError(_("Choose a backup destination outside the selected applications' folders."))
             parent = os.path.dirname(os.path.abspath(archive_path))
             os.makedirs(parent, exist_ok=True)
             fd, temporary = tempfile.mkstemp(prefix=".biglinux-backup-", suffix=".part", dir=parent)
@@ -251,18 +269,18 @@ def export_backup(entries: list[AppEntry], archive_path: str, full_directory=Fal
                     for rec in records:
                         check_cancel()
                         if paths.safe_removable(rec.fullpath) != rec.fullpath:
-                            raise BackupError(f"Source path changed during backup: {rec.rel}")
+                            raise BackupError(_changed(rec.rel))
                         info = tarfile.TarInfo(rec.rel)
                         info.mode, info.mtime = rec.mode & 0o777, rec.mtime
                         if rec.kind == "dir":
                             if not stat.S_ISDIR(os.lstat(rec.fullpath).st_mode):
-                                raise BackupError(f"Source type changed: {rec.rel}")
+                                raise BackupError(_changed(rec.rel))
                             info.type = tarfile.DIRTYPE
                             policy.check(info)
                             tar.addfile(info)
                         elif rec.kind == "link":
                             if not os.path.islink(rec.fullpath) or os.readlink(rec.fullpath) != rec.link_target:
-                                raise BackupError(f"Source symlink changed: {rec.rel}")
+                                raise BackupError(_changed(rec.rel))
                             info.type, info.linkname = tarfile.SYMTYPE, rec.link_target
                             policy.check(info)
                             tar.addfile(info)
@@ -272,7 +290,7 @@ def export_backup(entries: list[AppEntry], archive_path: str, full_directory=Fal
                             with os.fdopen(source_fd, "rb") as src:
                                 before = os.fstat(src.fileno())
                                 if not stat.S_ISREG(before.st_mode) or before.st_size != rec.size:
-                                    raise BackupError(f"Source changed during backup: {rec.rel}")
+                                    raise BackupError(_changed(rec.rel))
                                 info.size = before.st_size
                                 info.mode = stat.S_IMODE(before.st_mode) & 0o777
                                 policy.check(info)
@@ -284,7 +302,7 @@ def export_backup(entries: list[AppEntry], archive_path: str, full_directory=Fal
                                 tar.addfile(info, _HashingReader(src, hasher, check_cancel, advance))
                                 after = os.fstat(src.fileno())
                                 if (before.st_size, before.st_mtime_ns, before.st_ctime_ns) != (after.st_size, after.st_mtime_ns, after.st_ctime_ns):
-                                    raise BackupError(f"Source changed during backup: {rec.rel}")
+                                    raise BackupError(_changed(rec.rel))
                                 checksums[rec.rel] = hasher.hexdigest()
                         _notify(progress_callback, done, total, rec.rel)
                     for member, data in dconf_members:
@@ -314,7 +332,7 @@ def export_backup(entries: list[AppEntry], archive_path: str, full_directory=Fal
 
 def _add_bytes(tar, name, data, policy=None):
     if name in (MANIFEST_NAME, CHECKSUMS_NAME) and len(data) > DEFAULT_LIMITS.max_metadata_size:
-        raise BackupError("Backup metadata exceeds the resource limit.")
+        raise DamagedBackup("Backup metadata exceeds the resource limit.")
     info = tarfile.TarInfo(name)
     info.size, info.mode, info.mtime = len(data), 0o600, int(time.time())
     if policy is not None:
@@ -347,13 +365,13 @@ class _BoundedReader:
     def read(self, size=-1):
         self.check_cancel()
         if size < 0 or size > self.limits.max_metadata_size + 512:
-            raise BackupError("Oversized tar parser read (extended header).")
+            raise DamagedBackup("Oversized tar parser read (extended header).")
         if self.position + size > self.budget:
-            raise BackupError("Decompressed archive limit exceeded.")
+            raise DamagedBackup("Decompressed archive limit exceeded.")
         if self.parsing_header:
             self.header_bytes += size
             if self.header_bytes > self.limits.max_metadata_size + 512:
-                raise BackupError("Cumulative tar header budget exceeded.")
+                raise DamagedBackup("Cumulative tar header budget exceeded.")
         data = self.source.read(size)
         self.position += len(data)
         return data
@@ -363,14 +381,14 @@ class _BoundedReader:
 
     def seek(self, offset, whence=0):
         if whence != 0 or offset < self.position:
-            raise BackupError("Non-sequential archive access is not supported.")
+            raise DamagedBackup("Non-sequential archive access is not supported.")
         parsing = self.parsing_header
         self.parsing_header = False  # Skipped payload uses small buffers, not header allocations.
         try:
             while self.position < offset:
                 chunk = self.read(min(_HASH_CHUNK, offset - self.position))
                 if not chunk:
-                    raise BackupError("Truncated archive.")
+                    raise DamagedBackup("Truncated archive.")
         finally:
             self.parsing_header = parsing
         return self.position
@@ -397,7 +415,7 @@ def _reader(source, *, limits=DEFAULT_LIMITS, check_cancel=lambda: None, complet
                     if not remainder:
                         break
                     if remainder.strip(b"\0"):
-                        raise BackupError("Unexpected data after the tar end marker.")
+                        raise DamagedBackup("Unexpected data after the tar end marker.")
     finally:
         if owned:
             src.close()
@@ -461,16 +479,16 @@ def _scan_archive(source, manifest, *, staging=None, restore_roots=(), selected_
             if name == MANIFEST_NAME:
                 current = normalise_manifest(read_json(tar, member, limits.max_metadata_size))
                 if current != manifest:
-                    raise BackupError("Backup manifest changed during import.")
+                    raise DamagedBackup("Backup manifest changed during import.")
                 seen_manifest = True
                 continue
             if name == CHECKSUMS_NAME:
                 expected = validate_checksums(read_json(tar, member, limits.max_metadata_size))
                 continue
             if not _matches_root(name, all_roots) and name not in dconf_names:
-                raise BackupError(f"Unclaimed archive member: {name}")
+                raise DamagedBackup(f"Unclaimed archive member: {name}")
             if name in dconf_names and (not member.isreg() or member.size > limits.max_dconf_size):
-                raise BackupError(f"Invalid/oversized dconf dump: {name}")
+                raise DamagedBackup(f"Invalid/oversized dconf dump: {name}")
             if member.issym() and not _symlink_is_safe(member.linkname, name):
                 raise BackupError(f"Unsafe symlink at the live destination: {name}")
             selected = staging is not None and _matches_root(name, restore_roots)
@@ -481,7 +499,7 @@ def _scan_archive(source, manifest, *, staging=None, restore_roots=(), selected_
                     raise BackupError(f"Unsafe staged destination: {name}")
                 filtered = tarfile.data_filter(member, staging)
                 if filtered is None:
-                    raise BackupError(f"Rejected archive member: {name}")
+                    raise DamagedBackup(f"Rejected archive member: {name}")
             if member.isdir():
                 if selected:
                     os.makedirs(target, mode=0o700, exist_ok=True)
@@ -526,18 +544,18 @@ def _scan_archive(source, manifest, *, staging=None, restore_roots=(), selected_
             if selected:
                 os.utime(target, (member.mtime, member.mtime), follow_symlinks=False)
     if not seen_manifest:
-        raise BackupError("Manifest missing from archive.")
+        raise DamagedBackup("Manifest missing from archive.")
     if manifest["version"] == 2:
         if expected is None or expected.keys() != actual.keys():
-            raise BackupError("Missing or incomplete checksum manifest.")
+            raise DamagedBackup("Missing or incomplete checksum manifest.")
         for name, digest in actual.items():
             if expected[name] != digest:
-                raise BackupError(f"Checksum mismatch: {name}")
+                raise DamagedBackup(f"Checksum mismatch: {name}")
     if not dconf_names.issubset(actual):
-        raise BackupError("A declared dconf dump is missing.")
+        raise DamagedBackup("A declared dconf dump is missing.")
     for root in all_roots:
         if root not in policy.names and root not in policy.parents:
-            raise BackupError(f"Declared application root is missing: {root}")
+            raise DamagedBackup(f"Declared application root is missing: {root}")
     # Directory modes are applied last, after writing all children. Never widen
     # a private profile to 0755 or retain setuid/setgid/sticky bits.
     for target, mode, mtime in sorted(directories, key=lambda item: len(item[0]), reverse=True):
@@ -583,13 +601,13 @@ def _check_registered_scope(manifest, selected):
         else:
             entry = next((e for e in APP_REGISTRY if e.app_id == app_id), None)
             if entry is None:
-                raise BackupError(f"Application not supported by this version: {app_id}")
+                raise BackupError(_("This backup contains settings for %s, which this version does not support. Nothing was imported.") % app_id)
             scopes[app_id] = ([p.removeprefix("~/") for p in entry.config_paths],
                               entry.dconf_paths)
         allowed = scopes[app_id][0]
         for root in app["roots"]:
             if not any(root == p or root.startswith(p + "/") for p in allowed):
-                raise BackupError(f"Path {root} is not a settings location of {app_id}")
+                raise BackupError(_("This backup tries to write to %(path)s, which is not a settings folder of %(app)s. Nothing was imported.") % {"path": "~/" + root, "app": app["name"]})
     for section in manifest["dconf"]:
         if section["app_id"] not in scopes:
             continue
@@ -597,7 +615,9 @@ def _check_registered_scope(manifest, selected):
         for item in section["items"]:
             if not any(item["path"].startswith(ns) for ns in allowed):
                 raise BackupError(
-                    f"dconf path {item['path']} is not registered for {section['app_id']}")
+                    _("This backup tries to change desktop settings (%(path)s) that do not "
+                      "belong to %(app)s. Nothing was imported.")
+                    % {"path": item["path"], "app": section["app_id"]})
 
 
 def _dconf_payloads(manifest, texts, selected_ids):
@@ -609,7 +629,7 @@ def _dconf_payloads(manifest, texts, selected_ids):
             ns, member = item["path"], item["member"]
             text = texts[member]
             if ns in wanted and wanted[ns] != text:
-                raise BackupError(f"Conflicting dumps for dconf namespace {ns}")
+                raise DamagedBackup(f"Conflicting dumps for dconf namespace {ns}")
             wanted[ns] = text
     return wanted
 
@@ -631,7 +651,7 @@ def import_backup(archive_path, selected_app_ids=None, progress_callback=None,
             return _import_backup(archive_path, selected_app_ids, progress_callback,
                                   cancel_event, limits=limits)
     except Exception as exc:
-        return RestoreFromBackupResult(False, str(exc), [], [], ImportStatus.FAILED)
+        return RestoreFromBackupResult(False, _describe(exc), [], [], ImportStatus.FAILED)
 
 
 def _import_backup(archive_path, selected_app_ids=None, progress_callback=None,
@@ -644,12 +664,12 @@ def _import_backup(archive_path, selected_app_ids=None, progress_callback=None,
             check_cancel()
             manifest = read_backup_manifest(source, limits=limits, cancel_event=cancel_event)
             if manifest is None:
-                raise BackupError("Invalid backup: no valid manifest found.")
+                raise DamagedBackup("no valid manifest found")
             selected = [app for app in manifest["applications"]
                         if selected_app_ids is None or app["app_id"] in selected_app_ids]
             skipped = [a["name"] for a in manifest["applications"] if a not in selected]
             if not selected:
-                raise BackupError("Nothing selected to restore.")
+                raise BackupError(_("Select at least one application to restore."))
             _check_registered_scope(manifest, selected)
             roots = sorted({r for app in selected for r in app["roots"]}, key=lambda r: (len(r), r))
             # Commit only disjoint top-level roots. Child apps still appear in results.
@@ -659,11 +679,11 @@ def _import_backup(archive_path, selected_app_ids=None, progress_callback=None,
                     disjoint.append(root)
             ids = {a["app_id"] for a in selected}
             if any(s["app_id"] in ids for s in manifest["dconf"]) and not dconf_manager.is_available():
-                raise BackupError("dconf is required to restore the selected settings.")
+                raise BackupError(_("The dconf tool is needed to restore these desktop settings. Install the dconf package."))
             free = shutil.disk_usage(paths.home()).free
             needed = manifest["total_size"] + 16 * 1024**2
             if free < needed:
-                raise BackupError(f"Not enough free space: need {format_size(needed)}, have {format_size(free)}.")
+                raise BackupError(_("Not enough free space: %(need)s needed, %(free)s available.") % {"need": GLib.format_size(needed), "free": GLib.format_size(free)})
             # Enforce observed bytes too; metadata is untrusted and can understate size.
             from dataclasses import replace
             scan_limits = replace(limits, max_total_size=min(limits.max_total_size, max(0, free - 16 * 1024**2)))
@@ -703,13 +723,12 @@ def _import_backup(archive_path, selected_app_ids=None, progress_callback=None,
                 except OSError as cleanup_error:
                     errors.append(str(cleanup_error))
         if errors:
-            message = (f"{exc}. Automatic recovery incomplete. Keep {transaction.directory}. "
-                       + "; ".join(errors))
+            message = recovery_message(_describe(exc), transaction.directory, errors)
             logger.error(message)
             return RestoreFromBackupResult(False, message, [], skipped,
                 ImportStatus.RECOVERY_REQUIRED, transaction.directory)
         status = ImportStatus.CANCELLED if cancelled else (ImportStatus.ROLLED_BACK if changed else ImportStatus.FAILED)
-        message = "cancelled" if cancelled else str(exc)
+        message = "cancelled" if cancelled else _describe(exc)
         logger.warning("Import did not complete: %s", message)
         return RestoreFromBackupResult(False, message, [], skipped, status)
 
@@ -729,9 +748,3 @@ def get_app_backup_name(app_id):
     safe = "".join(c if c.isalnum() or c in "._-" else "_" for c in app_id).removeprefix("flatpak-")
     return f"biglinux-config-{safe}-{time.strftime('%Y%m%d_%H%M%S')}-{time.time_ns() % 1_000_000_000:09d}.tar.gz"
 
-
-def format_size(size_bytes):
-    for unit in ("B", "KiB", "MiB", "GiB"):
-        if size_bytes < 1024 or unit == "GiB":
-            return f"{size_bytes} B" if unit == "B" else f"{size_bytes:.1f} {unit}"
-        size_bytes /= 1024

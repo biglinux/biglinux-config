@@ -1,5 +1,5 @@
 """Declarative product metadata; safe to import without GTK."""
-from utils import _
+from i18n import _
 
 APP_NAME = "Restore Settings"
 APP_VERSION = "1.0.0"

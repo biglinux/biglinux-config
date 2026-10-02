@@ -8,7 +8,7 @@ gi.require_version("Adw", "1")
 gi.require_version("Gtk", "4.0")
 from gi.repository import Adw, Gtk
 
-from utils import _
+from i18n import _
 
 from ui.metadata import (
     APP_NAME, APP_VERSION, APP_ICON, APP_DEVELOPER, APP_WEBSITE,

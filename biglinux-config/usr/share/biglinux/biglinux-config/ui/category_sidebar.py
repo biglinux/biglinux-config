@@ -8,9 +8,8 @@ import gi
 
 gi.require_version("Gtk", "4.0")
 gi.require_version("Adw", "1")
-from gi.repository import Gdk, Gtk, Pango
+from gi.repository import Gtk, Pango
 
-from utils import _
 from data.app_registry import CATEGORIES
 
 
@@ -33,20 +32,6 @@ class CategorySidebar(Gtk.Box):
         self.set_hexpand(False)
         self.set_vexpand(True)
         self.set_size_request(220, -1)
-
-        # CSS for active-category highlight
-        css = Gtk.CssProvider()
-        css.load_from_string("""
-            .active-category {
-                background-color: alpha(currentColor, 0.1);
-                border-radius: 6px;
-            }
-        """)
-        Gtk.StyleContext.add_provider_for_display(
-            Gdk.Display.get_default(),
-            css,
-            Gtk.STYLE_PROVIDER_PRIORITY_APPLICATION,
-        )
 
         scrolled = Gtk.ScrolledWindow()
         scrolled.set_policy(Gtk.PolicyType.NEVER, Gtk.PolicyType.AUTOMATIC)
