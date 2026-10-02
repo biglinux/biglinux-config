@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<component type="desktop-application">
+  <id>com.biglinux.config</id>
+  <metadata_license>CC0-1.0</metadata_license>
+  <project_license>GPL-3.0-or-later</project_license>
+  <name>Restore Settings</name>
+  <name xml:lang="pt_BR">Restaurar Configurações</name>
+  <summary>Back up, restore and reset application settings</summary>
+  <summary xml:lang="pt_BR">Faça backup, restaure e redefina configurações de aplicativos</summary>
+  <description>
+    <p>
+      Restore Settings resets, backs up and restores the configuration of the
+      applications installed on BigLinux, one application at a time.
+    </p>
+    <ul>
+      <li>Restore the defaults provided by BigLinux or by the program itself</li>
+      <li>Export the settings of selected applications to a single archive</li>
+      <li>Import a backup with integrity checks and automatic rollback</li>
+      <li>Native and Flatpak applications, and their desktop settings in dconf</li>
+    </ul>
+    <p xml:lang="pt_BR">
+      O Restaurar Configurações redefine, salva e restaura as configurações dos
+      aplicativos instalados no BigLinux, um aplicativo por vez.
+    </p>
+  </description>
+  <launchable type="desktop-id">com.biglinux.config.desktop</launchable>
+  <developer id="br.com.biglinux">
+    <name>BigLinux</name>
+  </developer>
+  <url type="homepage">https://github.com/ruscher/biglinux-config</url>
+  <url type="bugtracker">https://github.com/ruscher/biglinux-config/issues</url>
+  <categories>
+    <category>Settings</category>
+  </categories>
+  <content_rating type="oars-1.1"/>
+  <releases>
+    <release version="2026.10.01" date="2026-10-01"/>
+  </releases>
+</component>

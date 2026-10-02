@@ -1,0 +1,40 @@
+[Desktop Entry]
+# Entry for BigLinux Control Center: its pacman hook moves this file into
+# applications/bigcontrolcenter/. The menu and Wayland window matching use
+# com.biglinux.config.desktop, so this one stays out of the menu.
+Name=Restore Settings
+Name[pt_BR]=Restaurar Configurações
+Name[es]=Restaurar Configuraciones
+Name[bg]=Възстановяване на настройки
+Name[cs]=Obnovit nastavení
+Name[da]=Gendan indstillinger
+Name[de]=Einstellungen wiederherstellen
+Name[el]=Επαναφορά ρυθμίσεων
+Name[et]=Taasta seaded
+Name[fi]=Palauta asetukset
+Name[fr]=Restaurer les paramètres
+Name[hr]=Vraćanje postavki
+Name[hu]=Beállítások visszaállítása
+Name[is]=Endurheimta stillingar
+Name[it]=Ripristina impostazioni
+Name[ja]=設定を復元
+Name[ko]=설정 복원
+Name[nl]=Instellingen herstellen
+Name[no]=Gjenopprett innstillinger
+Name[pl]=Przywróć ustawienia
+Name[pt]=Restaurar Configurações
+Name[ro]=Restabilire setări
+Name[ru]=Восстановить настройки
+Name[sk]=Obnoviť nastavenia
+Name[sv]=Återställ inställningar
+Name[tr]=Ayarları Geri Yükle
+Name[uk]=Відновити налаштування
+Name[zh]=恢复设置
+StartupNotify=true
+Terminal=false
+Type=Application
+Exec=biglinux-config
+Icon=restore-settings
+Comment=Back up, restore, and manage application settings
+Comment[pt_BR]=Faça backup, restaure e gerencie configurações de aplicativos
+NoDisplay=true
