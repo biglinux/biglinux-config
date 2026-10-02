@@ -370,9 +370,12 @@ def _confirm_reset(
     alert.set_close_response("cancel")
 
     # Offer a safety backup of the current configuration first (recommended).
-    backup_check = Gtk.CheckButton(
-        label=_("Create a backup of the current settings before restoring")
+    backup_label = Gtk.Label(
+        label=_("Create a backup of the current settings before restoring"),
+        wrap=True, xalign=0,
     )
+    # A plain check label does not wrap and overflows the alert's width.
+    backup_check = Gtk.CheckButton(child=backup_label)
     backup_check.set_active(True)
     backup_check.set_margin_top(6)
     if not getattr(options_dialog, "_backup_available", True):
