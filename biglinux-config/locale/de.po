@@ -7,15 +7,216 @@ msgid ""
 msgstr ""
 "Project-Id-Version: biglinux-config\n"
 "Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2026-10-03 06:59-0300\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
 "Language: de\n"
 "MIME-Version: 1.0\n"
-"Content-Type: text/plain; charset=utf-8\n"
+"Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 "X-Generator: attranslate\n"
-#: biglinux-config/usr/share/biglinux/biglinux-config/ui/about_dialog.py:41
+
+#: biglinux-config/usr/share/biglinux/biglinux-config/backend/backup_manager.py:45
+#, python-format
+msgid ""
+"%s changed while the backup was being made. Close the application and try "
+"again."
+msgstr ""
+"%s wurde während der Sicherung geändert. Schließen Sie die Anwendung und "
+"versuchen Sie es erneut."
+
+#: biglinux-config/usr/share/biglinux/biglinux-config/backend/backup_manager.py:52
+msgid ""
+"This file is damaged, incomplete or was not created by Restore Settings."
+msgstr ""
+"Diese Datei ist beschädigt, unvollständig oder wurde nicht mit "
+"„Einstellungen wiederherstellen“ erstellt."
+
+#: biglinux-config/usr/share/biglinux/biglinux-config/backend/backup_manager.py:53
+#: biglinux-config/usr/share/biglinux/biglinux-config/backend/transactions.py:29
+#, python-format
+msgid "Details: %s"
+msgstr "Details: %s"
+
+#: biglinux-config/usr/share/biglinux/biglinux-config/backend/backup_manager.py:170
+#: biglinux-config/usr/share/biglinux/biglinux-config/backend/backup_manager.py:172
+#, python-format
+msgid "Could not save %s. Close the application and try again."
+msgstr ""
+"%s konnte nicht gespeichert werden. Schließen Sie die Anwendung und "
+"versuchen Sie es erneut."
+
+#: biglinux-config/usr/share/biglinux/biglinux-config/backend/backup_manager.py:174
+#, python-format
+msgid "The file name %r cannot be stored in a backup."
+msgstr "Der Dateiname %r kann nicht in einer Sicherung gespeichert werden."
+
+#: biglinux-config/usr/share/biglinux/biglinux-config/backend/backup_manager.py:260
+msgid "Choose a backup destination outside the selected applications' folders."
+msgstr ""
+"Wählen Sie ein Sicherungsziel außerhalb der Ordner der ausgewählten "
+"Anwendungen."
+
+#: biglinux-config/usr/share/biglinux/biglinux-config/backend/backup_manager.py:604
+#, python-format
+msgid ""
+"This backup contains settings for %s, which this version does not support. "
+"Nothing was imported."
+msgstr ""
+"Diese Sicherung enthält Einstellungen für %s, die diese Version nicht "
+"unterstützt. Es wurde nichts importiert."
+
+#: biglinux-config/usr/share/biglinux/biglinux-config/backend/backup_manager.py:610
+#, python-format
+msgid ""
+"This backup tries to write to %(path)s, which is not a settings folder of "
+"%(app)s. Nothing was imported."
+msgstr ""
+"Diese Sicherung versucht, nach %(path)s zu schreiben. Dieser Pfad ist kein "
+"Einstellungsordner von %(app)s. Es wurde nichts importiert."
+
+#: biglinux-config/usr/share/biglinux/biglinux-config/backend/backup_manager.py:618
+#, python-format
+msgid ""
+"This backup tries to change desktop settings (%(path)s) that do not belong "
+"to %(app)s. Nothing was imported."
+msgstr ""
+"Diese Sicherung versucht, Desktop-Einstellungen (%(path)s) zu ändern, die "
+"nicht zu %(app)s gehören. Es wurde nichts importiert."
+
+# File: biglinux-config/biglinux-config/usr/share/biglinux/biglinux-
+# config/ui/backup_dialog.py, line: 89
+#: biglinux-config/usr/share/biglinux/biglinux-config/backend/backup_manager.py:672
+msgid "Select at least one application to restore."
+msgstr "Wählen Sie mindestens eine Anwendung zum Wiederherstellen aus."
+
+#: biglinux-config/usr/share/biglinux/biglinux-config/backend/backup_manager.py:682
+msgid ""
+"The dconf tool is needed to restore these desktop settings. Install the "
+"dconf package."
+msgstr ""
+"Zum Wiederherstellen dieser Desktop-Einstellungen wird das Werkzeug dconf "
+"benötigt. Installieren Sie das Paket dconf."
+
+#: biglinux-config/usr/share/biglinux/biglinux-config/backend/backup_manager.py:686
+#, python-format
+msgid "Not enough free space: %(need)s needed, %(free)s available."
+msgstr ""
+"Nicht genügend freier Speicherplatz: %(need)s benötigt, %(free)s verfügbar."
+
+#: biglinux-config/usr/share/biglinux/biglinux-config/backend/reset_manager.py:111
+msgid "Could not check whether the Flatpak application is running."
+msgstr "Es konnte nicht geprüft werden, ob die Flatpak-Anwendung läuft."
+
+#: biglinux-config/usr/share/biglinux/biglinux-config/backend/reset_manager.py:250
+msgid ""
+"No BigLinux default settings are available for this application. Nothing was "
+"reset."
+msgstr ""
+"Für diese Anwendung sind keine BigLinux-Standardeinstellungen verfügbar. Es "
+"wurde nichts zurückgesetzt."
+
+#: biglinux-config/usr/share/biglinux/biglinux-config/backend/reset_manager.py:253
+msgid ""
+"A settings path is outside your home folder or protected. Nothing was reset."
+msgstr ""
+"Ein Einstellungspfad liegt außerhalb Ihres persönlichen Ordners oder ist "
+"geschützt. Es wurde nichts zurückgesetzt."
+
+#: biglinux-config/usr/share/biglinux/biglinux-config/backend/reset_manager.py:267
+msgid "Could not create a safety backup. Nothing was reset."
+msgstr ""
+"Es konnte keine Sicherung zur Absicherung erstellt werden. Es wurde nichts "
+"zurückgesetzt."
+
+#: biglinux-config/usr/share/biglinux/biglinux-config/backend/reset_manager.py:285
+#, python-format
+msgid "Could not reset the desktop settings in %s."
+msgstr "Die Desktop-Einstellungen in %s konnten nicht zurückgesetzt werden."
+
+#: biglinux-config/usr/share/biglinux/biglinux-config/backend/transactions.py:28
+#, python-format
+msgid "Automatic recovery did not finish. Your previous files are kept in %s."
+msgstr ""
+"Die automatische Wiederherstellung wurde nicht abgeschlossen. Ihre "
+"bisherigen Dateien bleiben in %s erhalten."
+
+#: biglinux-config/usr/share/biglinux/biglinux-config/backend/transactions.py:63
+#: biglinux-config/usr/share/biglinux/biglinux-config/backend/transactions.py:78
+msgid ""
+"Another backup, import or restore is already running. Wait for it to finish."
+msgstr ""
+"Eine andere Sicherung, ein Import oder eine Wiederherstellung läuft bereits. "
+"Warten Sie, bis der Vorgang abgeschlossen ist."
+
+#: biglinux-config/usr/share/biglinux/biglinux-config/data/app_registry.py:59
+msgid "Favorites"
+msgstr "Favoriten"
+
+#: biglinux-config/usr/share/biglinux/biglinux-config/data/app_registry.py:60
+msgid "Browsers"
+msgstr "Browser"
+
+#: biglinux-config/usr/share/biglinux/biglinux-config/data/app_registry.py:61
+msgid "Communication"
+msgstr "Kommunikation"
+
+#: biglinux-config/usr/share/biglinux/biglinux-config/data/app_registry.py:62
+msgid "Multimedia"
+msgstr "Multimedia"
+
+#: biglinux-config/usr/share/biglinux/biglinux-config/data/app_registry.py:63
+msgid "Graphics"
+msgstr "Grafik"
+
+#: biglinux-config/usr/share/biglinux/biglinux-config/data/app_registry.py:64
+msgid "Office"
+msgstr "Büro"
+
+#: biglinux-config/usr/share/biglinux/biglinux-config/data/app_registry.py:65
+msgid "Development"
+msgstr "Entwicklung"
+
+#: biglinux-config/usr/share/biglinux/biglinux-config/data/app_registry.py:66
+msgid "Terminals"
+msgstr "Terminals"
+
+#: biglinux-config/usr/share/biglinux/biglinux-config/data/app_registry.py:67
+msgid "Shell"
+msgstr "Shell"
+
+# #-#-#-#-#  biglinux-config.pot (biglinux-config)  #-#-#-#-#
+#
+# File: biglinux-config/biglinux-config/usr/share/biglinux/biglinux-
+# config/ui/backup_dialog.py, line: 404
+# File: biglinux-config/biglinux-config/usr/share/biglinux/biglinux-
+# config/ui/restore_dialog.py, line: 276
+#: biglinux-config/usr/share/biglinux/biglinux-config/data/app_registry.py:68
+msgid "File Managers"
+msgstr "Dateimanager"
+
+#: biglinux-config/usr/share/biglinux/biglinux-config/data/app_registry.py:69
+msgid "Downloads"
+msgstr "Downloads"
+
+#: biglinux-config/usr/share/biglinux/biglinux-config/data/app_registry.py:70
+msgid "System"
+msgstr "System"
+
+#: biglinux-config/usr/share/biglinux/biglinux-config/data/app_registry.py:71
+msgid "Gaming"
+msgstr "Spiele"
+
+#: biglinux-config/usr/share/biglinux/biglinux-config/data/app_registry.py:72
+msgid "Customization"
+msgstr "Anpassung"
+
+#: biglinux-config/usr/share/biglinux/biglinux-config/data/app_registry.py:73
+msgid "Desktop Environment"
+msgstr "Desktop-Umgebung"
+
+#: biglinux-config/usr/share/biglinux/biglinux-config/ui/about_dialog.py:33
 msgid ""
 "Restore, back up, and manage application settings on BigLinux.\n"
 "\n"
@@ -24,775 +225,1101 @@ msgid ""
 "imports selected settings using compressed backups with integrity checks and "
 "rollback protection."
 msgstr ""
-#
-# File: biglinux-config/biglinux-config/usr/share/biglinux/biglinux-config/ui/app_grid.py, line: 54
-#: biglinux-config/usr/share/biglinux/biglinux-config/ui/app_grid.py:70
+"Anwendungseinstellungen unter BigLinux wiederherstellen, sichern und "
+"verwalten.\n"
+"\n"
+"„Einstellungen wiederherstellen“ erkennt unterstützte native Anwendungen und "
+"Flatpak-Anwendungen, stellt entweder die BigLinux-Standardeinstellungen oder "
+"die Standardeinstellungen der Anwendung wieder her und exportiert oder "
+"importiert ausgewählte Einstellungen in komprimierten Sicherungen mit "
+"Integritätsprüfung und Schutz durch Rücknahme fehlgeschlagener Änderungen."
+
+# File: biglinux-config/biglinux-config/usr/share/biglinux/biglinux-
+# config/ui/app_grid.py, line: 54
+#: biglinux-config/usr/share/biglinux/biglinux-config/ui/app_grid.py:40
 msgid "No applications found"
 msgstr "Keine Anwendungen gefunden"
-#
-# File: biglinux-config/biglinux-config/usr/share/biglinux/biglinux-config/ui/app_grid.py, line: 56
-#: biglinux-config/usr/share/biglinux/biglinux-config/ui/app_grid.py:72
+
+# File: biglinux-config/biglinux-config/usr/share/biglinux/biglinux-
+# config/ui/app_grid.py, line: 56
+#: biglinux-config/usr/share/biglinux/biglinux-config/ui/app_grid.py:42
 msgid "Try another category or search term"
-msgstr "Versuchen Sie eine andere Kategorie oder Suchbegriff."
-#: biglinux-config/usr/share/biglinux/biglinux-config/ui/app_grid.py:170
-#: biglinux-config/usr/share/biglinux/biglinux-config/ui/app_grid.py:220
+msgstr "Versuchen Sie eine andere Kategorie oder einen anderen Suchbegriff"
+
+#: biglinux-config/usr/share/biglinux/biglinux-config/ui/app_grid.py:140
+#: biglinux-config/usr/share/biglinux/biglinux-config/ui/app_grid.py:190
 msgid "Flatpak application"
-msgstr ""
-#: biglinux-config/usr/share/biglinux/biglinux-config/ui/app_grid.py:170
+msgstr "Flatpak-Anwendung"
+
+#: biglinux-config/usr/share/biglinux/biglinux-config/ui/app_grid.py:140
 msgid "Native application"
-msgstr ""
-#: biglinux-config/usr/share/biglinux/biglinux-config/ui/app_grid.py:173
-#: biglinux-config/usr/share/biglinux/biglinux-config/ui/app_grid.py:230
-#: biglinux-config/usr/share/biglinux/biglinux-config/ui/app_grid.py:337
+msgstr "Native Anwendung"
+
+#: biglinux-config/usr/share/biglinux/biglinux-config/ui/app_grid.py:143
+#: biglinux-config/usr/share/biglinux/biglinux-config/ui/app_grid.py:200
+#: biglinux-config/usr/share/biglinux/biglinux-config/ui/app_grid.py:309
 msgid "BigLinux default available"
-msgstr ""
-#: biglinux-config/usr/share/biglinux/biglinux-config/ui/app_grid.py:312
-msgid "Remove from favorites"
-msgstr ""
-#: biglinux-config/usr/share/biglinux/biglinux-config/ui/app_grid.py:312
+msgstr "BigLinux-Standardeinstellungen verfügbar"
+
+#: biglinux-config/usr/share/biglinux/biglinux-config/ui/app_grid.py:284
 msgid "Add to favorites"
-msgstr ""
-#: biglinux-config/usr/share/biglinux/biglinux-config/ui/app_grid.py:334
+msgstr "Zu Favoriten hinzufügen"
+
+#: biglinux-config/usr/share/biglinux/biglinux-config/ui/app_grid.py:284
+msgid "Remove from favorites"
+msgstr "Aus Favoriten entfernen"
+
+#: biglinux-config/usr/share/biglinux/biglinux-config/ui/app_grid.py:306
 msgid "Flatpak"
-msgstr ""
-#: biglinux-config/usr/share/biglinux/biglinux-config/ui/app_grid.py:334
+msgstr "Flatpak"
+
+#: biglinux-config/usr/share/biglinux/biglinux-config/ui/app_grid.py:306
 msgid "Native"
-msgstr ""
-#
+msgstr "Nativ"
+
+#: biglinux-config/usr/share/biglinux/biglinux-config/ui/application.py:119
+#, python-format
+msgid "Could not load applications: %s"
+msgstr "Anwendungen konnten nicht geladen werden: %s"
+
+#: biglinux-config/usr/share/biglinux/biglinux-config/ui/application.py:181
+#, python-format
+msgid "Could not save preferences: %s"
+msgstr "Einstellungen konnten nicht gespeichert werden: %s"
+
 # #-#-#-#-#  biglinux-config.pot (biglinux-config)  #-#-#-#-#
 #
-# File: biglinux-config/biglinux-config/usr/share/biglinux/biglinux-config/ui/restore_dialog.py, line: 36
-# File: biglinux-config/biglinux-config/usr/share/biglinux/biglinux-config/ui/application.py, line: 169
-# File: biglinux-config/biglinux-config/usr/share/biglinux/biglinux-config/ui/application.py, line: 220
-#: biglinux-config/usr/share/biglinux/biglinux-config/ui/application.py:202
-#: biglinux-config/usr/share/biglinux/biglinux-config/ui/application.py:253
+# File: biglinux-config/biglinux-config/usr/share/biglinux/biglinux-
+# config/ui/restore_dialog.py, line: 36
+# File: biglinux-config/biglinux-config/usr/share/biglinux/biglinux-
+# config/ui/application.py, line: 169
+# File: biglinux-config/biglinux-config/usr/share/biglinux/biglinux-
+# config/ui/application.py, line: 220
+#: biglinux-config/usr/share/biglinux/biglinux-config/ui/application.py:221
+#: biglinux-config/usr/share/biglinux/biglinux-config/ui/application.py:256
 msgid "Restore Settings"
 msgstr "Einstellungen wiederherstellen"
-#
-# File: biglinux-config/biglinux-config/usr/share/biglinux/biglinux-config/ui/application.py, line: 211
-#: biglinux-config/usr/share/biglinux/biglinux-config/ui/application.py:244
+
+# File: biglinux-config/biglinux-config/usr/share/biglinux/biglinux-
+# config/ui/application.py, line: 211
+#: biglinux-config/usr/share/biglinux/biglinux-config/ui/application.py:247
 msgid "About Restore Settings"
-msgstr "Über Wiederherstellungseinstellungen"
-#
-# File: biglinux-config/biglinux-config/usr/share/biglinux/biglinux-config/ui/application.py, line: 230
-#: biglinux-config/usr/share/biglinux/biglinux-config/ui/application.py:263
+msgstr "Info zu Einstellungen wiederherstellen"
+
+# File: biglinux-config/biglinux-config/usr/share/biglinux/biglinux-
+# config/ui/application.py, line: 230
+#: biglinux-config/usr/share/biglinux/biglinux-config/ui/application.py:266
 msgid "Categories"
 msgstr "Kategorien"
-#
-# File: biglinux-config/biglinux-config/usr/share/biglinux/biglinux-config/ui/application.py, line: 239
-#: biglinux-config/usr/share/biglinux/biglinux-config/ui/application.py:272
+
+# File: biglinux-config/biglinux-config/usr/share/biglinux/biglinux-
+# config/ui/application.py, line: 239
+#: biglinux-config/usr/share/biglinux/biglinux-config/ui/application.py:275
 msgid "Search..."
 msgstr "Suchen..."
-#
-# File: biglinux-config/biglinux-config/usr/share/biglinux/biglinux-config/ui/application.py, line: 251
-#: biglinux-config/usr/share/biglinux/biglinux-config/ui/application.py:284
-#: biglinux-config/usr/share/biglinux/biglinux-config/ui/restore_dialog.py:259
+
+# File: biglinux-config/biglinux-config/usr/share/biglinux/biglinux-
+# config/ui/application.py, line: 251
+#: biglinux-config/usr/share/biglinux/biglinux-config/ui/application.py:287
+#: biglinux-config/usr/share/biglinux/biglinux-config/ui/restore_dialog.py:239
 msgid "Export settings…"
-msgstr "Export-Einstellungen…"
-#
-# File: biglinux-config/biglinux-config/usr/share/biglinux/biglinux-config/ui/application.py, line: 252
-#: biglinux-config/usr/share/biglinux/biglinux-config/ui/application.py:285
-#: biglinux-config/usr/share/biglinux/biglinux-config/ui/restore_dialog.py:267
+msgstr "Einstellungen exportieren…"
+
+# File: biglinux-config/biglinux-config/usr/share/biglinux/biglinux-
+# config/ui/application.py, line: 252
+#: biglinux-config/usr/share/biglinux/biglinux-config/ui/application.py:288
+#: biglinux-config/usr/share/biglinux/biglinux-config/ui/restore_dialog.py:247
 msgid "Import settings…"
 msgstr "Einstellungen importieren…"
-#
-# File: biglinux-config/biglinux-config/usr/share/biglinux/biglinux-config/ui/application.py, line: 256
-#: biglinux-config/usr/share/biglinux/biglinux-config/ui/application.py:289
+
+# File: biglinux-config/biglinux-config/usr/share/biglinux/biglinux-
+# config/ui/application.py, line: 256
+#: biglinux-config/usr/share/biglinux/biglinux-config/ui/application.py:292
 msgid "Welcome"
 msgstr "Willkommen"
-#
-# File: biglinux-config/biglinux-config/usr/share/biglinux/biglinux-config/ui/application.py, line: 257
-#: biglinux-config/usr/share/biglinux/biglinux-config/ui/application.py:290
+
+# File: biglinux-config/biglinux-config/usr/share/biglinux/biglinux-
+# config/ui/application.py, line: 257
+#: biglinux-config/usr/share/biglinux/biglinux-config/ui/application.py:293
 msgid "About"
-msgstr "Über"
-#
-# File: biglinux-config/biglinux-config/usr/share/biglinux/biglinux-config/ui/application.py, line: 263
-#: biglinux-config/usr/share/biglinux/biglinux-config/ui/application.py:296
+msgstr "Info"
+
+# File: biglinux-config/biglinux-config/usr/share/biglinux/biglinux-
+# config/ui/application.py, line: 263
+#: biglinux-config/usr/share/biglinux/biglinux-config/ui/application.py:299
 msgid "Menu"
 msgstr "Menü"
-#
-# File: biglinux-config/biglinux-config/usr/share/biglinux/biglinux-config/ui/application.py, line: 296
-#: biglinux-config/usr/share/biglinux/biglinux-config/ui/application.py:329
+
+# File: biglinux-config/biglinux-config/usr/share/biglinux/biglinux-
+# config/ui/application.py, line: 296
+#: biglinux-config/usr/share/biglinux/biglinux-config/ui/application.py:332
 msgid "Loading applications…"
 msgstr "Anwendungen werden geladen…"
-#
-# File: biglinux-config/biglinux-config/usr/share/biglinux/biglinux-config/ui/application.py, line: 313
-#: biglinux-config/usr/share/biglinux/biglinux-config/ui/application.py:350
-#: biglinux-config/usr/share/biglinux/biglinux-config/ui/backup_dialog.py:93
+
+# File: biglinux-config/biglinux-config/usr/share/biglinux/biglinux-
+# config/ui/application.py, line: 313
+#: biglinux-config/usr/share/biglinux/biglinux-config/ui/application.py:353
+#: biglinux-config/usr/share/biglinux/biglinux-config/ui/export_dialog.py:94
 msgid "Applications"
 msgstr "Anwendungen"
-#
+
 # #-#-#-#-#  biglinux-config.pot (biglinux-config)  #-#-#-#-#
 #
-# File: biglinux-config/biglinux-config/usr/share/biglinux/biglinux-config/ui/welcome_dialog.py, line: 118
-# File: biglinux-config/biglinux-config/usr/share/biglinux/biglinux-config/ui/backup_dialog.py, line: 43
-#: biglinux-config/usr/share/biglinux/biglinux-config/ui/backup_dialog.py:40
-#: biglinux-config/usr/share/biglinux/biglinux-config/ui/welcome_dialog.py:40
+# File: biglinux-config/biglinux-config/usr/share/biglinux/biglinux-
+# config/ui/welcome_dialog.py, line: 118
+# File: biglinux-config/biglinux-config/usr/share/biglinux/biglinux-
+# config/ui/backup_dialog.py, line: 43
+#: biglinux-config/usr/share/biglinux/biglinux-config/ui/export_dialog.py:41
+#: biglinux-config/usr/share/biglinux/biglinux-config/ui/metadata.py:34
 msgid "Export Settings"
-msgstr "Export-Einstellungen"
-#
-# File: biglinux-config/biglinux-config/usr/share/biglinux/biglinux-config/ui/backup_dialog.py, line: 66
-#: biglinux-config/usr/share/biglinux/biglinux-config/ui/backup_dialog.py:63
+msgstr "Einstellungen exportieren"
+
+# File: biglinux-config/biglinux-config/usr/share/biglinux/biglinux-
+# config/ui/backup_dialog.py, line: 66
+#: biglinux-config/usr/share/biglinux/biglinux-config/ui/export_dialog.py:64
 msgid ""
-"Select the applications whose settings you want to export. A .tar.gz archive "
-"will be created with the dotfiles."
+"Select the applications whose settings you want to export. Close these "
+"applications before exporting. A .tar.gz archive will be created with the "
+"dotfiles."
 msgstr ""
 "Wählen Sie die Anwendungen aus, deren Einstellungen Sie exportieren möchten. "
-"Es wird ein .tar.gz-Archiv mit den Dotfiles erstellt."
-#: biglinux-config/usr/share/biglinux/biglinux-config/ui/backup_dialog.py:74
+"Schließen Sie diese Anwendungen vor dem Export. Ein .tar.gz-Archiv mit den "
+"versteckten Konfigurationsdateien wird erstellt."
+
+#: biglinux-config/usr/share/biglinux/biglinux-config/ui/export_dialog.py:75
 msgid ""
 "This backup may contain private data (passwords, cookies, sessions). Keep it "
 "in a safe place."
 msgstr ""
-#: biglinux-config/usr/share/biglinux/biglinux-config/ui/backup_dialog.py:81
+"Diese Sicherung kann private Daten enthalten (Passwörter, Cookies, "
+"Sitzungen). Bewahren Sie sie an einem sicheren Ort auf."
+
+#: biglinux-config/usr/share/biglinux/biglinux-config/ui/export_dialog.py:82
 msgid "Include cache files"
-msgstr ""
-#: biglinux-config/usr/share/biglinux/biglinux-config/ui/backup_dialog.py:83
+msgstr "Cache-Dateien einbeziehen"
+
+#: biglinux-config/usr/share/biglinux/biglinux-config/ui/export_dialog.py:84
 msgid ""
 "Also back up cache directories. Makes the archive larger; usually not needed"
 msgstr ""
-#
-# File: biglinux-config/biglinux-config/usr/share/biglinux/biglinux-config/ui/backup_dialog.py, line: 82
-#: biglinux-config/usr/share/biglinux/biglinux-config/ui/backup_dialog.py:87
+"Auch Cache-Ordner sichern. Vergrößert das Archiv und ist in der Regel nicht "
+"erforderlich"
+
+# File: biglinux-config/biglinux-config/usr/share/biglinux/biglinux-
+# config/ui/backup_dialog.py, line: 82
+#: biglinux-config/usr/share/biglinux/biglinux-config/ui/export_dialog.py:88
 msgid "Options"
 msgstr "Optionen"
-#
-# File: biglinux-config/biglinux-config/usr/share/biglinux/biglinux-config/ui/backup_dialog.py, line: 89
-#: biglinux-config/usr/share/biglinux/biglinux-config/ui/backup_dialog.py:94
+
+# File: biglinux-config/biglinux-config/usr/share/biglinux/biglinux-
+# config/ui/backup_dialog.py, line: 89
+#: biglinux-config/usr/share/biglinux/biglinux-config/ui/export_dialog.py:95
 msgid "Select applications to export"
-msgstr "Wählen Sie Anwendungen zum Exportieren aus"
-#
-# File: biglinux-config/biglinux-config/usr/share/biglinux/biglinux-config/ui/backup_dialog.py, line: 93
-#: biglinux-config/usr/share/biglinux/biglinux-config/ui/backup_dialog.py:102
+msgstr "Anwendungen zum Exportieren auswählen"
+
+# File: biglinux-config/biglinux-config/usr/share/biglinux/biglinux-
+# config/ui/backup_dialog.py, line: 93
+#: biglinux-config/usr/share/biglinux/biglinux-config/ui/export_dialog.py:103
 msgid "Select or deselect all"
 msgstr "Alle auswählen oder abwählen"
-#
-# File: biglinux-config/biglinux-config/usr/share/biglinux/biglinux-config/ui/backup_dialog.py, line: 102
-#: biglinux-config/usr/share/biglinux/biglinux-config/ui/backup_dialog.py:111
+
+# File: biglinux-config/biglinux-config/usr/share/biglinux/biglinux-
+# config/ui/backup_dialog.py, line: 102
+#: biglinux-config/usr/share/biglinux/biglinux-config/ui/export_dialog.py:112
 msgid "Scanning applications…"
-msgstr "Scanne Anwendungen…"
-#
+msgstr "Anwendungen werden durchsucht…"
+
 # #-#-#-#-#  biglinux-config.pot (biglinux-config)  #-#-#-#-#
 #
-# File: biglinux-config/biglinux-config/usr/share/biglinux/biglinux-config/ui/restore_dialog.py, line: 182
-# File: biglinux-config/biglinux-config/usr/share/biglinux/biglinux-config/ui/restore_dialog.py, line: 236
-# File: biglinux-config/biglinux-config/usr/share/biglinux/biglinux-config/ui/backup_dialog.py, line: 158
-# File: biglinux-config/biglinux-config/usr/share/biglinux/biglinux-config/ui/backup_dialog.py, line: 465
-# File: biglinux-config/biglinux-config/usr/share/biglinux/biglinux-config/ui/backup_dialog.py, line: 503
-#: biglinux-config/usr/share/biglinux/biglinux-config/ui/backup_dialog.py:134
-#: biglinux-config/usr/share/biglinux/biglinux-config/ui/backup_dialog.py:301
-#: biglinux-config/usr/share/biglinux/biglinux-config/ui/backup_dialog.py:777
-#: biglinux-config/usr/share/biglinux/biglinux-config/ui/backup_dialog.py:837
-#: biglinux-config/usr/share/biglinux/biglinux-config/ui/backup_dialog.py:1005
-#: biglinux-config/usr/share/biglinux/biglinux-config/ui/restore_dialog.py:374
-#: biglinux-config/usr/share/biglinux/biglinux-config/ui/restore_dialog.py:410
-#: biglinux-config/usr/share/biglinux/biglinux-config/ui/restore_dialog.py:466
+# File: biglinux-config/biglinux-config/usr/share/biglinux/biglinux-
+# config/ui/restore_dialog.py, line: 182
+# File: biglinux-config/biglinux-config/usr/share/biglinux/biglinux-
+# config/ui/restore_dialog.py, line: 236
+# File: biglinux-config/biglinux-config/usr/share/biglinux/biglinux-
+# config/ui/backup_dialog.py, line: 158
+# File: biglinux-config/biglinux-config/usr/share/biglinux/biglinux-
+# config/ui/backup_dialog.py, line: 465
+# File: biglinux-config/biglinux-config/usr/share/biglinux/biglinux-
+# config/ui/backup_dialog.py, line: 503
+#: biglinux-config/usr/share/biglinux/biglinux-config/ui/export_dialog.py:135
+#: biglinux-config/usr/share/biglinux/biglinux-config/ui/export_dialog.py:335
+#: biglinux-config/usr/share/biglinux/biglinux-config/ui/import_dialog.py:298
+#: biglinux-config/usr/share/biglinux/biglinux-config/ui/import_dialog.py:338
+#: biglinux-config/usr/share/biglinux/biglinux-config/ui/operation_dialogs.py:162
+#: biglinux-config/usr/share/biglinux/biglinux-config/ui/restore_dialog.py:359
+#: biglinux-config/usr/share/biglinux/biglinux-config/ui/restore_dialog.py:395
 msgid "Cancel"
 msgstr "Abbrechen"
-#
-# File: biglinux-config/biglinux-config/usr/share/biglinux/biglinux-config/ui/backup_dialog.py, line: 162
-#: biglinux-config/usr/share/biglinux/biglinux-config/ui/backup_dialog.py:138
+
+# File: biglinux-config/biglinux-config/usr/share/biglinux/biglinux-
+# config/ui/backup_dialog.py, line: 162
+#: biglinux-config/usr/share/biglinux/biglinux-config/ui/export_dialog.py:139
 msgid "Export…"
 msgstr "Exportieren…"
-#
-# File: biglinux-config/biglinux-config/usr/share/biglinux/biglinux-config/ui/backup_dialog.py, line: 164
-#: biglinux-config/usr/share/biglinux/biglinux-config/ui/backup_dialog.py:141
+
+# File: biglinux-config/biglinux-config/usr/share/biglinux/biglinux-
+# config/ui/backup_dialog.py, line: 164
+#: biglinux-config/usr/share/biglinux/biglinux-config/ui/export_dialog.py:142
 msgid "Choose destination and export"
 msgstr "Ziel auswählen und exportieren"
-#
-# File: biglinux-config/biglinux-config/usr/share/biglinux/biglinux-config/ui/backup_dialog.py, line: 156
-#: biglinux-config/usr/share/biglinux/biglinux-config/ui/backup_dialog.py:165
+
+# File: biglinux-config/biglinux-config/usr/share/biglinux/biglinux-
+# config/ui/backup_dialog.py, line: 156
+#: biglinux-config/usr/share/biglinux/biglinux-config/ui/export_dialog.py:173
 #, python-format
 msgid "Scanning: %s"
-msgstr "Scannen: %s"
-#
-# File: biglinux-config/biglinux-config/usr/share/biglinux/biglinux-config/ui/backup_dialog.py, line: 88
-#: biglinux-config/usr/share/biglinux/biglinux-config/ui/backup_dialog.py:171
+msgstr "Durchsuchen: %s"
+
+# File: biglinux-config/biglinux-config/usr/share/biglinux/biglinux-
+# config/ui/backup_dialog.py, line: 88
+#: biglinux-config/usr/share/biglinux/biglinux-config/ui/export_dialog.py:181
 #, python-format
 msgid "Applications (%d available)"
 msgstr "Anwendungen (%d verfügbar)"
-#: biglinux-config/usr/share/biglinux/biglinux-config/ui/backup_dialog.py:191
+
+#: biglinux-config/usr/share/biglinux/biglinux-config/ui/export_dialog.py:202
 msgid "May contain private data"
-msgstr ""
-#
-# File: biglinux-config/biglinux-config/usr/share/biglinux/biglinux-config/ui/backup_dialog.py, line: 126
-# File: biglinux-config/biglinux-config/usr/share/biglinux/biglinux-config/ui/backup_dialog.py, line: 434
-#: biglinux-config/usr/share/biglinux/biglinux-config/ui/backup_dialog.py:196
-#: biglinux-config/usr/share/biglinux/biglinux-config/ui/backup_dialog.py:724
+msgstr "Kann private Daten enthalten"
+
+# File: biglinux-config/biglinux-config/usr/share/biglinux/biglinux-
+# config/ui/backup_dialog.py, line: 126
+# File: biglinux-config/biglinux-config/usr/share/biglinux/biglinux-
+# config/ui/backup_dialog.py, line: 434
+#: biglinux-config/usr/share/biglinux/biglinux-config/ui/export_dialog.py:207
+#: biglinux-config/usr/share/biglinux/biglinux-config/ui/import_dialog.py:240
 #, python-format
 msgid "Include %s"
-msgstr "Inklusive %s"
-#
-# File: biglinux-config/biglinux-config/usr/share/biglinux/biglinux-config/ui/backup_dialog.py, line: 190
-#: biglinux-config/usr/share/biglinux/biglinux-config/ui/backup_dialog.py:251
+msgstr "%s einbeziehen"
+
+# File: biglinux-config/biglinux-config/usr/share/biglinux/biglinux-
+# config/ui/backup_dialog.py, line: 190
+#: biglinux-config/usr/share/biglinux/biglinux-config/ui/export_dialog.py:247
 msgid "Save backup as"
-msgstr "Sichern Sie das Backup als"
-#
-# File: biglinux-config/biglinux-config/usr/share/biglinux/biglinux-config/ui/backup_dialog.py, line: 199
-#: biglinux-config/usr/share/biglinux/biglinux-config/ui/backup_dialog.py:260
-#: biglinux-config/usr/share/biglinux/biglinux-config/ui/backup_dialog.py:977
-msgid "Compressed archives (*.tar.gz)"
-msgstr "Komprimierte Archive (*.tar.gz)"
-#
-# File: biglinux-config/biglinux-config/usr/share/biglinux/biglinux-config/ui/backup_dialog.py, line: 823
-#: biglinux-config/usr/share/biglinux/biglinux-config/ui/backup_dialog.py:330
-msgid "Preparing…"
-msgstr "Vorbereiten…"
-#: biglinux-config/usr/share/biglinux/biglinux-config/ui/backup_dialog.py:383
+msgstr "Sicherung speichern unter"
+
+#: biglinux-config/usr/share/biglinux/biglinux-config/ui/export_dialog.py:254
+#, python-format
+msgid "Could not scan applications: %s"
+msgstr "Anwendungen konnten nicht durchsucht werden: %s"
+
+#: biglinux-config/usr/share/biglinux/biglinux-config/ui/export_dialog.py:287
 #, python-format
 msgid "Exporting settings for %d application…"
 msgid_plural "Exporting settings for %d applications…"
-msgstr[0] ""
-msgstr[1] ""
-#
-# File: biglinux-config/biglinux-config/usr/share/biglinux/biglinux-config/ui/backup_dialog.py, line: 281
-#: biglinux-config/usr/share/biglinux/biglinux-config/ui/backup_dialog.py:438
+msgstr[0] "Einstellungen für %d Anwendung werden exportiert…"
+msgstr[1] "Einstellungen für %d Anwendungen werden exportiert…"
+
+# File: biglinux-config/biglinux-config/usr/share/biglinux/biglinux-
+# config/ui/backup_dialog.py, line: 376
+#: biglinux-config/usr/share/biglinux/biglinux-config/ui/export_dialog.py:309
+#, python-format
+msgid "%d application exported (%s)"
+msgid_plural "%d applications exported (%s)"
+msgstr[0] "%d Anwendung exportiert (%s)"
+msgstr[1] "%d Anwendungen exportiert (%s)"
+
+# File: biglinux-config/biglinux-config/usr/share/biglinux/biglinux-
+# config/ui/backup_dialog.py, line: 281
+#: biglinux-config/usr/share/biglinux/biglinux-config/ui/export_dialog.py:313
 msgid "Backup created!"
 msgstr "Sicherung erstellt!"
+
+# #-#-#-#-#  biglinux-config.pot (biglinux-config)  #-#-#-#-#
 #
-# File: biglinux-config/biglinux-config/usr/share/biglinux/biglinux-config/ui/backup_dialog.py, line: 376
-#: biglinux-config/usr/share/biglinux/biglinux-config/ui/backup_dialog.py:444
-#, python-format
-msgid "%d applications exported (%s)"
-msgstr "%d Anwendungen exportiert (%s)"
-#
-# File: biglinux-config/biglinux-config/usr/share/biglinux/biglinux-config/ui/backup_dialog.py, line: 386
-#: biglinux-config/usr/share/biglinux/biglinux-config/ui/backup_dialog.py:454
-msgid "Saved to:"
-msgstr "Gespeichert in:"
+# File: biglinux-config/biglinux-config/usr/share/biglinux/biglinux-
+# config/ui/backup_dialog.py, line: 418
+# File: biglinux-config/biglinux-config/usr/share/biglinux/biglinux-
+# config/ui/backup_dialog.py, line: 928
+# File: biglinux-config/biglinux-config/usr/share/biglinux/biglinux-
+# config/ui/backup_dialog.py, line: 956
+# File: biglinux-config/biglinux-config/usr/share/biglinux/biglinux-
+# config/ui/restore_dialog.py, line: 671
 #
 # #-#-#-#-#  biglinux-config.pot (biglinux-config)  #-#-#-#-#
 #
-# File: biglinux-config/biglinux-config/usr/share/biglinux/biglinux-config/ui/backup_dialog.py, line: 404
-# File: biglinux-config/biglinux-config/usr/share/biglinux/biglinux-config/ui/restore_dialog.py, line: 276
-#: biglinux-config/usr/share/biglinux/biglinux-config/ui/backup_dialog.py:472
-#: biglinux-config/usr/share/biglinux/biglinux-config/ui/restore_dialog.py:321
-msgid "Open in file manager"
-msgstr "Im Dateimanager öffnen"
-#: biglinux-config/usr/share/biglinux/biglinux-config/ui/backup_dialog.py:486
-#: biglinux-config/usr/share/biglinux/biglinux-config/ui/backup_dialog.py:928
-#: biglinux-config/usr/share/biglinux/biglinux-config/ui/backup_dialog.py:956
-#: biglinux-config/usr/share/biglinux/biglinux-config/ui/restore_dialog.py:618
-msgid "OK"
-msgstr ""
+# File: biglinux-config/biglinux-config/usr/share/biglinux/biglinux-
+# config/ui/backup_dialog.py, line: 418
+# File: biglinux-config/biglinux-config/usr/share/biglinux/biglinux-
+# config/ui/backup_dialog.py, line: 928
+# File: biglinux-config/biglinux-config/usr/share/biglinux/biglinux-
+# config/ui/backup_dialog.py, line: 956
+# File: biglinux-config/biglinux-config/usr/share/biglinux/biglinux-
+# config/ui/restore_dialog.py, line: 671
 #
 # #-#-#-#-#  biglinux-config.pot (biglinux-config)  #-#-#-#-#
 #
-# File: biglinux-config/biglinux-config/usr/share/biglinux/biglinux-config/ui/backup_dialog.py, line: 418
-# File: biglinux-config/biglinux-config/usr/share/biglinux/biglinux-config/ui/backup_dialog.py, line: 928
-# File: biglinux-config/biglinux-config/usr/share/biglinux/biglinux-config/ui/backup_dialog.py, line: 956
-# File: biglinux-config/biglinux-config/usr/share/biglinux/biglinux-config/ui/restore_dialog.py, line: 671
+# File: biglinux-config/biglinux-config/usr/share/biglinux/biglinux-
+# config/ui/backup_dialog.py, line: 418
+# File: biglinux-config/biglinux-config/usr/share/biglinux/biglinux-
+# config/ui/backup_dialog.py, line: 928
+# File: biglinux-config/biglinux-config/usr/share/biglinux/biglinux-
+# config/ui/backup_dialog.py, line: 956
+# File: biglinux-config/biglinux-config/usr/share/biglinux/biglinux-
+# config/ui/restore_dialog.py, line: 664
 #
 # #-#-#-#-#  biglinux-config.pot (biglinux-config)  #-#-#-#-#
 #
-# File: biglinux-config/biglinux-config/usr/share/biglinux/biglinux-config/ui/backup_dialog.py, line: 418
-# File: biglinux-config/biglinux-config/usr/share/biglinux/biglinux-config/ui/backup_dialog.py, line: 928
-# File: biglinux-config/biglinux-config/usr/share/biglinux/biglinux-config/ui/backup_dialog.py, line: 956
-# File: biglinux-config/biglinux-config/usr/share/biglinux/biglinux-config/ui/restore_dialog.py, line: 671
+# File: biglinux-config/biglinux-config/usr/share/biglinux/biglinux-
+# config/ui/backup_dialog.py, line: 418
+# File: biglinux-config/biglinux-config/usr/share/biglinux/biglinux-
+# config/ui/backup_dialog.py, line: 928
+# File: biglinux-config/biglinux-config/usr/share/biglinux/biglinux-
+# config/ui/backup_dialog.py, line: 956
+# File: biglinux-config/biglinux-config/usr/share/biglinux/biglinux-
+# config/ui/restore_dialog.py, line: 664
 #
 # #-#-#-#-#  biglinux-config.pot (biglinux-config)  #-#-#-#-#
 #
-# File: biglinux-config/biglinux-config/usr/share/biglinux/biglinux-config/ui/backup_dialog.py, line: 418
-# File: biglinux-config/biglinux-config/usr/share/biglinux/biglinux-config/ui/backup_dialog.py, line: 928
-# File: biglinux-config/biglinux-config/usr/share/biglinux/biglinux-config/ui/backup_dialog.py, line: 956
-# File: biglinux-config/biglinux-config/usr/share/biglinux/biglinux-config/ui/restore_dialog.py, line: 664
+# File: biglinux-config/biglinux-config/usr/share/biglinux/biglinux-
+# config/ui/backup_dialog.py, line: 418
+# File: biglinux-config/biglinux-config/usr/share/biglinux/biglinux-
+# config/ui/backup_dialog.py, line: 928
+# File: biglinux-config/biglinux-config/usr/share/biglinux/biglinux-
+# config/ui/backup_dialog.py, line: 956
+# File: biglinux-config/biglinux-config/usr/share/biglinux/biglinux-
+# config/ui/restore_dialog.py, line: 664
 #
 # #-#-#-#-#  biglinux-config.pot (biglinux-config)  #-#-#-#-#
 #
-# File: biglinux-config/biglinux-config/usr/share/biglinux/biglinux-config/ui/backup_dialog.py, line: 418
-# File: biglinux-config/biglinux-config/usr/share/biglinux/biglinux-config/ui/backup_dialog.py, line: 928
-# File: biglinux-config/biglinux-config/usr/share/biglinux/biglinux-config/ui/backup_dialog.py, line: 956
-# File: biglinux-config/biglinux-config/usr/share/biglinux/biglinux-config/ui/restore_dialog.py, line: 664
+# File: biglinux-config/biglinux-config/usr/share/biglinux/biglinux-
+# config/ui/backup_dialog.py, line: 418
+# File: biglinux-config/biglinux-config/usr/share/biglinux/biglinux-
+# config/ui/backup_dialog.py, line: 928
+# File: biglinux-config/biglinux-config/usr/share/biglinux/biglinux-
+# config/ui/backup_dialog.py, line: 956
+# File: biglinux-config/biglinux-config/usr/share/biglinux/biglinux-
+# config/ui/restore_dialog.py, line: 664
 #
 # #-#-#-#-#  biglinux-config.pot (biglinux-config)  #-#-#-#-#
 #
-# File: biglinux-config/biglinux-config/usr/share/biglinux/biglinux-config/ui/backup_dialog.py, line: 418
-# File: biglinux-config/biglinux-config/usr/share/biglinux/biglinux-config/ui/backup_dialog.py, line: 928
-# File: biglinux-config/biglinux-config/usr/share/biglinux/biglinux-config/ui/backup_dialog.py, line: 956
-# File: biglinux-config/biglinux-config/usr/share/biglinux/biglinux-config/ui/restore_dialog.py, line: 664
+# File: biglinux-config/biglinux-config/usr/share/biglinux/biglinux-
+# config/ui/backup_dialog.py, line: 418
+# File: biglinux-config/biglinux-config/usr/share/biglinux/biglinux-
+# config/ui/backup_dialog.py, line: 928
+# File: biglinux-config/biglinux-config/usr/share/biglinux/biglinux-
+# config/ui/backup_dialog.py, line: 956
+# File: biglinux-config/biglinux-config/usr/share/biglinux/biglinux-
+# config/ui/restore_dialog.py, line: 664
 #
 # #-#-#-#-#  biglinux-config.pot (biglinux-config)  #-#-#-#-#
 #
-# File: biglinux-config/biglinux-config/usr/share/biglinux/biglinux-config/ui/backup_dialog.py, line: 418
-# File: biglinux-config/biglinux-config/usr/share/biglinux/biglinux-config/ui/backup_dialog.py, line: 928
-# File: biglinux-config/biglinux-config/usr/share/biglinux/biglinux-config/ui/backup_dialog.py, line: 956
-# File: biglinux-config/biglinux-config/usr/share/biglinux/biglinux-config/ui/restore_dialog.py, line: 664
+# File: biglinux-config/biglinux-config/usr/share/biglinux/biglinux-
+# config/ui/backup_dialog.py, line: 418
+# File: biglinux-config/biglinux-config/usr/share/biglinux/biglinux-
+# config/ui/backup_dialog.py, line: 928
+# File: biglinux-config/biglinux-config/usr/share/biglinux/biglinux-
+# config/ui/backup_dialog.py, line: 956
+# File: biglinux-config/biglinux-config/usr/share/biglinux/biglinux-
+# config/ui/restore_dialog.py, line: 664
 #
-# #-#-#-#-#  biglinux-config.pot (biglinux-config)  #-#-#-#-#
-#
-# File: biglinux-config/biglinux-config/usr/share/biglinux/biglinux-config/ui/backup_dialog.py, line: 418
-# File: biglinux-config/biglinux-config/usr/share/biglinux/biglinux-config/ui/backup_dialog.py, line: 928
-# File: biglinux-config/biglinux-config/usr/share/biglinux/biglinux-config/ui/backup_dialog.py, line: 956
-# File: biglinux-config/biglinux-config/usr/share/biglinux/biglinux-config/ui/restore_dialog.py, line: 664
-#
-# #-#-#-#-#  biglinux-config.pot (biglinux-config)  #-#-#-#-#
-#
-# File: biglinux-config/biglinux-config/usr/share/biglinux/biglinux-config/ui/backup_dialog.py, line: 418
-# File: biglinux-config/biglinux-config/usr/share/biglinux/biglinux-config/ui/backup_dialog.py, line: 928
-# File: biglinux-config/biglinux-config/usr/share/biglinux/biglinux-config/ui/backup_dialog.py, line: 956
-# File: biglinux-config/biglinux-config/usr/share/biglinux/biglinux-config/ui/restore_dialog.py, line: 664
-#
-# File: biglinux-config/biglinux-config/usr/share/biglinux/biglinux-config/ui/backup_dialog.py, line: 296
-#: biglinux-config/usr/share/biglinux/biglinux-config/ui/backup_dialog.py:500
+# File: biglinux-config/biglinux-config/usr/share/biglinux/biglinux-
+# config/ui/backup_dialog.py, line: 296
+#: biglinux-config/usr/share/biglinux/biglinux-config/ui/export_dialog.py:316
 msgid "Export error"
 msgstr "Exportfehler"
-#
-# File: biglinux-config/biglinux-config/usr/share/biglinux/biglinux-config/ui/backup_dialog.py, line: 298
-#: biglinux-config/usr/share/biglinux/biglinux-config/ui/backup_dialog.py:501
+
+# File: biglinux-config/biglinux-config/usr/share/biglinux/biglinux-
+# config/ui/backup_dialog.py, line: 298
+#: biglinux-config/usr/share/biglinux/biglinux-config/ui/export_dialog.py:317
 #, python-format
 msgid ""
 "An error occurred while creating the backup:\n"
 "%s"
-msgstr "Beim Erstellen des Backups ist ein Fehler aufgetreten: %s"
-#
-# #-#-#-#-#  biglinux-config.pot (biglinux-config)  #-#-#-#-#
-#
-# File: biglinux-config/biglinux-config/usr/share/biglinux/biglinux-config/ui/restore_dialog.py, line: 399
-# File: biglinux-config/biglinux-config/usr/share/biglinux/biglinux-config/ui/restore_dialog.py, line: 432
-# File: biglinux-config/biglinux-config/usr/share/biglinux/biglinux-config/ui/backup_dialog.py, line: 300
-# File: biglinux-config/biglinux-config/usr/share/biglinux/biglinux-config/ui/backup_dialog.py, line: 597
-#: biglinux-config/usr/share/biglinux/biglinux-config/ui/backup_dialog.py:503
-#: biglinux-config/usr/share/biglinux/biglinux-config/ui/backup_dialog.py:945
-#: biglinux-config/usr/share/biglinux/biglinux-config/ui/restore_dialog.py:220
-#: biglinux-config/usr/share/biglinux/biglinux-config/ui/restore_dialog.py:609
-#: biglinux-config/usr/share/biglinux/biglinux-config/ui/restore_dialog.py:642
-msgid "Close"
-msgstr "Schließen"
-#
-# File: biglinux-config/biglinux-config/usr/share/biglinux/biglinux-config/ui/backup_dialog.py, line: 320
-#: biglinux-config/usr/share/biglinux/biglinux-config/ui/backup_dialog.py:516
-msgid "Open backup file"
-msgstr "Backup-Datei öffnen"
-#
-# File: biglinux-config/biglinux-config/usr/share/biglinux/biglinux-config/ui/backup_dialog.py, line: 323
-#: biglinux-config/usr/share/biglinux/biglinux-config/ui/backup_dialog.py:519
-#: biglinux-config/usr/share/biglinux/biglinux-config/ui/backup_dialog.py:1022
-msgid "BigLinux backups (*.tar.gz)"
-msgstr "BigLinux Sicherungen (*.tar.gz)"
-#
-# #-#-#-#-#  biglinux-config.pot (biglinux-config)  #-#-#-#-#
-#
-# File: biglinux-config/biglinux-config/usr/share/biglinux/biglinux-config/ui/welcome_dialog.py, line: 141
-# File: biglinux-config/biglinux-config/usr/share/biglinux/biglinux-config/ui/backup_dialog.py, line: 362
-#: biglinux-config/usr/share/biglinux/biglinux-config/ui/backup_dialog.py:548
-#: biglinux-config/usr/share/biglinux/biglinux-config/ui/welcome_dialog.py:45
-msgid "Import Settings"
-msgstr "Importiereinstellungen"
-#
-# File: biglinux-config/biglinux-config/usr/share/biglinux/biglinux-config/ui/backup_dialog.py, line: 499
-#: biglinux-config/usr/share/biglinux/biglinux-config/ui/backup_dialog.py:567
-msgid "Reading backup…"
-msgstr "Backup wird gelesen…"
-#
-# File: biglinux-config/biglinux-config/usr/share/biglinux/biglinux-config/ui/backup_dialog.py, line: 353
-#: biglinux-config/usr/share/biglinux/biglinux-config/ui/backup_dialog.py:616
-msgid "This file is not a valid BigLinux backup archive."
-msgstr "Diese Datei ist kein gültiges BigLinux-Backup-Archiv."
-#
-# File: biglinux-config/biglinux-config/usr/share/biglinux/biglinux-config/ui/backup_dialog.py, line: 358
-#: biglinux-config/usr/share/biglinux/biglinux-config/ui/backup_dialog.py:622
-msgid "The backup archive contains no application settings."
-msgstr "Das Backup-Archiv enthält keine Anwendungseinstellungen."
-#
-# File: biglinux-config/biglinux-config/usr/share/biglinux/biglinux-config/ui/backup_dialog.py, line: 589
-#: biglinux-config/usr/share/biglinux/biglinux-config/ui/backup_dialog.py:657
-#, python-format
-msgid "Host: %s"
-msgstr "Host: %s"
-#
-# File: biglinux-config/biglinux-config/usr/share/biglinux/biglinux-config/ui/backup_dialog.py, line: 595
-#: biglinux-config/usr/share/biglinux/biglinux-config/ui/backup_dialog.py:663
-#, python-format
-msgid "Full directories: %s"
-msgstr "Vollständige Verzeichnisse: %s"
-#
-# File: biglinux-config/biglinux-config/usr/share/biglinux/biglinux-config/ui/backup_dialog.py, line: 390
-#: biglinux-config/usr/share/biglinux/biglinux-config/ui/backup_dialog.py:663
-msgid "Yes"
-msgstr "Ja"
-#
-# File: biglinux-config/biglinux-config/usr/share/biglinux/biglinux-config/ui/backup_dialog.py, line: 390
-#: biglinux-config/usr/share/biglinux/biglinux-config/ui/backup_dialog.py:663
-msgid "No"
-msgstr "Nein"
-#
-# File: biglinux-config/biglinux-config/usr/share/biglinux/biglinux-config/ui/backup_dialog.py, line: 400
-#: biglinux-config/usr/share/biglinux/biglinux-config/ui/backup_dialog.py:691
-msgid "Importing will overwrite existing settings for selected applications."
 msgstr ""
-"Der Import überschreibt die vorhandenen Einstellungen für die ausgewählten "
-"Anwendungen."
-#
-# File: biglinux-config/biglinux-config/usr/share/biglinux/biglinux-config/ui/backup_dialog.py, line: 407
-#: biglinux-config/usr/share/biglinux/biglinux-config/ui/backup_dialog.py:704
-#, python-format
-msgid "Applications in backup (%d)"
-msgstr "Anwendungen in der Sicherung (%d)"
-#
-# File: biglinux-config/biglinux-config/usr/share/biglinux/biglinux-config/ui/backup_dialog.py, line: 641
-#: biglinux-config/usr/share/biglinux/biglinux-config/ui/backup_dialog.py:709
-msgid "Select/deselect all"
-msgstr "Alle auswählen/abwählen"
-#
-# File: biglinux-config/biglinux-config/usr/share/biglinux/biglinux-config/ui/backup_dialog.py, line: 469
-# File: biglinux-config/biglinux-config/usr/share/biglinux/biglinux-config/ui/backup_dialog.py, line: 504
-#: biglinux-config/usr/share/biglinux/biglinux-config/ui/backup_dialog.py:781
-#: biglinux-config/usr/share/biglinux/biglinux-config/ui/backup_dialog.py:838
-msgid "Import"
-msgstr "Importieren"
-#
-# File: biglinux-config/biglinux-config/usr/share/biglinux/biglinux-config/ui/backup_dialog.py, line: 471
-#: biglinux-config/usr/share/biglinux/biglinux-config/ui/backup_dialog.py:783
-msgid "Import selected settings"
-msgstr "Ausgewählte Einstellungen importieren"
-#
-# File: biglinux-config/biglinux-config/usr/share/biglinux/biglinux-config/ui/backup_dialog.py, line: 496
-#: biglinux-config/usr/share/biglinux/biglinux-config/ui/backup_dialog.py:830
-msgid "Import settings?"
-msgstr "Importiereinstellungen?"
-#
-# File: biglinux-config/biglinux-config/usr/share/biglinux/biglinux-config/ui/backup_dialog.py, line: 498
-#: biglinux-config/usr/share/biglinux/biglinux-config/ui/backup_dialog.py:832
-#, python-format
-msgid ""
-"Existing settings for %d selected applications will be overwritten.\n"
-"\n"
-"This action cannot be undone."
-msgstr ""
-"Vorhandene Einstellungen für %d ausgewählte Anwendungen werden "
-"überschrieben.\n"
-"\n"
-"Diese Aktion kann nicht rückgängig gemacht werden."
-#
-# File: biglinux-config/biglinux-config/usr/share/biglinux/biglinux-config/ui/backup_dialog.py, line: 537
-#: biglinux-config/usr/share/biglinux/biglinux-config/ui/backup_dialog.py:857
-msgid "Importing settings from backup…"
-msgstr "Einstellungen aus der Sicherung importieren…"
-#
-# File: biglinux-config/biglinux-config/usr/share/biglinux/biglinux-config/ui/backup_dialog.py, line: 573
-#: biglinux-config/usr/share/biglinux/biglinux-config/ui/backup_dialog.py:908
-msgid "Settings imported!"
-msgstr "Einstellungen importiert!"
-#
-# File: biglinux-config/biglinux-config/usr/share/biglinux/biglinux-config/ui/backup_dialog.py, line: 575
-#: biglinux-config/usr/share/biglinux/biglinux-config/ui/backup_dialog.py:913
-#, python-format
-msgid "%d applications restored."
-msgstr "%d Anwendungen wiederhergestellt."
-#
-# File: biglinux-config/biglinux-config/usr/share/biglinux/biglinux-config/ui/backup_dialog.py, line: 580
-#: biglinux-config/usr/share/biglinux/biglinux-config/ui/backup_dialog.py:918
-#, python-format
-msgid "Skipped: %s"
-msgstr "Übersprungen: %s"
-#
-# File: biglinux-config/biglinux-config/usr/share/biglinux/biglinux-config/ui/backup_dialog.py, line: 593
-#: biglinux-config/usr/share/biglinux/biglinux-config/ui/backup_dialog.py:942
-msgid "Import error"
-msgstr "Importfehler"
-#
-# File: biglinux-config/biglinux-config/usr/share/biglinux/biglinux-config/ui/backup_dialog.py, line: 595
-#: biglinux-config/usr/share/biglinux/biglinux-config/ui/backup_dialog.py:943
-#, python-format
-msgid ""
-"An error occurred while importing settings:\n"
+"Beim Erstellen der Sicherung ist ein Fehler aufgetreten:\n"
 "%s"
-msgstr "Beim Importieren der Einstellungen ist ein Fehler aufgetreten: %s"
-#
-# File: biglinux-config/biglinux-config/usr/share/biglinux/biglinux-config/ui/backup_dialog.py, line: 613
-#: biglinux-config/usr/share/biglinux/biglinux-config/ui/backup_dialog.py:954
-msgid "Invalid backup"
-msgstr "Ungültige Sicherung"
-#: biglinux-config/usr/share/biglinux/biglinux-config/ui/backup_dialog.py:969
+
+#: biglinux-config/usr/share/biglinux/biglinux-config/ui/export_dialog.py:325
 #, python-format
 msgid "Export %s settings"
-msgstr ""
-#: biglinux-config/usr/share/biglinux/biglinux-config/ui/backup_dialog.py:1000
+msgstr "Einstellungen von %s exportieren"
+
+#: biglinux-config/usr/share/biglinux/biglinux-config/ui/export_dialog.py:330
 msgid "This backup may contain private data"
-msgstr ""
-#: biglinux-config/usr/share/biglinux/biglinux-config/ui/backup_dialog.py:1002
+msgstr "Diese Sicherung kann private Daten enthalten"
+
+#: biglinux-config/usr/share/biglinux/biglinux-config/ui/export_dialog.py:332
 #, python-format
 msgid ""
 "Settings for %s can include passwords, cookies or session tokens. Store the "
 "backup file in a safe place."
 msgstr ""
-#: biglinux-config/usr/share/biglinux/biglinux-config/ui/backup_dialog.py:1006
+"Die Einstellungen von %s können Passwörter, Cookies oder Sitzungstoken "
+"enthalten. Bewahren Sie die Sicherungsdatei an einem sicheren Ort auf."
+
+#: biglinux-config/usr/share/biglinux/biglinux-config/ui/export_dialog.py:336
 msgid "Continue"
+msgstr "Fortfahren"
+
+# File: biglinux-config/biglinux-config/usr/share/biglinux/biglinux-
+# config/ui/backup_dialog.py, line: 320
+#: biglinux-config/usr/share/biglinux/biglinux-config/ui/import_dialog.py:44
+msgid "Open backup file"
+msgstr "Sicherungsdatei öffnen"
+
+# #-#-#-#-#  biglinux-config.pot (biglinux-config)  #-#-#-#-#
+#
+# File: biglinux-config/biglinux-config/usr/share/biglinux/biglinux-
+# config/ui/welcome_dialog.py, line: 141
+# File: biglinux-config/biglinux-config/usr/share/biglinux/biglinux-
+# config/ui/backup_dialog.py, line: 362
+#: biglinux-config/usr/share/biglinux/biglinux-config/ui/import_dialog.py:54
+#: biglinux-config/usr/share/biglinux/biglinux-config/ui/metadata.py:39
+msgid "Import Settings"
+msgstr "Einstellungen importieren"
+
+# File: biglinux-config/biglinux-config/usr/share/biglinux/biglinux-
+# config/ui/backup_dialog.py, line: 499
+#: biglinux-config/usr/share/biglinux/biglinux-config/ui/import_dialog.py:73
+msgid "Reading backup…"
+msgstr "Sicherung wird gelesen…"
+
+# File: biglinux-config/biglinux-config/usr/share/biglinux/biglinux-
+# config/ui/backup_dialog.py, line: 353
+#: biglinux-config/usr/share/biglinux/biglinux-config/ui/import_dialog.py:129
+msgid "This file is not a valid BigLinux backup archive."
+msgstr "Diese Datei ist kein gültiges BigLinux-Sicherungsarchiv."
+
+# File: biglinux-config/biglinux-config/usr/share/biglinux/biglinux-
+# config/ui/backup_dialog.py, line: 358
+#: biglinux-config/usr/share/biglinux/biglinux-config/ui/import_dialog.py:135
+msgid "The backup archive contains no application settings."
+msgstr "Das Sicherungsarchiv enthält keine Anwendungseinstellungen."
+
+# File: biglinux-config/biglinux-config/usr/share/biglinux/biglinux-
+# config/ui/backup_dialog.py, line: 589
+#: biglinux-config/usr/share/biglinux/biglinux-config/ui/import_dialog.py:174
+#, python-format
+msgid "Host: %s"
+msgstr "Rechner: %s"
+
+#: biglinux-config/usr/share/biglinux/biglinux-config/ui/import_dialog.py:180
+#, python-format
+msgid "Cache files included: %s"
+msgstr "Cache-Dateien enthalten: %s"
+
+# File: biglinux-config/biglinux-config/usr/share/biglinux/biglinux-
+# config/ui/backup_dialog.py, line: 390
+#: biglinux-config/usr/share/biglinux/biglinux-config/ui/import_dialog.py:180
+msgid "No"
+msgstr "Nein"
+
+# File: biglinux-config/biglinux-config/usr/share/biglinux/biglinux-
+# config/ui/backup_dialog.py, line: 390
+#: biglinux-config/usr/share/biglinux/biglinux-config/ui/import_dialog.py:180
+msgid "Yes"
+msgstr "Ja"
+
+# File: biglinux-config/biglinux-config/usr/share/biglinux/biglinux-
+# config/ui/backup_dialog.py, line: 400
+#: biglinux-config/usr/share/biglinux/biglinux-config/ui/import_dialog.py:206
+msgid "Importing will overwrite existing settings for selected applications."
 msgstr ""
-#: biglinux-config/usr/share/biglinux/biglinux-config/ui/backup_dialog.py:1019
+"Beim Import werden die vorhandenen Einstellungen der ausgewählten "
+"Anwendungen überschrieben."
+
+# File: biglinux-config/biglinux-config/usr/share/biglinux/biglinux-
+# config/ui/backup_dialog.py, line: 407
+#: biglinux-config/usr/share/biglinux/biglinux-config/ui/import_dialog.py:219
+#, python-format
+msgid "Applications in backup (%d)"
+msgstr "Anwendungen in der Sicherung (%d)"
+
+# File: biglinux-config/biglinux-config/usr/share/biglinux/biglinux-
+# config/ui/backup_dialog.py, line: 641
+#: biglinux-config/usr/share/biglinux/biglinux-config/ui/import_dialog.py:224
+msgid "Select/deselect all"
+msgstr "Alle auswählen/abwählen"
+
+# File: biglinux-config/biglinux-config/usr/share/biglinux/biglinux-
+# config/ui/backup_dialog.py, line: 469
+# File: biglinux-config/biglinux-config/usr/share/biglinux/biglinux-
+# config/ui/backup_dialog.py, line: 504
+#: biglinux-config/usr/share/biglinux/biglinux-config/ui/import_dialog.py:302
+#: biglinux-config/usr/share/biglinux/biglinux-config/ui/import_dialog.py:339
+msgid "Import"
+msgstr "Importieren"
+
+# File: biglinux-config/biglinux-config/usr/share/biglinux/biglinux-
+# config/ui/backup_dialog.py, line: 471
+#: biglinux-config/usr/share/biglinux/biglinux-config/ui/import_dialog.py:305
+msgid "Import selected settings"
+msgstr "Ausgewählte Einstellungen importieren"
+
+# File: biglinux-config/biglinux-config/usr/share/biglinux/biglinux-
+# config/ui/backup_dialog.py, line: 496
+#: biglinux-config/usr/share/biglinux/biglinux-config/ui/import_dialog.py:330
+msgid "Import settings?"
+msgstr "Einstellungen importieren?"
+
+#: biglinux-config/usr/share/biglinux/biglinux-config/ui/import_dialog.py:331
+#, python-format
+msgid ""
+"The existing settings for the selected applications (%d) will be "
+"overwritten.\n"
+"\n"
+"Close those applications first and create a backup of the current settings. "
+"Import only backups you trust: integrity checks do not authenticate the "
+"sender."
+msgstr ""
+"Die vorhandenen Einstellungen der ausgewählten Anwendungen (%d) werden "
+"überschrieben.\n"
+"\n"
+"Schließen Sie diese Anwendungen zuerst und erstellen Sie eine Sicherung der "
+"aktuellen Einstellungen. Importieren Sie nur Sicherungen, denen Sie "
+"vertrauen: Integritätsprüfungen bestätigen nicht die Identität des Absenders."
+
+#: biglinux-config/usr/share/biglinux/biglinux-config/ui/import_dialog.py:335
+msgid "Legacy backup: no checksums are available to verify file contents."
+msgstr ""
+"Sicherung im alten Format: Es sind keine Prüfsummen verfügbar, um die "
+"Dateiinhalte zu überprüfen."
+
+# File: biglinux-config/biglinux-config/usr/share/biglinux/biglinux-
+# config/ui/backup_dialog.py, line: 537
+#: biglinux-config/usr/share/biglinux/biglinux-config/ui/import_dialog.py:358
+msgid "Importing settings from backup…"
+msgstr "Einstellungen werden aus der Sicherung importiert…"
+
+# File: biglinux-config/biglinux-config/usr/share/biglinux/biglinux-
+# config/ui/backup_dialog.py, line: 575
+#: biglinux-config/usr/share/biglinux/biglinux-config/ui/import_dialog.py:377
+#, python-format
+msgid "%d application restored."
+msgid_plural "%d applications restored."
+msgstr[0] "%d Anwendung wiederhergestellt."
+msgstr[1] "%d Anwendungen wiederhergestellt."
+
+# File: biglinux-config/biglinux-config/usr/share/biglinux/biglinux-
+# config/ui/backup_dialog.py, line: 580
+#: biglinux-config/usr/share/biglinux/biglinux-config/ui/import_dialog.py:383
+#, python-format
+msgid "Skipped: %s"
+msgstr "Übersprungen: %s"
+
+# File: biglinux-config/biglinux-config/usr/share/biglinux/biglinux-
+# config/ui/backup_dialog.py, line: 573
+#: biglinux-config/usr/share/biglinux/biglinux-config/ui/import_dialog.py:384
+msgid "Settings imported!"
+msgstr "Einstellungen importiert!"
+
+# File: biglinux-config/biglinux-config/usr/share/biglinux/biglinux-
+# config/ui/backup_dialog.py, line: 593
+#: biglinux-config/usr/share/biglinux/biglinux-config/ui/import_dialog.py:386
+msgid "Import error"
+msgstr "Importfehler"
+
+# File: biglinux-config/biglinux-config/usr/share/biglinux/biglinux-
+# config/ui/backup_dialog.py, line: 595
+#: biglinux-config/usr/share/biglinux/biglinux-config/ui/import_dialog.py:387
+#, python-format
+msgid ""
+"An error occurred while importing settings:\n"
+"%s"
+msgstr ""
+"Beim Importieren der Einstellungen ist ein Fehler aufgetreten:\n"
+"%s"
+
+# File: biglinux-config/biglinux-config/usr/share/biglinux/biglinux-
+# config/ui/backup_dialog.py, line: 613
+#: biglinux-config/usr/share/biglinux/biglinux-config/ui/import_dialog.py:393
+msgid "Invalid backup"
+msgstr "Ungültige Sicherung"
+
+#: biglinux-config/usr/share/biglinux/biglinux-config/ui/import_dialog.py:398
 #, python-format
 msgid "Import %s settings"
-msgstr ""
-#: biglinux-config/usr/share/biglinux/biglinux-config/ui/backup_dialog.py:1057
+msgstr "Einstellungen von %s importieren"
+
+#: biglinux-config/usr/share/biglinux/biglinux-config/ui/import_dialog.py:414
 msgid "This file is not a valid BigLinux backup."
-msgstr ""
-#: biglinux-config/usr/share/biglinux/biglinux-config/ui/backup_dialog.py:1066
+msgstr "Diese Datei ist keine gültige BigLinux-Sicherung."
+
+#: biglinux-config/usr/share/biglinux/biglinux-config/ui/import_dialog.py:423
 #, python-format
 msgid ""
 "This backup does not contain settings for %s.\n"
 "\n"
 "It contains: %s"
 msgstr ""
+"Diese Sicherung enthält keine Einstellungen für %s.\n"
+"\n"
+"Sie enthält: %s"
+
+#: biglinux-config/usr/share/biglinux/biglinux-config/ui/jobs.py:45
+msgid "Operation failed"
+msgstr "Vorgang fehlgeschlagen"
+
+# #-#-#-#-#  biglinux-config.pot (biglinux-config)  #-#-#-#-#
+#
+# File: biglinux-config/biglinux-config/usr/share/biglinux/biglinux-
+# config/ui/restore_dialog.py, line: 399
+# File: biglinux-config/biglinux-config/usr/share/biglinux/biglinux-
+# config/ui/restore_dialog.py, line: 432
+# File: biglinux-config/biglinux-config/usr/share/biglinux/biglinux-
+# config/ui/backup_dialog.py, line: 300
+# File: biglinux-config/biglinux-config/usr/share/biglinux/biglinux-
+# config/ui/backup_dialog.py, line: 597
+#: biglinux-config/usr/share/biglinux/biglinux-config/ui/jobs.py:46
+#: biglinux-config/usr/share/biglinux/biglinux-config/ui/operation_dialogs.py:54
 #: biglinux-config/usr/share/biglinux/biglinux-config/ui/restore_dialog.py:199
+#: biglinux-config/usr/share/biglinux/biglinux-config/ui/restore_dialog.py:478
+#: biglinux-config/usr/share/biglinux/biglinux-config/ui/welcome_dialog.py:195
+msgid "Close"
+msgstr "Schließen"
+
+#: biglinux-config/usr/share/biglinux/biglinux-config/ui/metadata.py:21
+msgid "Restore BigLinux Defaults"
+msgstr "BigLinux-Standardeinstellungen wiederherstellen"
+
+#: biglinux-config/usr/share/biglinux/biglinux-config/ui/metadata.py:23
+msgid ""
+"Restore the settings provided by BigLinux\n"
+"without changing unrelated files"
+msgstr ""
+"Die von BigLinux bereitgestellten Einstellungen wiederherstellen,\n"
+"ohne andere Dateien zu ändern"
+
+#: biglinux-config/usr/share/biglinux/biglinux-config/ui/metadata.py:29
+msgid "Restore Program Defaults"
+msgstr "Programm-Standardeinstellungen wiederherstellen"
+
+#: biglinux-config/usr/share/biglinux/biglinux-config/ui/metadata.py:30
+msgid ""
+"Remove custom settings so the app\n"
+"can recreate its original defaults"
+msgstr ""
+"Eigene Einstellungen entfernen, damit die Anwendung\n"
+"ihre ursprünglichen Standardeinstellungen neu erstellen kann"
+
+#: biglinux-config/usr/share/biglinux/biglinux-config/ui/metadata.py:35
+msgid ""
+"Back up selected applications\n"
+"to a compressed .tar.gz archive"
+msgstr ""
+"Ausgewählte Anwendungen in einem\n"
+"komprimierten .tar.gz-Archiv sichern"
+
+#: biglinux-config/usr/share/biglinux/biglinux-config/ui/metadata.py:40
+msgid ""
+"Restore selected applications from\n"
+"a previously exported backup"
+msgstr ""
+"Ausgewählte Anwendungen aus einer\n"
+"zuvor exportierten Sicherung wiederherstellen"
+
+#: biglinux-config/usr/share/biglinux/biglinux-config/ui/metadata.py:44
+msgid "Full Directory Backup"
+msgstr "Vollständige Ordnersicherung"
+
+#: biglinux-config/usr/share/biglinux/biglinux-config/ui/metadata.py:45
+msgid ""
+"Optionally include cache files\n"
+"inside registered application folders"
+msgstr ""
+"Optional Cache-Dateien in den\n"
+"registrierten Anwendungsordnern einbeziehen"
+
+#: biglinux-config/usr/share/biglinux/biglinux-config/ui/metadata.py:49
+msgid "Native & Flatpak Apps"
+msgstr "Native Anwendungen und Flatpak"
+
+#: biglinux-config/usr/share/biglinux/biglinux-config/ui/metadata.py:50
+msgid ""
+"Manage settings for installed native\n"
+"and Flatpak applications together"
+msgstr ""
+"Einstellungen installierter nativer Anwendungen\n"
+"und Flatpak-Anwendungen gemeinsam verwalten"
+
+#: biglinux-config/usr/share/biglinux/biglinux-config/ui/metadata.py:54
+msgid "Search & Favorites"
+msgstr "Suche und Favoriten"
+
+#: biglinux-config/usr/share/biglinux/biglinux-config/ui/metadata.py:55
+msgid ""
+"Find supported applications quickly\n"
+"and keep a personal favorites list"
+msgstr ""
+"Unterstützte Anwendungen schnell finden\n"
+"und eine persönliche Favoritenliste führen"
+
+#: biglinux-config/usr/share/biglinux/biglinux-config/ui/metadata.py:59
+msgid "Desktop Settings"
+msgstr "Desktop-Einstellungen"
+
+#: biglinux-config/usr/share/biglinux/biglinux-config/ui/metadata.py:61
+msgid ""
+"Handle registered GSettings/dconf data\n"
+"without touching unrelated preferences"
+msgstr ""
+"Registrierte GSettings-/dconf-Daten verwalten,\n"
+"ohne andere Einstellungen zu verändern"
+
+# File: biglinux-config/biglinux-config/usr/share/biglinux/biglinux-
+# config/ui/backup_dialog.py, line: 323
+#: biglinux-config/usr/share/biglinux/biglinux-config/ui/operation_dialogs.py:26
+msgid "BigLinux backups (*.tar.gz)"
+msgstr "BigLinux-Sicherungen (*.tar.gz)"
+
+# File: biglinux-config/biglinux-config/usr/share/biglinux/biglinux-
+# config/ui/backup_dialog.py, line: 386
+#: biglinux-config/usr/share/biglinux/biglinux-config/ui/operation_dialogs.py:105
+msgid "Saved to:"
+msgstr "Gespeichert unter:"
+
+# #-#-#-#-#  biglinux-config.pot (biglinux-config)  #-#-#-#-#
+#
+# File: biglinux-config/biglinux-config/usr/share/biglinux/biglinux-
+# config/ui/backup_dialog.py, line: 404
+# File: biglinux-config/biglinux-config/usr/share/biglinux/biglinux-
+# config/ui/restore_dialog.py, line: 276
+#: biglinux-config/usr/share/biglinux/biglinux-config/ui/operation_dialogs.py:113
+#: biglinux-config/usr/share/biglinux/biglinux-config/ui/operation_dialogs.py:116
+#: biglinux-config/usr/share/biglinux/biglinux-config/ui/restore_dialog.py:303
+msgid "Open in file manager"
+msgstr "Im Dateimanager öffnen"
+
+#: biglinux-config/usr/share/biglinux/biglinux-config/ui/operation_dialogs.py:123
+msgid "OK"
+msgstr "OK"
+
+# #-#-#-#-#  biglinux-config.pot (biglinux-config)  #-#-#-#-#
+#
+# File: biglinux-config/biglinux-config/usr/share/biglinux/biglinux-
+# config/ui/restore_dialog.py, line: 182
+# File: biglinux-config/biglinux-config/usr/share/biglinux/biglinux-
+# config/ui/restore_dialog.py, line: 236
+# File: biglinux-config/biglinux-config/usr/share/biglinux/biglinux-
+# config/ui/backup_dialog.py, line: 158
+# File: biglinux-config/biglinux-config/usr/share/biglinux/biglinux-
+# config/ui/backup_dialog.py, line: 465
+# File: biglinux-config/biglinux-config/usr/share/biglinux/biglinux-
+# config/ui/backup_dialog.py, line: 503
+#: biglinux-config/usr/share/biglinux/biglinux-config/ui/operation_dialogs.py:167
+msgid "Cancelling…"
+msgstr "Abbruch läuft…"
+
+# File: biglinux-config/biglinux-config/usr/share/biglinux/biglinux-
+# config/ui/backup_dialog.py, line: 823
+#: biglinux-config/usr/share/biglinux/biglinux-config/ui/operation_dialogs.py:196
+#: biglinux-config/usr/share/biglinux/biglinux-config/ui/operation_dialogs.py:227
+msgid "Preparing…"
+msgstr "Vorbereitung läuft…"
+
+#: biglinux-config/usr/share/biglinux/biglinux-config/ui/operation_dialogs.py:221
+msgid "Cancelling safely; keeping recovery data…"
+msgstr ""
+"Vorgang wird sicher abgebrochen; Wiederherstellungsdaten bleiben erhalten…"
+
+# File: biglinux-config/biglinux-config/usr/share/biglinux/biglinux-
+# config/ui/application.py, line: 296
+#: biglinux-config/usr/share/biglinux/biglinux-config/ui/restore_dialog.py:90
+msgid "Reading application settings…"
+msgstr "Anwendungseinstellungen werden gelesen…"
+
+#: biglinux-config/usr/share/biglinux/biglinux-config/ui/restore_dialog.py:178
 #, python-format
 msgid "%d item"
 msgid_plural "%d items"
-msgstr[0] ""
-msgstr[1] ""
-#: biglinux-config/usr/share/biglinux/biglinux-config/ui/restore_dialog.py:202
+msgstr[0] "%d Eintrag"
+msgstr[1] "%d Einträge"
+
+#: biglinux-config/usr/share/biglinux/biglinux-config/ui/restore_dialog.py:181
 msgid "No settings stored yet"
-msgstr ""
-#: biglinux-config/usr/share/biglinux/biglinux-config/ui/restore_dialog.py:214
+msgstr "Noch keine Einstellungen gespeichert"
+
+#: biglinux-config/usr/share/biglinux/biglinux-config/ui/restore_dialog.py:193
 msgid "Nothing to restore"
-msgstr ""
-#: biglinux-config/usr/share/biglinux/biglinux-config/ui/restore_dialog.py:216
+msgstr "Nichts zum Wiederherstellen"
+
+#: biglinux-config/usr/share/biglinux/biglinux-config/ui/restore_dialog.py:195
 msgid "This application has no settings stored yet."
-msgstr ""
-#: biglinux-config/usr/share/biglinux/biglinux-config/ui/restore_dialog.py:255
+msgstr "Für diese Anwendung wurden noch keine Einstellungen gespeichert."
+
+#: biglinux-config/usr/share/biglinux/biglinux-config/ui/restore_dialog.py:235
 msgid "Backup"
-msgstr ""
-#: biglinux-config/usr/share/biglinux/biglinux-config/ui/restore_dialog.py:260
+msgstr "Sicherung"
+
+#: biglinux-config/usr/share/biglinux/biglinux-config/ui/restore_dialog.py:240
 msgid "Save this application's settings to a file"
-msgstr ""
-#: biglinux-config/usr/share/biglinux/biglinux-config/ui/restore_dialog.py:261
+msgstr "Einstellungen dieser Anwendung in einer Datei speichern"
+
+#: biglinux-config/usr/share/biglinux/biglinux-config/ui/restore_dialog.py:241
 msgid "No settings to export yet"
-msgstr ""
-#: biglinux-config/usr/share/biglinux/biglinux-config/ui/restore_dialog.py:268
+msgstr "Noch keine Einstellungen zum Exportieren"
+
+#: biglinux-config/usr/share/biglinux/biglinux-config/ui/restore_dialog.py:248
 msgid "Restore settings from a backup file"
-msgstr ""
-#: biglinux-config/usr/share/biglinux/biglinux-config/ui/restore_dialog.py:275
+msgstr "Einstellungen aus einer Sicherungsdatei wiederherstellen"
+
+#: biglinux-config/usr/share/biglinux/biglinux-config/ui/restore_dialog.py:255
 msgid "Restore defaults"
+msgstr "Standardeinstellungen wiederherstellen"
+
+#: biglinux-config/usr/share/biglinux/biglinux-config/ui/restore_dialog.py:257
+msgid ""
+"These actions replace only the registered reset paths; backup data may cover "
+"additional folders."
 msgstr ""
-#: biglinux-config/usr/share/biglinux/biglinux-config/ui/restore_dialog.py:277
-msgid "These actions replace your current settings."
-msgstr ""
-#
-# File: biglinux-config/biglinux-config/usr/share/biglinux/biglinux-config/ui/restore_dialog.py, line: 168
-#: biglinux-config/usr/share/biglinux/biglinux-config/ui/restore_dialog.py:282
-#: biglinux-config/usr/share/biglinux/biglinux-config/ui/restore_dialog.py:348
+"Diese Aktionen ersetzen nur die registrierten Pfade zum Zurücksetzen; "
+"Sicherungen können weitere Ordner umfassen."
+
+# File: biglinux-config/biglinux-config/usr/share/biglinux/biglinux-
+# config/ui/restore_dialog.py, line: 168
+#: biglinux-config/usr/share/biglinux/biglinux-config/ui/restore_dialog.py:262
+#: biglinux-config/usr/share/biglinux/biglinux-config/ui/restore_dialog.py:330
 msgid "BigLinux defaults"
-msgstr "BigLinux-Voreinstellungen"
-#: biglinux-config/usr/share/biglinux/biglinux-config/ui/restore_dialog.py:283
+msgstr "BigLinux-Standardeinstellungen"
+
+#: biglinux-config/usr/share/biglinux/biglinux-config/ui/restore_dialog.py:263
 msgid "Apply the settings recommended by BigLinux"
-msgstr ""
-#
-# File: biglinux-config/biglinux-config/usr/share/biglinux/biglinux-config/ui/restore_dialog.py, line: 387
-#: biglinux-config/usr/share/biglinux/biglinux-config/ui/restore_dialog.py:291
+msgstr "Die von BigLinux empfohlenen Einstellungen anwenden"
+
+# File: biglinux-config/biglinux-config/usr/share/biglinux/biglinux-
+# config/ui/restore_dialog.py, line: 387
+#: biglinux-config/usr/share/biglinux/biglinux-config/ui/restore_dialog.py:271
 msgid "Program defaults"
-msgstr "Programmeinstellungen"
-#: biglinux-config/usr/share/biglinux/biglinux-config/ui/restore_dialog.py:292
+msgstr "Programm-Standardeinstellungen"
+
+#: biglinux-config/usr/share/biglinux/biglinux-config/ui/restore_dialog.py:272
 msgid "Remove customizations so the app resets itself"
-msgstr ""
-#: biglinux-config/usr/share/biglinux/biglinux-config/ui/restore_dialog.py:303
+msgstr "Anpassungen entfernen, damit die Anwendung sich selbst zurücksetzt"
+
+#: biglinux-config/usr/share/biglinux/biglinux-config/ui/restore_dialog.py:284
 msgid "Files that will be affected"
-msgstr ""
-#: biglinux-config/usr/share/biglinux/biglinux-config/ui/restore_dialog.py:322
+msgstr "Betroffene Dateien"
+
+#: biglinux-config/usr/share/biglinux/biglinux-config/ui/restore_dialog.py:304
 #, python-format
 msgid "Open %s in file manager"
-msgstr ""
-#
-# File: biglinux-config/biglinux-config/usr/share/biglinux/biglinux-config/ui/restore_dialog.py, line: 170
-#: biglinux-config/usr/share/biglinux/biglinux-config/ui/restore_dialog.py:350
+msgstr "%s im Dateimanager öffnen"
+
+# File: biglinux-config/biglinux-config/usr/share/biglinux/biglinux-
+# config/ui/restore_dialog.py, line: 170
+#: biglinux-config/usr/share/biglinux/biglinux-config/ui/restore_dialog.py:332
 msgid "program defaults"
-msgstr "Programmeinstellungen"
-#
-# File: biglinux-config/biglinux-config/usr/share/biglinux/biglinux-config/ui/restore_dialog.py, line: 173
-#: biglinux-config/usr/share/biglinux/biglinux-config/ui/restore_dialog.py:353
+msgstr "Programm-Standardeinstellungen"
+
+# File: biglinux-config/biglinux-config/usr/share/biglinux/biglinux-
+# config/ui/restore_dialog.py, line: 173
+#: biglinux-config/usr/share/biglinux/biglinux-config/ui/restore_dialog.py:335
 msgid "Restore settings?"
 msgstr "Einstellungen wiederherstellen?"
-#
-# File: biglinux-config/biglinux-config/usr/share/biglinux/biglinux-config/ui/restore_dialog.py, line: 175
-#: biglinux-config/usr/share/biglinux/biglinux-config/ui/restore_dialog.py:355
+
+# File: biglinux-config/biglinux-config/usr/share/biglinux/biglinux-
+# config/ui/restore_dialog.py, line: 175
+#: biglinux-config/usr/share/biglinux/biglinux-config/ui/restore_dialog.py:337
 #, python-format
 msgid ""
 "All customizations for %s will be lost.\n"
 "\n"
 "Mode: %s\n"
 "\n"
-"You may need to restart the application to see the changes."
+"Save your work and close the application first. Detection cannot identify "
+"every launcher or script."
 msgstr ""
 "Alle Anpassungen für %s gehen verloren.\n"
 "\n"
 "Modus: %s\n"
 "\n"
-"Möglicherweise müssen Sie die Anwendung neu starten, um die Änderungen zu "
-"sehen."
-#: biglinux-config/usr/share/biglinux/biglinux-config/ui/restore_dialog.py:364
+"Speichern Sie zuerst Ihre Arbeit und schließen Sie die Anwendung. Die "
+"Erkennung kann nicht jedes Startprogramm oder Skript identifizieren."
+
+#: biglinux-config/usr/share/biglinux/biglinux-config/ui/restore_dialog.py:346
 msgid "Create a backup of the current settings before restoring"
 msgstr ""
-#
-# File: biglinux-config/biglinux-config/usr/share/biglinux/biglinux-config/ui/restore_dialog.py, line: 183
-#: biglinux-config/usr/share/biglinux/biglinux-config/ui/restore_dialog.py:375
+"Vor dem Wiederherstellen eine Sicherung der aktuellen Einstellungen erstellen"
+
+# File: biglinux-config/biglinux-config/usr/share/biglinux/biglinux-
+# config/ui/restore_dialog.py, line: 183
+#: biglinux-config/usr/share/biglinux/biglinux-config/ui/restore_dialog.py:360
 msgid "Restore"
 msgstr "Wiederherstellen"
-#
-# File: biglinux-config/biglinux-config/usr/share/biglinux/biglinux-config/ui/restore_dialog.py, line: 230
-#: biglinux-config/usr/share/biglinux/biglinux-config/ui/restore_dialog.py:404
+
+# File: biglinux-config/biglinux-config/usr/share/biglinux/biglinux-
+# config/ui/restore_dialog.py, line: 230
+#: biglinux-config/usr/share/biglinux/biglinux-config/ui/restore_dialog.py:389
 msgid "Application is running"
 msgstr "Anwendung läuft"
-#
-# File: biglinux-config/biglinux-config/usr/share/biglinux/biglinux-config/ui/restore_dialog.py, line: 232
-#: biglinux-config/usr/share/biglinux/biglinux-config/ui/restore_dialog.py:406
+
+# File: biglinux-config/biglinux-config/usr/share/biglinux/biglinux-
+# config/ui/restore_dialog.py, line: 232
+#: biglinux-config/usr/share/biglinux/biglinux-config/ui/restore_dialog.py:391
 #, python-format
 msgid "%s is running and will be closed so that the restore can be completed."
 msgstr ""
-"%s wird ausgeführt und wird geschlossen, damit die Wiederherstellung "
-"abgeschlossen werden kann."
-#
-# File: biglinux-config/biglinux-config/usr/share/biglinux/biglinux-config/ui/restore_dialog.py, line: 237
-#: biglinux-config/usr/share/biglinux/biglinux-config/ui/restore_dialog.py:411
+"%s läuft und wird geschlossen, damit die Wiederherstellung abgeschlossen "
+"werden kann."
+
+#: biglinux-config/usr/share/biglinux/biglinux-config/ui/restore_dialog.py:397
+msgid ""
+"Close this desktop session before restoring its settings. The session will "
+"not be terminated automatically."
+msgstr ""
+"Melden Sie sich von dieser Desktop-Sitzung ab, bevor Sie deren Einstellungen "
+"wiederherstellen. Die Sitzung wird nicht automatisch beendet."
+
+# File: biglinux-config/biglinux-config/usr/share/biglinux/biglinux-
+# config/ui/restore_dialog.py, line: 237
+#: biglinux-config/usr/share/biglinux/biglinux-config/ui/restore_dialog.py:401
 msgid "Close and restore"
-msgstr "Schließen und Wiederherstellen"
-#
-# File: biglinux-config/biglinux-config/usr/share/biglinux/biglinux-config/ui/restore_dialog.py, line: 262
-#: biglinux-config/usr/share/biglinux/biglinux-config/ui/restore_dialog.py:439
-msgid "Restoring…"
-msgstr "Wiederherstellen…"
-#: biglinux-config/usr/share/biglinux/biglinux-config/ui/restore_dialog.py:457
+msgstr "Schließen und wiederherstellen"
+
+#: biglinux-config/usr/share/biglinux/biglinux-config/ui/restore_dialog.py:424
 #, python-format
 msgid "Backing up, then restoring settings for %s…"
 msgstr ""
-#
-# File: biglinux-config/biglinux-config/usr/share/biglinux/biglinux-config/ui/restore_dialog.py, line: 278
-#: biglinux-config/usr/share/biglinux/biglinux-config/ui/restore_dialog.py:458
+"Einstellungen für %s werden gesichert und anschließend wiederhergestellt…"
+
+# File: biglinux-config/biglinux-config/usr/share/biglinux/biglinux-
+# config/ui/restore_dialog.py, line: 278
+#: biglinux-config/usr/share/biglinux/biglinux-config/ui/restore_dialog.py:425
 #, python-format
 msgid "Restoring settings for %s…"
 msgstr "Einstellungen für %s werden wiederhergestellt…"
-#
-# File: biglinux-config/biglinux-config/usr/share/biglinux/biglinux-config/ui/restore_dialog.py, line: 370
-#: biglinux-config/usr/share/biglinux/biglinux-config/ui/restore_dialog.py:565
-msgid "Settings restored"
-msgstr "Einstellungen wiederhergestellt"
-#
-# File: biglinux-config/biglinux-config/usr/share/biglinux/biglinux-config/ui/restore_dialog.py, line: 378
-#: biglinux-config/usr/share/biglinux/biglinux-config/ui/restore_dialog.py:573
+
+#: biglinux-config/usr/share/biglinux/biglinux-config/ui/restore_dialog.py:432
+msgid "The application did not close safely. Close it manually and try again."
+msgstr ""
+"Die Anwendung wurde nicht sicher geschlossen. Schließen Sie sie manuell und "
+"versuchen Sie es erneut."
+
+#: biglinux-config/usr/share/biglinux/biglinux-config/ui/restore_dialog.py:435
+msgid "The application is still running. Nothing was reset."
+msgstr "Die Anwendung läuft noch. Es wurde nichts zurückgesetzt."
+
+# File: biglinux-config/biglinux-config/usr/share/biglinux/biglinux-
+# config/ui/restore_dialog.py, line: 378
+#: biglinux-config/usr/share/biglinux/biglinux-config/ui/restore_dialog.py:476
 #, python-format
 msgid ""
 "Settings for %s have been restored.\n"
 "You need to log out to complete the process."
 msgstr ""
-"Die Einstellungen für %s wurden wiederhergestellt.  \n"
-"Sie müssen sich abmelden, um den Vorgang abzuschließen."
-#
-# File: biglinux-config/biglinux-config/usr/share/biglinux/biglinux-config/ui/restore_dialog.py, line: 383
-#: biglinux-config/usr/share/biglinux/biglinux-config/ui/restore_dialog.py:578
+"Die Einstellungen für %s wurden wiederhergestellt.\n"
+"Melden Sie sich ab, um den Vorgang abzuschließen."
+
+# File: biglinux-config/biglinux-config/usr/share/biglinux/biglinux-
+# config/ui/restore_dialog.py, line: 403
+#: biglinux-config/usr/share/biglinux/biglinux-config/ui/restore_dialog.py:478
+msgid "Log out"
+msgstr "Abmelden"
+
+# File: biglinux-config/biglinux-config/usr/share/biglinux/biglinux-
+# config/ui/restore_dialog.py, line: 383
+#: biglinux-config/usr/share/biglinux/biglinux-config/ui/restore_dialog.py:480
 #, python-format
 msgid "Settings for %s have been restored successfully."
 msgstr "Die Einstellungen für %s wurden erfolgreich wiederhergestellt."
-#: biglinux-config/usr/share/biglinux/biglinux-config/ui/restore_dialog.py:591
-#, python-format
-msgid ""
-"A backup of your previous settings was saved to:\n"
-"%s"
-msgstr ""
+
+#: biglinux-config/usr/share/biglinux/biglinux-config/ui/restore_dialog.py:485
+msgid "A backup of your previous settings was saved."
+msgstr "Eine Sicherung Ihrer bisherigen Einstellungen wurde gespeichert."
+
+# File: biglinux-config/biglinux-config/usr/share/biglinux/biglinux-
+# config/ui/restore_dialog.py, line: 370
+#: biglinux-config/usr/share/biglinux/biglinux-config/ui/restore_dialog.py:486
+msgid "Settings restored"
+msgstr "Einstellungen wiederhergestellt"
+
+# #-#-#-#-#  biglinux-config.pot (biglinux-config)  #-#-#-#-#
 #
-# File: biglinux-config/biglinux-config/usr/share/biglinux/biglinux-config/ui/restore_dialog.py, line: 403
-#: biglinux-config/usr/share/biglinux/biglinux-config/ui/restore_dialog.py:613
-msgid "Log out"
-msgstr "Abmelden"
+# File: biglinux-config/biglinux-config/usr/share/biglinux/biglinux-
+# config/ui/restore_dialog.py, line: 408
+# File: biglinux-config/biglinux-config/usr/share/biglinux/biglinux-
+# config/ui/backup_dialog.py, line: 287
+# File: biglinux-config/biglinux-config/usr/share/biglinux/biglinux-
+# config/ui/backup_dialog.py, line: 584
+# File: biglinux-config/biglinux-config/usr/share/biglinux/biglinux-
+# config/ui/backup_dialog.py, line: 615
 #
 # #-#-#-#-#  biglinux-config.pot (biglinux-config)  #-#-#-#-#
 #
-# File: biglinux-config/biglinux-config/usr/share/biglinux/biglinux-config/ui/restore_dialog.py, line: 408
-# File: biglinux-config/biglinux-config/usr/share/biglinux/biglinux-config/ui/backup_dialog.py, line: 287
-# File: biglinux-config/biglinux-config/usr/share/biglinux/biglinux-config/ui/backup_dialog.py, line: 584
-# File: biglinux-config/biglinux-config/usr/share/biglinux/biglinux-config/ui/backup_dialog.py, line: 615
+# File: biglinux-config/biglinux-config/usr/share/biglinux/biglinux-
+# config/ui/restore_dialog.py, line: 408
+# File: biglinux-config/biglinux-config/usr/share/biglinux/biglinux-
+# config/ui/backup_dialog.py, line: 287
+# File: biglinux-config/biglinux-config/usr/share/biglinux/biglinux-
+# config/ui/backup_dialog.py, line: 584
+# File: biglinux-config/biglinux-config/usr/share/biglinux/biglinux-
+# config/ui/backup_dialog.py, line: 615
 #
-# #-#-#-#-#  biglinux-config.pot (biglinux-config)  #-#-#-#-#
-#
-# File: biglinux-config/biglinux-config/usr/share/biglinux/biglinux-config/ui/restore_dialog.py, line: 408
-# File: biglinux-config/biglinux-config/usr/share/biglinux/biglinux-config/ui/backup_dialog.py, line: 287
-# File: biglinux-config/biglinux-config/usr/share/biglinux/biglinux-config/ui/backup_dialog.py, line: 584
-# File: biglinux-config/biglinux-config/usr/share/biglinux/biglinux-config/ui/backup_dialog.py, line: 615
-#
-# File: biglinux-config/biglinux-config/usr/share/biglinux/biglinux-config/ui/restore_dialog.py, line: 427
-#: biglinux-config/usr/share/biglinux/biglinux-config/ui/restore_dialog.py:637
+# File: biglinux-config/biglinux-config/usr/share/biglinux/biglinux-
+# config/ui/restore_dialog.py, line: 427
+#: biglinux-config/usr/share/biglinux/biglinux-config/ui/restore_dialog.py:495
 msgid "Restore error"
 msgstr "Wiederherstellungsfehler"
-#
-# File: biglinux-config/biglinux-config/usr/share/biglinux/biglinux-config/ui/restore_dialog.py, line: 429
-#: biglinux-config/usr/share/biglinux/biglinux-config/ui/restore_dialog.py:639
+
+# File: biglinux-config/biglinux-config/usr/share/biglinux/biglinux-
+# config/ui/restore_dialog.py, line: 429
+#: biglinux-config/usr/share/biglinux/biglinux-config/ui/restore_dialog.py:496
 #, python-format
 msgid ""
 "An error occurred while restoring settings for %s:\n"
 "%s"
 msgstr ""
-"Beim Wiederherstellen der Einstellungen für %s ist ein Fehler aufgetreten: %s"
-#: biglinux-config/usr/share/biglinux/biglinux-config/ui/welcome_dialog.py:27
-msgid "Restore BigLinux Defaults"
-msgstr ""
-#: biglinux-config/usr/share/biglinux/biglinux-config/ui/welcome_dialog.py:29
-msgid ""
-"Restore the settings provided by BigLinux\n"
-"without changing unrelated files"
-msgstr ""
-#: biglinux-config/usr/share/biglinux/biglinux-config/ui/welcome_dialog.py:35
-msgid "Restore Program Defaults"
-msgstr ""
-#: biglinux-config/usr/share/biglinux/biglinux-config/ui/welcome_dialog.py:36
-msgid ""
-"Remove custom settings so the app\n"
-"can recreate its original defaults"
-msgstr ""
-#: biglinux-config/usr/share/biglinux/biglinux-config/ui/welcome_dialog.py:41
-msgid ""
-"Back up selected applications\n"
-"to a compressed .tar.gz archive"
-msgstr ""
-#: biglinux-config/usr/share/biglinux/biglinux-config/ui/welcome_dialog.py:46
-msgid ""
-"Restore selected applications from\n"
-"a previously exported backup"
-msgstr ""
-#: biglinux-config/usr/share/biglinux/biglinux-config/ui/welcome_dialog.py:50
-msgid "Full Directory Backup"
-msgstr ""
-#: biglinux-config/usr/share/biglinux/biglinux-config/ui/welcome_dialog.py:51
-msgid ""
-"Optionally include complete app folders\n"
-"instead of only registered paths"
-msgstr ""
+"Beim Wiederherstellen der Einstellungen für %s ist ein Fehler aufgetreten:\n"
+"%s"
+
+# File: biglinux-config/biglinux-config/usr/share/biglinux/biglinux-
+# config/ui/welcome_dialog.py, line: 76
 #: biglinux-config/usr/share/biglinux/biglinux-config/ui/welcome_dialog.py:55
-msgid "Native & Flatpak Apps"
-msgstr ""
-#: biglinux-config/usr/share/biglinux/biglinux-config/ui/welcome_dialog.py:56
-msgid ""
-"Manage settings for installed native\n"
-"and Flatpak applications together"
-msgstr ""
-#: biglinux-config/usr/share/biglinux/biglinux-config/ui/welcome_dialog.py:60
-msgid "Search & Favorites"
-msgstr ""
-#: biglinux-config/usr/share/biglinux/biglinux-config/ui/welcome_dialog.py:61
-msgid ""
-"Find supported applications quickly\n"
-"and keep a personal favorites list"
-msgstr ""
-#: biglinux-config/usr/share/biglinux/biglinux-config/ui/welcome_dialog.py:65
-msgid "Desktop Settings"
-msgstr ""
-#: biglinux-config/usr/share/biglinux/biglinux-config/ui/welcome_dialog.py:67
-msgid ""
-"Handle registered GSettings/dconf data\n"
-"without touching unrelated preferences"
-msgstr ""
-#
-# File: biglinux-config/biglinux-config/usr/share/biglinux/biglinux-config/ui/welcome_dialog.py, line: 76
-#: biglinux-config/usr/share/biglinux/biglinux-config/ui/welcome_dialog.py:128
 msgid "Welcome to Restore Settings"
 msgstr "Willkommen bei Einstellungen wiederherstellen"
-#: biglinux-config/usr/share/biglinux/biglinux-config/ui/welcome_dialog.py:137
+
+#: biglinux-config/usr/share/biglinux/biglinux-config/ui/welcome_dialog.py:66
 msgid "Restore, back up, and manage application settings on BigLinux"
 msgstr ""
-#: biglinux-config/usr/share/biglinux/biglinux-config/ui/welcome_dialog.py:170
+"Anwendungseinstellungen unter BigLinux wiederherstellen, sichern und "
+"verwalten"
+
+#: biglinux-config/usr/share/biglinux/biglinux-config/ui/welcome_dialog.py:98
 msgid ""
 "Tip: Start typing to search; right-click an application to manage favorites"
 msgstr ""
-#: biglinux-config/usr/share/biglinux/biglinux-config/ui/welcome_dialog.py:192
+"Tipp: Tippen Sie, um zu suchen; klicken Sie mit der rechten Maustaste auf "
+"eine Anwendung, um Favoriten zu verwalten"
+
+#: biglinux-config/usr/share/biglinux/biglinux-config/ui/welcome_dialog.py:121
 msgid "Show dialog on startup"
-msgstr ""
-#
-# File: biglinux-config/biglinux-config/usr/share/biglinux/biglinux-config/ui/welcome_dialog.py, line: 200
-#: biglinux-config/usr/share/biglinux/biglinux-config/ui/welcome_dialog.py:202
+msgstr "Dialog beim Start anzeigen"
+
+# File: biglinux-config/biglinux-config/usr/share/biglinux/biglinux-
+# config/ui/welcome_dialog.py, line: 200
+#: biglinux-config/usr/share/biglinux/biglinux-config/ui/welcome_dialog.py:131
 msgid "Let's Start"
-msgstr "Lass uns anfangen"
+msgstr "Los geht’s"
+
+#: biglinux-config/usr/share/biglinux/biglinux-config/ui/welcome_dialog.py:194
+msgid "Could not save preferences"
+msgstr "Einstellungen konnten nicht gespeichert werden"
+
+# File: biglinux-config/biglinux-config/usr/share/biglinux/biglinux-
+# config/ui/backup_dialog.py, line: 199
+#~ msgid "Compressed archives (*.tar.gz)"
+#~ msgstr "Komprimierte Archive (*.tar.gz)"
+
+# File: biglinux-config/biglinux-config/usr/share/biglinux/biglinux-
+# config/ui/backup_dialog.py, line: 595
+#, python-format
+#~ msgid "Full directories: %s"
+#~ msgstr "Vollständige Verzeichnisse: %s"
+
+# File: biglinux-config/biglinux-config/usr/share/biglinux/biglinux-
+# config/ui/backup_dialog.py, line: 498
+#, python-format
+#~ msgid ""
+#~ "Existing settings for %d selected applications will be overwritten.\n"
+#~ "\n"
+#~ "This action cannot be undone."
+#~ msgstr ""
+#~ "Vorhandene Einstellungen für %d ausgewählte Anwendungen werden "
+#~ "überschrieben.\n"
+#~ "\n"
+#~ "Diese Aktion kann nicht rückgängig gemacht werden."
+
+# File: biglinux-config/biglinux-config/usr/share/biglinux/biglinux-
+# config/ui/restore_dialog.py, line: 262
+#~ msgid "Restoring…"
+#~ msgstr "Wiederherstellen…"

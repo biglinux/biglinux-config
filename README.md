@@ -191,7 +191,7 @@ The application uses gettext for internationalization. Translation files are loc
 
 ### Supported Languages
 
-Bulgarian, Czech, Danish, Dutch, English, Estonian, Finnish, French, German, Greek, Hebrew, Croatian, Hungarian, Icelandic, Italian, Japanese, Korean, Norwegian, Polish, Portuguese, Portuguese (Brazil), Romanian, Russian, Slovak, Spanish, Swedish, Turkish, Ukrainian, Chinese.
+Belarusian, Bulgarian, Czech, Danish, Dutch, English, Estonian, Finnish, French, German, Greek, Hebrew, Croatian, Hungarian, Icelandic, Italian, Japanese, Korean, Norwegian, Polish, Portuguese (Portugal), Portuguese (Brazil), Romanian, Russian, Slovak, Spanish, Swedish, Turkish, Ukrainian, Chinese, Simplified Chinese (China), Traditional Chinese (Taiwan).
 
 ### Adding a New Translation
 

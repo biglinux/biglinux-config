@@ -328,7 +328,7 @@ def _confirm_import(
     """Confirm before overwriting settings."""
     alert = Adw.AlertDialog()
     alert.set_heading(_("Import settings?"))
-    body = _("Existing settings for %d selected applications will be overwritten.\n\n"
+    body = _("The existing settings for the selected applications (%d) will be overwritten.\n\n"
              "Close those applications first and create a backup of the current settings. "
              "Import only backups you trust: integrity checks do not authenticate the sender.") % len(selected_ids)
     if legacy:
