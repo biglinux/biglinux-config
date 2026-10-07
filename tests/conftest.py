@@ -1,7 +1,9 @@
 """Shared pytest fixtures.
 
-All tests run against an artificial HOME under a TemporaryDirectory so the
-real user configuration is never touched.
+Every test runs with HOME and the XDG directories inside its own temporary
+directory, and without the user's session bus, so neither the real
+configuration nor the real dconf database can be touched, even when pytest is
+started directly instead of through tools/check.sh.
 """
 
 from __future__ import annotations
@@ -12,6 +14,10 @@ from pathlib import Path
 
 import pytest
 
+# Assertions compare English messages: pin the locale before i18n is imported.
+os.environ["LC_ALL"] = "C.UTF-8"
+os.environ.pop("LANGUAGE", None)
+
 # Make the application package importable (backend/, data/, ...).
 APP_ROOT = (
     Path(__file__).resolve().parent.parent
@@ -19,6 +25,29 @@ APP_ROOT = (
 )
 if str(APP_ROOT) not in sys.path:
     sys.path.insert(0, str(APP_ROOT))
+
+
+_XDG = (("XDG_CONFIG_HOME", ".config"), ("XDG_DATA_HOME", ".local/share"),
+        ("XDG_STATE_HOME", ".local/state"), ("XDG_CACHE_HOME", ".cache"))
+
+
+@pytest.fixture(autouse=True)
+def isolated_environment(tmp_path_factory, monkeypatch):
+    sandbox = os.environ.get("BIGLINUX_TEST_DCONF")
+    if sandbox:
+        # tools/check-dconf.sh isolated HOME before starting a private bus;
+        # dconf-service keeps that HOME, so it must not change per test.
+        home = os.path.realpath(os.environ["HOME"])
+        if not os.path.isabs(sandbox) or not home.startswith(os.path.realpath(sandbox) + os.sep):
+            pytest.exit("dconf tests run only through tools/check-dconf.sh", returncode=2)
+        return Path(home)
+    home = tmp_path_factory.mktemp("isolated-home")
+    monkeypatch.setenv("HOME", str(home))
+    for name, suffix in _XDG:
+        monkeypatch.setenv(name, str(home / suffix))
+    monkeypatch.delenv("DBUS_SESSION_BUS_ADDRESS", raising=False)
+    monkeypatch.delenv("DCONF_PROFILE", raising=False)
+    return home
 
 
 @pytest.fixture(autouse=True)
@@ -51,8 +80,7 @@ def fake_home(tmp_path, monkeypatch):
     home = tmp_path / "home"
     home.mkdir()
     monkeypatch.setenv("HOME", str(home))
-    for name, suffix in (("XDG_CONFIG_HOME", ".config"), ("XDG_DATA_HOME", ".local/share"),
-                         ("XDG_STATE_HOME", ".local/state"), ("XDG_CACHE_HOME", ".cache")):
+    for name, suffix in _XDG:
         monkeypatch.setenv(name, str(home / suffix))
     # os.path.expanduser honours $HOME on POSIX, but be explicit and robust.
     real_expanduser = os.path.expanduser
@@ -69,8 +97,8 @@ def fake_home(tmp_path, monkeypatch):
 
 
 @pytest.fixture()
-def fake_skel(tmp_path, monkeypatch):
-    """An isolated /etc/skel replacement, wired into reset_manager."""
+def fake_skel(tmp_path):
+    """An isolated /etc/skel replacement."""
     skel = tmp_path / "skel"
     skel.mkdir()
     return skel

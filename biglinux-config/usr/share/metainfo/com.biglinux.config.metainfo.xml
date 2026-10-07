@@ -12,28 +12,73 @@
       Restore Settings resets, backs up and restores the configuration of the
       applications installed on BigLinux, one application at a time.
     </p>
-    <ul>
-      <li>Restore the defaults provided by BigLinux or by the program itself</li>
-      <li>Export the settings of selected applications to a single archive</li>
-      <li>Import a backup with integrity checks and automatic rollback</li>
-      <li>Native and Flatpak applications, and their desktop settings in dconf</li>
-    </ul>
     <p xml:lang="pt_BR">
       O Restaurar Configurações redefine, salva e restaura as configurações dos
       aplicativos instalados no BigLinux, um aplicativo por vez.
     </p>
+    <ul>
+      <li>Restore the defaults provided by BigLinux or by the program itself</li>
+      <li xml:lang="pt_BR">Restaure os padrões do BigLinux ou do próprio programa</li>
+      <li>Export the settings of selected applications to a single archive</li>
+      <li xml:lang="pt_BR">Exporte as configurações dos aplicativos escolhidos para um único arquivo</li>
+      <li>Import a backup with integrity checks and automatic rollback</li>
+      <li xml:lang="pt_BR">Importe um backup com verificação de integridade e reversão automática</li>
+      <li>Native and Flatpak applications, and their desktop settings in dconf</li>
+      <li xml:lang="pt_BR">Aplicativos nativos e Flatpak, e suas configurações de desktop no dconf</li>
+    </ul>
   </description>
   <launchable type="desktop-id">com.biglinux.config.desktop</launchable>
-  <developer id="br.com.biglinux">
-    <name>BigLinux</name>
+  <provides>
+    <binary>biglinux-config</binary>
+  </provides>
+  <translation type="gettext">biglinux-config</translation>
+  <developer id="io.github.ruscher">
+    <name>Rafael Ruscher, Bruno Gonçalves</name>
   </developer>
   <url type="homepage">https://github.com/ruscher/biglinux-config</url>
   <url type="bugtracker">https://github.com/ruscher/biglinux-config/issues</url>
+  <url type="vcs-browser">https://github.com/ruscher/biglinux-config</url>
+  <screenshots>
+    <screenshot type="default">
+      <caption>Supported applications by category</caption>
+      <image>https://raw.githubusercontent.com/ruscher/biglinux-config/v2.0.0/docs/screenshots/main.png</image>
+    </screenshot>
+    <screenshot>
+      <caption>Back up, import or restore the defaults of one application</caption>
+      <image>https://raw.githubusercontent.com/ruscher/biglinux-config/v2.0.0/docs/screenshots/restore.png</image>
+    </screenshot>
+    <screenshot>
+      <caption>Export the settings of several applications</caption>
+      <image>https://raw.githubusercontent.com/ruscher/biglinux-config/v2.0.0/docs/screenshots/export.png</image>
+    </screenshot>
+    <screenshot>
+      <caption>Choose what to import from a backup</caption>
+      <image>https://raw.githubusercontent.com/ruscher/biglinux-config/v2.0.0/docs/screenshots/import.png</image>
+    </screenshot>
+  </screenshots>
   <categories>
     <category>Settings</category>
   </categories>
+  <requires>
+    <display_length compare="ge">360</display_length>
+  </requires>
+  <supports>
+    <control>pointing</control>
+    <control>keyboard</control>
+    <control>touch</control>
+  </supports>
   <content_rating type="oars-1.1"/>
   <releases>
-    <release version="2026.10.01" date="2026-10-01"/>
+    <release version="2.0.0" date="2026-10-07">
+      <description>
+        <p>First stable release of the GTK 4 and libadwaita interface.</p>
+        <ul>
+          <li>Transactional import and reset with staging and automatic rollback</li>
+          <li>Verified backups with checksums and strict archive validation</li>
+          <li>Flatpak applications and scoped dconf settings</li>
+          <li>Favorites, search and a welcome guide</li>
+        </ul>
+      </description>
+    </release>
   </releases>
 </component>

@@ -13,6 +13,7 @@ gi.require_version("Adw", "1")
 from gi.repository import Adw, Gio, GLib, Gtk, Pango
 
 from i18n import _
+from ui import app_image
 
 
 def backup_file_dialog(title: str, initial_name: str = "") -> Gtk.FileDialog:
@@ -42,11 +43,20 @@ def chosen_path(finish: Callable, result: Gio.AsyncResult) -> str | None:
 
 def open_in_file_manager(parent: Gtk.Window, path: str) -> None:
     """Show *path* in the file manager: a file is selected in its folder."""
-    launcher = Gtk.FileLauncher(file=Gio.File.new_for_path(os.path.expanduser(path)))
-    if os.path.isdir(os.path.expanduser(path)):
-        launcher.launch(parent, None, None)
+    launcher = Gtk.FileLauncher(file=Gio.File.new_for_path(path))
+    directory = os.path.isdir(path)
+
+    def finished(source, result):
+        try:
+            (source.launch_finish if directory else source.open_containing_folder_finish)(result)
+        except GLib.Error as exc:
+            if not exc.matches(Gtk.dialog_error_quark(), Gtk.DialogError.DISMISSED):
+                show_error_dialog(parent, _("Could not open the file manager"), exc.message)
+
+    if directory:
+        launcher.launch(parent, None, finished)
     else:
-        launcher.open_containing_folder(parent, None, None)
+        launcher.open_containing_folder(parent, None, finished)
 
 
 def show_error_dialog(parent: Gtk.Widget, heading: str, body: str) -> None:
@@ -79,13 +89,8 @@ def show_result_dialog(
     box.set_margin_end(24)
 
     overlay = Gtk.Overlay(halign=Gtk.Align.CENTER)
-    if icon.startswith("/") and os.path.isfile(icon):
-        image = Gtk.Image.new_from_file(icon)
-    else:
-        image = Gtk.Image.new_from_icon_name(icon or "application-x-executable")
-    image.set_pixel_size(48)
-    overlay.set_child(image)
-    badge = Gtk.Image.new_from_icon_name("emblem-ok-symbolic")
+    overlay.set_child(app_image(icon, 48))
+    badge = Gtk.Image.new_from_icon_name("object-select-symbolic")
     badge.set_pixel_size(16)
     badge.add_css_class("success")
     badge.set_halign(Gtk.Align.END)
@@ -196,7 +201,7 @@ def build_progress_dialog(
     sub_label = Gtk.Label(label=_("Preparing…"))
     sub_label.add_css_class("dim-label")
     sub_label.add_css_class("caption")
-    sub_label.set_ellipsize(2)  # Pango.EllipsizeMode.MIDDLE
+    sub_label.set_ellipsize(Pango.EllipsizeMode.MIDDLE)
     box.append(sub_label)
 
     toolbar = Adw.ToolbarView()

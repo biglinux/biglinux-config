@@ -1,10 +1,11 @@
-"""Restore dialog — modal for choosing reset mode and confirming."""
+"""Per-application dialog: export, import, and restore defaults."""
 
 from __future__ import annotations
 
-from collections.abc import Callable
-
+import os
 import threading
+from collections.abc import Callable
+from dataclasses import replace
 
 import gi
 
@@ -12,20 +13,20 @@ gi.require_version("Gtk", "4.0")
 gi.require_version("Adw", "1")
 from gi.repository import Adw, GLib, Gio, Gtk
 
-from i18n import _, ngettext
-from ui import set_label
-from data.app_registry import AppEntry, get_reset_paths
 from backend import paths
-from ui.jobs import run_job
+from backend.app_detector import get_localized_name
+from data.app_registry import AppEntry, get_reset_paths
+from i18n import _, ngettext
+from ui import app_image, set_label
 from ui.export_dialog import show_single_export
 from ui.import_dialog import show_single_import
+from ui.jobs import run_job
 from ui.operation_dialogs import (
     build_progress_dialog,
     open_in_file_manager,
     show_error_dialog,
     show_result_dialog,
 )
-from backend.app_detector import get_localized_name
 from backend.reset_manager import (
     ResetMode,
     ResetResult,
@@ -38,45 +39,17 @@ from backend.reset_manager import (
     reset_app,
 )
 
-def _get_mimetype_icon(path: str) -> str:
-    """Return the best symbolic icon name for a path based on its mimetype."""
-    import os
 
-    expanded = os.path.expanduser(path)
-
-    if os.path.isdir(expanded):
-        basename = os.path.basename(expanded.rstrip("/"))
-        folder_icons = {
-            ".config": "folder-templates-symbolic",
-            ".local": "folder-templates-symbolic",
-            ".cache": "folder-templates-symbolic",
-            ".mozilla": "folder-remote-symbolic",
-        }
-        return folder_icons.get(basename, "folder-symbolic")
-
-    if os.path.isfile(expanded):
-        content_type, _ = Gio.content_type_guess(expanded, None)
-        if content_type:
-            icon = Gio.content_type_get_symbolic_icon(content_type)
-            if icon:
-                names = icon.get_names()
-                if names:
-                    return names[0]
-
-    # Heuristic based on extension/name
-    lower = path.lower()
-    if lower.endswith((".conf", ".cfg", ".ini", ".toml", ".yaml", ".yml")):
-        return "text-x-generic-symbolic"
-    if lower.endswith((".json",)):
-        return "text-x-script-symbolic"
-    if lower.endswith((".xml",)):
-        return "text-xml-symbolic"
-    if lower.endswith((".db", ".sqlite")):
-        return "drive-harddisk-symbolic"
-    if "/." in path or path.startswith("~/."):
-        return "folder-templates-symbolic"
-
-    return "text-x-generic-symbolic"
+def _path_icon(path: str) -> Gio.Icon:
+    """Symbolic icon for a settings path; GIcon fallbacks avoid missing images."""
+    if os.path.isdir(path):
+        return Gio.ThemedIcon.new("folder-symbolic")
+    content_type, _uncertain = Gio.content_type_guess(path, None)
+    icon = Gio.content_type_get_symbolic_icon(content_type) if content_type else None
+    if isinstance(icon, Gio.ThemedIcon):
+        icon.append_name("text-x-generic-symbolic")
+        return icon
+    return Gio.ThemedIcon.new("text-x-generic-symbolic")
 
 
 def show_restore_dialog(
@@ -85,7 +58,6 @@ def show_restore_dialog(
     on_complete: Callable | None = None,
 ) -> None:
     """Prepare sizes and settings in a worker, not while GTK processes input."""
-    from dataclasses import replace
     cancel = threading.Event()
     loading, _update = build_progress_dialog(parent, _("Reading application settings…"), cancel)
 
@@ -111,13 +83,12 @@ def show_restore_dialog(
 
 
 def _present_restore_options(parent, entry, on_complete, snapshot):
-    import os
     config_exists, reset_exists, skel_exists, path_sizes = snapshot
     existing_paths = list(path_sizes)
     total_size = sum(path_sizes.values())
 
     dialog = Adw.Window()
-    dialog._backup_available = config_exists
+    dialog.set_title(get_localized_name(entry))
     dialog.set_default_size(420, 560)
     dialog.set_modal(True)
     dialog.set_transient_for(parent)
@@ -154,15 +125,7 @@ def _present_restore_options(parent, entry, on_complete, snapshot):
     head_box.set_margin_top(8)
     head_box.set_margin_bottom(2)
 
-    app_icon = Gtk.Image()
-    app_icon.set_pixel_size(72)
-    if entry.icon.startswith("/"):
-        if os.path.isfile(entry.icon):
-            app_icon.set_from_file(entry.icon)
-        else:
-            app_icon.set_from_icon_name("application-x-executable")
-    else:
-        app_icon.set_from_icon_name(entry.icon)
+    app_icon = app_image(entry.icon, 72)
     app_icon.set_halign(Gtk.Align.CENTER)
     head_box.append(app_icon)
 
@@ -261,8 +224,8 @@ def _present_restore_options(parent, entry, on_complete, snapshot):
             "biglinux-symbolic",
             _("BigLinux defaults"),
             _("Apply the settings recommended by BigLinux"),
-            lambda: _confirm_reset(parent, dialog, entry,
-                                   ResetMode.BIGLINUX_DEFAULT, on_complete),
+            lambda: _confirm_reset(parent, dialog, entry, ResetMode.BIGLINUX_DEFAULT,
+                                   on_complete, config_exists),
         ))
 
     if reset_exists or not skel_exists:
@@ -270,8 +233,8 @@ def _present_restore_options(parent, entry, on_complete, snapshot):
             "restore-default-symbolic",
             _("Program defaults"),
             _("Remove customizations so the app resets itself"),
-            lambda: _confirm_reset(parent, dialog, entry,
-                                   ResetMode.PROGRAM_DEFAULT, on_complete),
+            lambda: _confirm_reset(parent, dialog, entry, ResetMode.PROGRAM_DEFAULT,
+                                   on_complete, config_exists),
             accent="error",
             sensitive=reset_exists,
         ))
@@ -294,8 +257,7 @@ def _present_restore_options(parent, entry, on_complete, snapshot):
             row.set_title_lines(1)
             row.set_subtitle(GLib.format_size(path_sizes.get(cfg_path, 0)))
             row.set_subtitle_lines(1)
-            prefix_icon = Gtk.Image.new_from_icon_name(_get_mimetype_icon(cfg_path))
-            row.add_prefix(prefix_icon)
+            row.add_prefix(Gtk.Image.new_from_gicon(_path_icon(cfg_path)))
             open_btn = Gtk.Button()
             open_btn.set_icon_name("folder-open-symbolic")
             open_btn.set_valign(Gtk.Align.CENTER)
@@ -323,6 +285,7 @@ def _confirm_reset(
     entry: AppEntry,
     mode: ResetMode,
     on_complete: Callable | None,
+    backup_available: bool,
 ) -> None:
     """Show a destructive AlertDialog before proceeding."""
 
@@ -334,26 +297,22 @@ def _confirm_reset(
     alert = Adw.AlertDialog()
     alert.set_heading(_("Restore settings?"))
     alert.set_body(
-        _("All customizations for %s will be lost.\n\n"
-          "Mode: %s\n\n"
+        _("All customizations for %(app)s will be lost.\n\n"
+          "Mode: %(mode)s\n\n"
           "Save your work and close the application first. Detection cannot identify every launcher or script.")
-        % (get_localized_name(entry), mode_label)
+        % {"app": get_localized_name(entry), "mode": mode_label}
     )
     alert.set_close_response("cancel")
 
-    # Offer a safety backup of the current configuration first (recommended).
     backup_label = Gtk.Label(
         label=_("Create a backup of the current settings before restoring"),
         wrap=True, xalign=0,
     )
     # A plain check label does not wrap and overflows the alert's width.
     backup_check = Gtk.CheckButton(child=backup_label)
-    backup_check.set_active(True)
+    backup_check.set_active(backup_available)
+    backup_check.set_sensitive(backup_available)
     backup_check.set_margin_top(6)
-    if not getattr(options_dialog, "_backup_available", True):
-        # Nothing to back up.
-        backup_check.set_active(False)
-        backup_check.set_sensitive(False)
     alert.set_extra_child(backup_check)
 
     alert.add_response("cancel", _("Cancel"))
@@ -475,7 +434,8 @@ def _show_success_dialog(
     if entry.logout_required:
         body = _("Settings for %s have been restored.\n"
                  "You need to log out to complete the process.") % name
-        buttons = [(_("Close"), "", None), (_("Log out"), "destructive-action", _logout_session)]
+        buttons = [(_("Close"), "", None),
+                   (_("Log out"), "destructive-action", lambda: _logout_session(parent))]
     else:
         body = _("Settings for %s have been restored successfully.") % name
         buttons = None
@@ -493,40 +453,43 @@ def _show_error_dialog(
     result: ResetResult,
 ) -> None:
     show_error_dialog(parent, _("Restore error"),
-                      _("An error occurred while restoring settings for %s:\n%s")
-                      % (get_localized_name(entry), result.message))
+                      _("An error occurred while restoring settings for %(app)s:\n%(error)s")
+                      % {"app": get_localized_name(entry), "error": result.message})
 
 
-def _logout_session() -> None:
-    """Attempt to logout from the current desktop session."""
-    import os
-    import subprocess
+# Checked in order: Budgie sessions also report "GNOME" in XDG_CURRENT_DESKTOP.
+_LOGOUT_COMMANDS = (
+    ("BUDGIE", ["budgie-session-quit", "--logout", "--no-prompt"]),
+    ("CINNAMON", ["cinnamon-session-quit", "--logout", "--no-prompt"]),
+    ("GNOME", ["gnome-session-quit", "--logout", "--no-prompt"]),
+    ("XFCE", ["xfce4-session-logout", "--logout"]),
+    ("MATE", ["mate-session-save", "--logout"]),
+)
 
+
+def _logout_session(parent: Gtk.Widget) -> None:
+    """Ask the desktop session to log out; report when that is not possible."""
     desktop = os.environ.get("XDG_CURRENT_DESKTOP", "").upper()
-
-    if "KDE" in desktop or "PLASMA" in desktop:
-        # Direct D-Bus call: stock Plasma 6 ships qdbus6, not qdbus.
-        Gio.bus_get_sync(Gio.BusType.SESSION).call(
-            "org.kde.Shutdown", "/Shutdown", "org.kde.Shutdown", "logout",
-            None, None, Gio.DBusCallFlags.NONE, -1, None, None)
-        return
-
-    logout_commands = {
-        "GNOME": ["gnome-session-quit", "--no-prompt"],
-        "XFCE": ["xfce4-session-logout", "--logout"],
-        "X-CINNAMON": ["cinnamon-session-quit", "--logout", "--no-prompt"],
-        "CINNAMON": ["cinnamon-session-quit", "--logout", "--no-prompt"],
-        "MATE": ["mate-session-save", "--logout"],
-        "BUDGIE": ["budgie-session", "--logout"],
-        "DEEPIN": ["dbus-send", "--session", "--dest=com.deepin.SessionManager",
-                    "--type=method_call", "/com/deepin/SessionManager",
-                    "com.deepin.SessionManager.RequestLogout"],
-    }
-
-    for de_key, cmd in logout_commands.items():
-        if de_key in desktop:
-            try:
-                subprocess.Popen(cmd)
-            except FileNotFoundError:
-                pass
+    try:
+        if "KDE" in desktop or "PLASMA" in desktop:
+            # Direct D-Bus call: stock Plasma 6 ships qdbus6, not qdbus.
+            Gio.bus_get_sync(Gio.BusType.SESSION).call_sync(
+                "org.kde.Shutdown", "/Shutdown", "org.kde.Shutdown", "logout",
+                None, None, Gio.DBusCallFlags.NONE, 5000, None)
             return
+        if "DEEPIN" in desktop:
+            Gio.bus_get_sync(Gio.BusType.SESSION).call_sync(
+                "com.deepin.SessionManager", "/com/deepin/SessionManager",
+                "com.deepin.SessionManager", "RequestLogout",
+                None, None, Gio.DBusCallFlags.NONE, 5000, None)
+            return
+        for key, command in _LOGOUT_COMMANDS:
+            if key in desktop:
+                # Gio reaps the child; the session closes this app anyway.
+                Gio.Subprocess.new(command, Gio.SubprocessFlags.NONE)
+                return
+    except GLib.Error as exc:
+        show_error_dialog(parent, _("Could not log out"), exc.message)
+        return
+    show_error_dialog(parent, _("Could not log out"),
+                      _("Log out from the system menu to finish restoring the settings."))

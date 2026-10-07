@@ -1,4 +1,4 @@
-"""Category sidebar widget — matches BigControlCenter layout."""
+"""Category sidebar, laid out like BigLinux Control Center."""
 
 from __future__ import annotations
 
@@ -24,7 +24,7 @@ class CategoryRow(Gtk.ListBoxRow):
 
 
 class CategorySidebar(Gtk.Box):
-    """Vertical list of categories with symbolic icons — BigControlCenter style."""
+    """Vertical list of categories with symbolic icons."""
 
     def __init__(self) -> None:
         super().__init__(orientation=Gtk.Orientation.VERTICAL)
@@ -44,13 +44,11 @@ class CategorySidebar(Gtk.Box):
         self._listbox.connect("row-activated", self._on_row_activated)
         scrolled.set_child(self._listbox)
 
-        # Categories including Flatpak pseudo-category
         self._all_categories = list(CATEGORIES) + [
             {"id": "flatpak", "label": "Flatpak", "icon": "folder-flatpak-symbolic"},
         ]
 
         self._rows: dict[str, CategoryRow] = {}
-        self._active_id: str | None = None
         self._on_category_changed: Callable | None = None
 
         self._build_rows()
@@ -98,18 +96,16 @@ class CategorySidebar(Gtk.Box):
 
     def _select(self, category_id: str) -> None:
         for cid, row in self._rows.items():
-            if cid == category_id:
+            active = cid == category_id
+            if active:
                 row.add_css_class("active-category")
             else:
                 row.remove_css_class("active-category")
+            # GTK stores this boolean state as an int GValue.
+            row.update_state([Gtk.AccessibleState.SELECTED], [int(active)])
 
-        self._active_id = category_id
         if self._on_category_changed:
             self._on_category_changed(category_id)
-
-    @property
-    def listbox(self) -> Gtk.ListBox:
-        return self._listbox
 
     def set_category_visible(self, category_id: str, visible: bool) -> None:
         row = self._rows.get(category_id)
@@ -118,6 +114,3 @@ class CategorySidebar(Gtk.Box):
 
     def select_category(self, category_id: str) -> None:
         self._select(category_id)
-
-    def get_selected_category(self) -> str | None:
-        return self._active_id
