@@ -32,7 +32,7 @@ sed "s|^source=.*|source=(\"\$pkgname::git+file://$work#commit=$commit\")|" \
     pkgbuild/PKGBUILD > pkgbuild/PKGBUILD.ci
 chown builder: pkgbuild/PKGBUILD.ci
 (cd pkgbuild && as_builder makepkg --cleanbuild --noconfirm -p PKGBUILD.ci)
-package=$(find pkgbuild -maxdepth 1 -name 'biglinux-config-*.pkg.tar.zst' | head -n 1)
+package=$(find pkgbuild -maxdepth 1 -name 'biglinux-config-*.pkg.tar*' | head -n 1)
 namcap "$package"
 pacman -U --noconfirm "$package"
 as_builder biglinux-config --version

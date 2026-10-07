@@ -27,7 +27,7 @@ jobs:
       - uses: actions/upload-artifact@v4
         with:
           name: biglinux-config-package
-          path: dist/*.pkg.tar.zst
+          path: dist/*.pkg.tar*
           if-no-files-found: error
 
   dispatch:
