@@ -20,13 +20,31 @@ def xdg_home(variable: str, fallback: str) -> str:
     return value if os.path.isabs(value) else os.path.join(home(), fallback)
 
 
+def state_dir() -> str:
+    """Private directory for the operation lock, log and pre-reset backups."""
+    return os.path.join(xdg_home("XDG_STATE_HOME", ".local/state"), "biglinux-config")
+
+
 def home() -> str:
     """The user's home directory (honours a patched ``$HOME`` in tests)."""
     return os.path.realpath(os.path.expanduser("~"))
 
 
-# Directories that must never be removed or replaced as a single unit.
+def expand(raw_path: str) -> str:
+    """Expand ``~`` to the *real* home directory.
+
+    Every lexical check compares against home(). When HOME is reached through
+    a symlink (for example /home linked to another disk), os.path.expanduser
+    would produce paths that never start with home() and every operation
+    would be refused.
+    """
+    if raw_path == "~" or raw_path.startswith("~/"):
+        return home() + raw_path[1:]
+    return raw_path
+
+
 def _structural_dirs() -> set[str]:
+    """Directories that must never be removed or replaced as a single unit."""
     h = home()
     return {
         *(os.path.realpath(xdg_home(var, default)) for var, default in (
@@ -51,26 +69,6 @@ def is_within(base: str, target: str) -> bool:
     return target == base or target.startswith(base + os.sep)
 
 
-def resolve_under_home(raw_path: str) -> str | None:
-    """Expand *raw_path* and return its real path iff it stays inside ``$HOME``.
-
-    Returns ``None`` when the path escapes home (directly or via a symlink).
-    The path need not exist.
-    """
-    expanded = os.path.expanduser(raw_path)
-    # Resolve symlinks on the parts that exist; keep the rest literal.
-    real = os.path.realpath(expanded)
-    h = home()
-    if real == h or real.startswith(h + os.sep):
-        return real
-    return None
-
-
-def is_structural(path: str) -> bool:
-    """True if *path* resolves to a protected structural directory."""
-    return os.path.realpath(os.path.expanduser(path)) in _structural_dirs()
-
-
 def safe_removable(raw_path: str) -> str | None:
     """Return a lexical HOME path, never the target of a leaf symlink.
 
@@ -80,7 +78,7 @@ def safe_removable(raw_path: str) -> str | None:
     """
     if not isinstance(raw_path, str) or not raw_path or "\0" in raw_path:
         return None
-    expanded = os.path.expanduser(raw_path)
+    expanded = expand(raw_path)
     if not os.path.isabs(expanded):
         return None
     target = os.path.abspath(expanded)
@@ -92,7 +90,7 @@ def safe_removable(raw_path: str) -> str | None:
         return None  # never include transaction/recovery state in a reset
     # The binary dconf database covers unrelated apps; use scoped dconf APIs.
     for dconf_dir in {os.path.join(h, ".config", "dconf"),
-                      os.path.join(xdg_home("XDG_CONFIG_HOME", ".config"), "dconf")}:
+                      os.path.join(os.path.realpath(xdg_home("XDG_CONFIG_HOME", ".config")), "dconf")}:
         if target == dconf_dir or target.startswith(dconf_dir + os.sep):
             return None
     parent = os.path.dirname(target)
@@ -112,7 +110,7 @@ def expand_targets(raw_paths: list[str]) -> list[str]:
     """Expand globs deterministically and deduplicate overlapping existing roots."""
     found = set()
     for raw in raw_paths:
-        expanded = os.path.expanduser(raw)
+        expanded = expand(raw)
         candidates = glob.glob(expanded) if glob.has_magic(expanded) else [expanded]
         for candidate in candidates:
             if os.path.lexists(candidate):

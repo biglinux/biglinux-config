@@ -29,6 +29,12 @@ def recovery_message(error: str, directory: str, details: list[str]) -> str:
             + "\n\n" + _("Details: %s") % "; ".join(details))
 
 
+def cleanup_warning(directory: str, error: OSError) -> str:
+    """Success text when only the removal of the private work area failed."""
+    return (_("The operation finished, but its temporary files could not be removed from %s.")
+            % directory + "\n\n" + _("Details: %s") % error)
+
+
 class OperationBusy(RuntimeError):
     pass
 
@@ -65,13 +71,13 @@ def operation_lock():
     try:
         depth = getattr(_local, "depth", 0)
         if not depth:
-            state = os.path.join(paths.xdg_home("XDG_STATE_HOME", ".local/state"), "biglinux-config")
+            state = paths.state_dir()
             os.makedirs(state, mode=0o700, exist_ok=True)
             fd = os.open(os.path.join(state, "operations.lock"),
                          os.O_CREAT | os.O_RDWR | os.O_NOFOLLOW | os.O_CLOEXEC, 0o600)
             info = os.fstat(fd)
             if not stat.S_ISREG(info.st_mode) or info.st_uid != os.getuid() or info.st_nlink != 1:
-                raise OperationBusy("Unsafe operation lock file.")
+                raise OperationBusy(_("The operation lock file %s is not a private regular file.") % state)
             try:
                 fcntl.flock(fd, fcntl.LOCK_EX | fcntl.LOCK_NB)
             except BlockingIOError as exc:

@@ -5,7 +5,9 @@ from __future__ import annotations
 import os
 import subprocess
 import shutil
+import tempfile
 import time
+from pathlib import Path
 
 import backend.reset_manager as rm
 from backend.reset_manager import ResetMode, ResetStatus
@@ -122,7 +124,6 @@ def test_reset_rollback_on_skel_failure(fake_home, fake_skel, monkeypatch):
 # --------------------------------------------------------------------------- #
 def test_backup_first_creates_backup(fake_home, tmp_path, monkeypatch):
     make_tree(fake_home / ".config" / "app", {"a": "data"})
-    monkeypatch.setattr(rm, "PRE_RESET_DIR", str(tmp_path / "prebak"))
     res = rm.reset_app(_entry(), ResetMode.PROGRAM_DEFAULT, backup_first=True)
     assert res.status is ResetStatus.SUCCESS
     assert res.backup_path and os.path.exists(res.backup_path)
@@ -135,8 +136,19 @@ def test_backup_first_creates_backup(fake_home, tmp_path, monkeypatch):
 # --------------------------------------------------------------------------- #
 # Precise process matching (uses our own child process)
 # --------------------------------------------------------------------------- #
+def _executable_dir(tmp_path):
+    """A private copy of sleep is needed so that no unrelated process of the
+    user can match; /tmp is often mounted noexec, so fall back to a private
+    directory next to the tests."""
+    if not os.statvfs(tmp_path).f_flag & os.ST_NOEXEC:
+        return tmp_path, None
+    directory = tempfile.mkdtemp(prefix=".exec-", dir=os.path.dirname(__file__))
+    return Path(directory), directory
+
+
 def test_get_running_pids_and_kill(fake_home, tmp_path):
-    executable = tmp_path / "private-sleeper"
+    directory, cleanup = _executable_dir(tmp_path)
+    executable = directory / "private-sleeper"
     shutil.copy2(shutil.which("sleep"), executable)
     sleeper = subprocess.Popen([str(executable), "30"])
     try:
@@ -159,6 +171,8 @@ def test_get_running_pids_and_kill(fake_home, tmp_path):
         if sleeper.poll() is None:
             sleeper.kill()
         sleeper.wait(timeout=2)
+        if cleanup:
+            shutil.rmtree(cleanup)
 
 
 def test_get_running_pids_no_false_positive(fake_home):

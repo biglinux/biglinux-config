@@ -62,14 +62,14 @@ CATEGORIES: list[dict[str, str]] = [
     {"id": "multimedia", "label": _("Multimedia"), "icon": "applications-multimedia-symbolic"},
     {"id": "graphics", "label": _("Graphics"), "icon": "applications-graphics-symbolic"},
     {"id": "office", "label": _("Office"), "icon": "x-office-document-symbolic"},
-    {"id": "development", "label": _("Development"), "icon": "project-development"},
+    {"id": "development", "label": _("Development"), "icon": "applications-engineering-symbolic"},
     {"id": "terminals", "label": _("Terminals"), "icon": "utilities-terminal-symbolic"},
-    {"id": "shell", "label": _("Shell"), "icon": "format-text-code"},
+    {"id": "shell", "label": _("Shell"), "icon": "text-x-generic-symbolic"},
     {"id": "filemanagers", "label": _("File Managers"), "icon": "system-file-manager-symbolic"},
     {"id": "downloads", "label": _("Downloads"), "icon": "folder-download-symbolic"},
     {"id": "system", "label": _("System"), "icon": "emblem-system-symbolic"},
     {"id": "gaming", "label": _("Gaming"), "icon": "applications-games-symbolic"},
-    {"id": "customization", "label": _("Customization"), "icon": "kdenlive-custom-effect"},
+    {"id": "customization", "label": _("Customization"), "icon": "preferences-desktop-appearance-symbolic"},
     {"id": "desktop_env", "label": _("Desktop Environment"), "icon": "user-desktop-symbolic"},
 ]
 
@@ -84,9 +84,8 @@ STATIC_FAVORITE_IDS: set[str] = {
     "dolphin", "spectacle", "konsole",
 }
 
-# MIME types used to detect the system default app for each favorite "slot"
-# Each tuple: (mime_type_or_command, description)
-# The xdg-settings command is used for web browser; xdg-mime for the rest.
+# The default application of each MIME type becomes a favorite.
+# Each tuple: (mime_type, slot description)
 FAVORITE_MIME_SLOTS: list[tuple[str, str]] = [
     ("x-scheme-handler/http", "browser"),
     ("application/pdf", "pdf_viewer"),
@@ -911,6 +910,7 @@ APP_REGISTRY: list[AppEntry] = [
         config_paths=["~/.bashrc", "~/.bash_profile", "~/.bash_history", "~/.bash_logout"],
         skel_paths=["/etc/skel/.bashrc", "/etc/skel/.bash_profile"],
         sensitive=True,  # shell history
+        reset_paths=["~/.bashrc", "~/.bash_profile", "~/.bash_logout"],  # history is not a setting
     ),
     AppEntry(
         app_id="zsh",
@@ -921,6 +921,7 @@ APP_REGISTRY: list[AppEntry] = [
         config_paths=["~/.zshrc", "~/.zsh_history", "~/.zshenv", "~/.zprofile"],
         skel_paths=["/etc/skel/.zshrc"],
         sensitive=True,  # shell history
+        reset_paths=["~/.zshrc", "~/.zshenv", "~/.zprofile"],  # history is not a setting
     ),
     AppEntry(
         app_id="fish",
@@ -1081,8 +1082,8 @@ APP_REGISTRY: list[AppEntry] = [
         icon="org.gnome.Boxes",
         binary="/usr/bin/gnome-boxes",
         category="system",
-        config_paths=["~/.config/gnome-boxes", "~/.local/share/gnome-boxes"],
-        reset_paths=["~/.config/gnome-boxes"],
+        # ~/.local/share/gnome-boxes holds the virtual machine disk images.
+        config_paths=["~/.config/gnome-boxes"],
     ),
     AppEntry(
         app_id="virt-manager",
@@ -1153,7 +1154,9 @@ APP_REGISTRY: list[AppEntry] = [
         icon="steam",
         binary="/usr/bin/steam",
         category="gaming",
-        config_paths=["~/.steam", "~/.local/share/Steam"],
+        # ~/.local/share/Steam also holds the installed games: back up only
+        # the client settings and the per-account userdata.
+        config_paths=["~/.steam", "~/.local/share/Steam/config", "~/.local/share/Steam/userdata"],
         reset_paths=["~/.local/share/Steam/config"],
     ),
     AppEntry(
@@ -1320,6 +1323,8 @@ APP_REGISTRY: list[AppEntry] = [
             "~/.config/Thunar",
             "~/.config/gtk-3.0",
         ],
+        # gtk-3.0 also holds the file chooser bookmarks of every GTK app.
+        reset_paths=["~/.config/xfce4", "~/.config/Thunar"],
         skel_paths=["/etc/skel/.config/xfce4"],
         is_de=True,
         logout_required=True,
@@ -1404,6 +1409,3 @@ APP_REGISTRY: list[AppEntry] = [
         process_name="budgie-desktop",
     ),
 ]
-
-# Build a lookup dict for fast access by app_id
-APP_REGISTRY_MAP: dict[str, AppEntry] = {entry.app_id: entry for entry in APP_REGISTRY}

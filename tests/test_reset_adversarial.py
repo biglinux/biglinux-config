@@ -152,7 +152,7 @@ def test_desktop_session_never_automatically_terminated(monkeypatch):
     assert not rm.kill_app(entry(is_de=True))
 
 
-@pytest.mark.parametrize("app_id", ["gnome-boxes", "steam", "bottles"])
+@pytest.mark.parametrize("app_id", ["steam", "bottles", "bash", "zsh", "de-xfce"])
 def test_data_heavy_registry_roots_are_not_reset_wholesale(app_id):
     app = next(app for app in APP_REGISTRY if app.app_id == app_id)
     assert app.reset_paths is not None

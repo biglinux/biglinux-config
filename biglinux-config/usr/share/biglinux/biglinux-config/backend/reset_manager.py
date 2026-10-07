@@ -19,15 +19,17 @@ from enum import Enum, auto
 from logging.handlers import RotatingFileHandler
 
 from backend import dconf_manager, paths
-from backend.transactions import FileTransaction, operation_lock, recovery_message
-from i18n import _
+from backend.transactions import FileTransaction, cleanup_warning, operation_lock, recovery_message
 from data.app_registry import AppEntry, get_reset_paths
+from i18n import _
 
 logger = logging.getLogger("biglinux-config")
-STATE_DIR = os.path.join(paths.xdg_home("XDG_STATE_HOME", ".local/state"), "biglinux-config")
-LOG_FILE = os.path.join(STATE_DIR, "operations.log")
-PRE_RESET_DIR = os.path.join(STATE_DIR, "pre-reset-backups")
 SKEL_ROOT = "/etc/skel"
+
+
+def pre_reset_dir() -> str:
+    """Resolved on use, so a changed HOME/XDG_STATE_HOME is always honoured."""
+    return os.path.join(paths.state_dir(), "pre-reset-backups")
 
 
 class _PrivateRotatingFileHandler(RotatingFileHandler):
@@ -43,7 +45,6 @@ class ResetMode(Enum):
 
 class ResetStatus(Enum):
     SUCCESS = "success"
-    PARTIAL = "partial"  # Kept for API compatibility; new operations fail closed.
     FAILED = "failed"
     CANCELLED = "cancelled"
     ROLLED_BACK = "rolled_back"
@@ -66,7 +67,7 @@ class ResetResult:
 def setup_logger() -> None:
     """Initialize explicitly at application startup, never during import."""
     try:
-        state = os.path.join(paths.xdg_home("XDG_STATE_HOME", ".local/state"), "biglinux-config")
+        state = paths.state_dir()
         os.makedirs(state, mode=0o700, exist_ok=True)
         if not any(isinstance(h, RotatingFileHandler) for h in logger.handlers):
             filename = os.path.join(state, "operations.log")
@@ -168,9 +169,6 @@ def kill_app(entry: AppEntry, timeout: float = 5.0) -> bool:
         return False
 
 
-_expand_targets = paths.expand_targets
-
-
 class _CancelReset(Exception):
     pass
 
@@ -191,12 +189,16 @@ def _skel_plan(entry: AppEntry) -> list[tuple[str, str]]:
     return result
 
 
+def _unsupported_template(path: str) -> str:
+    return _("The BigLinux default contains %s, which cannot be copied safely. Nothing was reset.") % path
+
+
 def _stage_template(source: str, staged: str, destination: str, check_cancel) -> None:
     """Copy only inside private staging; partial copies never touch live data."""
     def copy_file(src, dst):
         check_cancel()
         if not stat.S_ISREG(os.lstat(src).st_mode):
-            raise RuntimeError(f"Unsupported template file: {src}")
+            raise RuntimeError(_unsupported_template(src))
         return shutil.copy2(src, dst, follow_symlinks=False)
 
     def check_links(directory, names):
@@ -207,14 +209,14 @@ def _stage_template(source: str, staged: str, destination: str, check_cancel) ->
                 relative = os.path.relpath(candidate, source)
                 member = os.path.relpath(os.path.join(destination, relative), paths.home())
                 if not paths.safe_link(os.readlink(candidate), member):
-                    raise RuntimeError(f"Unsafe template link: {candidate}")
+                    raise RuntimeError(_unsupported_template(candidate))
         return []
 
     os.makedirs(os.path.dirname(staged), mode=0o700, exist_ok=True)
     if os.path.islink(source):
         link = os.readlink(source)
         if not paths.safe_link(link, os.path.relpath(destination, paths.home())):
-            raise RuntimeError(f"Unsafe template link: {source}")
+            raise RuntimeError(_unsupported_template(source))
         os.symlink(link, staged)
     elif os.path.isdir(source):
         shutil.copytree(source, staged, symlinks=True, copy_function=copy_file, ignore=check_links)
@@ -289,7 +291,7 @@ def _reset_app(entry, mode, backup_first, cancel_event):
         try:
             transaction.cleanup()
         except OSError as exc:
-            warning = f"Reset completed, but temporary files remain at {transaction.directory}: {exc}"
+            warning = cleanup_warning(transaction.directory, exc)
             logger.warning(warning)
         logger.info("Reset %s (%s): removed=%d restored=%d", entry.app_id, mode.name, len(removed), len(restored))
         return ResetResult(True, warning, entry.app_id, mode, removed, restored, ResetStatus.SUCCESS, backup_path)
@@ -318,8 +320,8 @@ def _reset_app(entry, mode, backup_first, cancel_event):
 def _safety_backup(entry: AppEntry, cancel_event=None) -> str:
     from backend import backup_manager as bm
     try:
-        os.makedirs(PRE_RESET_DIR, mode=0o700, exist_ok=True)
-        dest = os.path.join(PRE_RESET_DIR, bm.get_app_backup_name(entry.app_id))
+        os.makedirs(pre_reset_dir(), mode=0o700, exist_ok=True)
+        dest = os.path.join(pre_reset_dir(), bm.get_app_backup_name(entry.app_id))
         result = bm.export_backup([entry], dest, cancel_event=cancel_event)
         if result.success:
             return dest
@@ -332,7 +334,7 @@ def _safety_backup(entry: AppEntry, cancel_event=None) -> str:
 def get_config_size(entry: AppEntry, *, cancel_event=None) -> int:
     """Total size in bytes of the existing config paths."""
     total = 0
-    for target in _expand_targets(entry.config_paths):
+    for target in paths.expand_targets(entry.config_paths):
         if cancel_event is not None and cancel_event.is_set():
             return total
         if os.path.islink(target):
@@ -355,25 +357,17 @@ def get_config_size(entry: AppEntry, *, cancel_event=None) -> int:
 
 
 def has_skel(entry: AppEntry) -> bool:
-    """True if at least one skel path exists *and* maps to a safe destination.
+    """True when "Restore BigLinux defaults" has a template it would apply.
 
-    This is what gates the "Restore BigLinux default" option in the UI, so it
-    must never report True for a skel that we would refuse to apply.
+    Same plan as the reset itself, so the UI never offers a template that the
+    reset would then refuse.
     """
-    home = paths.home()
-    for p in entry.skel_paths:
-        if not paths.is_within(SKEL_ROOT, p) or not os.path.exists(p):
-            continue
-        rel = os.path.relpath(p, SKEL_ROOT)
-        dest = os.path.join(home, rel)
-        if paths.safe_destination(dest) is not None:
-            return True
-    return False
+    return bool(_skel_plan(entry))
 
 
 def has_config(entry: AppEntry, *, for_reset: bool = False) -> bool:
     """True if any config path exists on disk, or dconf holds user values."""
-    if _expand_targets(get_reset_paths(entry) if for_reset else entry.config_paths):
+    if paths.expand_targets(get_reset_paths(entry) if for_reset else entry.config_paths):
         return True
     if entry.dconf_paths and dconf_manager.is_available():
         return dconf_manager.has_content(entry.dconf_paths)

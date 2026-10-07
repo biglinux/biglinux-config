@@ -25,3 +25,4 @@ pkgbuild/*.log
 *.orig
 *.rej
 *~
+tests/.exec-*/
