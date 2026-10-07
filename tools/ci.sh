@@ -37,5 +37,7 @@ namcap "$package"
 pacman -U --noconfirm "$package"
 as_builder biglinux-config --version
 if [[ -n $out ]]; then
-    cp "$package" "$out/"
+    # GitHub artifacts reject ":" (from the epoch) in file names.
+    name=$(basename "$package")
+    cp "$package" "$out/${name//:/_}"
 fi
