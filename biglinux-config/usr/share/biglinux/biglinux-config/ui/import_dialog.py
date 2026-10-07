@@ -2,6 +2,7 @@
 
 from __future__ import annotations
 
+import logging
 import threading
 from datetime import datetime
 
@@ -28,6 +29,21 @@ from backend.backup_manager import (
     read_backup_manifest,
 )
 from backend.app_detector import get_localized_name
+
+logger = logging.getLogger("biglinux-config")
+
+
+def _read_manifest(archive_path: str, deliver) -> None:
+    """Read a manifest off the GTK thread; any failure is reported as invalid."""
+    def worker():
+        try:
+            manifest = read_backup_manifest(archive_path)
+        except Exception:
+            logger.exception("Cannot read %s", archive_path)
+            manifest = None
+        GLib.idle_add(deliver, manifest)
+
+    threading.Thread(target=worker, name="biglinux-config-manifest", daemon=True).start()
 
 
 def _choose_backup(parent: Adw.ApplicationWindow, title: str, on_path) -> None:
@@ -100,16 +116,13 @@ def _show_import_options(
 
     GLib.timeout_add(100, _pulse)
 
-    def _read_worker() -> None:
-        manifest = read_backup_manifest(archive_path)
-        def deliver():
-            if not dismissed[0]:
-                return _on_manifest_ready(manifest, dialog, toolbar_view, header,
-                                          parent, archive_path, pulse_active)
-            return GLib.SOURCE_REMOVE
-        GLib.idle_add(deliver)
+    def deliver(manifest):
+        if not dismissed[0]:
+            _on_manifest_ready(manifest, dialog, toolbar_view, header,
+                               parent, archive_path, pulse_active)
+        return GLib.SOURCE_REMOVE
 
-    threading.Thread(target=_read_worker, daemon=True).start()
+    _read_manifest(archive_path, deliver)
 
 
 def _on_manifest_ready(
@@ -404,10 +417,6 @@ def _single_import_check(
 ) -> None:
     """Validate that *archive_path* actually contains *entry* before importing."""
 
-    def _worker() -> None:
-        manifest = read_backup_manifest(archive_path)
-        GLib.idle_add(_done, manifest)
-
     def _done(manifest) -> bool:
         if manifest is None:
             _show_import_error(
@@ -420,10 +429,10 @@ def _single_import_check(
             ) or "—"
             _show_import_error(
                 parent,
-                _("This backup does not contain settings for %s.\n\n"
-                  "It contains: %s") % (get_localized_name(entry), names))
+                _("This backup does not contain settings for %(app)s.\n\n"
+                  "It contains: %(apps)s") % {"app": get_localized_name(entry), "apps": names})
             return GLib.SOURCE_REMOVE
         _confirm_import(parent, archive_path, {entry.app_id}, legacy=manifest["version"] == 1)
         return GLib.SOURCE_REMOVE
 
-    threading.Thread(target=_worker, daemon=True).start()
+    _read_manifest(archive_path, _done)

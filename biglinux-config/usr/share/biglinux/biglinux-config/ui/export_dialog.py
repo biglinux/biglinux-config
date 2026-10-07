@@ -11,7 +11,7 @@ gi.require_version("Adw", "1")
 from gi.repository import Adw, GLib, Gtk
 
 from i18n import _, ngettext
-from ui import set_label
+from ui import app_image, set_label
 from ui.jobs import run_job
 from ui.operation_dialogs import (
     backup_file_dialog,
@@ -164,7 +164,7 @@ def show_export_dialog(
                 available.append((app, size))
             fraction = (i + 1) / total
             GLib.idle_add(_update_progress, app.name, fraction)
-        available.sort(key=lambda t: t[0].name.lower())
+        available.sort(key=lambda t: get_localized_name(t[0]).lower())
         return available
 
     def _update_progress(name: str, fraction: float) -> bool:
@@ -181,20 +181,17 @@ def show_export_dialog(
         apps_group.set_title(_("Applications (%d available)") % len(available))
 
         for app_entry, size in available:
+            name = get_localized_name(app_entry)
             row = Adw.ActionRow()
             row.set_use_markup(False)
-            row.set_title(app_entry.name)
+            row.set_title(name)
 
             paths_str = ", ".join(app_entry.config_paths[:3])
             if len(app_entry.config_paths) > 3:
                 paths_str += f" (+{len(app_entry.config_paths) - 3})"
             row.set_subtitle(f"{GLib.format_size(size)} — {paths_str}")
 
-            icon = Gtk.Image.new_from_icon_name(
-                app_entry.icon if not app_entry.icon.startswith("/") else "application-x-executable"
-            )
-            icon.set_pixel_size(32)
-            row.add_prefix(icon)
+            row.add_prefix(app_image(app_entry.icon, 32))
 
             if is_sensitive(app_entry):
                 warn = Gtk.Image.new_from_icon_name("dialog-warning-symbolic")
@@ -204,7 +201,7 @@ def show_export_dialog(
 
             check = Gtk.CheckButton()
             check.set_active(True)
-            set_label(check, _("Include %s") % app_entry.name)
+            set_label(check, _("Include %s") % name)
             check.connect("toggled", lambda _c: _update_privacy_banner())
             row.add_suffix(check)
             row.set_activatable_widget(check)
@@ -217,22 +214,25 @@ def show_export_dialog(
         _update_privacy_banner()
         return False
 
-    def _update_privacy_banner() -> None:
-        revealed = any(
-            is_sensitive(entry) for _row, chk, entry in check_rows
-            if chk.get_active()
-        )
-        privacy_banner.set_revealed(revealed)
-        export_btn.set_sensitive(any(chk.get_active() for _r, chk, _e in check_rows))
-
-    # Toggle all checkboxes when the header checkbox changes
     _toggling = [False]  # guard against recursive toggling
+
+    def _update_privacy_banner() -> None:
+        active = [chk.get_active() for _row, chk, _entry in check_rows]
+        privacy_banner.set_revealed(any(
+            is_sensitive(entry) for _row, chk, entry in check_rows if chk.get_active()))
+        export_btn.set_sensitive(any(active))
+        if not _toggling[0]:
+            _toggling[0] = True
+            select_all_check.set_inconsistent(any(active) and not all(active))
+            select_all_check.set_active(all(active))
+            _toggling[0] = False
 
     def _on_select_all_toggled(_chk: Gtk.CheckButton) -> None:
         if _toggling[0]:
             return
         active = select_all_check.get_active()
         _toggling[0] = True
+        select_all_check.set_inconsistent(False)
         for _row, chk, _entry in check_rows:
             chk.set_active(active)
         _toggling[0] = False
@@ -306,8 +306,10 @@ def _on_export_done(
 ) -> bool:
     progress_dialog.force_close()
     if result.success:
-        body = ngettext("%d application exported (%s)", "%d applications exported (%s)",
-                        result.app_count) % (result.app_count, GLib.format_size(result.total_size))
+        body = ngettext("%(count)d application exported (%(size)s)",
+                        "%(count)d applications exported (%(size)s)",
+                        result.app_count) % {"count": result.app_count,
+                                             "size": GLib.format_size(result.total_size)}
         if result.message:
             body += "\n\n" + result.message
         show_result_dialog(parent, "restore-settings", _("Backup created!"), body,
