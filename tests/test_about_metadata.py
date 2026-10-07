@@ -10,7 +10,7 @@ from ui.metadata import WELCOME_FEATURES
 
 
 def test_about_links_use_the_project_repository():
-    assert APP_WEBSITE == "https://github.com/ruscher/biglinux-config"
+    assert APP_WEBSITE == "https://github.com/biglinux/biglinux-config"
     assert APP_ISSUE_URL == f"{APP_WEBSITE}/issues"
     assert APP_SUPPORT_URL.startswith(APP_WEBSITE)
 

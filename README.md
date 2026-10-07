@@ -80,7 +80,7 @@ repository; all dependencies come from the official Arch repositories, and no
 extra repository is needed:
 
 ```bash
-git clone https://github.com/ruscher/biglinux-config.git
+git clone https://github.com/biglinux/biglinux-config.git
 cd biglinux-config/pkgbuild
 makepkg -si
 ```
@@ -175,7 +175,7 @@ To add a language, copy `biglinux-config/locale/biglinux-config.pot` to
 ### Run from source
 
 ```bash
-git clone https://github.com/ruscher/biglinux-config.git
+git clone https://github.com/biglinux/biglinux-config.git
 cd biglinux-config
 python3 biglinux-config/usr/share/biglinux/biglinux-config/main.py
 ```
@@ -272,7 +272,7 @@ that the safety backup would not cover, and resets of shared folders.
 - **Logs and safety backups** are in `~/.local/state/biglinux-config/`.
 
 Please report problems with the exact message at the
-[issue tracker](https://github.com/ruscher/biglinux-config/issues).
+[issue tracker](https://github.com/biglinux/biglinux-config/issues).
 
 ## Authors
 
@@ -286,6 +286,6 @@ Restore Settings is free software under the
 
 ## Links
 
-- Repository: <https://github.com/ruscher/biglinux-config>
-- Issues: <https://github.com/ruscher/biglinux-config/issues>
+- Repository: <https://github.com/biglinux/biglinux-config>
+- Issues: <https://github.com/biglinux/biglinux-config/issues>
 - BigLinux: <https://www.biglinux.com.br/>

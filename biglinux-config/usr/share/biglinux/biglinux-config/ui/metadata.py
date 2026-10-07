@@ -9,7 +9,7 @@ APP_NAME = "Restore Settings"
 APP_VERSION = "2.0.0"
 APP_ICON = "restore-settings"
 APP_DEVELOPER = "Rafael Ruscher, Bruno Gonçalves"
-APP_WEBSITE = "https://github.com/ruscher/biglinux-config"
+APP_WEBSITE = "https://github.com/biglinux/biglinux-config"
 APP_ISSUE_URL = f"{APP_WEBSITE}/issues"
 APP_SUPPORT_URL = f"{APP_WEBSITE}#troubleshooting"
 

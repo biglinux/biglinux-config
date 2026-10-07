@@ -20,7 +20,7 @@ mapfile -t sources < <(git ls-files "$app/*.py" | sort)
 xgettext --language=Python --from-code=UTF-8 --keyword=_ --keyword=ngettext:1,2 \
     --add-comments=TRANSLATORS: --add-location=file --sort-by-file --package-name="$domain" \
     --package-version="$version" \
-    --msgid-bugs-address=https://github.com/ruscher/biglinux-config/issues \
+    --msgid-bugs-address=https://github.com/biglinux/biglinux-config/issues \
     --output="$work/$domain.pot" "${sources[@]}"
 
 # Source locations and the creation date change with every edit; only the
