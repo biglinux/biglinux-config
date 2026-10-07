@@ -1,36 +1,37 @@
-# Maintainer: Vilmar Catafesta <vcatafesta@gmail.com>
+# Maintainer: Rafael Ruscher <rruscher@gmail.com>
+# Maintainer: Bruno Gonçalves <bigbruno@gmail.com>
 
 pkgname=biglinux-config
-pkgver=$(date +%Y_%m_%d)
-pkgrel=$(date +%H%M)
+pkgver=2.0.0
+pkgrel=1
+pkgdesc="Back up, restore and reset application settings (GTK 4/libadwaita)"
 arch=('any')
+url="https://github.com/ruscher/biglinux-config"
 license=('GPL-3.0-or-later')
-url="https://github.com/biglinux/$pkgname"
-source=("git+${url}.git")
-pkgdesc="Restore application settings to defaults — GTK4/Adwaita"
-depends=('python' 'python-gobject' 'gtk4' 'libadwaita' 'xdg-utils')
-optdepends=('flatpak: Flatpak application settings support'
-            'dconf: GNOME/GSettings configuration support')
-md5sums=(SKIP)
+depends=(
+  'dconf'
+  'glib2'
+  'gtk4>=1:4.12'
+  'hicolor-icon-theme'
+  'libadwaita>=1:1.6'
+  'python>=3.12'
+  'python-gobject'
+)
+makedepends=('git')
+checkdepends=('python-pytest')
+optdepends=('flatpak: back up and reset Flatpak application settings')
+source=("$pkgname::git+$url.git#tag=v$pkgver")
+sha256sums=('SKIP')
+
+check() {
+  cd "$pkgname"
+  bash tools/check.sh
+}
 
 package() {
-	# Verify default folder
-	if [ -d "${srcdir}/${pkgname}/${pkgname}" ]; then
-		InternalDir="${srcdir}/${pkgname}/${pkgname}"
-	else
-		InternalDir="${srcdir}/${pkgname}"
-	fi
+  cd "$pkgname/$pkgname"
+  cp -a --no-preserve=ownership usr "$pkgdir/"
 
-	# Copy files
-	if [ -d "${InternalDir}/usr" ]; then
-		cp -r "${InternalDir}/usr" "${pkgdir}/"
-	fi
-
-	if [ -d "${InternalDir}/etc" ]; then
-		cp -r "${InternalDir}/etc" "${pkgdir}/"
-	fi
-
-	if [ -d "${InternalDir}/opt" ]; then
-		cp -r "${InternalDir}/opt" "${pkgdir}/"
-	fi
+  local appdir=/usr/share/biglinux/biglinux-config
+  python -m compileall -q -d "$appdir" "$pkgdir$appdir"
 }

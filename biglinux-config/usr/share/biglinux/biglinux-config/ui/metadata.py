@@ -1,19 +1,22 @@
-"""Declarative product metadata; safe to import without GTK."""
+"""Product metadata; safe to import without GTK.
+
+APP_VERSION is the single source of the release number: tests check that
+the PKGBUILD and the AppStream metadata declare the same version.
+"""
 from i18n import _
 
 APP_NAME = "Restore Settings"
-APP_VERSION = "1.0.0"
+APP_VERSION = "2.0.0"
 APP_ICON = "restore-settings"
-APP_DEVELOPER = "BigLinux Team"
+APP_DEVELOPER = "Rafael Ruscher, Bruno Gonçalves"
 APP_WEBSITE = "https://github.com/ruscher/biglinux-config"
 APP_ISSUE_URL = f"{APP_WEBSITE}/issues"
 APP_SUPPORT_URL = f"{APP_WEBSITE}#troubleshooting"
 
 APP_AUTHORS = (
-    "Bruno Gonçalves <bigbruno@gmail.com>",
     "Rafael Ruscher <rruscher@gmail.com>",
+    "Bruno Gonçalves <bigbruno@gmail.com>",
 )
-
 
 WELCOME_FEATURES = (
     (
