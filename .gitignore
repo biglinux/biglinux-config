@@ -26,3 +26,4 @@ pkgbuild/*.log
 *.rej
 *~
 tests/.exec-*/
+pkgbuild/PKGBUILD.ci
