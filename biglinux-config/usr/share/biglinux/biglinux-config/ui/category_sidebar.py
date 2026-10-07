@@ -114,4 +114,3 @@ class CategorySidebar(Gtk.Box):
 
     def select_category(self, category_id: str) -> None:
         self._select(category_id)
-

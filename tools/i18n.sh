@@ -18,7 +18,7 @@ trap 'rm -rf -- "$work"' EXIT
 
 mapfile -t sources < <(git ls-files "$app/*.py" | sort)
 xgettext --language=Python --from-code=UTF-8 --keyword=_ --keyword=ngettext:1,2 \
-    --add-comments=TRANSLATORS: --sort-by-file --package-name="$domain" \
+    --add-comments=TRANSLATORS: --add-location=file --sort-by-file --package-name="$domain" \
     --package-version="$version" \
     --msgid-bugs-address=https://github.com/ruscher/biglinux-config/issues \
     --output="$work/$domain.pot" "${sources[@]}"
