@@ -9,6 +9,8 @@ import tempfile
 import time
 from pathlib import Path
 
+import pytest
+
 import backend.reset_manager as rm
 from backend.reset_manager import ResetMode, ResetStatus
 from data.app_registry import AppEntry
@@ -138,12 +140,15 @@ def test_backup_first_creates_backup(fake_home, tmp_path, monkeypatch):
 # --------------------------------------------------------------------------- #
 def _executable_dir(tmp_path):
     """A private copy of sleep is needed so that no unrelated process of the
-    user can match; /tmp is often mounted noexec, so fall back to a private
-    directory next to the tests."""
+    user can match (the shared /usr/bin/sleep would). /tmp is often mounted
+    noexec, so fall back to a private directory next to the tests."""
     if not os.statvfs(tmp_path).f_flag & os.ST_NOEXEC:
         return tmp_path, None
-    directory = tempfile.mkdtemp(prefix=".exec-", dir=os.path.dirname(__file__))
-    return Path(directory), directory
+    tests = os.path.dirname(__file__)
+    if not os.statvfs(tests).f_flag & os.ST_NOEXEC:
+        directory = tempfile.mkdtemp(prefix=".exec-", dir=tests)
+        return Path(directory), directory
+    pytest.skip("no private directory allows execution (noexec mounts)")
 
 
 def test_get_running_pids_and_kill(fake_home, tmp_path):

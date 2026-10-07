@@ -66,7 +66,7 @@ def test_desktop_entries_match_the_application():
 
 def test_launchers():
     launcher = TREE / "usr/bin/biglinux-config"
-    assert os.access(launcher, os.X_OK)
+    assert launcher.stat().st_mode & 0o111  # the mode bit; /tmp may be mounted noexec
     assert "/usr/share/biglinux/biglinux-config/main.py" in launcher.read_text()
     alias = TREE / "usr/bin/big-config"
     assert alias.is_symlink() and os.readlink(alias) == "biglinux-config"
