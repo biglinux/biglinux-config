@@ -14,6 +14,10 @@ from pathlib import Path
 
 import pytest
 
+# Assertions compare English messages: pin the locale before i18n is imported.
+os.environ["LC_ALL"] = "C.UTF-8"
+os.environ.pop("LANGUAGE", None)
+
 # Make the application package importable (backend/, data/, ...).
 APP_ROOT = (
     Path(__file__).resolve().parent.parent
