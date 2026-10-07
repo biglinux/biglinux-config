@@ -223,7 +223,7 @@ def test_conflicting_dconf_dumps_fail_before_any_live_replacement(fake_home, tmp
                 "applications": [{"app_id": "app", "name": "App", "roots": [".config/app"]},
                                  {"app_id": "other", "name": "Other", "roots": []}],
                 "dconf": [{"app_id": app_id, "items": [{"path": "/org/example/", "member": member}]}
-                          for app_id, member in zip(("app", "other"), dconf_members)]}
+                          for app_id, member in zip(("app", "other"), dconf_members, strict=True)]}
     payloads = {".config/app/a": b"NEW", dconf_members[0]: b"[/]\nkey='a'\n",
                 dconf_members[1]: b"[/]\nkey='b'\n"}
     with tarfile.open(arc, "w:gz") as tar:

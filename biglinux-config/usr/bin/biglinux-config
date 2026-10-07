@@ -1,9 +1,4 @@
 #!/usr/bin/env bash
-set -euo pipefail
-
-# BigLinux Config — GTK4/Adwaita application
-# Launches the Python app for restoring application settings
-
-APP_DIR="/usr/share/biglinux/biglinux-config"
-
-exec /usr/bin/python3 -I "${APP_DIR}/main.py" "$@"
+# -I ignores PYTHONPATH, the user site directory and the current directory,
+# so only the installed application tree is imported.
+exec /usr/bin/python3 -I /usr/share/biglinux/biglinux-config/main.py "$@"

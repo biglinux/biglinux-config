@@ -1,10 +1,8 @@
-"""FlowBox grid of application cards — BigControlCenter style."""
+"""FlowBox grid of application cards, styled like BigLinux Control Center."""
 
 from __future__ import annotations
 
 from collections.abc import Callable
-
-import os
 
 import gi
 
@@ -13,7 +11,7 @@ gi.require_version("Adw", "1")
 from gi.repository import Adw, Gdk, Gtk, Pango
 
 from i18n import _
-from ui import set_label
+from ui import app_image, set_label
 from data.app_registry import AppEntry
 from backend.app_detector import get_localized_name
 from backend.reset_manager import has_skel
@@ -24,7 +22,7 @@ def _is_flatpak(entry: AppEntry) -> bool:
 
 
 class AppGrid(Gtk.Box):
-    """Displays application cards in a responsive FlowBox — BigControlCenter style."""
+    """Application cards in a responsive FlowBox, with an empty state."""
 
     def __init__(self) -> None:
         super().__init__(orientation=Gtk.Orientation.VERTICAL)
@@ -85,20 +83,14 @@ class AppGrid(Gtk.Box):
 
     def populate(self, apps: list[AppEntry]) -> None:
         """Replace all cards with the given app list."""
-        child = self._flowbox.get_first_child()
-        while child:
-            next_child = child.get_next_sibling()
-            self._flowbox.remove(child)
-            child = next_child
+        self._flowbox.remove_all()
         self._cards.clear()
-
         for entry in apps:
-            btn = self._create_program_button(entry)
-            self._flowbox.append(btn)
-            # FlowBox wraps in FlowBoxChild automatically
-            fb_child = btn.get_parent()
-            self._cards.append((fb_child, entry))
-
+            button = self._create_program_button(entry)
+            self._flowbox.append(button)
+            self._cards.append((button.get_parent(), entry))
+        # A new list starts at the top, not at the previous category's offset.
+        self._scrolled.get_vadjustment().set_value(0)
         self._update_empty_state()
 
     def filter_by_text(self, text: str) -> None:
@@ -143,19 +135,16 @@ class AppGrid(Gtk.Box):
             tip += "\n" + _("BigLinux default available")
         button.set_tooltip_text(tip)
 
-        # Hover → show description in status bar
         motion = Gtk.EventControllerMotion.new()
-        motion.connect("enter", self._on_card_enter, entry)
+        motion.connect("enter", self._on_card_enter, entry, skel_available)
         motion.connect("leave", self._on_card_leave)
         button.add_controller(motion)
 
-        # Right-click → favorites context menu
         secondary = Gtk.GestureClick.new()
         secondary.set_button(Gdk.BUTTON_SECONDARY)
         secondary.connect("pressed", self._on_card_secondary, button, entry)
         button.add_controller(secondary)
 
-        # Long-press (touch) → same context menu
         long_press = Gtk.GestureLongPress.new()
         long_press.set_touch_only(True)
         long_press.connect(
@@ -164,19 +153,17 @@ class AppGrid(Gtk.Box):
         )
         button.add_controller(long_press)
 
-        # Keyboard: Menu key or Shift+F10 → same context menu on the focused card
+        # The favorites menu also opens with the Menu key or Shift+F10.
         key = Gtk.EventControllerKey.new()
         key.connect("key-pressed", self._on_card_key, button, entry)
         button.add_controller(key)
 
-        # Content: icon + name (vertical)
         content = Gtk.Box(orientation=Gtk.Orientation.VERTICAL, spacing=6)
         content.set_halign(Gtk.Align.CENTER)
         content.set_valign(Gtk.Align.START)
         button.set_child(content)
 
-        # Icon — 64px, with corner badges (source + BigLinux default).
-        icon = self._create_icon(entry.icon)
+        icon = app_image(entry.icon, 64)
         icon_holder = Gtk.Overlay()
         icon_holder.set_halign(Gtk.Align.CENTER)
         icon_holder.set_child(icon)
@@ -202,7 +189,6 @@ class AppGrid(Gtk.Box):
 
         content.append(icon_holder)
 
-        # Name label — ellipsize, wrap, centered
         name_label = Gtk.Label(label=get_localized_name(entry))
         name_label.set_ellipsize(Pango.EllipsizeMode.END)
         name_label.set_max_width_chars(20)
@@ -214,17 +200,6 @@ class AppGrid(Gtk.Box):
         content.append(name_label)
 
         return button
-
-    def _create_icon(self, icon_ref: str) -> Gtk.Image:
-        """Create a 64px icon from path or icon name."""
-        if icon_ref.startswith("/") and os.path.isfile(icon_ref):
-            icon = Gtk.Image.new_from_file(icon_ref)
-        elif icon_ref:
-            icon = Gtk.Image.new_from_icon_name(icon_ref)
-        else:
-            icon = Gtk.Image.new_from_icon_name("application-x-executable")
-        icon.set_pixel_size(64)
-        return icon
 
     def _on_card_clicked(self, _button: Gtk.Button, entry: AppEntry) -> None:
         if self._on_app_activated:
@@ -301,11 +276,12 @@ class AppGrid(Gtk.Box):
         _x: float,
         _y: float,
         entry: AppEntry,
+        skel_available: bool,
     ) -> None:
         if self._on_app_hover:
             kind = _("Flatpak") if _is_flatpak(entry) else _("Native")
             parts = [get_localized_name(entry), kind]
-            if has_skel(entry):
+            if skel_available:
                 parts.append(_("BigLinux default available"))
             self._on_app_hover(" · ".join(parts))
 

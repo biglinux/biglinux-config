@@ -19,9 +19,8 @@ import tarfile
 import tempfile
 import time
 import zlib
-from collections.abc import Callable
 from contextlib import contextmanager
-from dataclasses import dataclass
+from dataclasses import dataclass, replace
 from enum import Enum
 
 from gi.repository import GLib
@@ -33,10 +32,10 @@ from backend.archive_policy import (
     validate_checksums,
 )
 from backend.transactions import (
-    FileTransaction, fsync_directory, operation_lock, recovery_message,
+    FileTransaction, cleanup_warning, fsync_directory, operation_lock, recovery_message,
 )
 from data.app_registry import APP_REGISTRY, AppEntry
-from i18n import _
+from i18n import _, ngettext
 
 logger = logging.getLogger("biglinux-config")
 
@@ -52,17 +51,20 @@ def _describe(exc):
         return (_("This file is damaged, incomplete or was not created by Restore Settings.")
                 + "\n\n" + _("Details: %s") % exc)
     return str(exc)
+
+
 BACKUP_VERSION = 2
-SUPPORTED_VERSIONS = (1, 2)
 _HASH_CHUNK = 1024 * 1024
-_DCONF_PREFIX = DCONF_PREFIX
+# Service Worker/blob_storage can hold persistent offline data; not caches.
 CACHE_COMPONENTS = frozenset({
     "Cache", "cache", "Cache_Data", "CachedData", "Code Cache", "GPUCache",
     "ShaderCache", "Crash Reports", "Crashpad", "GrShaderCache", "DawnCache",
     "component_crx_cache",
 })
-# Service Worker/blob_storage can hold persistent offline data; not caches.
-ProgressCallback = Callable[[int, int, str], None]
+# Chromium/Electron single-instance markers describe a running process. They
+# point to sockets outside HOME, and a restored copy makes the profile look
+# "in use on another computer". They are never part of a backup.
+RUNTIME_NAMES = frozenset({"SingletonLock", "SingletonSocket", "SingletonCookie"})
 
 
 class _Cancelled(Exception):
@@ -105,7 +107,8 @@ class _FileRecord:
     size: int
     mode: int
     mtime: int
-    link_target: str = ""
+    link_target: str = ""  # as stored in the archive (always relative)
+    link_raw: str = ""  # as read from disk, to detect changes before writing
     app_id: str = ""
 
 
@@ -131,6 +134,8 @@ def _iter_entry_paths(top: str, include_cache=True, check_cancel=lambda: None):
         path = pending.pop()
         if not include_cache and _is_cache_path(os.path.relpath(path, paths.home())):
             continue
+        if path != top and os.path.basename(path) in RUNTIME_NAMES:
+            continue
         yield path
         if not os.path.islink(path) and os.path.isdir(path):
             with os.scandir(path) as entries:
@@ -141,8 +146,31 @@ def _is_cache_path(rel: str) -> bool:
     return any(component in CACHE_COMPONENTS for component in rel.split("/"))
 
 
+def _portable_link(full: str, rel: str) -> str | None:
+    """The link target to store in a backup, or None if it cannot be restored.
+
+    Absolute links into HOME (Discord, Steam) are rewritten relative to the
+    link itself, so they keep pointing at the same file after a restore.
+    Links that leave HOME cannot be restored safely and are left out.
+    """
+    link = os.readlink(full)
+    if os.path.isabs(link):
+        target, home = os.path.normpath(link), paths.home()
+        # HOME may be spelled through a symlink inside the link target.
+        for prefix in (home, os.path.abspath(os.path.expanduser("~"))):
+            if target.startswith(prefix + os.sep):
+                target = home + target[len(prefix):]
+                break
+        else:
+            return None
+        link = os.path.relpath(target, os.path.dirname(full))
+    return link if _symlink_is_safe(link, rel) else None
+
+
 def _build_inventory(entries, include_cache, check_cancel=lambda: None):
-    records, app_roots, seen = [], {}, set()
+    """Records to archive, the roots of each app, the total size and the
+    relative paths of links left out because they point outside HOME."""
+    records, app_roots, seen, skipped = [], {}, set(), []
     total_size = 0
     for entry in entries:
         roots = []
@@ -150,7 +178,10 @@ def _build_inventory(entries, include_cache, check_cancel=lambda: None):
             check_cancel()
             real = paths.safe_removable(target)
             if real is None:
-                raise BackupError(f"Unsafe configuration path: {target}")
+                raise BackupError(
+                    _("%s is protected or inside a folder that is a symbolic link. "
+                      "For safety, it cannot be backed up.")
+                    % ("~/" + os.path.relpath(target, paths.home())))
             rel_root = os.path.relpath(real, paths.home())
             if not include_cache and _is_cache_path(rel_root):
                 continue
@@ -160,25 +191,54 @@ def _build_inventory(entries, include_cache, check_cancel=lambda: None):
                 if rel in seen:
                     continue
                 info = os.lstat(full)  # no silent omission of vanished/unreadable data
+                raw = ""
                 if stat.S_ISREG(info.st_mode):
                     kind, size, link = "file", info.st_size, ""
                 elif stat.S_ISDIR(info.st_mode):
                     kind, size, link = "dir", 0, ""
                 elif stat.S_ISLNK(info.st_mode):
-                    kind, size, link = "link", 0, os.readlink(full)
-                    if not _symlink_is_safe(link, rel):
-                        raise BackupError(_("Could not save %s. Close the application and try again.") % rel)
+                    kind, size, raw = "link", 0, os.readlink(full)
+                    link = _portable_link(full, rel)
+                    if link is None:
+                        skipped.append(rel)
+                        continue
+                elif stat.S_ISSOCK(info.st_mode) or stat.S_ISFIFO(info.st_mode):
+                    logger.info("Not saving %s: sockets and pipes exist only while a program runs", rel)
+                    continue
                 else:
                     raise BackupError(_("Could not save %s. Close the application and try again.") % rel)
                 if paths.archive_name(rel) is None:
                     raise BackupError(_("The file name %r cannot be stored in a backup.") % rel)
                 seen.add(rel)
                 total_size += size
-                records.append(_FileRecord(full, rel, kind, size,
-                    stat.S_IMODE(info.st_mode), int(info.st_mtime), link, entry.app_id))
+                records.append(_FileRecord(full, rel, kind, size, stat.S_IMODE(info.st_mode),
+                                           int(info.st_mtime), link, raw, entry.app_id))
         if roots:
             app_roots[entry.app_id] = roots
-    return records, app_roots, total_size
+    return records, app_roots, total_size, skipped
+
+
+def _check_export_limits(records, total, limits=DEFAULT_LIMITS):
+    """Refuse before writing anything an archive that the importer would reject."""
+    largest = max((r for r in records if r.kind == "file"), key=lambda r: r.size, default=None)
+    if largest is not None and largest.size > limits.max_file_size:
+        raise BackupError(_("~/%(path)s is %(size)s; files larger than %(limit)s cannot be backed up.")
+                          % {"path": largest.rel, "size": GLib.format_size(largest.size),
+                             "limit": GLib.format_size(limits.max_file_size)})
+    if len(records) >= limits.max_members or total > limits.max_total_size:
+        raise BackupError(_("These settings are too large for one backup (%(size)s in %(count)d items). "
+                            "Export fewer applications at a time.")
+                          % {"size": GLib.format_size(total), "count": len(records)})
+
+
+def _skipped_links_message(skipped: list[str]) -> str:
+    if not skipped:
+        return ""
+    shown = ", ".join("~/" + rel for rel in skipped[:5]) + (" …" if len(skipped) > 5 else "")
+    return ngettext(
+        "%(count)d link points outside your home folder and was not included: %(paths)s",
+        "%(count)d links point outside your home folder and were not included: %(paths)s",
+        len(skipped)) % {"count": len(skipped), "paths": shown}
 
 
 def _collect_dconf(entries, check_cancel=lambda: None):
@@ -192,7 +252,7 @@ def _collect_dconf(entries, check_cancel=lambda: None):
                 cached[namespace] = dconf_manager.dump_strict(namespace)
             data = cached[namespace].encode("utf-8")
             if len(data) > DEFAULT_LIMITS.max_dconf_size:
-                raise BackupError(f"dconf namespace exceeds the backup limit: {namespace}")
+                raise BackupError(_("The desktop settings in %s are too large to back up.") % namespace)
             member = f"{DCONF_PREFIX}/{entry.app_id}/{index}.ini"
             members.append((member, data))  # empty dumps also describe a valid state
             items.append({"path": namespace, "member": member})
@@ -239,7 +299,8 @@ def export_backup(entries: list[AppEntry], archive_path: str, full_directory=Fal
             check_cancel()
             if len({e.app_id for e in entries}) != len(entries):
                 raise BackupError("Duplicate applications in export.")
-            records, roots, total = _build_inventory(entries, full_directory, check_cancel)
+            records, roots, total, skipped = _build_inventory(entries, full_directory, check_cancel)
+            _check_export_limits(records, total)
             dconf_members, dconf_sections = _collect_dconf(entries, check_cancel)
             total += sum(len(data) for _, data in dconf_members)
             dconf_ids = {s["app_id"] for s in dconf_sections}
@@ -279,7 +340,7 @@ def export_backup(entries: list[AppEntry], archive_path: str, full_directory=Fal
                             policy.check(info)
                             tar.addfile(info)
                         elif rec.kind == "link":
-                            if not os.path.islink(rec.fullpath) or os.readlink(rec.fullpath) != rec.link_target:
+                            if not os.path.islink(rec.fullpath) or os.readlink(rec.fullpath) != rec.link_raw:
                                 raise BackupError(_changed(rec.rel))
                             info.type, info.linkname = tarfile.SYMTYPE, rec.link_target
                             policy.check(info)
@@ -295,10 +356,11 @@ def export_backup(entries: list[AppEntry], archive_path: str, full_directory=Fal
                                 info.mode = stat.S_IMODE(before.st_mode) & 0o777
                                 policy.check(info)
                                 hasher = hashlib.blake2b(digest_size=32)
-                                def advance(count):
+
+                                def advance(count, label=rec.rel):
                                     nonlocal done
                                     done += count
-                                    _notify(progress_callback, done, total, rec.rel)
+                                    _notify(progress_callback, done, total, label)
                                 tar.addfile(info, _HashingReader(src, hasher, check_cancel, advance))
                                 after = os.fstat(src.fileno())
                                 if (before.st_size, before.st_mtime_ns, before.st_ctime_ns) != (after.st_size, after.st_mtime_ns, after.st_ctime_ns):
@@ -319,7 +381,8 @@ def export_backup(entries: list[AppEntry], archive_path: str, full_directory=Fal
             os.replace(temporary, archive_path)
             temporary = None
             _notify(progress_callback, total, total, "")
-            return BackupResult(True, "", archive_path, len(manifest["applications"]), total, len(records) + len(dconf_members))
+            return BackupResult(True, _skipped_links_message(skipped), archive_path,
+                                len(manifest["applications"]), total, len(records) + len(dconf_members))
     except _Cancelled:
         return BackupResult(False, "cancelled", archive_path, 0, 0)
     except Exception as exc:
@@ -454,10 +517,6 @@ def read_backup_manifest(archive_path, *, limits=DEFAULT_LIMITS, cancel_event=No
     return None
 
 
-# Kept for callers/tests using the previous helper name.
-_normalise_manifest = normalise_manifest
-
-
 def _matches_root(name, roots):
     return any(name == root or name.startswith(root + "/") for root in roots)
 
@@ -490,13 +549,13 @@ def _scan_archive(source, manifest, *, staging=None, restore_roots=(), selected_
             if name in dconf_names and (not member.isreg() or member.size > limits.max_dconf_size):
                 raise DamagedBackup(f"Invalid/oversized dconf dump: {name}")
             if member.issym() and not _symlink_is_safe(member.linkname, name):
-                raise BackupError(f"Unsafe symlink at the live destination: {name}")
+                raise DamagedBackup(f"Unsafe symlink at the live destination: {name}")
             selected = staging is not None and _matches_root(name, restore_roots)
             target = paths.safe_extract_target(name, staging) if selected else None
             filtered = None
             if selected:
                 if target is None:
-                    raise BackupError(f"Unsafe staged destination: {name}")
+                    raise DamagedBackup(f"Unsafe staged destination: {name}")
                 filtered = tarfile.data_filter(member, staging)
                 if filtered is None:
                     raise DamagedBackup(f"Rejected archive member: {name}")
@@ -641,7 +700,7 @@ def _apply_dconf(manifest, texts, selected_ids, transaction, check_cancel):
         transaction.dconf.append((ns, dconf_manager.dump_strict(ns)))
         transaction.write_journal()
         if not dconf_manager.reset(ns) or (text.strip() and not dconf_manager.load(ns, text)):
-            raise BackupError(f"Failed to replace dconf namespace {ns}")
+            raise BackupError(_("Could not change the desktop settings in %s.") % ns)
 
 
 def import_backup(archive_path, selected_app_ids=None, progress_callback=None,
@@ -685,7 +744,6 @@ def _import_backup(archive_path, selected_app_ids=None, progress_callback=None,
             if free < needed:
                 raise BackupError(_("Not enough free space: %(need)s needed, %(free)s available.") % {"need": GLib.format_size(needed), "free": GLib.format_size(free)})
             # Enforce observed bytes too; metadata is untrusted and can understate size.
-            from dataclasses import replace
             scan_limits = replace(limits, max_total_size=min(limits.max_total_size, max(0, free - 16 * 1024**2)))
             transaction = FileTransaction(".biglinux-config-restore-")
             texts = _scan_archive(source, manifest, staging=transaction.staging,
@@ -706,7 +764,7 @@ def _import_backup(archive_path, selected_app_ids=None, progress_callback=None,
             try:
                 transaction.cleanup()
             except OSError as exc:
-                warning = f"Settings restored, but temporary files remain at {transaction.directory}: {exc}"
+                warning = cleanup_warning(transaction.directory, exc)
                 logger.warning(warning)
             _notify(progress_callback, manifest["total_size"], manifest["total_size"], "")
             return RestoreFromBackupResult(True, warning, [a["name"] for a in selected], skipped, ImportStatus.SUCCESS)

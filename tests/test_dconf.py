@@ -18,7 +18,7 @@ from data.app_registry import AppEntry
 from conftest import register
 
 pytestmark = pytest.mark.skipif(
-    os.environ.get("BIGLINUX_TEST_DCONF") != "1" or not dc.is_available(),
+    not os.environ.get("BIGLINUX_TEST_DCONF") or not dc.is_available(),
     reason="run tools/check-dconf.sh for an isolated dconf session")
 
 

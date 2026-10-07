@@ -1,4 +1,4 @@
-"""Main GTK4/Adwaita application — BigControlCenter visual style."""
+"""Main GTK 4/libadwaita application and window."""
 
 from __future__ import annotations
 
@@ -10,18 +10,21 @@ gi.require_version("Gtk", "4.0")
 gi.require_version("Adw", "1")
 from gi.repository import Adw, Gdk, GLib, Gio, Gtk
 
-from i18n import _
-from data.app_registry import AppEntry, CATEGORIES
-from backend.app_detector import get_installed_apps, get_favorites, get_localized_name
 from backend import user_prefs
-from ui.jobs import run_job
+from backend.app_detector import get_favorites, get_installed_apps, get_localized_name
 from backend.flatpak_detector import get_installed_flatpaks
-from ui.category_sidebar import CategorySidebar
-from ui.app_grid import AppGrid
-from ui.restore_dialog import show_restore_dialog
+from backend.flatpak_detector import icon_dirs as flatpak_icon_dirs
+from backend.reset_manager import setup_logger
+from data.app_registry import CATEGORIES, AppEntry
+from i18n import _
 from ui.about_dialog import show_about_dialog
+from ui.app_grid import AppGrid
+from ui.category_sidebar import CategorySidebar
 from ui.export_dialog import show_export_dialog
 from ui.import_dialog import show_import_dialog
+from ui.jobs import run_job
+from ui.metadata import APP_ICON
+from ui.restore_dialog import show_restore_dialog
 from ui.welcome_dialog import WelcomeDialog, should_show_welcome
 
 
@@ -39,20 +42,29 @@ class BigConfigApp(Adw.Application):
         self._installed_apps: list[AppEntry] = []
         self._flatpak_apps: list[AppEntry] = []
         self._apps_by_category: dict[str, list[AppEntry]] = {}
-        self._current_category: str = "favorites"
+        self._current_category = "favorites"
+        self._auto_favorites: list[AppEntry] = []
+        self._auto_fav_ids: set[str] = set()
+        self._fav_ids: set[str] = set()
+        self._search_mode = False
 
     def do_startup(self) -> None:
         Adw.Application.do_startup(self)
-        # Register custom icon directories so app icons are found
-        icon_theme = Gtk.IconTheme.get_for_display(Gdk.Display.get_default())
+        display = Gdk.Display.get_default()
         app_dir = pathlib.Path(__file__).resolve().parents[1]
-        icon_theme.add_search_path(str(app_dir / "img"))
+        theme = Gtk.IconTheme.get_for_display(display)
+        # Symbolic icons shipped with the application (BigLinux, Flatpak, restore).
+        theme.add_search_path(str(app_dir / "img"))
+        # The application icon, also when running from a source checkout.
+        theme.add_search_path(str(app_dir.parents[1] / "icons"))
+        # Flatpak icons by name: loaded lazily and at the right scale, instead
+        # of decoding image files on the GTK thread for every card.
+        for directory in flatpak_icon_dirs():
+            theme.add_search_path(directory)
         css = Gtk.CssProvider()
         css.load_from_path(str(app_dir / "ui" / "style.css"))
         Gtk.StyleContext.add_provider_for_display(
-            Gdk.Display.get_default(), css, Gtk.STYLE_PROVIDER_PRIORITY_APPLICATION)
-
-        from backend.reset_manager import setup_logger
+            display, css, Gtk.STYLE_PROVIDER_PRIORITY_APPLICATION)
         setup_logger()
 
     def do_activate(self) -> None:
@@ -67,7 +79,6 @@ class BigConfigApp(Adw.Application):
 
         self._load_apps_async(win)
 
-        # Show welcome dialog on first launch
         if should_show_welcome():
             GLib.idle_add(self._show_welcome, win)
 
@@ -135,7 +146,7 @@ class BigConfigApp(Adw.Application):
         for entry in all_apps:
             self._apps_by_category.setdefault(entry.category, []).append(entry)
 
-        # Base set of auto-detected favorites (MIME defaults + static picks).
+        # Auto-detected favorites: default apps for common MIME types + static picks.
         self._auto_favorites = auto_favorites
         self._auto_fav_ids = {e.app_id for e in auto_favorites}
         self._rebuild_favorites(all_apps)
@@ -159,17 +170,17 @@ class BigConfigApp(Adw.Application):
         """Recompute the favorites list = (auto ∪ user-added) − user-removed."""
         if all_apps is None:
             all_apps = self._installed_apps + self._flatpak_apps
-        fav_ids = user_prefs.resolve_favorite_ids(getattr(self, "_auto_fav_ids", set()))
+        fav_ids = user_prefs.resolve_favorite_ids(self._auto_fav_ids)
         self._fav_ids = {e.app_id for e in all_apps if e.app_id in fav_ids}
         # Preserve auto order first, then user-added extras.
-        auto_order = [e for e in getattr(self, "_auto_favorites", []) if e.app_id in self._fav_ids]
+        auto_order = [e for e in self._auto_favorites if e.app_id in self._fav_ids]
         seen = {e.app_id for e in auto_order}
         extras = [e for e in all_apps
                   if e.app_id in self._fav_ids and e.app_id not in seen]
         self._apps_by_category["favorites"] = auto_order + extras
 
     def is_favorite(self, entry: AppEntry) -> bool:
-        return entry.app_id in getattr(self, "_fav_ids", set())
+        return entry.app_id in self._fav_ids
 
     def toggle_favorite(self, win: BigConfigWindow, entry: AppEntry) -> None:
         try:
@@ -181,9 +192,7 @@ class BigConfigApp(Adw.Application):
             win.set_status_message(_("Could not save preferences: %s") % exc)
             return
         self._rebuild_favorites()
-        win.sidebar.set_category_visible(
-            "favorites", True)
-        if self._current_category == "favorites" and not getattr(self, "_search_mode", False):
+        if self._current_category == "favorites" and not self._search_mode:
             self._update_grid(win)
 
     def on_category_changed(self, win: BigConfigWindow, category_id: str) -> None:
@@ -196,11 +205,11 @@ class BigConfigApp(Adw.Application):
             # Populate the full app list only once when entering search mode;
             # subsequent keystrokes just re-filter the existing cards instead of
             # rebuilding every card (much cheaper as the user types).
-            if not getattr(self, "_search_mode", False):
+            if not self._search_mode:
                 win.grid.populate(self._installed_apps + self._flatpak_apps)
                 self._search_mode = True
             win.grid.filter_by_text(text)
-        elif getattr(self, "_search_mode", False):
+        elif self._search_mode:
             self._search_mode = False
             self._update_grid(win)
 
@@ -214,7 +223,7 @@ class BigConfigApp(Adw.Application):
 
 
 class BigConfigWindow(Adw.ApplicationWindow):
-    """Main window — BigControlCenter visual layout."""
+    """Category sidebar and application grid, collapsing on narrow windows."""
 
     def __init__(self, **kwargs) -> None:
         super().__init__(**kwargs)
@@ -226,26 +235,19 @@ class BigConfigWindow(Adw.ApplicationWindow):
         self._build_ui(app)
 
     def _build_ui(self, app: BigConfigApp) -> None:
-        # Toast overlay as root (background color)
-        toast_overlay = Adw.ToastOverlay()
-        toast_overlay.add_css_class("background-as-view-bg-color")
-        self.set_content(toast_overlay)
-
-        # NavigationSplitView
         self._split_view = Adw.NavigationSplitView()
-        toast_overlay.set_child(self._split_view)
+        self._split_view.add_css_class("background-as-view-bg-color")
+        self.set_content(self._split_view)
         breakpoint = Adw.Breakpoint.new(Adw.BreakpointCondition.parse("max-width: 600sp"))
         breakpoint.add_setter(self._split_view, "collapsed", True)
         self.add_breakpoint(breakpoint)
 
-        # ── Sidebar ──────────────────────────────────────────────
         sidebar_toolbar = Adw.ToolbarView()
         sidebar_header = Adw.HeaderBar()
 
-        # App icon button (left side) — opens About dialog
         app_icon_btn = Gtk.Button()
         app_icon_btn.set_tooltip_text(_("About Restore Settings"))
-        app_icon = Gtk.Image.new_from_icon_name("restore-settings")
+        app_icon = Gtk.Image.new_from_icon_name(APP_ICON)
         app_icon.set_pixel_size(25)
         app_icon_btn.set_child(app_icon)
         app_icon_btn.add_css_class("flat")
@@ -258,19 +260,15 @@ class BigConfigWindow(Adw.ApplicationWindow):
         sidebar_toolbar.add_top_bar(sidebar_header)
 
         self.sidebar = CategorySidebar()
-        self.sidebar.set_on_category_changed(
-            lambda cid: self._on_category_selected(cid)
-        )
+        self.sidebar.set_on_category_changed(self._on_category_selected)
         sidebar_toolbar.set_content(self.sidebar)
 
         sidebar_page = Adw.NavigationPage.new(sidebar_toolbar, _("Categories"))
         self._split_view.set_sidebar(sidebar_page)
 
-        # ── Content ──────────────────────────────────────────────
         content_toolbar = Adw.ToolbarView()
         content_header = Adw.HeaderBar()
 
-        # Search entry always visible in headerbar center
         self.search_entry = Gtk.SearchEntry()
         self.search_entry.set_placeholder_text(_("Search..."))
         self.search_entry.set_hexpand(False)
@@ -281,7 +279,6 @@ class BigConfigWindow(Adw.ApplicationWindow):
         search_box.append(self.search_entry)
         content_header.set_title_widget(search_box)
 
-        # Menu button (right side)
         menu = Gio.Menu()
         backup_section = Gio.Menu()
         backup_section.append(_("Export settings…"), "app.export-backup")
@@ -301,7 +298,7 @@ class BigConfigWindow(Adw.ApplicationWindow):
 
         content_toolbar.add_top_bar(content_header)
 
-        # Status bar (bottom) — revealer with crossfade
+        # Status bar describing the hovered application.
         self._status_revealer = Gtk.Revealer()
         self._status_revealer.set_transition_type(Gtk.RevealerTransitionType.CROSSFADE)
         self._status_revealer.set_transition_duration(150)
@@ -315,12 +312,10 @@ class BigConfigWindow(Adw.ApplicationWindow):
         self._status_revealer.set_visible(False)
         content_toolbar.add_bottom_bar(self._status_revealer)
 
-        # Content stack (loading / grid)
         self._content_stack = Gtk.Stack()
         self._content_stack.set_transition_type(Gtk.StackTransitionType.CROSSFADE)
         self._content_stack.set_transition_duration(200)
 
-        # Loading state
         loading_box = Gtk.Box(
             orientation=Gtk.Orientation.VERTICAL, spacing=16
         )
@@ -335,7 +330,6 @@ class BigConfigWindow(Adw.ApplicationWindow):
         loading_box.append(loading_label)
         self._content_stack.add_named(loading_box, "loading")
 
-        # Grid
         self.grid = AppGrid()
         self.grid.set_on_app_activated(
             lambda entry: app.on_app_activated(self, entry)
@@ -353,28 +347,21 @@ class BigConfigWindow(Adw.ApplicationWindow):
         content_page = Adw.NavigationPage.new(content_toolbar, _("Applications"))
         self._split_view.set_content(content_page)
 
-        # Key controller — redirect typing to search
+        # Typing anywhere searches.
         key_ctrl = Gtk.EventControllerKey.new()
         key_ctrl.connect("key-pressed", self._on_key_pressed)
         self.add_controller(key_ctrl)
-
-    # ── Public API ───────────────────────────────────────────────
 
     def set_loading(self, loading: bool) -> None:
         self._content_stack.set_visible_child_name(
             "loading" if loading else "grid"
         )
 
-    def toggle_search(self) -> None:
-        self.search_entry.grab_focus()
-
     def set_status_message(self, message: str) -> None:
         self._status_label.set_text(message)
         has_text = bool(message)
         self._status_revealer.set_reveal_child(has_text)
         self._status_revealer.set_visible(has_text)
-
-    # ── Private handlers ─────────────────────────────────────────
 
     def _on_category_selected(self, category_id: str) -> None:
         app: BigConfigApp = self.get_application()
@@ -402,7 +389,6 @@ class BigConfigWindow(Adw.ApplicationWindow):
         ):
             return False
 
-        # Backspace → remove char from search
         if keyval == Gdk.KEY_BackSpace:
             text = self.search_entry.get_text()
             if text:
@@ -411,29 +397,16 @@ class BigConfigWindow(Adw.ApplicationWindow):
                 self.search_entry.set_position(-1)
                 return True
 
-        # Escape → clear search
         if keyval == Gdk.KEY_Escape:
             if self.search_entry.get_text():
                 self.search_entry.set_text("")
                 return True
 
-        # Navigation keys — let GTK handle
         if keyval in (
             Gdk.KEY_Up, Gdk.KEY_Down, Gdk.KEY_Left, Gdk.KEY_Right,
             Gdk.KEY_Return, Gdk.KEY_Tab, Gdk.KEY_space,
         ):
             return False
-
-        # Skip if search already focused or modifiers pressed
-        if self.search_entry.has_focus():
-            return False
-        if state & (
-            Gdk.ModifierType.CONTROL_MASK
-            | Gdk.ModifierType.ALT_MASK
-        ):
-            return False
-
-        # Printable char → redirect to search
         ch = chr(Gdk.keyval_to_unicode(keyval))
         if ch.isprintable():
             self.search_entry.grab_focus()

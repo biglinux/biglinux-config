@@ -116,3 +116,44 @@ def test_non_sensitive_stays_non_sensitive():
     for app_id in ("vlc", "mpv", "htop"):
         if app_id in by_id:
             assert not is_sensitive(by_id[app_id]), f"{app_id} wrongly sensitive"
+
+
+def test_names_unique_and_binaries_absolute():
+    names = [e.name for e in APP_REGISTRY]
+    assert len(names) == len(set(names)), "duplicate display name in registry"
+    for e in APP_REGISTRY:
+        assert os.path.isabs(e.binary), f"{e.app_id}: binary must be an absolute path"
+
+
+def test_reset_paths_are_covered_by_the_safety_backup():
+    """Back up first exports config_paths; anything reset must be inside them."""
+    from data.app_registry import get_reset_paths
+    for e in APP_REGISTRY:
+        for reset in get_reset_paths(e):
+            assert any(reset == p or reset.startswith(p + "/") for p in e.config_paths), (
+                f"{e.app_id}: {reset} would be reset without being backed up")
+
+
+def test_reset_never_removes_shared_or_personal_data():
+    shared = {"~/.config/gtk-3.0", "~/.config/gtk-4.0", "~/.config/autostart",
+              "~/.local/share/applications", "~/.local/share/icons", "~/.local/share/fonts",
+              "~/.ssh", "~/.gnupg", "~/.local/bin", "~/.local/share/Trash",
+              "~/.local/share/Steam", "~/.local/share/gnome-boxes"}
+    from data.app_registry import get_reset_paths
+    for e in APP_REGISTRY:
+        for reset in get_reset_paths(e):
+            assert reset not in shared, f"{e.app_id}: resets shared folder {reset}"
+            assert "history" not in reset, f"{e.app_id}: resets history {reset}"
+
+
+def test_registry_paths_are_canonical():
+    for e in APP_REGISTRY:
+        for p in [*e.config_paths, *(e.reset_paths or [])]:
+            assert p == os.path.normpath(p) and not p.endswith("/"), f"{e.app_id}: {p}"
+            assert p.startswith("~/"), f"{e.app_id}: {p}"
+        assert len(e.config_paths) == len(set(e.config_paths)), e.app_id
+
+
+def test_icon_names_are_plain():
+    for e in APP_REGISTRY:
+        assert e.icon and "/" not in e.icon and " " not in e.icon, e.app_id
