@@ -1,153 +1,103 @@
-# Safety, compatibility and release checks
+# Safety model and manual recovery
 
-Review date: 2026-10-01. This is a reviewed patch set, not a declaration that all
-registered applications or native GTK combinations have been certified.
+Restore Settings changes the configuration of the current user. This document
+describes what it guarantees, what it does not, and how to recover by hand if
+an automatic rollback cannot finish.
 
-## Scope and trust
+## Scope
 
-The app changes the current user's registered configuration paths. Run it as the
-normal desktop user, never with sudo. Close target applications and save work
-before export, reset or import. Exact executable/Flatpak checks cannot identify
-every script, wrapper, launcher or detached subprocess, and cannot prevent a
-program from restarting. There is no filesystem snapshot or live SQLite snapshot.
+- Run it as your normal desktop user; it refuses to start as root.
+- It only changes paths registered for an application in
+  `data/app_registry.py`, inside your home folder, and only the dconf
+  namespaces registered for that application — never the whole dconf database.
+- HOME, shared folders (`~/.config`, `~/.local`, `~/.local/share`,
+  `~/.local/state`, `~/.cache`, `~/.var/app` and the XDG folders), the dconf
+  database file and paths reached through a symbolic-link folder are never
+  removed or replaced. A symbolic link that *is* a registered path is moved or
+  removed itself; its target is not touched.
+- It is a settings tool, not a full-home backup: it does not snapshot running
+  applications or live SQLite databases. Close the applications first.
+  Detection of running programs uses the exact executable (or `flatpak ps`) and
+  cannot see every wrapper script; it never sends SIGKILL and never ends a
+  desktop session by itself.
 
-Import **only trusted backups**. Checksums detect content corruption; they do not
-prove who created the archive, encrypt secrets or stop a malicious author from
-choosing another allowed HOME destination in the manifest. An archive can contain
-configuration that another application later interprets as code. The importer is
-not a sandbox against an actively malicious process with the same UID. Keep
-Python and the operating system's security updates installed.
+## Reset
 
-Archive v2 requires complete checksums for regular-file and dconf payloads.
-Legacy v1 is accepted with an explicit no-checksum warning. Paths, types, duplicate
-members, JSON metadata, resource limits and gzip completion are checked before
-live files are changed. Explicit tarfile.data_filter is one layer, not the entire
-policy. Symlink metadata is not separately cryptographically hashed. Neither
-format authenticates manifests, ownership or application identity.
+`config_paths` defines what a backup contains. `reset_paths` defaults to the
+same paths, can be narrower when an application also keeps personal data, and
+is empty for backup-only applications (Bottles). Shell history, installed Steam
+games, GNOME Boxes disks and the GTK 3 bookmarks are therefore never reset.
 
-Default limits: 100,000 members, 16 GiB total member payload, 4 GiB per file,
-16 MiB metadata/header budget, 4 MiB per dconf dump, path depth 64. These limits
-are deliberate rejection criteria, not truncation. Large VM/game backups can
-exceed them; this is not a general-purpose full-home backup tool. Memory and
-parsing are bounded by policy, but no universal CPU/RAM guarantee is claimed.
+**BigLinux defaults** needs a template in `/etc/skel` that maps to a safe
+destination; without one the option is not offered and nothing is deleted.
+Templates are copied to private staging before any live file changes.
 
-Only portable relative symlinks are exported/imported. Absolute links and live
-paths with symlink parents are rejected, including otherwise legitimate setups.
-A leaf symlink is moved/removed itself, not its target. Symlinked XDG trees and
-some Steam installations therefore need manual handling. Filesystem mount
-boundaries may cause EXDEV: the app aborts/rolls back rather than using unsafe
-cross-device replacement. No ACL/xattr, sparse allocation, hardlink identity,
-or application-version migration fidelity is promised. Hardlinked source contents
-are saved as independent regular files. Restored permission bits are sanitized.
+**Program defaults** removes the registered reset paths. For browsers and mail
+clients this includes bookmarks, passwords and local mail: keep the
+"Create a backup" option enabled. Safety backups are stored in
+`~/.local/state/biglinux-config/pre-reset-backups/`.
 
-## Reset versus backup
+## Backups
 
-`config_paths` describes the backup scope. `reset_paths=None` uses that same scope;
-`reset_paths=[]` explicitly means no filesystem reset; an explicit list narrows
-reset. New registry entries must choose this deliberately and test with real data.
-The review narrows Steam reset to its configuration directory, preserves GNOME
-Boxes VM data, leaves Bottles backup-only, and resets only Flatpak configuration
-rather than all Flatpak data. This is not an exhaustive semantic certification of
-all 136 static registrations or every app/version's data layout.
+Archive format version 2 (`.tar.gz`) contains a manifest, a BLAKE2b checksum of
+every regular file and dconf dump, and the selected roots. Before any live
+change, import checks:
 
-BigLinux defaults require an existing validated skeleton template; absence is
-an error, not permission to silently fall back to deleting everything. Program
-defaults remove registered reset paths and can still remove application history
-or secrets stored there. Review the displayed paths and take a separate backup.
-Only scoped dconf namespaces are manipulated; the raw dconf database is not
-copied. Exact replacement uses namespace reset followed by load, with previous
-contents captured for rollback. dconf is not schema-level GSettings validation.
+- JSON metadata strictly (types, duplicate keys, sizes) and every member name
+  (canonical, relative, no `..`, no control characters, no duplicates or
+  aliases, no member below a link or file);
+- member types: only files, folders and portable relative links;
+- every checksum, the gzip trailer and that every declared root is present;
+- that each root and dconf namespace belongs to the application as registered
+  in *this* version.
 
-## Transaction and manual recovery
+Export stores absolute links that point inside HOME as relative links, leaves
+out links that point outside HOME (and lists them in the result), skips sockets
+and pipes, and never saves Chromium/Electron `Singleton*` runtime markers.
 
-New files are fully staged in private 0700 directories below HOME, originals are
-moved aside, and a private recovery.json journal records the affected roots.
-Each rename is atomic; a group of filesystem/dconf operations is **not** atomic
-against power loss, SIGKILL, filesystem failure or another process's writes.
-There is no automatic crash-recovery resolver in this patch set.
+Limits (rejection, not truncation): 100,000 members, 16 GiB in total, 4 GiB per
+file, 16 MiB of metadata, 4 MiB per dconf dump, path depth 64. Version 1
+archives are still accepted but have no checksums; the import dialog says so.
 
-After `RECOVERY_REQUIRED`, do not delete the reported
-`.biglinux-config-restore-*` / `.biglinux-config-reset-*` directory or pre-reset
-archive. Stop writes to the affected applications. Copy the recovery directory
-to private storage before attempting repairs; it can contain passwords and dconf
-secrets. Inspect `recovery.json`, `originals/`, `staging/` and the actual live paths.
-A journal flag can lag the real filesystem after a crash; do not treat it as the
-sole source of truth. Preserve conflicting live files separately before manually
-restoring each affected root. Do not run a blanket deletion/move loop against
-HOME. dconf recovery must target only the recorded namespaces, never `/`.
+Checksums detect damage, not authorship. An archive can carry settings that an
+application later interprets as code: import only backups you trust and keep
+them private.
 
-Cancellation is cooperative: the dialog waits for staging/rollback to finish and
-reports incomplete recovery even when cancel was requested. There is no SIGKILL
-escalation when a target application refuses to close. Successful operations can
-also report cleanup/durability warnings; do not discard those warnings.
+## Transactions
 
-## Runtime and packaging
+Files are restored to a private `0700` folder in HOME
+(`~/.biglinux-config-restore-*` or `~/.biglinux-config-reset-*`). Originals are
+moved aside into the same folder, and `recovery.json` records each step before
+it happens. Each rename is atomic, but the whole operation is not atomic
+against power loss, SIGKILL or another process writing the same files.
 
-API minimums: Python 3.12, GTK 4.12, libadwaita 1.6, PyGObject with Gtk/Adw
-introspection. Python 3.13+ avoids TarInfo caching via stream=True; 3.12 retains
-a count-bounded compatibility path. These minimums are not a recommendation to
-hold outdated security releases. Use distribution-supported current packages.
-libadwaita can require a newer GTK transitively than the app's own API floor.
+On any error or cancellation the changes are rolled back: dconf namespaces are
+reset and reloaded from their previous dump, and originals are moved back.
+Cancellation waits for this to finish. Only one backup, import or reset runs at
+a time (`~/.local/state/biglinux-config/operations.lock`).
 
-The installed launcher uses `/usr/bin/python3 -I` and only inserts the installed
-application tree, avoiding arbitrary PYTHONPATH/cwd/user-site imports. This still
-trusts the installed application files. The original upstream URLs/authors are
-retained; the repository URLs in metadata and PKGBUILD differ and require
-maintainer confirmation before a release. No upstream release tag is invented.
+## Manual recovery
 
-The VCS PKGBUILD fetches its configured upstream, not a local uncommitted checkout.
+If a message says that automatic recovery did not finish:
 
-The review updates 17 new safety/UI strings in pt_BR and rebuilds pt_BR/en
-catalogs. Existing translations, plural rules and linguistic quality across all
-other languages still need translator review. The canonical build uses GNU
-msgfmt; local review also parsed/checked the 29 PO files with Babel and tested
-the rebuilt MO files with Python's GNUTranslations loader.
+1. Do not delete the folder named in the message. Stop the affected
+   applications.
+2. Copy that folder to a private place; it can contain passwords and dconf
+   secrets.
+3. Read `recovery.json`. Each entry in `files` has the live path, the path of
+   the original in `originals/`, and whether the original was moved and the
+   new copy installed. `dconf` lists the namespaces with their previous dump.
+4. For each entry, compare the live path with the original. Keep a copy of any
+   live file you want to preserve, then move the original back.
+5. For dconf, restore only the recorded namespaces:
+   `dconf reset -f /namespace/` followed by `dconf load /namespace/ < dump`.
+   Never run `dconf reset -f /`.
 
-## Repeatable checks and native release gate
+The journal can lag behind the filesystem after a crash; trust what is on disk.
+Operation logs are in `~/.local/state/biglinux-config/operations.log`.
 
-From the checkout, run `bash tools/check.sh`. This isolates HOME/XDG, disables the
-real dconf tests and compiles Python syntax. Run `bash tools/check-dconf.sh` for
-real dconf/D-Bus integration: isolation must happen **before** the private session
-bus starts, because an already running dconf service inherits its old environment.
-Never opt into those tests inside your real desktop bus/profile.
+## Runtime requirements
 
-Native GTK validation was not available in the review executor (no gi/GTK4/Adw
-bindings). `tests/test_jobs.py` tests scheduling/lifetime with a fake GLib queue;
-it is not a native widget test. Before release, in a disposable desktop account:
-
-1. Start on Wayland with supported GTK/Adw; check CSS warnings, 600sp collapse,
-   keyboard focus, text scale, dark/light themes, file dialogs and screen reader.
-2. Export/import a closed small app, compare contents, dconf and permissions;
-   test legacy v1, zero selected items, malformed/truncated archives and missing
-   dependencies. Test explicit overwrite consent with unusual filenames.
-3. Cancel during scanning, writing, staging and rollback. Close the main window,
-   press Ctrl+Q, and confirm that mutation/rollback finishes and errors remain
-   visible. Repeat when storage is full/read-only or cleanup is denied.
-4. Test native/Flatpak process detection, refusal to close, inactive desktop
-   settings, Steam, Boxes and Bottles with copies of representative profiles.
-5. Build/install the generated local makepkg recipe; validate 29 GNU gettext
-   catalogs, app launch, desktop integration, launcher symlink and uninstallation.
-6. Measure RSS, CPU, I/O and responsiveness on HDD/2 GiB hardware. No measured
-   performance percentage or stable-release certification is included here.
-
-## Primary references consulted
-
-- Python tarfile filters, limitations and streaming: https://docs.python.org/3/library/tarfile.html
-- Python temporary files: https://docs.python.org/3/library/tempfile.html
-- PyGObject main-thread and worker guidance: https://pygobject.gnome.org/guide/threading.html
-- Gio lifetime: https://docs.gtk.org/gio/method.Application.hold.html
-- Adw dialog close protection: https://gnome.pages.gitlab.gnome.org/libadwaita/doc/main/method.Dialog.set_can_close.html
-- GTK CSS API: https://docs.gtk.org/gtk4/method.CssProvider.load_from_string.html
-- Adw Spinner API: https://gnome.pages.gitlab.gnome.org/libadwaita/doc/main/class.Spinner.html
-- Gtk label wrapping: https://docs.gtk.org/gtk4/method.Label.set_wrap_mode.html
-- Gio Unix desktop entries: https://docs.gtk.org/gio-unix/class.DesktopAppInfo.html
-- XDG base directories: https://specifications.freedesktop.org/basedir/latest/
-- dconf operations: https://man.archlinux.org/man/dconf.1.en
-- pidfd signaling: https://docs.python.org/3/library/signal.html
-- Flatpak process identity: https://docs.flatpak.org/en/latest/flatpak-command-reference.html
-- GNOME Boxes data scope: https://help.gnome.org/gnome-boxes/backup.html
-- Arch package functions/dependencies: https://man.archlinux.org/man/PKGBUILD.5.en
-
-Generated documentation can display development/alpha library versions. API
-availability annotations were used; those headings are not evidence that an
-alpha is the latest stable release or should be installed.
+Python 3.12, GTK 4.12 and libadwaita 1.6 or newer. The launcher runs
+`python3 -I`, so `PYTHONPATH`, the user site directory and the current folder
+cannot inject modules.

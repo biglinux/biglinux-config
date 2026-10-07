@@ -4,7 +4,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: biglinux-config\n"
 "Report-Msgid-Bugs-To: https://github.com/ruscher/biglinux-config/issues\n"
-"POT-Creation-Date: 2026-10-07 11:09-0300\n"
+"POT-Creation-Date: 2026-10-07 11:16-0300\n"
 "PO-Revision-Date: 2026-10-07 12:00-0300\n"
 "Last-Translator: Codex (automated translation)\n"
 "Language-Team: Simplified Chinese (China)\n"
@@ -321,12 +321,12 @@ msgstr "Flatpak"
 msgid "Native"
 msgstr "原生"
 
-#: biglinux-config/usr/share/biglinux/biglinux-config/ui/application.py:122
+#: biglinux-config/usr/share/biglinux/biglinux-config/ui/application.py:125
 #, python-format
 msgid "Could not load applications: %s"
 msgstr "无法加载应用程序：%s"
 
-#: biglinux-config/usr/share/biglinux/biglinux-config/ui/application.py:184
+#: biglinux-config/usr/share/biglinux/biglinux-config/ui/application.py:187
 #, python-format
 msgid "Could not save preferences: %s"
 msgstr "无法保存偏好设置：%s"
@@ -335,64 +335,64 @@ msgstr "无法保存偏好设置：%s"
 # config/ui/application.py, line: 167
 # File: biglinux-config/biglinux-config/usr/share/biglinux/biglinux-
 # config/ui/application.py, line: 218
-#: biglinux-config/usr/share/biglinux/biglinux-config/ui/application.py:222
-#: biglinux-config/usr/share/biglinux/biglinux-config/ui/application.py:250
+#: biglinux-config/usr/share/biglinux/biglinux-config/ui/application.py:225
+#: biglinux-config/usr/share/biglinux/biglinux-config/ui/application.py:253
 msgid "Restore Settings"
 msgstr "恢复设置"
 
 # File: biglinux-config/biglinux-config/usr/share/biglinux/biglinux-
 # config/ui/application.py, line: 209
-#: biglinux-config/usr/share/biglinux/biglinux-config/ui/application.py:241
+#: biglinux-config/usr/share/biglinux/biglinux-config/ui/application.py:244
 msgid "About Restore Settings"
 msgstr "关于恢复设置"
 
 # File: biglinux-config/biglinux-config/usr/share/biglinux/biglinux-
 # config/ui/application.py, line: 228
-#: biglinux-config/usr/share/biglinux/biglinux-config/ui/application.py:258
+#: biglinux-config/usr/share/biglinux/biglinux-config/ui/application.py:261
 msgid "Categories"
 msgstr "类别"
 
 # File: biglinux-config/biglinux-config/usr/share/biglinux/biglinux-
 # config/ui/application.py, line: 237
-#: biglinux-config/usr/share/biglinux/biglinux-config/ui/application.py:265
+#: biglinux-config/usr/share/biglinux/biglinux-config/ui/application.py:268
 msgid "Search..."
 msgstr "搜索..."
 
 # File: biglinux-config/biglinux-config/usr/share/biglinux/biglinux-
 # config/ui/application.py, line: 249
-#: biglinux-config/usr/share/biglinux/biglinux-config/ui/application.py:276
+#: biglinux-config/usr/share/biglinux/biglinux-config/ui/application.py:279
 #: biglinux-config/usr/share/biglinux/biglinux-config/ui/restore_dialog.py:202
 msgid "Export settings…"
 msgstr "导出设置…"
 
 # File: biglinux-config/biglinux-config/usr/share/biglinux/biglinux-
 # config/ui/application.py, line: 250
-#: biglinux-config/usr/share/biglinux/biglinux-config/ui/application.py:277
+#: biglinux-config/usr/share/biglinux/biglinux-config/ui/application.py:280
 #: biglinux-config/usr/share/biglinux/biglinux-config/ui/restore_dialog.py:210
 msgid "Import settings…"
 msgstr "导入设置…"
 
 # File: biglinux-config/biglinux-config/usr/share/biglinux/biglinux-
 # config/ui/application.py, line: 254
-#: biglinux-config/usr/share/biglinux/biglinux-config/ui/application.py:281
+#: biglinux-config/usr/share/biglinux/biglinux-config/ui/application.py:284
 msgid "Welcome"
 msgstr "欢迎"
 
 # File: biglinux-config/biglinux-config/usr/share/biglinux/biglinux-
 # config/ui/application.py, line: 255
-#: biglinux-config/usr/share/biglinux/biglinux-config/ui/application.py:282
+#: biglinux-config/usr/share/biglinux/biglinux-config/ui/application.py:285
 msgid "About"
 msgstr "关于"
 
 # File: biglinux-config/biglinux-config/usr/share/biglinux/biglinux-
 # config/ui/application.py, line: 261
-#: biglinux-config/usr/share/biglinux/biglinux-config/ui/application.py:288
+#: biglinux-config/usr/share/biglinux/biglinux-config/ui/application.py:291
 msgid "Menu"
 msgstr "菜单"
 
 # File: biglinux-config/biglinux-config/usr/share/biglinux/biglinux-
 # config/ui/application.py, line: 294
-#: biglinux-config/usr/share/biglinux/biglinux-config/ui/application.py:319
+#: biglinux-config/usr/share/biglinux/biglinux-config/ui/application.py:322
 msgid "Loading applications…"
 msgstr "正在加载应用程序…"
 
@@ -402,8 +402,8 @@ msgstr "正在加载应用程序…"
 # config/ui/backup_dialog.py, line: 84
 # File: biglinux-config/biglinux-config/usr/share/biglinux/biglinux-
 # config/ui/application.py, line: 311
-#: biglinux-config/usr/share/biglinux/biglinux-config/ui/application.py:339
-#: biglinux-config/usr/share/biglinux/biglinux-config/ui/export_dialog.py:94
+#: biglinux-config/usr/share/biglinux/biglinux-config/ui/application.py:342
+#: biglinux-config/usr/share/biglinux/biglinux-config/ui/export_dialog.py:92
 msgid "Applications"
 msgstr "应用程序"
 
@@ -418,9 +418,15 @@ msgstr "应用程序"
 msgid "Export Settings"
 msgstr "导出设置"
 
+#: biglinux-config/usr/share/biglinux/biglinux-config/ui/export_dialog.py:51
+msgid ""
+"This backup may contain private data (passwords, cookies, sessions). Keep it "
+"in a safe place."
+msgstr "此备份可能包含隐私数据（密码、Cookie、会话）。请妥善保管。"
+
 # File: biglinux-config/biglinux-config/usr/share/biglinux/biglinux-
 # config/ui/backup_dialog.py, line: 62
-#: biglinux-config/usr/share/biglinux/biglinux-config/ui/export_dialog.py:64
+#: biglinux-config/usr/share/biglinux/biglinux-config/ui/export_dialog.py:70
 msgid ""
 "Select the applications whose settings you want to export. Close these "
 "applications before exporting. A .tar.gz archive will be created with the "
@@ -429,42 +435,36 @@ msgstr ""
 "请选择要导出设置的应用程序。导出前请关闭这些应用程序。将创建一个包含隐藏文件"
 "（文件名以点开头）的 .tar.gz 归档。"
 
-#: biglinux-config/usr/share/biglinux/biglinux-config/ui/export_dialog.py:75
-msgid ""
-"This backup may contain private data (passwords, cookies, sessions). Keep it "
-"in a safe place."
-msgstr "此备份可能包含隐私数据（密码、Cookie、会话）。请妥善保管。"
-
-#: biglinux-config/usr/share/biglinux/biglinux-config/ui/export_dialog.py:82
+#: biglinux-config/usr/share/biglinux/biglinux-config/ui/export_dialog.py:80
 msgid "Include cache files"
 msgstr "包含缓存文件"
 
-#: biglinux-config/usr/share/biglinux/biglinux-config/ui/export_dialog.py:84
+#: biglinux-config/usr/share/biglinux/biglinux-config/ui/export_dialog.py:82
 msgid ""
 "Also back up cache directories. Makes the archive larger; usually not needed"
 msgstr "同时备份缓存目录。这会增大归档文件，通常不需要"
 
 # File: biglinux-config/biglinux-config/usr/share/biglinux/biglinux-
 # config/ui/backup_dialog.py, line: 78
-#: biglinux-config/usr/share/biglinux/biglinux-config/ui/export_dialog.py:88
+#: biglinux-config/usr/share/biglinux/biglinux-config/ui/export_dialog.py:86
 msgid "Options"
 msgstr "选项"
 
 # File: biglinux-config/biglinux-config/usr/share/biglinux/biglinux-
 # config/ui/backup_dialog.py, line: 85
-#: biglinux-config/usr/share/biglinux/biglinux-config/ui/export_dialog.py:95
+#: biglinux-config/usr/share/biglinux/biglinux-config/ui/export_dialog.py:93
 msgid "Select applications to export"
 msgstr "选择要导出的应用程序"
 
 # File: biglinux-config/biglinux-config/usr/share/biglinux/biglinux-
 # config/ui/backup_dialog.py, line: 93
-#: biglinux-config/usr/share/biglinux/biglinux-config/ui/export_dialog.py:103
+#: biglinux-config/usr/share/biglinux/biglinux-config/ui/export_dialog.py:101
 msgid "Select or deselect all"
 msgstr "全选或取消全选"
 
 # File: biglinux-config/biglinux-config/usr/share/biglinux/biglinux-
 # config/ui/backup_dialog.py, line: 102
-#: biglinux-config/usr/share/biglinux/biglinux-config/ui/export_dialog.py:112
+#: biglinux-config/usr/share/biglinux/biglinux-config/ui/export_dialog.py:110
 msgid "Scanning applications…"
 msgstr "正在扫描应用程序…"
 
@@ -480,8 +480,8 @@ msgstr "正在扫描应用程序…"
 # config/ui/restore_dialog.py, line: 438
 # File: biglinux-config/biglinux-config/usr/share/biglinux/biglinux-
 # config/ui/restore_dialog.py, line: 492
-#: biglinux-config/usr/share/biglinux/biglinux-config/ui/export_dialog.py:135
-#: biglinux-config/usr/share/biglinux/biglinux-config/ui/export_dialog.py:337
+#: biglinux-config/usr/share/biglinux/biglinux-config/ui/export_dialog.py:133
+#: biglinux-config/usr/share/biglinux/biglinux-config/ui/export_dialog.py:335
 #: biglinux-config/usr/share/biglinux/biglinux-config/ui/import_dialog.py:311
 #: biglinux-config/usr/share/biglinux/biglinux-config/ui/import_dialog.py:351
 #: biglinux-config/usr/share/biglinux/biglinux-config/ui/operation_dialogs.py:167
@@ -492,31 +492,31 @@ msgstr "取消"
 
 # File: biglinux-config/biglinux-config/usr/share/biglinux/biglinux-
 # config/ui/backup_dialog.py, line: 129
-#: biglinux-config/usr/share/biglinux/biglinux-config/ui/export_dialog.py:139
+#: biglinux-config/usr/share/biglinux/biglinux-config/ui/export_dialog.py:137
 msgid "Export…"
 msgstr "导出…"
 
 # File: biglinux-config/biglinux-config/usr/share/biglinux/biglinux-
 # config/ui/backup_dialog.py, line: 132
-#: biglinux-config/usr/share/biglinux/biglinux-config/ui/export_dialog.py:142
+#: biglinux-config/usr/share/biglinux/biglinux-config/ui/export_dialog.py:140
 msgid "Choose destination and export"
 msgstr "选择目标位置并导出"
 
 # File: biglinux-config/biglinux-config/usr/share/biglinux/biglinux-
 # config/ui/backup_dialog.py, line: 156
-#: biglinux-config/usr/share/biglinux/biglinux-config/ui/export_dialog.py:173
+#: biglinux-config/usr/share/biglinux/biglinux-config/ui/export_dialog.py:171
 #, python-format
 msgid "Scanning: %s"
 msgstr "正在扫描：%s"
 
 # File: biglinux-config/biglinux-config/usr/share/biglinux/biglinux-
 # config/ui/backup_dialog.py, line: 162
-#: biglinux-config/usr/share/biglinux/biglinux-config/ui/export_dialog.py:181
+#: biglinux-config/usr/share/biglinux/biglinux-config/ui/export_dialog.py:179
 #, python-format
 msgid "Applications (%d available)"
 msgstr "应用程序（%d 个可用）"
 
-#: biglinux-config/usr/share/biglinux/biglinux-config/ui/export_dialog.py:199
+#: biglinux-config/usr/share/biglinux/biglinux-config/ui/export_dialog.py:197
 msgid "May contain private data"
 msgstr "可能包含隐私数据"
 
@@ -524,7 +524,7 @@ msgstr "可能包含隐私数据"
 # config/ui/backup_dialog.py, line: 181
 # File: biglinux-config/biglinux-config/usr/share/biglinux/biglinux-
 # config/ui/backup_dialog.py, line: 656
-#: biglinux-config/usr/share/biglinux/biglinux-config/ui/export_dialog.py:204
+#: biglinux-config/usr/share/biglinux/biglinux-config/ui/export_dialog.py:202
 #: biglinux-config/usr/share/biglinux/biglinux-config/ui/import_dialog.py:253
 #, python-format
 msgid "Include %s"
@@ -532,16 +532,16 @@ msgstr "包含 %s"
 
 # File: biglinux-config/biglinux-config/usr/share/biglinux/biglinux-
 # config/ui/backup_dialog.py, line: 226
-#: biglinux-config/usr/share/biglinux/biglinux-config/ui/export_dialog.py:247
+#: biglinux-config/usr/share/biglinux/biglinux-config/ui/export_dialog.py:245
 msgid "Save backup as"
 msgstr "备份另存为"
 
-#: biglinux-config/usr/share/biglinux/biglinux-config/ui/export_dialog.py:254
+#: biglinux-config/usr/share/biglinux/biglinux-config/ui/export_dialog.py:252
 #, python-format
 msgid "Could not scan applications: %s"
 msgstr "无法扫描应用程序：%s"
 
-#: biglinux-config/usr/share/biglinux/biglinux-config/ui/export_dialog.py:287
+#: biglinux-config/usr/share/biglinux/biglinux-config/ui/export_dialog.py:285
 #, python-format
 msgid "Exporting settings for %d application…"
 msgid_plural "Exporting settings for %d applications…"
@@ -549,7 +549,7 @@ msgstr[0] "正在导出 %d 个应用程序的设置…"
 
 # File: biglinux-config/biglinux-config/usr/share/biglinux/biglinux-
 # config/ui/backup_dialog.py, line: 376
-#: biglinux-config/usr/share/biglinux/biglinux-config/ui/export_dialog.py:309
+#: biglinux-config/usr/share/biglinux/biglinux-config/ui/export_dialog.py:307
 #, python-format
 msgid "%(count)d application exported (%(size)s)"
 msgid_plural "%(count)d applications exported (%(size)s)"
@@ -557,7 +557,7 @@ msgstr[0] "已导出 %(count)d 个应用程序（%(size)s）"
 
 # File: biglinux-config/biglinux-config/usr/share/biglinux/biglinux-
 # config/ui/backup_dialog.py, line: 370
-#: biglinux-config/usr/share/biglinux/biglinux-config/ui/export_dialog.py:315
+#: biglinux-config/usr/share/biglinux/biglinux-config/ui/export_dialog.py:313
 msgid "Backup created!"
 msgstr "备份已创建！"
 
@@ -651,13 +651,13 @@ msgstr "备份已创建！"
 #
 # File: biglinux-config/biglinux-config/usr/share/biglinux/biglinux-
 # config/ui/backup_dialog.py, line: 432
-#: biglinux-config/usr/share/biglinux/biglinux-config/ui/export_dialog.py:318
+#: biglinux-config/usr/share/biglinux/biglinux-config/ui/export_dialog.py:316
 msgid "Export error"
 msgstr "导出错误"
 
 # File: biglinux-config/biglinux-config/usr/share/biglinux/biglinux-
 # config/ui/backup_dialog.py, line: 433
-#: biglinux-config/usr/share/biglinux/biglinux-config/ui/export_dialog.py:319
+#: biglinux-config/usr/share/biglinux/biglinux-config/ui/export_dialog.py:317
 #, python-format
 msgid ""
 "An error occurred while creating the backup:\n"
@@ -666,16 +666,16 @@ msgstr ""
 "创建备份时发生错误：\n"
 "%s"
 
-#: biglinux-config/usr/share/biglinux/biglinux-config/ui/export_dialog.py:327
+#: biglinux-config/usr/share/biglinux/biglinux-config/ui/export_dialog.py:325
 #, python-format
 msgid "Export %s settings"
 msgstr "导出 %s 的设置"
 
-#: biglinux-config/usr/share/biglinux/biglinux-config/ui/export_dialog.py:332
+#: biglinux-config/usr/share/biglinux/biglinux-config/ui/export_dialog.py:330
 msgid "This backup may contain private data"
 msgstr "此备份可能包含隐私数据"
 
-#: biglinux-config/usr/share/biglinux/biglinux-config/ui/export_dialog.py:334
+#: biglinux-config/usr/share/biglinux/biglinux-config/ui/export_dialog.py:332
 #, python-format
 msgid ""
 "Settings for %s can include passwords, cookies or session tokens. Store the "
@@ -683,7 +683,7 @@ msgid ""
 msgstr ""
 "%s 的设置可能包含密码、Cookie 或会话令牌。请将备份文件保存在安全的位置。"
 
-#: biglinux-config/usr/share/biglinux/biglinux-config/ui/export_dialog.py:338
+#: biglinux-config/usr/share/biglinux/biglinux-config/ui/export_dialog.py:336
 msgid "Continue"
 msgstr "继续"
 

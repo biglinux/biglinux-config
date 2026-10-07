@@ -56,7 +56,7 @@ def is_sensitive(entry: "AppEntry") -> bool:
 # Categories — id, translatable label, icon-name
 # ---------------------------------------------------------------------------
 CATEGORIES: list[dict[str, str]] = [
-    {"id": "favorites", "label": _("Favorites"), "icon": "view-app-grid-symbolic"},
+    {"id": "favorites", "label": _("Favorites"), "icon": "starred-symbolic"},
     {"id": "browsers", "label": _("Browsers"), "icon": "web-browser-symbolic"},
     {"id": "communication", "label": _("Communication"), "icon": "mail-send-symbolic"},
     {"id": "multimedia", "label": _("Multimedia"), "icon": "applications-multimedia-symbolic"},

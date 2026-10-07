@@ -243,7 +243,7 @@ def _on_manifest_ready(
         row = Adw.ActionRow()
         row.set_use_markup(False)
         row.set_title(app_info["name"])
-        paths_str = ", ".join(app_info["roots"][:3])
+        paths_str = ", ".join("~/" + root for root in app_info["roots"][:3])
         if len(app_info["roots"]) > 3:
             paths_str += f" (+{len(app_info['roots']) - 3})"
         row.set_subtitle(paths_str)

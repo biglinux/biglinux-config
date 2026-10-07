@@ -51,8 +51,11 @@ class BigConfigApp(Adw.Application):
         Adw.Application.do_startup(self)
         display = Gdk.Display.get_default()
         app_dir = pathlib.Path(__file__).resolve().parents[1]
+        theme = Gtk.IconTheme.get_for_display(display)
         # Symbolic icons shipped with the application (BigLinux, Flatpak, restore).
-        Gtk.IconTheme.get_for_display(display).add_search_path(str(app_dir / "img"))
+        theme.add_search_path(str(app_dir / "img"))
+        # The application icon, also when running from a source checkout.
+        theme.add_search_path(str(app_dir.parents[1] / "icons"))
         css = Gtk.CssProvider()
         css.load_from_path(str(app_dir / "ui" / "style.css"))
         Gtk.StyleContext.add_provider_for_display(

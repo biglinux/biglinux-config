@@ -4,7 +4,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: biglinux-config\n"
 "Report-Msgid-Bugs-To: https://github.com/ruscher/biglinux-config/issues\n"
-"POT-Creation-Date: 2026-10-07 11:09-0300\n"
+"POT-Creation-Date: 2026-10-07 11:16-0300\n"
 "PO-Revision-Date: 2026-10-07 12:00-0300\n"
 "Last-Translator: Codex (automated translation)\n"
 "Language-Team: Belarusian\n"
@@ -330,61 +330,61 @@ msgstr "Flatpak"
 msgid "Native"
 msgstr "Натыўная"
 
-#: biglinux-config/usr/share/biglinux/biglinux-config/ui/application.py:122
+#: biglinux-config/usr/share/biglinux/biglinux-config/ui/application.py:125
 #, python-format
 msgid "Could not load applications: %s"
 msgstr "Не ўдалося загрузіць праграмы: %s"
 
-#: biglinux-config/usr/share/biglinux/biglinux-config/ui/application.py:184
+#: biglinux-config/usr/share/biglinux/biglinux-config/ui/application.py:187
 #, python-format
 msgid "Could not save preferences: %s"
 msgstr "Не ўдалося захаваць параметры: %s"
 
-#: biglinux-config/usr/share/biglinux/biglinux-config/ui/application.py:222
-#: biglinux-config/usr/share/biglinux/biglinux-config/ui/application.py:250
+#: biglinux-config/usr/share/biglinux/biglinux-config/ui/application.py:225
+#: biglinux-config/usr/share/biglinux/biglinux-config/ui/application.py:253
 msgid "Restore Settings"
 msgstr "Аднаўленне налад"
 
-#: biglinux-config/usr/share/biglinux/biglinux-config/ui/application.py:241
+#: biglinux-config/usr/share/biglinux/biglinux-config/ui/application.py:244
 msgid "About Restore Settings"
 msgstr "Пра «Аднаўленне налад»"
 
-#: biglinux-config/usr/share/biglinux/biglinux-config/ui/application.py:258
+#: biglinux-config/usr/share/biglinux/biglinux-config/ui/application.py:261
 msgid "Categories"
 msgstr "Катэгорыі"
 
-#: biglinux-config/usr/share/biglinux/biglinux-config/ui/application.py:265
+#: biglinux-config/usr/share/biglinux/biglinux-config/ui/application.py:268
 msgid "Search..."
 msgstr "Пошук..."
 
-#: biglinux-config/usr/share/biglinux/biglinux-config/ui/application.py:276
+#: biglinux-config/usr/share/biglinux/biglinux-config/ui/application.py:279
 #: biglinux-config/usr/share/biglinux/biglinux-config/ui/restore_dialog.py:202
 msgid "Export settings…"
 msgstr "Экспартаваць налады…"
 
-#: biglinux-config/usr/share/biglinux/biglinux-config/ui/application.py:277
+#: biglinux-config/usr/share/biglinux/biglinux-config/ui/application.py:280
 #: biglinux-config/usr/share/biglinux/biglinux-config/ui/restore_dialog.py:210
 msgid "Import settings…"
 msgstr "Імпартаваць налады…"
 
-#: biglinux-config/usr/share/biglinux/biglinux-config/ui/application.py:281
+#: biglinux-config/usr/share/biglinux/biglinux-config/ui/application.py:284
 msgid "Welcome"
 msgstr "Вітаем"
 
-#: biglinux-config/usr/share/biglinux/biglinux-config/ui/application.py:282
+#: biglinux-config/usr/share/biglinux/biglinux-config/ui/application.py:285
 msgid "About"
 msgstr "Пра праграму"
 
-#: biglinux-config/usr/share/biglinux/biglinux-config/ui/application.py:288
+#: biglinux-config/usr/share/biglinux/biglinux-config/ui/application.py:291
 msgid "Menu"
 msgstr "Меню"
 
-#: biglinux-config/usr/share/biglinux/biglinux-config/ui/application.py:319
+#: biglinux-config/usr/share/biglinux/biglinux-config/ui/application.py:322
 msgid "Loading applications…"
 msgstr "Загрузка праграм…"
 
-#: biglinux-config/usr/share/biglinux/biglinux-config/ui/application.py:339
-#: biglinux-config/usr/share/biglinux/biglinux-config/ui/export_dialog.py:94
+#: biglinux-config/usr/share/biglinux/biglinux-config/ui/application.py:342
+#: biglinux-config/usr/share/biglinux/biglinux-config/ui/export_dialog.py:92
 msgid "Applications"
 msgstr "Праграмы"
 
@@ -393,7 +393,15 @@ msgstr "Праграмы"
 msgid "Export Settings"
 msgstr "Экспартаваць налады"
 
-#: biglinux-config/usr/share/biglinux/biglinux-config/ui/export_dialog.py:64
+#: biglinux-config/usr/share/biglinux/biglinux-config/ui/export_dialog.py:51
+msgid ""
+"This backup may contain private data (passwords, cookies, sessions). Keep it "
+"in a safe place."
+msgstr ""
+"Гэта рэзервовая копія можа змяшчаць прыватныя даныя (паролі, файлы cookie, "
+"сеансы). Захоўвайце яе ў бяспечным месцы."
+
+#: biglinux-config/usr/share/biglinux/biglinux-config/ui/export_dialog.py:70
 msgid ""
 "Select the applications whose settings you want to export. Close these "
 "applications before exporting. A .tar.gz archive will be created with the "
@@ -403,43 +411,35 @@ msgstr ""
 "перад экспартаваннем. Будзе створаны архіў .tar.gz са схаванымі файламі "
 "канфігурацыі."
 
-#: biglinux-config/usr/share/biglinux/biglinux-config/ui/export_dialog.py:75
-msgid ""
-"This backup may contain private data (passwords, cookies, sessions). Keep it "
-"in a safe place."
-msgstr ""
-"Гэта рэзервовая копія можа змяшчаць прыватныя даныя (паролі, файлы cookie, "
-"сеансы). Захоўвайце яе ў бяспечным месцы."
-
-#: biglinux-config/usr/share/biglinux/biglinux-config/ui/export_dialog.py:82
+#: biglinux-config/usr/share/biglinux/biglinux-config/ui/export_dialog.py:80
 msgid "Include cache files"
 msgstr "Уключыць файлы кэшу"
 
-#: biglinux-config/usr/share/biglinux/biglinux-config/ui/export_dialog.py:84
+#: biglinux-config/usr/share/biglinux/biglinux-config/ui/export_dialog.py:82
 msgid ""
 "Also back up cache directories. Makes the archive larger; usually not needed"
 msgstr ""
 "Таксама ствараць рэзервовыя копіі папак кэшу. Павялічвае памер архіва; "
 "звычайна не патрабуецца"
 
-#: biglinux-config/usr/share/biglinux/biglinux-config/ui/export_dialog.py:88
+#: biglinux-config/usr/share/biglinux/biglinux-config/ui/export_dialog.py:86
 msgid "Options"
 msgstr "Параметры"
 
-#: biglinux-config/usr/share/biglinux/biglinux-config/ui/export_dialog.py:95
+#: biglinux-config/usr/share/biglinux/biglinux-config/ui/export_dialog.py:93
 msgid "Select applications to export"
 msgstr "Выберыце праграмы для экспартавання"
 
-#: biglinux-config/usr/share/biglinux/biglinux-config/ui/export_dialog.py:103
+#: biglinux-config/usr/share/biglinux/biglinux-config/ui/export_dialog.py:101
 msgid "Select or deselect all"
 msgstr "Выбраць усе або скасаваць увесь выбар"
 
-#: biglinux-config/usr/share/biglinux/biglinux-config/ui/export_dialog.py:112
+#: biglinux-config/usr/share/biglinux/biglinux-config/ui/export_dialog.py:110
 msgid "Scanning applications…"
 msgstr "Пошук праграм…"
 
-#: biglinux-config/usr/share/biglinux/biglinux-config/ui/export_dialog.py:135
-#: biglinux-config/usr/share/biglinux/biglinux-config/ui/export_dialog.py:337
+#: biglinux-config/usr/share/biglinux/biglinux-config/ui/export_dialog.py:133
+#: biglinux-config/usr/share/biglinux/biglinux-config/ui/export_dialog.py:335
 #: biglinux-config/usr/share/biglinux/biglinux-config/ui/import_dialog.py:311
 #: biglinux-config/usr/share/biglinux/biglinux-config/ui/import_dialog.py:351
 #: biglinux-config/usr/share/biglinux/biglinux-config/ui/operation_dialogs.py:167
@@ -448,44 +448,44 @@ msgstr "Пошук праграм…"
 msgid "Cancel"
 msgstr "Скасаваць"
 
-#: biglinux-config/usr/share/biglinux/biglinux-config/ui/export_dialog.py:139
+#: biglinux-config/usr/share/biglinux/biglinux-config/ui/export_dialog.py:137
 msgid "Export…"
 msgstr "Экспартаваць…"
 
-#: biglinux-config/usr/share/biglinux/biglinux-config/ui/export_dialog.py:142
+#: biglinux-config/usr/share/biglinux/biglinux-config/ui/export_dialog.py:140
 msgid "Choose destination and export"
 msgstr "Выбраць месца і экспартаваць"
 
-#: biglinux-config/usr/share/biglinux/biglinux-config/ui/export_dialog.py:173
+#: biglinux-config/usr/share/biglinux/biglinux-config/ui/export_dialog.py:171
 #, python-format
 msgid "Scanning: %s"
 msgstr "Праверка: %s"
 
-#: biglinux-config/usr/share/biglinux/biglinux-config/ui/export_dialog.py:181
+#: biglinux-config/usr/share/biglinux/biglinux-config/ui/export_dialog.py:179
 #, python-format
 msgid "Applications (%d available)"
 msgstr "Праграмы (даступна: %d)"
 
-#: biglinux-config/usr/share/biglinux/biglinux-config/ui/export_dialog.py:199
+#: biglinux-config/usr/share/biglinux/biglinux-config/ui/export_dialog.py:197
 msgid "May contain private data"
 msgstr "Можа змяшчаць прыватныя даныя"
 
-#: biglinux-config/usr/share/biglinux/biglinux-config/ui/export_dialog.py:204
+#: biglinux-config/usr/share/biglinux/biglinux-config/ui/export_dialog.py:202
 #: biglinux-config/usr/share/biglinux/biglinux-config/ui/import_dialog.py:253
 #, python-format
 msgid "Include %s"
 msgstr "Уключыць %s"
 
-#: biglinux-config/usr/share/biglinux/biglinux-config/ui/export_dialog.py:247
+#: biglinux-config/usr/share/biglinux/biglinux-config/ui/export_dialog.py:245
 msgid "Save backup as"
 msgstr "Захаваць рэзервовую копію як"
 
-#: biglinux-config/usr/share/biglinux/biglinux-config/ui/export_dialog.py:254
+#: biglinux-config/usr/share/biglinux/biglinux-config/ui/export_dialog.py:252
 #, python-format
 msgid "Could not scan applications: %s"
 msgstr "Не ўдалося знайсці праграмы: %s"
 
-#: biglinux-config/usr/share/biglinux/biglinux-config/ui/export_dialog.py:287
+#: biglinux-config/usr/share/biglinux/biglinux-config/ui/export_dialog.py:285
 #, python-format
 msgid "Exporting settings for %d application…"
 msgid_plural "Exporting settings for %d applications…"
@@ -493,7 +493,7 @@ msgstr[0] "Экспартаванне налад %d праграмы…"
 msgstr[1] "Экспартаванне налад %d праграм…"
 msgstr[2] "Экспартаванне налад %d праграм…"
 
-#: biglinux-config/usr/share/biglinux/biglinux-config/ui/export_dialog.py:309
+#: biglinux-config/usr/share/biglinux/biglinux-config/ui/export_dialog.py:307
 #, python-format
 msgid "%(count)d application exported (%(size)s)"
 msgid_plural "%(count)d applications exported (%(size)s)"
@@ -501,15 +501,15 @@ msgstr[0] "Экспартавана %(count)d праграма (%(size)s)"
 msgstr[1] "Экспартаваны %(count)d праграмы (%(size)s)"
 msgstr[2] "Экспартавана %(count)d праграм (%(size)s)"
 
-#: biglinux-config/usr/share/biglinux/biglinux-config/ui/export_dialog.py:315
+#: biglinux-config/usr/share/biglinux/biglinux-config/ui/export_dialog.py:313
 msgid "Backup created!"
 msgstr "Рэзервовая копія створана!"
 
-#: biglinux-config/usr/share/biglinux/biglinux-config/ui/export_dialog.py:318
+#: biglinux-config/usr/share/biglinux/biglinux-config/ui/export_dialog.py:316
 msgid "Export error"
 msgstr "Памылка экспартавання"
 
-#: biglinux-config/usr/share/biglinux/biglinux-config/ui/export_dialog.py:319
+#: biglinux-config/usr/share/biglinux/biglinux-config/ui/export_dialog.py:317
 #, python-format
 msgid ""
 "An error occurred while creating the backup:\n"
@@ -518,16 +518,16 @@ msgstr ""
 "Узнікла памылка падчас стварэння рэзервовай копіі:\n"
 "%s"
 
-#: biglinux-config/usr/share/biglinux/biglinux-config/ui/export_dialog.py:327
+#: biglinux-config/usr/share/biglinux/biglinux-config/ui/export_dialog.py:325
 #, python-format
 msgid "Export %s settings"
 msgstr "Экспартаваць налады праграмы %s"
 
-#: biglinux-config/usr/share/biglinux/biglinux-config/ui/export_dialog.py:332
+#: biglinux-config/usr/share/biglinux/biglinux-config/ui/export_dialog.py:330
 msgid "This backup may contain private data"
 msgstr "Гэта рэзервовая копія можа змяшчаць прыватныя даныя"
 
-#: biglinux-config/usr/share/biglinux/biglinux-config/ui/export_dialog.py:334
+#: biglinux-config/usr/share/biglinux/biglinux-config/ui/export_dialog.py:332
 #, python-format
 msgid ""
 "Settings for %s can include passwords, cookies or session tokens. Store the "
@@ -536,7 +536,7 @@ msgstr ""
 "Налады праграмы %s могуць змяшчаць паролі, файлы cookie або токены сеансаў. "
 "Захоўвайце файл рэзервовай копіі ў бяспечным месцы."
 
-#: biglinux-config/usr/share/biglinux/biglinux-config/ui/export_dialog.py:338
+#: biglinux-config/usr/share/biglinux/biglinux-config/ui/export_dialog.py:336
 msgid "Continue"
 msgstr "Працягнуць"
 

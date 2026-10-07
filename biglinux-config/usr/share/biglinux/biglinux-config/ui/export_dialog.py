@@ -45,6 +45,12 @@ def show_export_dialog(
     toolbar_view = Adw.ToolbarView()
     header = Adw.HeaderBar()
     toolbar_view.add_top_bar(header)
+    # Revealed while a selected application may store private data.
+    privacy_banner = Adw.Banner()
+    privacy_banner.set_title(
+        _("This backup may contain private data (passwords, cookies, sessions). "
+          "Keep it in a safe place."))
+    toolbar_view.add_top_bar(privacy_banner)
 
     scroll = Gtk.ScrolledWindow()
     scroll.set_policy(Gtk.PolicyType.NEVER, Gtk.PolicyType.AUTOMATIC)
@@ -68,14 +74,6 @@ def show_export_dialog(
     desc.set_xalign(0)
     desc.add_css_class("dim-label")
     content_box.append(desc)
-
-    # Privacy warning banner (revealed when a sensitive app is selected).
-    privacy_banner = Adw.Banner()
-    privacy_banner.set_title(
-        _("This backup may contain private data (passwords, cookies, sessions). "
-          "Keep it in a safe place."))
-    privacy_banner.set_revealed(False)
-    content_box.append(privacy_banner)
 
     # Full directory checkbox
     full_dir_row = Adw.SwitchRow()

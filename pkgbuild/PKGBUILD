@@ -2,6 +2,8 @@
 # Maintainer: Bruno Gonçalves <bigbruno@gmail.com>
 
 pkgname=biglinux-config
+# Earlier builds used date versions (2026_10_02); the epoch makes 2.0.0 newer.
+epoch=1
 pkgver=2.0.0
 pkgrel=1
 pkgdesc="Back up, restore and reset application settings (GTK 4/libadwaita)"
@@ -14,6 +16,7 @@ depends=(
   'gtk4>=1:4.12'
   'hicolor-icon-theme'
   'libadwaita>=1:1.6'
+  'pango'
   'python>=3.12'
   'python-gobject'
 )

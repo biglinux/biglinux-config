@@ -37,6 +37,14 @@ def test_one_version_everywhere():
     assert _metainfo().find("releases/release").get("version") == APP_VERSION
 
 
+@pytest.mark.skipif(not shutil.which("vercmp"), reason="pacman's vercmp is not installed")
+def test_release_upgrades_the_date_versioned_packages():
+    version = f"{_pkgbuild('epoch')}:{_pkgbuild('pkgver')}-{_pkgbuild('pkgrel')}"
+    for old in ("2026_10_02-1546", "2099_12_31-2359"):
+        result = subprocess.run(["vercmp", old, version], capture_output=True, text=True, check=True)
+        assert result.stdout.strip() == "-1", f"{version} must be newer than {old}"
+
+
 def test_one_project_url_everywhere():
     assert _pkgbuild("url") == APP_WEBSITE
     assert _metainfo().find("url[@type='homepage']").text == APP_WEBSITE
@@ -64,9 +72,12 @@ def test_launchers():
     assert alias.is_symlink() and os.readlink(alias) == "biglinux-config"
 
 
-def test_readme_states_the_real_application_count():
-    counts = set(re.findall(r"apps-(\d+)-", (ROOT / "README.md").read_text()))
-    assert counts == {str(len(APP_REGISTRY))}
+def test_readme_states_the_real_counts():
+    readme = (ROOT / "README.md").read_text()
+    assert set(re.findall(r"apps-(\d+)-", readme)) == {str(len(APP_REGISTRY))}
+    catalogs = len(list((TREE / "locale").glob("*.po")))
+    assert set(re.findall(r"translations-(\d+)-", readme)) == {str(catalogs)}
+    assert re.search(rf"version-{re.escape(APP_VERSION)}-", readme)
 
 
 @pytest.mark.skipif(not all(shutil.which(t) for t in ("xgettext", "msgmerge", "msgfmt", "msgunfmt")),
