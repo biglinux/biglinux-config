@@ -13,6 +13,7 @@ from gi.repository import Adw, Gdk, GLib, Gio, Gtk
 from backend import user_prefs
 from backend.app_detector import get_favorites, get_installed_apps, get_localized_name
 from backend.flatpak_detector import get_installed_flatpaks
+from backend.flatpak_detector import icon_dirs as flatpak_icon_dirs
 from backend.reset_manager import setup_logger
 from data.app_registry import CATEGORIES, AppEntry
 from i18n import _
@@ -56,6 +57,10 @@ class BigConfigApp(Adw.Application):
         theme.add_search_path(str(app_dir / "img"))
         # The application icon, also when running from a source checkout.
         theme.add_search_path(str(app_dir.parents[1] / "icons"))
+        # Flatpak icons by name: loaded lazily and at the right scale, instead
+        # of decoding image files on the GTK thread for every card.
+        for directory in flatpak_icon_dirs():
+            theme.add_search_path(directory)
         css = Gtk.CssProvider()
         css.load_from_path(str(app_dir / "ui" / "style.css"))
         Gtk.StyleContext.add_provider_for_display(

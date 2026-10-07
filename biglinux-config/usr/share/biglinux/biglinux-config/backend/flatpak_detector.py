@@ -10,7 +10,6 @@ from backend import paths
 from data.app_registry import AppEntry
 
 _FLATPAK_ID = re.compile(r"[A-Za-z0-9_][A-Za-z0-9_.-]+")
-_ICON_SIZES = ("scalable", "256x256", "128x128", "64x64", "48x48")
 
 
 def get_installed_flatpaks() -> list[AppEntry]:
@@ -47,7 +46,7 @@ def get_installed_flatpaks() -> list[AppEntry]:
         apps.append(AppEntry(
             app_id=f"flatpak-{app_id}",
             name=f"{name or app_id} (Flatpak)",
-            icon=_resolve_flatpak_icon(app_id),
+            icon=app_id,  # exported under this name; see icon_dirs()
             binary="flatpak",
             category="flatpak",
             config_paths=config_paths,
@@ -58,15 +57,8 @@ def get_installed_flatpaks() -> list[AppEntry]:
     return apps
 
 
-def _resolve_flatpak_icon(app_id: str) -> str:
-    """The icon file exported by the Flatpak, or its ID for the icon theme."""
-    for base in (
-        "/var/lib/flatpak/exports/share/icons",
-        os.path.join(paths.xdg_home("XDG_DATA_HOME", ".local/share"), "flatpak/exports/share/icons"),
-    ):
-        for size in _ICON_SIZES:
-            for ext in (".svg", ".png"):
-                path = os.path.join(base, "hicolor", size, "apps", app_id + ext)
-                if os.path.isfile(path):
-                    return path
-    return app_id
+def icon_dirs() -> list[str]:
+    """Icon theme folders exported by system and user Flatpak installations."""
+    return ["/var/lib/flatpak/exports/share/icons",
+            os.path.join(paths.xdg_home("XDG_DATA_HOME", ".local/share"),
+                         "flatpak/exports/share/icons")]

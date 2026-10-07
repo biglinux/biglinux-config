@@ -23,9 +23,10 @@ xgettext --language=Python --from-code=UTF-8 --keyword=_ --keyword=ngettext:1,2 
     --msgid-bugs-address=https://github.com/ruscher/biglinux-config/issues \
     --output="$work/$domain.pot" "${sources[@]}"
 
-# Ignore the creation date when deciding whether the template changed.
-strip_date() { grep -v '^"POT-Creation-Date:' "$1"; }
-if ! cmp -s <(strip_date "$work/$domain.pot") <(strip_date "$podir/$domain.pot"); then
+# Source locations and the creation date change with every edit; only the
+# strings themselves decide whether a catalog is stale.
+strings() { grep -v -e '^#:' -e '^"POT-Creation-Date:' "$1"; }
+if ! cmp -s <(strings "$work/$domain.pot") <(strings "$podir/$domain.pot"); then
     $check && { echo "$podir/$domain.pot is out of date: run tools/i18n.sh" >&2; exit 1; }
     cp "$work/$domain.pot" "$podir/$domain.pot"
 fi
@@ -37,7 +38,8 @@ for po in "$podir"/*.po; do
     msgmerge --quiet --no-fuzzy-matching --previous --output-file="$merged" "$po" "$podir/$domain.pot"
     msgattrib --no-obsolete --output-file="$merged" "$merged"
     if $check; then
-        cmp -s "$merged" "$po" || { echo "$po is not merged with the template" >&2; status=1; }
+        cmp -s <(strings "$merged") <(strings "$po") \
+            || { echo "$po is not merged with the template" >&2; status=1; }
     else
         cp "$merged" "$po"
     fi
