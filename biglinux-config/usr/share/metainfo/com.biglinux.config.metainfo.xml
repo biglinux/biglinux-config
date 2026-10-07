@@ -32,28 +32,28 @@
     <binary>biglinux-config</binary>
   </provides>
   <translation type="gettext">biglinux-config</translation>
-  <developer id="io.github.ruscher">
+  <developer id="br.com.biglinux">
     <name>Rafael Ruscher, Bruno Gonçalves</name>
   </developer>
-  <url type="homepage">https://github.com/ruscher/biglinux-config</url>
-  <url type="bugtracker">https://github.com/ruscher/biglinux-config/issues</url>
-  <url type="vcs-browser">https://github.com/ruscher/biglinux-config</url>
+  <url type="homepage">https://github.com/biglinux/biglinux-config</url>
+  <url type="bugtracker">https://github.com/biglinux/biglinux-config/issues</url>
+  <url type="vcs-browser">https://github.com/biglinux/biglinux-config</url>
   <screenshots>
     <screenshot type="default">
       <caption>Supported applications by category</caption>
-      <image>https://raw.githubusercontent.com/ruscher/biglinux-config/v2.0.0/docs/screenshots/main.png</image>
+      <image>https://raw.githubusercontent.com/biglinux/biglinux-config/v2.0.0/docs/screenshots/main.png</image>
     </screenshot>
     <screenshot>
       <caption>Back up, import or restore the defaults of one application</caption>
-      <image>https://raw.githubusercontent.com/ruscher/biglinux-config/v2.0.0/docs/screenshots/restore.png</image>
+      <image>https://raw.githubusercontent.com/biglinux/biglinux-config/v2.0.0/docs/screenshots/restore.png</image>
     </screenshot>
     <screenshot>
       <caption>Export the settings of several applications</caption>
-      <image>https://raw.githubusercontent.com/ruscher/biglinux-config/v2.0.0/docs/screenshots/export.png</image>
+      <image>https://raw.githubusercontent.com/biglinux/biglinux-config/v2.0.0/docs/screenshots/export.png</image>
     </screenshot>
     <screenshot>
       <caption>Choose what to import from a backup</caption>
-      <image>https://raw.githubusercontent.com/ruscher/biglinux-config/v2.0.0/docs/screenshots/import.png</image>
+      <image>https://raw.githubusercontent.com/biglinux/biglinux-config/v2.0.0/docs/screenshots/import.png</image>
     </screenshot>
   </screenshots>
   <categories>

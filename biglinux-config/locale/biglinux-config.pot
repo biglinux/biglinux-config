@@ -7,7 +7,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: biglinux-config 2.0.0\n"
-"Report-Msgid-Bugs-To: https://github.com/ruscher/biglinux-config/issues\n"
+"Report-Msgid-Bugs-To: https://github.com/biglinux/biglinux-config/issues\n"
 "POT-Creation-Date: 2026-10-07 11:23-0300\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"

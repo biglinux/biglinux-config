@@ -8,7 +8,7 @@ pkgver=2.0.0
 pkgrel=1
 pkgdesc="Back up, restore and reset application settings (GTK 4/libadwaita)"
 arch=('any')
-url="https://github.com/ruscher/biglinux-config"
+url="https://github.com/biglinux/biglinux-config"
 license=('GPL-3.0-or-later')
 depends=(
   'dconf'
